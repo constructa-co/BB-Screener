@@ -1,0 +1,122 @@
+2025-06-22 21:24:21,696 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 21:24:25,015 - modules.data_fetcher - INFO - Selected 74 coins for analysis
+2025-06-22 21:24:25,693 - __main__ - INFO - Quality setup: BTC LONG (binance) - 75% probability, Risk: 2.0%, R:R: 1.79
+2025-06-22 21:24:26,105 - __main__ - INFO - Quality setup: BTC LONG (bybit) - 70% probability, Risk: 2.0%, R:R: 1.77
+2025-06-22 21:24:26,927 - __main__ - INFO - Quality setup: BTC LONG (okx) - 75% probability, Risk: 2.0%, R:R: 1.79
+2025-06-22 21:24:29,541 - __main__ - INFO - Quality setup: XRP LONG (okx) - 68% probability, Risk: 2.9%, R:R: 2.42
+2025-06-22 21:24:30,617 - __main__ - INFO - Quality setup: BNB LONG (kucoin) - 68% probability, Risk: 1.4%, R:R: 3.15
+2025-06-22 21:24:31,538 - __main__ - INFO - Quality setup: DOGE LONG (binance) - 83% probability, Risk: 3.3%, R:R: 2.7
+2025-06-22 21:24:31,917 - __main__ - INFO - Quality setup: DOGE LONG (bybit) - 78% probability, Risk: 3.2%, R:R: 2.72
+2025-06-22 21:24:32,604 - __main__ - INFO - Quality setup: DOGE LONG (kucoin) - 83% probability, Risk: 3.2%, R:R: 2.71
+2025-06-22 21:24:33,213 - __main__ - INFO - Quality setup: DOGE LONG (okx) - 83% probability, Risk: 3.2%, R:R: 2.71
+2025-06-22 21:24:34,316 - __main__ - INFO - Quality setup: SUI LONG (okx) - 73% probability, Risk: 1.3%, R:R: 7.84
+2025-06-22 21:24:35,308 - __main__ - INFO - Quality setup: ADA LONG (kucoin) - 83% probability, Risk: 2.7%, R:R: 3.1
+2025-06-22 21:24:35,895 - __main__ - INFO - Quality setup: ADA LONG (okx) - 88% probability, Risk: 2.8%, R:R: 3.0
+2025-06-22 21:24:39,046 - __main__ - INFO - Quality setup: LTC LONG (bybit) - 73% probability, Risk: 2.5%, R:R: 2.12
+2025-06-22 21:24:39,727 - __main__ - INFO - Quality setup: LTC LONG (kucoin) - 88% probability, Risk: 2.6%, R:R: 2.04
+2025-06-22 21:24:40,329 - __main__ - INFO - Quality setup: LTC LONG (okx) - 73% probability, Risk: 2.5%, R:R: 2.0
+2025-06-22 21:24:43,087 - __main__ - INFO - Quality setup: FIL LONG (kucoin) - 68% probability, Risk: 1.5%, R:R: 6.72
+2025-06-22 21:24:43,734 - __main__ - INFO - Quality setup: FIL LONG (okx) - 68% probability, Risk: 1.4%, R:R: 6.55
+2025-06-22 21:24:44,777 - __main__ - INFO - Quality setup: XLM LONG (kucoin) - 68% probability, Risk: 1.7%, R:R: 5.06
+2025-06-22 21:24:45,308 - __main__ - INFO - Quality setup: XLM LONG (okx) - 68% probability, Risk: 1.8%, R:R: 4.42
+2025-06-22 21:24:45,944 - __main__ - INFO - Quality setup: HBAR LONG (binance) - 78% probability, Risk: 2.5%, R:R: 3.72
+2025-06-22 21:24:46,696 - __main__ - INFO - Quality setup: HBAR LONG (bybit) - 73% probability, Risk: 2.5%, R:R: 3.7
+2025-06-22 21:24:47,424 - __main__ - INFO - Quality setup: HBAR LONG (kucoin) - 73% probability, Risk: 2.5%, R:R: 3.71
+2025-06-22 21:24:48,018 - __main__ - INFO - Quality setup: HBAR LONG (okx) - 78% probability, Risk: 2.5%, R:R: 3.55
+2025-06-22 21:24:50,201 - __main__ - INFO - Quality setup: TON LONG (kucoin) - 88% probability, Risk: 2.7%, R:R: 3.03
+2025-06-22 21:24:51,827 - __main__ - INFO - Quality setup: FET LONG (binance) - 73% probability, Risk: 1.2%, R:R: 11.41
+2025-06-22 21:24:53,101 - __main__ - INFO - Quality setup: ATOM LONG (binance) - 65% probability, Risk: 3.2%, R:R: 1.89
+2025-06-22 21:24:53,490 - __main__ - INFO - Quality setup: ATOM LONG (bybit) - 70% probability, Risk: 3.2%, R:R: 1.92
+2025-06-22 21:24:54,192 - __main__ - INFO - Quality setup: ATOM LONG (kucoin) - 65% probability, Risk: 3.1%, R:R: 1.93
+2025-06-22 21:24:54,922 - __main__ - INFO - Quality setup: ATOM LONG (okx) - 65% probability, Risk: 3.2%, R:R: 1.89
+2025-06-22 21:24:55,473 - __main__ - INFO - Quality setup: RUNE LONG (bybit) - 78% probability, Risk: 3.1%, R:R: 3.04
+2025-06-22 21:24:56,559 - __main__ - INFO - Quality setup: ETC LONG (bybit) - 83% probability, Risk: 1.9%, R:R: 3.95
+2025-06-22 21:24:57,233 - __main__ - INFO - Quality setup: ETC LONG (kucoin) - 88% probability, Risk: 1.8%, R:R: 4.2
+2025-06-22 21:24:57,766 - __main__ - INFO - Quality setup: ETC LONG (okx) - 83% probability, Risk: 1.9%, R:R: 4.11
+2025-06-22 21:25:02,507 - __main__ - INFO - Quality setup: ZEC LONG (kucoin) - 80% probability, Risk: 4.3%, R:R: 1.65
+2025-06-22 21:25:11,586 - __main__ - INFO - Quality setup: THETA LONG (binance) - 68% probability, Risk: 1.7%, R:R: 6.99
+2025-06-22 21:25:12,425 - __main__ - INFO - Quality setup: THETA LONG (kucoin) - 83% probability, Risk: 1.5%, R:R: 7.82
+2025-06-22 21:25:13,505 - __main__ - INFO - Quality setup: XDC LONG (bybit) - 73% probability, Risk: 1.8%, R:R: 2.34
+2025-06-22 21:25:17,884 - __main__ - INFO - Quality setup: LUNA LONG (bybit) - 78% probability, Risk: 2.0%, R:R: 5.92
+2025-06-22 21:25:18,690 - __main__ - INFO - Quality setup: LUNA LONG (okx) - 68% probability, Risk: 2.1%, R:R: 5.82
+2025-06-22 21:25:20,052 - __main__ - INFO - Quality setup: MINA LONG (kucoin) - 83% probability, Risk: 2.3%, R:R: 4.6
+2025-06-22 21:25:21,510 - __main__ - INFO - Quality setup: EGLD LONG (binance) - 68% probability, Risk: 1.3%, R:R: 8.79
+2025-06-22 21:25:22,965 - __main__ - INFO - Quality setup: EGLD LONG (okx) - 81% probability, Risk: 1.3%, R:R: 9.39
+2025-06-22 21:25:24,458 - __main__ - INFO - Quality setup: WAVES LONG (kucoin) - 73% probability, Risk: 2.5%, R:R: 3.33
+2025-06-22 21:25:25,112 - __main__ - INFO - Quality setup: CORE LONG (bybit) - 73% probability, Risk: 3.0%, R:R: 3.15
+2025-06-22 21:25:25,935 - __main__ - INFO - Quality setup: ZIL LONG (bybit) - 81% probability, Risk: 2.3%, R:R: 3.59
+2025-06-22 21:25:27,126 - __main__ - INFO - Quality setup: LUNC LONG (binance) - 78% probability, Risk: 2.3%, R:R: 4.13
+2025-06-22 21:25:29,910 - __main__ - INFO - Quality setup: AIOZ LONG (bybit) - 83% probability, Risk: 3.4%, R:R: 4.23
+2025-06-22 21:25:30,594 - __main__ - INFO - Quality setup: AIOZ LONG (kucoin) - 73% probability, Risk: 3.4%, R:R: 4.34
+2025-06-22 21:25:32,575 - __main__ - INFO - Quality setup: PHA LONG (binance) - 73% probability, Risk: 2.3%, R:R: 4.67
+2025-06-22 21:25:33,894 - __main__ - INFO - Quality setup: CKB LONG (kucoin) - 88% probability, Risk: 2.4%, R:R: 5.15
+2025-06-22 21:25:34,565 - __main__ - INFO - Quality setup: CTC LONG (bybit) - 68% probability, Risk: 2.1%, R:R: 5.07
+2025-06-22 21:25:35,380 - __main__ - INFO - Quality setup: CTC LONG (okx) - 78% probability, Risk: 2.3%, R:R: 4.75
+2025-06-22 21:25:36,573 - __main__ - INFO - Quality setup: ONE LONG (okx) - 78% probability, Risk: 1.7%, R:R: 5.86
+2025-06-22 21:25:37,792 - __main__ - INFO - Quality setup: USTC LONG (bybit) - 73% probability, Risk: 2.4%, R:R: 3.1
+2025-06-22 21:25:38,785 - __main__ - INFO - Quality setup: USTC LONG (kucoin) - 81% probability, Risk: 2.1%, R:R: 3.47
+2025-06-22 21:25:39,372 - __main__ - INFO - Quality setup: USTC LONG (okx) - 68% probability, Risk: 2.1%, R:R: 3.47
+2025-06-22 21:25:40,131 - __main__ - INFO - Quality setup: AKT LONG (kucoin) - 90% probability, Risk: 5.4%, R:R: 2.35
+2025-06-22 21:25:43,198 - __main__ - INFO - Quality setup: ETHW LONG (okx) - 73% probability, Risk: 2.5%, R:R: 3.95
+2025-06-22 21:25:51,506 - sentiment - INFO - LunarCrush API call for AKT: 404
+2025-06-22 21:25:51,506 - sentiment - INFO - Symbol query failed for AKT, trying ID lookup approach...
+2025-06-22 21:25:53,090 - sentiment - INFO - Cached 6702 coins from LunarCrush list
+2025-06-22 21:25:53,649 - sentiment - INFO - LunarCrush ID lookup successful for AKT (ID: 11998)
+2025-06-22 21:26:43,412 - sentiment - INFO - TokenMetrics API call for AKT: 200
+2025-06-22 21:26:43,412 - sentiment - INFO - TokenMetrics response for AKT: success=True, length=10
+2025-06-22 21:26:43,413 - sentiment - INFO - TokenMetrics extracted for AKT: TM_Grade=15.79, TA_Grade=9.89
+2025-06-22 21:26:50,847 - sentiment - INFO - LunarCrush API call for CKB: 404
+2025-06-22 21:26:50,847 - sentiment - INFO - Symbol query failed for CKB, trying ID lookup approach...
+2025-06-22 21:26:51,380 - sentiment - INFO - LunarCrush ID lookup successful for CKB (ID: 2232)
+2025-06-22 21:26:58,470 - sentiment - INFO - TokenMetrics API call for CKB: 200
+2025-06-22 21:26:58,470 - sentiment - INFO - TokenMetrics response for CKB: success=True, length=10
+2025-06-22 21:26:58,470 - sentiment - INFO - TokenMetrics extracted for CKB: TM_Grade=14.98, TA_Grade=9.84
+2025-06-22 21:27:04,873 - sentiment - INFO - LunarCrush API call for ETC: 404
+2025-06-22 21:27:04,873 - sentiment - INFO - Symbol query failed for ETC, trying ID lookup approach...
+2025-06-22 21:27:05,459 - sentiment - INFO - LunarCrush ID lookup successful for ETC (ID: 21)
+2025-06-22 21:27:12,457 - sentiment - INFO - TokenMetrics API call for ETC: 200
+2025-06-22 21:27:12,457 - sentiment - INFO - TokenMetrics response for ETC: success=True, length=10
+2025-06-22 21:27:12,458 - sentiment - INFO - TokenMetrics extracted for ETC: TM_Grade=24.75, TA_Grade=17.9
+2025-06-22 21:27:18,882 - sentiment - INFO - LunarCrush API call for TON: 404
+2025-06-22 21:27:18,882 - sentiment - INFO - Symbol query failed for TON, trying ID lookup approach...
+2025-06-22 21:27:19,434 - sentiment - INFO - LunarCrush ID lookup successful for TON (ID: 18349)
+2025-06-22 21:27:26,498 - sentiment - INFO - TokenMetrics API call for TON: 200
+2025-06-22 21:27:26,498 - sentiment - INFO - TokenMetrics response for TON: success=True, length=10
+2025-06-22 21:27:26,498 - sentiment - INFO - TokenMetrics extracted for TON: TM_Grade=67.24, TA_Grade=71.09
+2025-06-22 21:27:32,932 - sentiment - INFO - LunarCrush API call for ADA: 404
+2025-06-22 21:27:32,932 - sentiment - INFO - Symbol query failed for ADA, trying ID lookup approach...
+2025-06-22 21:27:33,606 - sentiment - INFO - LunarCrush ID lookup successful for ADA (ID: 11)
+2025-06-22 21:27:40,894 - sentiment - INFO - TokenMetrics API call for ADA: 200
+2025-06-22 21:27:40,894 - sentiment - INFO - TokenMetrics response for ADA: success=True, length=10
+2025-06-22 21:27:40,894 - sentiment - INFO - TokenMetrics extracted for ADA: TM_Grade=17.7, TA_Grade=9.92
+2025-06-22 21:27:48,306 - sentiment - INFO - LunarCrush API call for LTC: 404
+2025-06-22 21:27:48,307 - sentiment - INFO - Symbol query failed for LTC, trying ID lookup approach...
+2025-06-22 21:27:48,889 - sentiment - INFO - LunarCrush ID lookup successful for LTC (ID: 4)
+2025-06-22 21:27:56,145 - sentiment - INFO - TokenMetrics API call for LTC: 200
+2025-06-22 21:27:56,145 - sentiment - INFO - TokenMetrics response for LTC: success=True, length=10
+2025-06-22 21:27:56,145 - sentiment - INFO - TokenMetrics extracted for LTC: TM_Grade=23.99, TA_Grade=17.9
+2025-06-22 21:28:02,552 - sentiment - INFO - LunarCrush API call for THETA: 404
+2025-06-22 21:28:02,553 - sentiment - INFO - Symbol query failed for THETA, trying ID lookup approach...
+2025-06-22 21:28:03,096 - sentiment - INFO - LunarCrush ID lookup successful for THETA (ID: 64)
+2025-06-22 21:28:10,248 - sentiment - INFO - TokenMetrics API call for THETA: 200
+2025-06-22 21:28:10,248 - sentiment - INFO - TokenMetrics response for THETA: success=True, length=10
+2025-06-22 21:28:10,249 - sentiment - INFO - TokenMetrics extracted for THETA: TM_Grade=18.61, TA_Grade=9.93
+2025-06-22 21:28:16,660 - sentiment - INFO - LunarCrush API call for MINA: 404
+2025-06-22 21:28:16,660 - sentiment - INFO - Symbol query failed for MINA, trying ID lookup approach...
+2025-06-22 21:28:18,274 - sentiment - INFO - LunarCrush ID lookup successful for MINA (ID: 12687)
+2025-06-22 21:28:25,345 - sentiment - INFO - TokenMetrics API call for MINA: 200
+2025-06-22 21:28:25,345 - sentiment - INFO - TokenMetrics response for MINA: success=True, length=10
+2025-06-22 21:28:25,346 - sentiment - INFO - TokenMetrics extracted for MINA: TM_Grade=13.38, TA_Grade=9.85
+2025-06-22 21:28:31,773 - sentiment - INFO - LunarCrush API call for AIOZ: 404
+2025-06-22 21:28:31,774 - sentiment - INFO - Symbol query failed for AIOZ, trying ID lookup approach...
+2025-06-22 21:28:32,449 - sentiment - INFO - LunarCrush ID lookup successful for AIOZ (ID: 12529)
+2025-06-22 21:28:39,432 - sentiment - INFO - TokenMetrics API call for AIOZ: 200
+2025-06-22 21:28:39,433 - sentiment - INFO - TokenMetrics response for AIOZ: success=True, length=10
+2025-06-22 21:28:39,433 - sentiment - INFO - TokenMetrics extracted for AIOZ: TM_Grade=18.39, TA_Grade=9.9
+2025-06-22 21:28:45,844 - sentiment - INFO - LunarCrush API call for DOGE: 404
+2025-06-22 21:28:45,845 - sentiment - INFO - Symbol query failed for DOGE, trying ID lookup approach...
+2025-06-22 21:28:46,442 - sentiment - INFO - LunarCrush ID lookup successful for DOGE (ID: 29)
+2025-06-22 21:28:53,403 - sentiment - INFO - TokenMetrics API call for DOGE: 200
+2025-06-22 21:28:53,403 - sentiment - INFO - TokenMetrics response for DOGE: success=True, length=10
+2025-06-22 21:28:53,404 - sentiment - INFO - TokenMetrics extracted for DOGE: TM_Grade=21.45, TA_Grade=9.65
+2025-06-22 21:28:53,579 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_212853.xlsx

@@ -1,0 +1,51 @@
+2025-06-25 23:35:40,398 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-25 23:35:47,637 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-25 23:35:47,638 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-25 23:35:49,297 - sentiment - INFO - Cached 6731 coins from LunarCrush list
+2025-06-25 23:35:49,864 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-25 23:36:39,475 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-25 23:36:39,476 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-25 23:36:39,476 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=52.73, TA_Grade=47.8, Quant_Grade=72.45
+2025-06-25 23:36:43,563 - modules.market_regime_analyzer - INFO - Traditional market SPY: -0.06% (STABLE)
+2025-06-25 23:36:43,898 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -3.60% (FALLING)
+2025-06-25 23:36:44,254 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: -0.21% (STABLE)
+2025-06-25 23:36:44,652 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 0.07% (STABLE)
+2025-06-25 23:36:45,728 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2171 stocks
+2025-06-25 23:36:46,287 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-06-25 23:36:47,063 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-06-25 23:36:47,638 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-06-25 23:36:48,476 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-06-25 23:36:51,104 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-06-25 23:36:51,711 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-06-25 23:36:52,285 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-06-25 23:36:52,285 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-25 23:36:55,204 - modules.data_fetcher - INFO - Selected 62 coins for analysis
+2025-06-25 23:37:28,954 - __main__ - INFO - Quality setup: CFG SHORT (kucoin) - 81% probability, Risk: 8.8%, R:R: 2.19
+2025-06-25 23:37:29,546 - __main__ - INFO - Quality setup: CFG SHORT (okx) - 78% probability, Risk: 8.2%, R:R: 2.37
+2025-06-25 23:37:46,761 - sentiment - INFO - LunarCrush API call for CFG: 404
+2025-06-25 23:37:46,762 - sentiment - INFO - Symbol query failed for CFG, trying ID lookup approach...
+2025-06-25 23:37:47,341 - sentiment - INFO - LunarCrush ID lookup successful for CFG (ID: 14846)
+2025-06-25 23:37:55,068 - sentiment - INFO - TokenMetrics API call for CFG: 200
+2025-06-25 23:37:55,069 - sentiment - INFO - TokenMetrics response for CFG: success=True, length=10
+2025-06-25 23:37:55,069 - sentiment - INFO - TokenMetrics extracted for CFG: TM_Grade=13.93, TA_Grade=9.92, Quant_Grade=29.95
+2025-06-25 23:38:01,496 - sentiment - INFO - LunarCrush API call for BCH: 404
+2025-06-25 23:38:01,496 - sentiment - INFO - Symbol query failed for BCH, trying ID lookup approach...
+2025-06-25 23:38:02,171 - sentiment - INFO - LunarCrush ID lookup successful for BCH (ID: 5)
+2025-06-25 23:38:21,117 - sentiment - INFO - TokenMetrics API call for BCH: 200
+2025-06-25 23:38:21,118 - sentiment - INFO - TokenMetrics response for BCH: success=True, length=10
+2025-06-25 23:38:21,118 - sentiment - INFO - TokenMetrics extracted for BCH: TM_Grade=73.13, TA_Grade=79.07, Quant_Grade=49.37
+2025-06-25 23:38:27,589 - sentiment - INFO - LunarCrush API call for WAVES: 404
+2025-06-25 23:38:27,590 - sentiment - INFO - Symbol query failed for WAVES, trying ID lookup approach...
+2025-06-25 23:38:28,178 - sentiment - INFO - LunarCrush ID lookup successful for WAVES (ID: 48)
+2025-06-25 23:38:36,496 - sentiment - INFO - TokenMetrics API call for WAVES: 200
+2025-06-25 23:38:36,497 - sentiment - INFO - TokenMetrics response for WAVES: success=True, length=10
+2025-06-25 23:38:36,497 - sentiment - INFO - TokenMetrics extracted for WAVES: TM_Grade=13.34, TA_Grade=9.9, Quant_Grade=27.14
+2025-06-25 23:38:42,902 - sentiment - INFO - LunarCrush API call for BSV: 404
+2025-06-25 23:38:42,903 - sentiment - INFO - Symbol query failed for BSV, trying ID lookup approach...
+2025-06-25 23:38:43,512 - sentiment - INFO - LunarCrush ID lookup successful for BSV (ID: 9)
+2025-06-25 23:38:50,878 - sentiment - INFO - TokenMetrics API call for BSV: 200
+2025-06-25 23:38:50,878 - sentiment - INFO - TokenMetrics response for BSV: success=True, length=10
+2025-06-25 23:38:50,878 - sentiment - INFO - TokenMetrics extracted for BSV: TM_Grade=16.1, TA_Grade=9.93, Quant_Grade=40.78
+2025-06-25 23:38:51,111 - modules.market_regime_analyzer - WARNING - LunarCrush API key not available - stocks sentiment will use defaults
+2025-06-25 23:38:51,113 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-06-25 23:38:51,127 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250625_233850.xlsx

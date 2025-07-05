@@ -1,0 +1,80 @@
+2025-06-22 20:54:55,194 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 20:54:58,216 - modules.data_fetcher - INFO - Selected 74 coins for analysis
+2025-06-22 20:55:02,725 - __main__ - INFO - Quality setup: DOGE LONG (binance) - 78% probability, Risk: 2.8%, R:R: 3.27
+2025-06-22 20:55:08,518 - __main__ - INFO - Quality setup: LTC LONG (kucoin) - 73% probability, Risk: 2.2%, R:R: 2.59
+2025-06-22 20:55:14,390 - __main__ - INFO - Quality setup: TON LONG (kucoin) - 86% probability, Risk: 2.8%, R:R: 2.92
+2025-06-22 20:55:18,991 - __main__ - INFO - Quality setup: ETC LONG (bybit) - 78% probability, Risk: 1.9%, R:R: 3.95
+2025-06-22 20:55:19,652 - __main__ - INFO - Quality setup: ETC LONG (kucoin) - 86% probability, Risk: 1.6%, R:R: 4.74
+2025-06-22 20:55:27,254 - __main__ - INFO - Quality setup: BSV LONG (kucoin) - 75% probability, Risk: 5.2%, R:R: 0.47
+2025-06-22 20:55:32,229 - __main__ - INFO - Quality setup: THETA LONG (kucoin) - 78% probability, Risk: 1.7%, R:R: 6.6
+2025-06-22 20:55:33,255 - __main__ - INFO - Quality setup: XDC LONG (bybit) - 70% probability, Risk: 2.0%, R:R: 1.98
+2025-06-22 20:55:38,952 - __main__ - INFO - Quality setup: MINA LONG (kucoin) - 83% probability, Risk: 2.6%, R:R: 3.9
+2025-06-22 20:55:42,051 - __main__ - INFO - Quality setup: WAVES LONG (kucoin) - 68% probability, Risk: 2.2%, R:R: 4.08
+2025-06-22 20:55:43,098 - __main__ - INFO - Quality setup: ZIL LONG (bybit) - 81% probability, Risk: 2.2%, R:R: 3.8
+2025-06-22 20:55:44,130 - __main__ - INFO - Quality setup: LUNC LONG (binance) - 73% probability, Risk: 2.4%, R:R: 4.21
+2025-06-22 20:55:50,461 - __main__ - INFO - Quality setup: CKB LONG (kucoin) - 88% probability, Risk: 2.4%, R:R: 5.15
+2025-06-22 20:55:51,313 - __main__ - INFO - Quality setup: CTC LONG (okx) - 68% probability, Risk: 1.5%, R:R: 7.74
+2025-06-22 20:55:51,910 - __main__ - INFO - Quality setup: USTC LONG (bybit) - 68% probability, Risk: 2.3%, R:R: 3.26
+2025-06-22 20:55:52,710 - __main__ - INFO - Quality setup: USTC LONG (kucoin) - 88% probability, Risk: 2.5%, R:R: 2.84
+2025-06-22 20:55:54,282 - __main__ - INFO - Quality setup: AKT LONG (kucoin) - 90% probability, Risk: 4.6%, R:R: 2.99
+2025-06-22 20:56:05,275 - sentiment - INFO - LunarCrush API call for AKT: 404
+2025-06-22 20:56:05,275 - sentiment - INFO - Symbol query failed for AKT, trying ID lookup approach...
+2025-06-22 20:56:06,875 - sentiment - INFO - Cached 6702 coins from LunarCrush list
+2025-06-22 20:56:07,495 - sentiment - INFO - LunarCrush ID lookup successful for AKT (ID: 11998)
+2025-06-22 20:56:14,641 - sentiment - INFO - TokenMetrics API call for AKT: 200
+2025-06-22 20:56:14,642 - sentiment - INFO - TokenMetrics response for AKT: success=True, length=10
+2025-06-22 20:56:14,642 - sentiment - INFO - TokenMetrics extracted for AKT: TM_Grade=15.79, TA_Grade=9.89
+2025-06-22 20:56:21,058 - sentiment - INFO - LunarCrush API call for CKB: 404
+2025-06-22 20:56:21,059 - sentiment - INFO - Symbol query failed for CKB, trying ID lookup approach...
+2025-06-22 20:56:22,456 - sentiment - INFO - LunarCrush ID lookup successful for CKB (ID: 2232)
+2025-06-22 20:56:29,425 - sentiment - INFO - TokenMetrics API call for CKB: 200
+2025-06-22 20:56:29,425 - sentiment - INFO - TokenMetrics response for CKB: success=True, length=10
+2025-06-22 20:56:29,425 - sentiment - INFO - TokenMetrics extracted for CKB: TM_Grade=14.98, TA_Grade=9.84
+2025-06-22 20:56:36,017 - sentiment - INFO - LunarCrush API call for USTC: 404
+2025-06-22 20:56:36,017 - sentiment - INFO - Symbol query failed for USTC, trying ID lookup approach...
+2025-06-22 20:56:36,816 - sentiment - INFO - LunarCrush ID lookup successful for USTC (ID: 16592)
+2025-06-22 20:56:44,008 - sentiment - INFO - TokenMetrics API call for USTC: 400
+2025-06-22 20:56:44,008 - sentiment - ERROR - TokenMetrics API error for USTC: 400 - {"success":false,"message":"Data Not Found","length":0,"data":[]}
+2025-06-22 20:56:50,461 - sentiment - INFO - LunarCrush API call for ETC: 404
+2025-06-22 20:56:50,461 - sentiment - INFO - Symbol query failed for ETC, trying ID lookup approach...
+2025-06-22 20:56:51,029 - sentiment - INFO - LunarCrush ID lookup successful for ETC (ID: 21)
+2025-06-22 20:56:58,078 - sentiment - INFO - TokenMetrics API call for ETC: 200
+2025-06-22 20:56:58,079 - sentiment - INFO - TokenMetrics response for ETC: success=True, length=10
+2025-06-22 20:56:58,079 - sentiment - INFO - TokenMetrics extracted for ETC: TM_Grade=24.75, TA_Grade=17.9
+2025-06-22 20:57:04,482 - sentiment - INFO - LunarCrush API call for TON: 404
+2025-06-22 20:57:04,482 - sentiment - INFO - Symbol query failed for TON, trying ID lookup approach...
+2025-06-22 20:57:05,051 - sentiment - INFO - LunarCrush ID lookup successful for TON (ID: 18349)
+2025-06-22 20:57:12,108 - sentiment - INFO - TokenMetrics API call for TON: 200
+2025-06-22 20:57:12,108 - sentiment - INFO - TokenMetrics response for TON: success=True, length=10
+2025-06-22 20:57:12,108 - sentiment - INFO - TokenMetrics extracted for TON: TM_Grade=67.24, TA_Grade=71.09
+2025-06-22 20:57:18,824 - sentiment - INFO - LunarCrush API call for MINA: 404
+2025-06-22 20:57:18,824 - sentiment - INFO - Symbol query failed for MINA, trying ID lookup approach...
+2025-06-22 20:57:20,017 - sentiment - INFO - LunarCrush ID lookup successful for MINA (ID: 12687)
+2025-06-22 20:57:27,072 - sentiment - INFO - TokenMetrics API call for MINA: 200
+2025-06-22 20:57:27,072 - sentiment - INFO - TokenMetrics response for MINA: success=True, length=10
+2025-06-22 20:57:27,072 - sentiment - INFO - TokenMetrics extracted for MINA: TM_Grade=13.38, TA_Grade=9.85
+2025-06-22 20:57:33,462 - sentiment - INFO - LunarCrush API call for ZIL: 404
+2025-06-22 20:57:33,462 - sentiment - INFO - Symbol query failed for ZIL, trying ID lookup approach...
+2025-06-22 20:57:34,030 - sentiment - INFO - LunarCrush ID lookup successful for ZIL (ID: 71)
+2025-06-22 20:57:41,104 - sentiment - INFO - TokenMetrics API call for ZIL: 200
+2025-06-22 20:57:41,105 - sentiment - INFO - TokenMetrics response for ZIL: success=True, length=10
+2025-06-22 20:57:41,105 - sentiment - INFO - TokenMetrics extracted for ZIL: TM_Grade=14.84, TA_Grade=9.94
+2025-06-22 20:57:47,505 - sentiment - INFO - LunarCrush API call for THETA: 404
+2025-06-22 20:57:47,505 - sentiment - INFO - Symbol query failed for THETA, trying ID lookup approach...
+2025-06-22 20:57:50,041 - sentiment - INFO - LunarCrush ID lookup successful for THETA (ID: 64)
+2025-06-22 20:57:57,231 - sentiment - INFO - TokenMetrics API call for THETA: 200
+2025-06-22 20:57:57,231 - sentiment - INFO - TokenMetrics response for THETA: success=True, length=10
+2025-06-22 20:57:57,231 - sentiment - INFO - TokenMetrics extracted for THETA: TM_Grade=18.61, TA_Grade=9.93
+2025-06-22 20:58:03,636 - sentiment - INFO - LunarCrush API call for DOGE: 404
+2025-06-22 20:58:03,637 - sentiment - INFO - Symbol query failed for DOGE, trying ID lookup approach...
+2025-06-22 20:58:04,587 - sentiment - INFO - LunarCrush ID lookup successful for DOGE (ID: 29)
+2025-06-22 20:58:11,778 - sentiment - INFO - TokenMetrics API call for DOGE: 200
+2025-06-22 20:58:11,778 - sentiment - INFO - TokenMetrics response for DOGE: success=True, length=10
+2025-06-22 20:58:11,778 - sentiment - INFO - TokenMetrics extracted for DOGE: TM_Grade=21.45, TA_Grade=9.65
+2025-06-22 20:58:18,309 - sentiment - INFO - LunarCrush API call for BSV: 404
+2025-06-22 20:58:18,309 - sentiment - INFO - Symbol query failed for BSV, trying ID lookup approach...
+2025-06-22 20:58:19,457 - sentiment - INFO - LunarCrush ID lookup successful for BSV (ID: 9)
+2025-06-22 20:58:26,451 - sentiment - INFO - TokenMetrics API call for BSV: 200
+2025-06-22 20:58:26,452 - sentiment - INFO - TokenMetrics response for BSV: success=True, length=10
+2025-06-22 20:58:26,452 - sentiment - INFO - TokenMetrics extracted for BSV: TM_Grade=16.13, TA_Grade=9.95
+2025-06-22 20:58:26,578 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_205826.xlsx

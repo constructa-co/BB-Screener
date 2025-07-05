@@ -1,0 +1,119 @@
+2025-07-01 23:07:33,009 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-07-01 23:07:39,883 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-07-01 23:07:39,883 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-07-01 23:07:41,505 - sentiment - INFO - Cached 6828 coins from LunarCrush list
+2025-07-01 23:07:42,171 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-07-01 23:08:48,384 - sentiment - ERROR - Error fetching TokenMetrics data for BTC: HTTPSConnectionPool(host='api.tokenmetrics.com', port=443): Read timed out. (read timeout=60)
+2025-07-01 23:08:52,169 - modules.market_regime_analyzer - INFO - Traditional market SPY: -0.09% (STABLE)
+2025-07-01 23:08:52,350 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -1.26% (FALLING)
+2025-07-01 23:08:52,541 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: -0.05% (STABLE)
+2025-07-01 23:08:52,836 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 0.65% (STABLE)
+2025-07-01 23:08:53,963 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2174 stocks
+2025-07-01 23:08:54,554 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-07-01 23:08:55,278 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-07-01 23:08:55,847 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-07-01 23:08:58,400 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-07-01 23:08:59,109 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-07-01 23:08:59,675 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-07-01 23:09:00,213 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-07-01 23:09:00,213 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-07-01 23:09:03,427 - modules.data_fetcher - INFO - Selected 61 coins for analysis
+2025-07-01 23:09:05,095 - __main__ - INFO - Quality setup: BTC LONG (kucoin) - 65% probability, Risk: 1.0%, R:R: 1.76
+2025-07-01 23:09:09,325 - __main__ - INFO - Quality setup: ADA LONG (binance) - 71% probability, Risk: 1.4%, R:R: 2.97
+2025-07-01 23:09:09,708 - __main__ - INFO - Quality setup: ADA LONG (bybit) - 71% probability, Risk: 1.4%, R:R: 2.92
+2025-07-01 23:09:10,395 - __main__ - INFO - Quality setup: ADA LONG (kucoin) - 71% probability, Risk: 1.4%, R:R: 2.95
+2025-07-01 23:09:10,923 - __main__ - INFO - Quality setup: ADA LONG (okx) - 68% probability, Risk: 1.5%, R:R: 2.53
+2025-07-01 23:09:19,295 - __main__ - INFO - Quality setup: XLM LONG (binance) - 83% probability, Risk: 1.7%, R:R: 3.1
+2025-07-01 23:09:19,672 - __main__ - INFO - Quality setup: XLM LONG (bybit) - 83% probability, Risk: 1.7%, R:R: 2.97
+2025-07-01 23:09:20,380 - __main__ - INFO - Quality setup: XLM LONG (kucoin) - 83% probability, Risk: 1.7%, R:R: 3.08
+2025-07-01 23:09:21,051 - __main__ - INFO - Quality setup: XLM LONG (okx) - 83% probability, Risk: 1.7%, R:R: 3.0
+2025-07-01 23:09:22,378 - __main__ - INFO - Quality setup: TON LONG (binance) - 70% probability, Risk: 2.2%, R:R: 1.37
+2025-07-01 23:09:22,848 - __main__ - INFO - Quality setup: TON LONG (bybit) - 70% probability, Risk: 2.7%, R:R: 1.13
+2025-07-01 23:09:23,787 - __main__ - INFO - Quality setup: TON LONG (kucoin) - 65% probability, Risk: 2.2%, R:R: 1.38
+2025-07-01 23:09:24,315 - __main__ - INFO - Quality setup: TON LONG (okx) - 70% probability, Risk: 2.2%, R:R: 1.31
+2025-07-01 23:09:25,985 - __main__ - INFO - Quality setup: HBAR LONG (binance) - 68% probability, Risk: 1.3%, R:R: 2.47
+2025-07-01 23:09:27,355 - __main__ - INFO - Quality setup: HBAR LONG (kucoin) - 68% probability, Risk: 1.3%, R:R: 2.47
+2025-07-01 23:09:31,471 - __main__ - INFO - Quality setup: ALGO LONG (binance) - 83% probability, Risk: 1.4%, R:R: 3.91
+2025-07-01 23:09:31,877 - __main__ - INFO - Quality setup: ALGO LONG (bybit) - 83% probability, Risk: 1.3%, R:R: 4.06
+2025-07-01 23:09:32,582 - __main__ - INFO - Quality setup: ALGO LONG (kucoin) - 83% probability, Risk: 1.3%, R:R: 3.86
+2025-07-01 23:09:33,211 - __main__ - INFO - Quality setup: ALGO LONG (okx) - 83% probability, Risk: 1.3%, R:R: 3.87
+2025-07-01 23:09:34,394 - __main__ - INFO - Quality setup: NEAR LONG (bybit) - 68% probability, Risk: 1.5%, R:R: 3.35
+2025-07-01 23:09:39,852 - __main__ - INFO - Quality setup: ETC LONG (bybit) - 68% probability, Risk: 1.4%, R:R: 2.07
+2025-07-01 23:09:41,568 - __main__ - INFO - Quality setup: QTUM LONG (bybit) - 81% probability, Risk: 1.4%, R:R: 3.17
+2025-07-01 23:09:42,404 - __main__ - INFO - Quality setup: QTUM LONG (okx) - 83% probability, Risk: 1.7%, R:R: 2.38
+2025-07-01 23:09:43,374 - __main__ - INFO - Quality setup: ICP LONG (bybit) - 68% probability, Risk: 1.4%, R:R: 2.46
+2025-07-01 23:09:45,437 - __main__ - INFO - Quality setup: A LONG (kucoin) - 83% probability, Risk: 1.6%, R:R: 2.53
+2025-07-01 23:09:46,152 - __main__ - INFO - Quality setup: A LONG (okx) - 71% probability, Risk: 1.8%, R:R: 2.32
+2025-07-01 23:09:48,670 - __main__ - INFO - Quality setup: VET LONG (bybit) - 65% probability, Risk: 1.8%, R:R: 1.65
+2025-07-01 23:09:51,647 - __main__ - INFO - Quality setup: DASH LONG (kucoin) - 68% probability, Risk: 1.1%, R:R: 3.39
+2025-07-01 23:09:56,492 - __main__ - INFO - Quality setup: FLOW LONG (bybit) - 68% probability, Risk: 1.6%, R:R: 2.11
+2025-07-01 23:09:59,131 - __main__ - INFO - Quality setup: WAVES LONG (kucoin) - 68% probability, Risk: 1.2%, R:R: 2.7
+2025-07-01 23:10:00,219 - __main__ - INFO - Quality setup: XTZ LONG (kucoin) - 81% probability, Risk: 1.2%, R:R: 2.72
+2025-07-01 23:10:02,969 - __main__ - INFO - Quality setup: KSM LONG (bybit) - 85% probability, Risk: 3.9%, R:R: 1.49
+2025-07-01 23:10:04,781 - __main__ - INFO - Quality setup: CRO LONG (kucoin) - 70% probability, Risk: 1.3%, R:R: 0.96
+2025-07-01 23:10:06,370 - __main__ - INFO - Quality setup: LUNA LONG (kucoin) - 81% probability, Risk: 2.0%, R:R: 2.34
+2025-07-01 23:10:07,595 - __main__ - INFO - Quality setup: ZIL LONG (bybit) - 68% probability, Risk: 1.6%, R:R: 3.0
+2025-07-01 23:10:11,523 - __main__ - INFO - Quality setup: MINA LONG (bybit) - 68% probability, Risk: 1.5%, R:R: 3.62
+2025-07-01 23:10:12,717 - __main__ - INFO - Quality setup: MINA LONG (okx) - 68% probability, Risk: 1.4%, R:R: 3.89
+2025-07-01 23:10:19,648 - sentiment - INFO - LunarCrush API call for KSM: 404
+2025-07-01 23:10:19,649 - sentiment - INFO - Symbol query failed for KSM, trying ID lookup approach...
+2025-07-01 23:10:20,476 - sentiment - INFO - LunarCrush ID lookup successful for KSM (ID: 2921)
+2025-07-01 23:10:29,287 - sentiment - INFO - TokenMetrics API call for KSM: 200
+2025-07-01 23:10:29,288 - sentiment - INFO - TokenMetrics response for KSM: success=True, length=10
+2025-07-01 23:10:29,288 - sentiment - INFO - TokenMetrics extracted for KSM: TM_Grade=32.21, TA_Grade=25.65, Quant_Grade=58.45
+2025-07-01 23:10:35,742 - sentiment - INFO - LunarCrush API call for ALGO: 404
+2025-07-01 23:10:35,742 - sentiment - INFO - Symbol query failed for ALGO, trying ID lookup approach...
+2025-07-01 23:10:36,343 - sentiment - INFO - LunarCrush ID lookup successful for ALGO (ID: 2108)
+2025-07-01 23:10:43,818 - sentiment - INFO - TokenMetrics API call for ALGO: 200
+2025-07-01 23:10:43,818 - sentiment - INFO - TokenMetrics response for ALGO: success=True, length=10
+2025-07-01 23:10:43,818 - sentiment - INFO - TokenMetrics extracted for ALGO: TM_Grade=34.02, TA_Grade=33.56, Quant_Grade=35.87
+2025-07-01 23:10:50,266 - sentiment - INFO - LunarCrush API call for XLM: 404
+2025-07-01 23:10:50,266 - sentiment - INFO - Symbol query failed for XLM, trying ID lookup approach...
+2025-07-01 23:10:50,985 - sentiment - INFO - LunarCrush ID lookup successful for XLM (ID: 10)
+2025-07-01 23:10:58,154 - sentiment - INFO - TokenMetrics API call for XLM: 200
+2025-07-01 23:10:58,154 - sentiment - INFO - TokenMetrics response for XLM: success=True, length=10
+2025-07-01 23:10:58,155 - sentiment - INFO - TokenMetrics extracted for XLM: TM_Grade=28.41, TA_Grade=25.67, Quant_Grade=39.37
+2025-07-01 23:11:04,704 - sentiment - INFO - LunarCrush API call for A: 404
+2025-07-01 23:11:04,705 - sentiment - INFO - Symbol query failed for A, trying ID lookup approach...
+2025-07-01 23:11:05,524 - sentiment - INFO - LunarCrush ID lookup successful for A (ID: 3585)
+2025-07-01 23:11:12,728 - sentiment - INFO - TokenMetrics API call for A: 400
+2025-07-01 23:11:12,728 - sentiment - ERROR - TokenMetrics API error for A: 400 - {"success":false,"message":"Data Not Found","length":0,"data":[]}
+2025-07-01 23:11:19,246 - sentiment - INFO - LunarCrush API call for QTUM: 404
+2025-07-01 23:11:19,246 - sentiment - INFO - Symbol query failed for QTUM, trying ID lookup approach...
+2025-07-01 23:11:20,051 - sentiment - INFO - LunarCrush ID lookup successful for QTUM (ID: 34)
+2025-07-01 23:11:27,173 - sentiment - INFO - TokenMetrics API call for QTUM: 200
+2025-07-01 23:11:27,174 - sentiment - INFO - TokenMetrics response for QTUM: success=True, length=10
+2025-07-01 23:11:27,174 - sentiment - INFO - TokenMetrics extracted for QTUM: TM_Grade=27.61, TA_Grade=25.68, Quant_Grade=35.33
+2025-07-01 23:11:33,585 - sentiment - INFO - LunarCrush API call for XTZ: 404
+2025-07-01 23:11:33,585 - sentiment - INFO - Symbol query failed for XTZ, trying ID lookup approach...
+2025-07-01 23:11:34,096 - sentiment - INFO - LunarCrush ID lookup successful for XTZ (ID: 20)
+2025-07-01 23:11:41,264 - sentiment - INFO - TokenMetrics API call for XTZ: 200
+2025-07-01 23:11:41,265 - sentiment - INFO - TokenMetrics response for XTZ: success=True, length=10
+2025-07-01 23:11:41,265 - sentiment - INFO - TokenMetrics extracted for XTZ: TM_Grade=28.36, TA_Grade=25.68, Quant_Grade=39.11
+2025-07-01 23:11:47,644 - sentiment - INFO - LunarCrush API call for LUNA: 404
+2025-07-01 23:11:47,645 - sentiment - INFO - Symbol query failed for LUNA, trying ID lookup approach...
+2025-07-01 23:11:48,147 - sentiment - INFO - LunarCrush ID lookup successful for LUNA (ID: 50218)
+2025-07-01 23:11:55,584 - sentiment - INFO - TokenMetrics API call for LUNA: 200
+2025-07-01 23:11:55,584 - sentiment - INFO - TokenMetrics response for LUNA: success=True, length=10
+2025-07-01 23:11:55,585 - sentiment - INFO - TokenMetrics extracted for LUNA: TM_Grade=31.5, TA_Grade=25.64, Quant_Grade=54.95
+2025-07-01 23:12:02,049 - sentiment - INFO - LunarCrush API call for ADA: 404
+2025-07-01 23:12:02,050 - sentiment - INFO - Symbol query failed for ADA, trying ID lookup approach...
+2025-07-01 23:12:02,684 - sentiment - INFO - LunarCrush ID lookup successful for ADA (ID: 11)
+2025-07-01 23:12:10,552 - sentiment - INFO - TokenMetrics API call for ADA: 200
+2025-07-01 23:12:10,552 - sentiment - INFO - TokenMetrics response for ADA: success=True, length=10
+2025-07-01 23:12:10,552 - sentiment - INFO - TokenMetrics extracted for ADA: TM_Grade=30.28, TA_Grade=25.65, Quant_Grade=48.79
+2025-07-01 23:12:16,999 - sentiment - INFO - LunarCrush API call for TON: 404
+2025-07-01 23:12:16,999 - sentiment - INFO - Symbol query failed for TON, trying ID lookup approach...
+2025-07-01 23:12:17,614 - sentiment - INFO - LunarCrush ID lookup successful for TON (ID: 18349)
+2025-07-01 23:12:24,991 - sentiment - INFO - TokenMetrics API call for TON: 200
+2025-07-01 23:12:24,991 - sentiment - INFO - TokenMetrics response for TON: success=True, length=10
+2025-07-01 23:12:24,992 - sentiment - INFO - TokenMetrics extracted for TON: TM_Grade=18.74, TA_Grade=9.94, Quant_Grade=53.91
+2025-07-01 23:12:31,363 - sentiment - INFO - LunarCrush API call for CRO: 404
+2025-07-01 23:12:31,363 - sentiment - INFO - Symbol query failed for CRO, trying ID lookup approach...
+2025-07-01 23:12:31,951 - sentiment - INFO - LunarCrush ID lookup successful for CRO (ID: 25)
+2025-07-01 23:12:39,017 - sentiment - INFO - TokenMetrics API call for CRO: 200
+2025-07-01 23:12:39,017 - sentiment - INFO - TokenMetrics response for CRO: success=True, length=10
+2025-07-01 23:12:39,018 - sentiment - INFO - TokenMetrics extracted for CRO: TM_Grade=18.15, TA_Grade=9.9, Quant_Grade=51.16
+2025-07-01 23:12:39,245 - modules.market_regime_analyzer - WARNING - LunarCrush API key not available - stocks sentiment will use defaults
+2025-07-01 23:12:39,246 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-07-01 23:12:39,275 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250701_231239.xlsx

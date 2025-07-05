@@ -1,0 +1,22 @@
+2025-06-25 00:05:56,626 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-25 00:06:03,441 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-25 00:06:03,441 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-25 00:06:05,219 - sentiment - INFO - Cached 6723 coins from LunarCrush list
+2025-06-25 00:06:05,621 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-25 00:06:12,754 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-25 00:06:12,755 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-25 00:06:12,755 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=46.99, TA_Grade=47.01, Quant_Grade=46.91
+2025-06-25 00:06:16,972 - modules.market_regime_analyzer - INFO - Traditional market SPY: 1.10% (RISING)
+2025-06-25 00:06:17,330 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -11.50% (FALLING)
+2025-06-25 00:06:17,671 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: -0.50% (STABLE)
+2025-06-25 00:06:18,050 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 1.53% (RISING)
+2025-06-25 00:06:19,442 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2160 stocks
+2025-06-25 00:06:19,998 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: 50
+2025-06-25 00:06:20,000 - modules.market_regime_analyzer - WARNING - Stock QQQ not found in LunarCrush stocks list
+2025-06-25 00:06:20,000 - modules.market_regime_analyzer - WARNING - Stock QQQ not found in LunarCrush stocks list
+2025-06-25 00:06:20,001 - modules.market_regime_analyzer - WARNING - Stock VTI not found in LunarCrush stocks list
+2025-06-25 00:06:20,001 - modules.market_regime_analyzer - WARNING - Stock VTI not found in LunarCrush stocks list
+2025-06-25 00:06:20,001 - modules.market_regime_analyzer - WARNING - Stock IWM not found in LunarCrush stocks list
+2025-06-25 00:06:20,001 - modules.market_regime_analyzer - WARNING - Stock IWM not found in LunarCrush stocks list
+2025-06-25 00:06:20,003 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-25 00:06:23,286 - modules.data_fetcher - INFO - Selected 70 coins for analysis

@@ -1,0 +1,27 @@
+2025-06-23 22:59:38,909 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-23 22:59:45,803 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-23 22:59:45,804 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-23 22:59:47,476 - sentiment - INFO - Cached 6711 coins from LunarCrush list
+2025-06-23 22:59:59,603 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-23 23:00:07,551 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-23 23:00:07,552 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-23 23:00:07,552 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=70.38, TA_Grade=75.97
+2025-06-23 23:00:09,433 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-23 23:00:12,138 - modules.data_fetcher - INFO - Selected 69 coins for analysis
+2025-06-23 23:00:33,458 - __main__ - INFO - Quality setup: IP SHORT (bybit) - 83% probability, Risk: 4.9%, R:R: 2.51
+2025-06-23 23:00:34,119 - __main__ - INFO - Quality setup: IP SHORT (kucoin) - 68% probability, Risk: 4.9%, R:R: 2.45
+2025-06-23 23:00:34,810 - __main__ - INFO - Quality setup: IP SHORT (okx) - 71% probability, Risk: 4.8%, R:R: 2.52
+2025-06-23 23:01:06,801 - sentiment - INFO - LunarCrush API call for IP: 404
+2025-06-23 23:01:06,802 - sentiment - INFO - Symbol query failed for IP, trying ID lookup approach...
+2025-06-23 23:01:08,777 - sentiment - INFO - LunarCrush ID lookup successful for IP (ID: 160026)
+2025-06-23 23:01:15,916 - sentiment - INFO - TokenMetrics API call for IP: 200
+2025-06-23 23:01:15,917 - sentiment - INFO - TokenMetrics response for IP: success=True, length=10
+2025-06-23 23:01:15,917 - sentiment - INFO - TokenMetrics extracted for IP: TM_Grade=21.19, TA_Grade=9.79
+2025-06-23 23:01:22,322 - sentiment - INFO - LunarCrush API call for XMR: 404
+2025-06-23 23:01:22,323 - sentiment - INFO - Symbol query failed for XMR, trying ID lookup approach...
+2025-06-23 23:01:22,866 - sentiment - INFO - LunarCrush ID lookup successful for XMR (ID: 13)
+2025-06-23 23:01:30,099 - sentiment - INFO - TokenMetrics API call for XMR: 200
+2025-06-23 23:01:30,100 - sentiment - INFO - TokenMetrics response for XMR: success=True, length=10
+2025-06-23 23:01:30,100 - sentiment - INFO - TokenMetrics extracted for XMR: TM_Grade=21.36, TA_Grade=9.98
+2025-06-23 23:01:30,213 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-06-23 23:01:30,223 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250623_230130.xlsx

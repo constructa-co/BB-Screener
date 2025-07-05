@@ -1,0 +1,7 @@
+2025-06-22 17:10:42,859 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 17:10:45,820 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 17:11:09,254 - __main__ - INFO - Quality setup: KAS LONG (bybit) - 73% probability, Risk: 1.0%, R:R: 6.94
+2025-06-22 17:11:11,753 - __main__ - INFO - Quality setup: A LONG (bybit) - 75% probability, Risk: 3.4%, R:R: 1.44
+2025-06-22 17:11:12,431 - __main__ - INFO - Quality setup: A LONG (kucoin) - 65% probability, Risk: 3.5%, R:R: 1.32
+2025-06-22 17:11:17,331 - __main__ - INFO - Quality setup: VET LONG (bybit) - 73% probability, Risk: 0.8%, R:R: 8.69
+2025-06-22 17:12:39,092 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_171239.xlsx

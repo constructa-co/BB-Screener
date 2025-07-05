@@ -1,0 +1,18 @@
+2025-06-22 13:52:54,363 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 13:52:59,415 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 13:53:20,979 - __main__ - INFO - Quality setup: ATOM LONG (bybit) - 68% probability, Risk: 1.0%, R:R: 5.58
+2025-06-22 13:53:25,018 - __main__ - INFO - Quality setup: ZEC LONG (binance) - 73% probability, Risk: 0.3%, R:R: 18.41
+2025-06-22 13:53:27,477 - __main__ - INFO - Quality setup: QTUM LONG (kucoin) - 83% probability, Risk: 0.3%, R:R: 17.6
+2025-06-22 13:53:29,012 - __main__ - INFO - Quality setup: A LONG (binance) - 78% probability, Risk: 1.5%, R:R: 4.66
+2025-06-22 13:53:30,518 - __main__ - INFO - Quality setup: A LONG (okx) - 73% probability, Risk: 1.5%, R:R: 4.57
+2025-06-22 13:53:33,911 - __main__ - INFO - Quality setup: AR LONG (bybit) - 68% probability, Risk: 2.1%, R:R: 4.14
+2025-06-22 13:53:40,244 - __main__ - INFO - Quality setup: THETA LONG (okx) - 78% probability, Risk: 0.7%, R:R: 12.45
+2025-06-22 13:53:40,641 - __main__ - INFO - Quality setup: XDC LONG (bybit) - 81% probability, Risk: 0.7%, R:R: 3.47
+2025-06-22 13:53:41,326 - __main__ - INFO - Quality setup: XDC LONG (kucoin) - 71% probability, Risk: 0.8%, R:R: 3.04
+2025-06-22 13:53:45,930 - __main__ - INFO - Quality setup: LUNA LONG (kucoin) - 78% probability, Risk: 0.7%, R:R: 12.08
+2025-06-22 13:53:46,484 - __main__ - INFO - Quality setup: LUNA LONG (okx) - 83% probability, Risk: 0.2%, R:R: 66.0
+2025-06-22 13:53:49,808 - __main__ - INFO - Quality setup: MINA LONG (bybit) - 68% probability, Risk: 0.0%, R:R: 255.13
+2025-06-22 13:53:50,576 - __main__ - INFO - Quality setup: MINA LONG (okx) - 78% probability, Risk: 0.1%, R:R: 146.3
+2025-06-22 13:53:56,542 - __main__ - INFO - Quality setup: LUNC LONG (okx) - 68% probability, Risk: 0.4%, R:R: 15.32
+2025-06-22 13:54:01,165 - __main__ - INFO - Quality setup: CKB LONG (kucoin) - 81% probability, Risk: 0.4%, R:R: 23.84
+2025-06-22 13:56:20,286 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_135620.xlsx

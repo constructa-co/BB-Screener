@@ -1,0 +1,42 @@
+2025-06-24 21:25:50,592 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-24 21:25:57,435 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-24 21:25:57,436 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-24 21:25:58,903 - sentiment - INFO - Cached 6721 coins from LunarCrush list
+2025-06-24 21:25:59,415 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-24 21:26:06,619 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-24 21:26:06,620 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-24 21:26:06,620 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=46.99, TA_Grade=47.01, Quant_Grade=46.91
+2025-06-24 21:26:08,536 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-24 21:26:11,545 - modules.data_fetcher - INFO - Selected 71 coins for analysis
+2025-06-24 21:26:21,501 - __main__ - INFO - Quality setup: APT SHORT (binance) - 83% probability, Risk: 3.2%, R:R: 5.36
+2025-06-24 21:26:21,895 - __main__ - INFO - Quality setup: APT SHORT (bybit) - 83% probability, Risk: 3.2%, R:R: 5.31
+2025-06-24 21:26:22,569 - __main__ - INFO - Quality setup: APT SHORT (kucoin) - 83% probability, Risk: 3.2%, R:R: 5.26
+2025-06-24 21:26:23,117 - __main__ - INFO - Quality setup: APT SHORT (okx) - 83% probability, Risk: 3.1%, R:R: 5.9
+2025-06-24 21:26:55,844 - __main__ - INFO - Quality setup: ZEN SHORT (bybit) - 68% probability, Risk: 4.8%, R:R: 1.21
+2025-06-24 21:26:56,531 - __main__ - INFO - Quality setup: ZEN SHORT (kucoin) - 68% probability, Risk: 4.7%, R:R: 1.24
+2025-06-24 21:27:11,161 - sentiment - INFO - LunarCrush API call for APT: 404
+2025-06-24 21:27:11,162 - sentiment - INFO - Symbol query failed for APT, trying ID lookup approach...
+2025-06-24 21:27:11,664 - sentiment - INFO - LunarCrush ID lookup successful for APT (ID: 70832)
+2025-06-24 21:27:18,878 - sentiment - INFO - TokenMetrics API call for APT: 200
+2025-06-24 21:27:18,879 - sentiment - INFO - TokenMetrics response for APT: success=True, length=10
+2025-06-24 21:27:18,880 - sentiment - INFO - TokenMetrics extracted for APT: TM_Grade=16.19, TA_Grade=9.89, Quant_Grade=41.38
+2025-06-24 21:27:25,328 - sentiment - INFO - LunarCrush API call for ZEN: 404
+2025-06-24 21:27:25,329 - sentiment - INFO - Symbol query failed for ZEN, trying ID lookup approach...
+2025-06-24 21:27:25,866 - sentiment - INFO - LunarCrush ID lookup successful for ZEN (ID: 103)
+2025-06-24 21:27:32,813 - sentiment - INFO - TokenMetrics API call for ZEN: 200
+2025-06-24 21:27:32,814 - sentiment - INFO - TokenMetrics response for ZEN: success=True, length=10
+2025-06-24 21:27:32,814 - sentiment - INFO - TokenMetrics extracted for ZEN: TM_Grade=16.98, TA_Grade=9.85, Quant_Grade=45.5
+2025-06-24 21:27:39,173 - sentiment - INFO - LunarCrush API call for THETA: 404
+2025-06-24 21:27:39,173 - sentiment - INFO - Symbol query failed for THETA, trying ID lookup approach...
+2025-06-24 21:27:39,686 - sentiment - INFO - LunarCrush ID lookup successful for THETA (ID: 64)
+2025-06-24 21:27:47,451 - sentiment - INFO - TokenMetrics API call for THETA: 200
+2025-06-24 21:27:47,452 - sentiment - INFO - TokenMetrics response for THETA: success=True, length=10
+2025-06-24 21:27:47,452 - sentiment - INFO - TokenMetrics extracted for THETA: TM_Grade=18.36, TA_Grade=9.89, Quant_Grade=52.24
+2025-06-24 21:27:53,818 - sentiment - INFO - LunarCrush API call for XDC: 404
+2025-06-24 21:27:53,819 - sentiment - INFO - Symbol query failed for XDC, trying ID lookup approach...
+2025-06-24 21:27:54,450 - sentiment - INFO - LunarCrush ID lookup successful for XDC (ID: 66919)
+2025-06-24 21:28:01,584 - sentiment - INFO - TokenMetrics API call for XDC: 200
+2025-06-24 21:28:01,585 - sentiment - INFO - TokenMetrics response for XDC: success=True, length=10
+2025-06-24 21:28:01,586 - sentiment - INFO - TokenMetrics extracted for XDC: TM_Grade=18.77, TA_Grade=9.91, Quant_Grade=54.23
+2025-06-24 21:28:01,693 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-06-24 21:28:01,710 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250624_212801.xlsx

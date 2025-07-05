@@ -1,0 +1,12 @@
+2025-06-23 21:36:21,431 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-23 21:36:24,466 - modules.data_fetcher - INFO - Selected 69 coins for analysis
+2025-06-23 21:36:45,492 - __main__ - INFO - Quality setup: IP SHORT (bybit) - 81% probability, Risk: 2.0%, R:R: 6.59
+2025-06-23 21:36:46,357 - __main__ - INFO - Quality setup: IP SHORT (okx) - 68% probability, Risk: 2.1%, R:R: 6.26
+2025-06-23 21:37:18,423 - sentiment - INFO - LunarCrush API call for IP: 404
+2025-06-23 21:37:18,425 - sentiment - INFO - Symbol query failed for IP, trying ID lookup approach...
+2025-06-23 21:37:20,093 - sentiment - INFO - Cached 6711 coins from LunarCrush list
+2025-06-23 21:37:20,670 - sentiment - INFO - LunarCrush ID lookup successful for IP (ID: 160026)
+2025-06-23 21:38:07,883 - sentiment - INFO - TokenMetrics API call for IP: 200
+2025-06-23 21:38:07,884 - sentiment - INFO - TokenMetrics response for IP: success=True, length=10
+2025-06-23 21:38:07,885 - sentiment - INFO - TokenMetrics extracted for IP: TM_Grade=21.19, TA_Grade=9.79
+2025-06-23 21:38:08,056 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250623_213807.xlsx

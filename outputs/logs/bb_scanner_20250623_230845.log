@@ -1,0 +1,21 @@
+2025-06-23 23:08:45,956 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-23 23:08:52,815 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-23 23:08:52,816 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-23 23:08:54,410 - sentiment - INFO - Cached 6711 coins from LunarCrush list
+2025-06-23 23:08:55,016 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-23 23:09:02,261 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-23 23:09:02,262 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-23 23:09:02,262 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=70.38, TA_Grade=75.97
+2025-06-23 23:09:06,762 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-23 23:09:09,881 - modules.data_fetcher - INFO - Selected 69 coins for analysis
+2025-06-23 23:09:30,819 - __main__ - INFO - Quality setup: IP SHORT (bybit) - 83% probability, Risk: 5.2%, R:R: 2.32
+2025-06-23 23:09:31,463 - __main__ - INFO - Quality setup: IP SHORT (kucoin) - 68% probability, Risk: 5.2%, R:R: 2.27
+2025-06-23 23:09:32,032 - __main__ - INFO - Quality setup: IP SHORT (okx) - 81% probability, Risk: 5.1%, R:R: 2.34
+2025-06-23 23:10:04,223 - sentiment - INFO - LunarCrush API call for IP: 404
+2025-06-23 23:10:04,224 - sentiment - INFO - Symbol query failed for IP, trying ID lookup approach...
+2025-06-23 23:10:04,758 - sentiment - INFO - LunarCrush ID lookup successful for IP (ID: 160026)
+2025-06-23 23:10:11,938 - sentiment - INFO - TokenMetrics API call for IP: 200
+2025-06-23 23:10:11,939 - sentiment - INFO - TokenMetrics response for IP: success=True, length=10
+2025-06-23 23:10:11,939 - sentiment - INFO - TokenMetrics extracted for IP: TM_Grade=21.19, TA_Grade=9.79
+2025-06-23 23:10:12,041 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-06-23 23:10:12,049 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250623_231011.xlsx

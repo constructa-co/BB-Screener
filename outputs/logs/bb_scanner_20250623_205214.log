@@ -1,0 +1,2 @@
+2025-06-23 20:52:14,883 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-23 20:52:17,790 - modules.data_fetcher - INFO - Selected 69 coins for analysis

@@ -1,0 +1,44 @@
+2025-07-03 20:27:23,662 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-07-03 20:27:31,524 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-07-03 20:27:31,524 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-07-03 20:27:32,878 - sentiment - INFO - Cached 6838 coins from LunarCrush list
+2025-07-03 20:27:38,080 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-07-03 20:27:45,186 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-07-03 20:27:45,186 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-07-03 20:27:45,186 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=89.59, TA_Grade=95.94, Quant_Grade=64.18
+2025-07-03 20:27:47,538 - modules.market_regime_analyzer - INFO - Traditional market SPY: 0.87% (STABLE)
+2025-07-03 20:27:47,722 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -1.02% (FALLING)
+2025-07-03 20:27:47,918 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: 0.37% (STABLE)
+2025-07-03 20:27:48,166 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 1.08% (RISING)
+2025-07-03 20:27:49,198 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2178 stocks
+2025-07-03 20:27:49,868 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-07-03 20:27:51,463 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-07-03 20:27:52,570 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-07-03 20:27:54,437 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-07-03 20:27:55,800 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-07-03 20:27:57,060 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-07-03 20:27:58,429 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-07-03 20:27:58,430 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-07-03 20:28:02,771 - modules.data_fetcher - INFO - Selected 74 coins for analysis
+2025-07-03 20:28:32,370 - modules.candlestick_patterns - INFO - Candlestick Patterns initialized with 28 pattern types
+2025-07-03 20:28:32,370 - modules.pattern_quality_scorer - INFO - Pattern Quality Scorer initialized with objective mathematical criteria
+2025-07-03 20:28:32,370 - modules.pattern_filters - INFO - Pattern Filters initialized with ChatGPT recommendations
+2025-07-03 20:28:32,370 - modules.risk_reward_calculator - INFO - Risk/Reward Calculator initialized with auto S/L and T/P calculation
+2025-07-03 20:28:32,372 - modules.pattern_performance_tracker - INFO - Database initialized successfully
+2025-07-03 20:28:32,372 - modules.pattern_performance_tracker - INFO - Pattern Performance Tracker initialized with database: outputs/pattern_performance.db
+2025-07-03 20:28:32,572 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AERGO
+2025-07-03 20:28:32,573 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-03 20:28:32,575 - modules.risk_reward_calculator - INFO - Auto R:R calculated: 1.52:1 (SL: 0.0595, TP: 0.0696)
+2025-07-03 20:28:32,578 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AERGO: 'base_boost_4h'
+2025-07-03 20:28:32,578 - __main__ - INFO - Pattern analysis for AERGO: None (Boost: 0%)
+2025-07-03 20:28:36,900 - modules.candlestick_patterns - INFO - Candlestick Patterns initialized with 28 pattern types
+2025-07-03 20:28:36,900 - modules.pattern_quality_scorer - INFO - Pattern Quality Scorer initialized with objective mathematical criteria
+2025-07-03 20:28:36,900 - modules.pattern_filters - INFO - Pattern Filters initialized with ChatGPT recommendations
+2025-07-03 20:28:36,900 - modules.risk_reward_calculator - INFO - Risk/Reward Calculator initialized with auto S/L and T/P calculation
+2025-07-03 20:28:36,901 - modules.pattern_performance_tracker - INFO - Database initialized successfully
+2025-07-03 20:28:36,901 - modules.pattern_performance_tracker - INFO - Pattern Performance Tracker initialized with database: outputs/pattern_performance.db
+2025-07-03 20:28:37,117 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for WAVES
+2025-07-03 20:28:37,118 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-03 20:28:37,120 - modules.risk_reward_calculator - INFO - Auto R:R calculated: 0.35:1 (SL: 1.0150, TP: 1.0975)
+2025-07-03 20:28:37,123 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for WAVES: 'base_boost_4h'
+2025-07-03 20:28:37,123 - __main__ - INFO - Pattern analysis for WAVES: None (Boost: 0%)

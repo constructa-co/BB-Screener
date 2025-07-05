@@ -1,0 +1,76 @@
+2025-07-03 21:07:47,630 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-07-03 21:07:54,494 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-07-03 21:07:54,494 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-07-03 21:07:56,260 - sentiment - INFO - Cached 6839 coins from LunarCrush list
+2025-07-03 21:07:57,109 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-07-03 21:08:13,885 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-07-03 21:08:13,886 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-07-03 21:08:13,886 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=89.59, TA_Grade=95.94, Quant_Grade=64.18
+2025-07-03 21:08:16,279 - modules.market_regime_analyzer - INFO - Traditional market SPY: 0.79% (STABLE)
+2025-07-03 21:08:16,592 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -0.78% (STABLE)
+2025-07-03 21:08:16,905 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: 0.38% (STABLE)
+2025-07-03 21:08:17,241 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 0.98% (STABLE)
+2025-07-03 21:08:18,958 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2178 stocks
+2025-07-03 21:08:20,021 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-07-03 21:08:23,190 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-07-03 21:08:24,289 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-07-03 21:08:27,894 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-07-03 21:08:31,059 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-07-03 21:08:32,223 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-07-03 21:08:33,233 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-07-03 21:08:33,234 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-07-03 21:08:36,263 - modules.data_fetcher - INFO - Selected 75 coins for analysis
+2025-07-03 21:08:44,301 - modules.candlestick_patterns - INFO - Candlestick Patterns initialized with 28 pattern types
+2025-07-03 21:08:44,301 - modules.pattern_quality_scorer - INFO - Pattern Quality Scorer initialized with objective mathematical criteria
+2025-07-03 21:08:44,301 - modules.pattern_filters - INFO - Pattern Filters initialized with ChatGPT recommendations
+2025-07-03 21:08:44,301 - modules.risk_reward_calculator - INFO - Risk/Reward Calculator initialized with auto S/L and T/P calculation
+2025-07-03 21:08:44,303 - modules.pattern_performance_tracker - INFO - Database initialized successfully
+2025-07-03 21:08:44,303 - modules.pattern_performance_tracker - INFO - Pattern Performance Tracker initialized with database: outputs/pattern_performance.db
+2025-07-03 21:08:44,534 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for TRX
+2025-07-03 21:08:44,535 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-03 21:08:44,536 - modules.risk_reward_calculator - INFO - Auto R:R calculated: 1.31:1 (SL: 0.2818, TP: 0.2919)
+2025-07-03 21:08:44,541 - modules.pattern_analyzer - INFO - Multi-timeframe pattern analysis complete for TRX: 4H patterns: 1, 1H patterns: 0, Confluence: NONE
+2025-07-03 21:08:44,541 - __main__ - INFO - Pattern analysis for TRX: bullish_engulfing (Boost: 0%)
+2025-07-03 21:08:44,932 - __main__ - INFO - Quality setup: TRX SHORT (binance) - 75% probability, Risk: 1.2%, R:R: 1.44
+2025-07-03 21:09:07,059 - modules.candlestick_patterns - INFO - Candlestick Patterns initialized with 28 pattern types
+2025-07-03 21:09:07,060 - modules.pattern_quality_scorer - INFO - Pattern Quality Scorer initialized with objective mathematical criteria
+2025-07-03 21:09:07,060 - modules.pattern_filters - INFO - Pattern Filters initialized with ChatGPT recommendations
+2025-07-03 21:09:07,060 - modules.risk_reward_calculator - INFO - Risk/Reward Calculator initialized with auto S/L and T/P calculation
+2025-07-03 21:09:07,061 - modules.pattern_performance_tracker - INFO - Database initialized successfully
+2025-07-03 21:09:07,061 - modules.pattern_performance_tracker - INFO - Pattern Performance Tracker initialized with database: outputs/pattern_performance.db
+2025-07-03 21:09:07,312 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AERGO
+2025-07-03 21:09:07,314 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-03 21:09:07,315 - modules.risk_reward_calculator - INFO - Auto R:R calculated: 1.52:1 (SL: 0.0595, TP: 0.0696)
+2025-07-03 21:09:07,319 - modules.pattern_analyzer - INFO - Multi-timeframe pattern analysis complete for AERGO: 4H patterns: 1, 1H patterns: 1, Confluence: NONE
+2025-07-03 21:09:07,319 - __main__ - INFO - Pattern analysis for AERGO: spinning_top, spinning_top (Boost: 0%)
+2025-07-03 21:09:11,870 - modules.candlestick_patterns - INFO - Candlestick Patterns initialized with 28 pattern types
+2025-07-03 21:09:11,870 - modules.pattern_quality_scorer - INFO - Pattern Quality Scorer initialized with objective mathematical criteria
+2025-07-03 21:09:11,870 - modules.pattern_filters - INFO - Pattern Filters initialized with ChatGPT recommendations
+2025-07-03 21:09:11,870 - modules.risk_reward_calculator - INFO - Risk/Reward Calculator initialized with auto S/L and T/P calculation
+2025-07-03 21:09:11,871 - modules.pattern_performance_tracker - INFO - Database initialized successfully
+2025-07-03 21:09:11,871 - modules.pattern_performance_tracker - INFO - Pattern Performance Tracker initialized with database: outputs/pattern_performance.db
+2025-07-03 21:09:12,080 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for WAVES
+2025-07-03 21:09:12,081 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-03 21:09:12,082 - modules.risk_reward_calculator - INFO - Auto R:R calculated: 0.35:1 (SL: 1.0150, TP: 1.0975)
+2025-07-03 21:09:12,084 - modules.pattern_analyzer - INFO - Multi-timeframe pattern analysis complete for WAVES: 4H patterns: 0, 1H patterns: 1, Confluence: NONE
+2025-07-03 21:09:12,084 - __main__ - INFO - Pattern analysis for WAVES: bullish_engulfing (Boost: 0%)
+2025-07-03 21:09:23,767 - modules.candlestick_patterns - INFO - Candlestick Patterns initialized with 28 pattern types
+2025-07-03 21:09:23,768 - modules.pattern_quality_scorer - INFO - Pattern Quality Scorer initialized with objective mathematical criteria
+2025-07-03 21:09:23,768 - modules.pattern_filters - INFO - Pattern Filters initialized with ChatGPT recommendations
+2025-07-03 21:09:23,768 - modules.risk_reward_calculator - INFO - Risk/Reward Calculator initialized with auto S/L and T/P calculation
+2025-07-03 21:09:23,769 - modules.pattern_performance_tracker - INFO - Database initialized successfully
+2025-07-03 21:09:23,769 - modules.pattern_performance_tracker - INFO - Pattern Performance Tracker initialized with database: outputs/pattern_performance.db
+2025-07-03 21:09:23,898 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for HNT
+2025-07-03 21:09:23,899 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-03 21:09:23,900 - modules.risk_reward_calculator - INFO - Auto R:R calculated: 0.33:1 (SL: 2.1136, TP: 2.3122)
+2025-07-03 21:09:23,903 - modules.pattern_analyzer - INFO - Multi-timeframe pattern analysis complete for HNT: 4H patterns: 0, 1H patterns: 1, Confluence: NONE
+2025-07-03 21:09:23,903 - __main__ - INFO - Pattern analysis for HNT: spinning_top (Boost: 0%)
+2025-07-03 21:09:35,574 - sentiment - INFO - LunarCrush API call for TRX: 404
+2025-07-03 21:09:35,575 - sentiment - INFO - Symbol query failed for TRX, trying ID lookup approach...
+2025-07-03 21:09:36,523 - sentiment - INFO - LunarCrush ID lookup successful for TRX (ID: 12)
+2025-07-03 21:09:43,701 - sentiment - INFO - TokenMetrics API call for TRX: 200
+2025-07-03 21:09:43,702 - sentiment - INFO - TokenMetrics response for TRX: success=True, length=10
+2025-07-03 21:09:43,702 - sentiment - INFO - TokenMetrics extracted for TRX: TM_Grade=87.15, TA_Grade=95.94, Quant_Grade=51.99
+2025-07-03 21:09:43,910 - modules.market_regime_analyzer - WARNING - LunarCrush API key not available - stocks sentiment will use defaults
+2025-07-03 21:09:43,912 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-07-03 21:09:43,923 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250703_210943.xlsx

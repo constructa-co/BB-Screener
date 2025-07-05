@@ -1,0 +1,14 @@
+2025-06-22 11:11:12,467 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 11:11:15,487 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 11:11:38,192 - __main__ - INFO - Quality setup: ETC LONG (bybit) - 81% probability, Risk: 1.6%, R:R: 3.06
+2025-06-22 11:11:45,735 - __main__ - INFO - Quality setup: BSV LONG (okx) - 71% probability, Risk: 1.5%, R:R: 2.62
+2025-06-22 11:11:48,877 - __main__ - INFO - Quality setup: AR LONG (kucoin) - 65% probability, Risk: 3.7%, R:R: 1.79
+2025-06-22 11:11:52,937 - __main__ - INFO - Quality setup: FLOW LONG (okx) - 68% probability, Risk: 1.5%, R:R: 3.72
+2025-06-22 11:12:03,103 - __main__ - INFO - Quality setup: CORE LONG (bybit) - 78% probability, Risk: 1.1%, R:R: 6.0
+2025-06-22 11:12:05,495 - __main__ - INFO - Quality setup: ZIL LONG (bybit) - 68% probability, Risk: 0.7%, R:R: 8.29
+2025-06-22 11:12:06,168 - __main__ - INFO - Quality setup: ZIL LONG (kucoin) - 78% probability, Risk: 0.8%, R:R: 7.32
+2025-06-22 11:12:12,034 - __main__ - INFO - Quality setup: PHA LONG (kucoin) - 71% probability, Risk: 3.0%, R:R: 2.18
+2025-06-22 11:12:13,210 - __main__ - INFO - Quality setup: KSM LONG (binance) - 81% probability, Risk: 0.4%, R:R: 19.08
+2025-06-22 11:12:13,613 - __main__ - INFO - Quality setup: KSM LONG (bybit) - 68% probability, Risk: 0.5%, R:R: 15.46
+2025-06-22 11:12:14,406 - __main__ - INFO - Quality setup: KSM LONG (okx) - 81% probability, Risk: 0.6%, R:R: 13.09
+2025-06-22 11:12:16,908 - __main__ - ERROR - Critical error in scanner: name 'pd' is not defined

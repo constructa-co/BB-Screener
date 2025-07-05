@@ -1,0 +1,104 @@
+2025-06-30 22:24:22,072 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-30 22:24:29,007 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-30 22:24:29,008 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-30 22:24:30,797 - sentiment - INFO - Cached 6823 coins from LunarCrush list
+2025-06-30 22:24:31,533 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-30 22:25:22,068 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-30 22:25:22,070 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-30 22:25:22,071 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=91.41, TA_Grade=96.04, Quant_Grade=72.88
+2025-06-30 22:25:26,960 - modules.market_regime_analyzer - INFO - Traditional market SPY: 0.22% (STABLE)
+2025-06-30 22:25:27,150 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: 4.84% (RISING)
+2025-06-30 22:25:27,331 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: -0.49% (STABLE)
+2025-06-30 22:25:27,578 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 0.39% (STABLE)
+2025-06-30 22:25:28,616 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2174 stocks
+2025-06-30 22:25:29,217 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-06-30 22:25:29,783 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-06-30 22:25:30,413 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-06-30 22:25:31,006 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-06-30 22:25:31,552 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-06-30 22:25:32,187 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-06-30 22:25:32,796 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-06-30 22:25:32,797 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-30 22:25:35,334 - modules.data_fetcher - INFO - Selected 65 coins for analysis
+2025-06-30 22:25:38,319 - __main__ - INFO - Quality setup: SOL SHORT (binance) - 70% probability, Risk: 3.3%, R:R: 1.39
+2025-06-30 22:25:38,709 - __main__ - INFO - Quality setup: SOL SHORT (bybit) - 70% probability, Risk: 3.3%, R:R: 1.39
+2025-06-30 22:25:39,362 - __main__ - INFO - Quality setup: SOL SHORT (kucoin) - 70% probability, Risk: 3.3%, R:R: 1.39
+2025-06-30 22:25:39,928 - __main__ - INFO - Quality setup: SOL SHORT (okx) - 83% probability, Risk: 3.3%, R:R: 1.39
+2025-06-30 22:25:41,285 - __main__ - INFO - Quality setup: BNB SHORT (binance) - 75% probability, Risk: 1.2%, R:R: 0.98
+2025-06-30 22:25:41,959 - __main__ - INFO - Quality setup: BNB SHORT (bybit) - 75% probability, Risk: 1.2%, R:R: 1.0
+2025-06-30 22:25:42,770 - __main__ - INFO - Quality setup: BNB SHORT (okx) - 80% probability, Risk: 1.2%, R:R: 1.02
+2025-06-30 22:25:46,550 - __main__ - INFO - Quality setup: BCH SHORT (binance) - 75% probability, Risk: 2.0%, R:R: 1.91
+2025-06-30 22:25:47,022 - __main__ - INFO - Quality setup: BCH SHORT (bybit) - 75% probability, Risk: 2.1%, R:R: 1.83
+2025-06-30 22:25:47,866 - __main__ - INFO - Quality setup: BCH SHORT (kucoin) - 75% probability, Risk: 2.1%, R:R: 1.76
+2025-06-30 22:25:48,442 - __main__ - INFO - Quality setup: BCH SHORT (okx) - 75% probability, Risk: 2.1%, R:R: 1.84
+2025-06-30 22:25:49,067 - __main__ - INFO - Quality setup: TRX SHORT (binance) - 70% probability, Risk: 1.2%, R:R: 1.07
+2025-06-30 22:25:49,623 - __main__ - INFO - Quality setup: TRX SHORT (bybit) - 70% probability, Risk: 1.1%, R:R: 1.17
+2025-06-30 22:25:59,336 - __main__ - INFO - Quality setup: TON SHORT (binance) - 65% probability, Risk: 1.8%, R:R: 1.39
+2025-06-30 22:25:59,790 - __main__ - INFO - Quality setup: TON SHORT (bybit) - 65% probability, Risk: 1.8%, R:R: 1.41
+2025-06-30 22:26:00,449 - __main__ - INFO - Quality setup: TON SHORT (kucoin) - 78% probability, Risk: 1.8%, R:R: 1.4
+2025-06-30 22:26:01,203 - __main__ - INFO - Quality setup: TON SHORT (okx) - 65% probability, Risk: 1.8%, R:R: 1.43
+2025-06-30 22:26:04,692 - __main__ - INFO - Quality setup: BSV LONG (kucoin) - 68% probability, Risk: 2.3%, R:R: 5.33
+2025-06-30 22:26:05,226 - __main__ - INFO - Quality setup: BSV LONG (okx) - 81% probability, Risk: 3.3%, R:R: 5.01
+2025-06-30 22:26:18,226 - __main__ - INFO - Quality setup: KSM LONG (bybit) - 73% probability, Risk: 5.8%, R:R: 0.51
+2025-06-30 22:26:19,579 - __main__ - INFO - Quality setup: KSM LONG (okx) - 68% probability, Risk: 2.4%, R:R: 1.34
+2025-06-30 22:26:20,208 - __main__ - INFO - Quality setup: BB SHORT (binance) - 75% probability, Risk: 6.9%, R:R: 0.76
+2025-06-30 22:26:20,576 - __main__ - INFO - Quality setup: BB SHORT (bybit) - 75% probability, Risk: 6.6%, R:R: 0.77
+2025-06-30 22:26:21,361 - __main__ - INFO - Quality setup: BB SHORT (kucoin) - 75% probability, Risk: 6.5%, R:R: 0.79
+2025-06-30 22:26:30,896 - __main__ - INFO - Quality setup: TFUEL SHORT (binance) - 83% probability, Risk: 5.9%, R:R: 1.13
+2025-06-30 22:26:41,186 - sentiment - INFO - LunarCrush API call for SOL: 404
+2025-06-30 22:26:41,187 - sentiment - INFO - Symbol query failed for SOL, trying ID lookup approach...
+2025-06-30 22:26:41,802 - sentiment - INFO - LunarCrush ID lookup successful for SOL (ID: 3079)
+2025-06-30 22:27:31,275 - sentiment - INFO - TokenMetrics API call for SOL: 200
+2025-06-30 22:27:31,276 - sentiment - INFO - TokenMetrics response for SOL: success=True, length=10
+2025-06-30 22:27:31,276 - sentiment - INFO - TokenMetrics extracted for SOL: TM_Grade=49.63, TA_Grade=45.59, Quant_Grade=65.82
+2025-06-30 22:27:37,686 - sentiment - INFO - LunarCrush API call for TFUEL: 404
+2025-06-30 22:27:37,687 - sentiment - INFO - Symbol query failed for TFUEL, trying ID lookup approach...
+2025-06-30 22:27:38,259 - sentiment - INFO - LunarCrush ID lookup successful for TFUEL (ID: 146)
+2025-06-30 22:27:45,616 - sentiment - INFO - TokenMetrics API call for TFUEL: 200
+2025-06-30 22:27:45,617 - sentiment - INFO - TokenMetrics response for TFUEL: success=True, length=10
+2025-06-30 22:27:45,617 - sentiment - INFO - TokenMetrics extracted for TFUEL: TM_Grade=18.3, TA_Grade=9.93, Quant_Grade=51.8
+2025-06-30 22:27:52,029 - sentiment - INFO - LunarCrush API call for BSV: 404
+2025-06-30 22:27:52,029 - sentiment - INFO - Symbol query failed for BSV, trying ID lookup approach...
+2025-06-30 22:27:52,573 - sentiment - INFO - LunarCrush ID lookup successful for BSV (ID: 9)
+2025-06-30 22:27:59,973 - sentiment - INFO - TokenMetrics API call for BSV: 200
+2025-06-30 22:27:59,974 - sentiment - INFO - TokenMetrics response for BSV: success=True, length=10
+2025-06-30 22:27:59,974 - sentiment - INFO - TokenMetrics extracted for BSV: TM_Grade=28.7, TA_Grade=25.67, Quant_Grade=40.8
+2025-06-30 22:28:06,431 - sentiment - INFO - LunarCrush API call for BNB: 404
+2025-06-30 22:28:06,431 - sentiment - INFO - Symbol query failed for BNB, trying ID lookup approach...
+2025-06-30 22:28:06,885 - sentiment - INFO - LunarCrush ID lookup successful for BNB (ID: 6)
+2025-06-30 22:28:14,132 - sentiment - INFO - TokenMetrics API call for BNB: 200
+2025-06-30 22:28:14,133 - sentiment - INFO - TokenMetrics response for BNB: success=True, length=10
+2025-06-30 22:28:14,133 - sentiment - INFO - TokenMetrics extracted for BNB: TM_Grade=48.7, TA_Grade=45.6, Quant_Grade=61.13
+2025-06-30 22:28:20,519 - sentiment - INFO - LunarCrush API call for TON: 404
+2025-06-30 22:28:20,519 - sentiment - INFO - Symbol query failed for TON, trying ID lookup approach...
+2025-06-30 22:28:21,146 - sentiment - INFO - LunarCrush ID lookup successful for TON (ID: 18349)
+2025-06-30 22:28:28,656 - sentiment - INFO - TokenMetrics API call for TON: 200
+2025-06-30 22:28:28,657 - sentiment - INFO - TokenMetrics response for TON: success=True, length=10
+2025-06-30 22:28:28,657 - sentiment - INFO - TokenMetrics extracted for TON: TM_Grade=18.74, TA_Grade=9.94, Quant_Grade=53.94
+2025-06-30 22:28:35,035 - sentiment - INFO - LunarCrush API call for BCH: 404
+2025-06-30 22:28:35,036 - sentiment - INFO - Symbol query failed for BCH, trying ID lookup approach...
+2025-06-30 22:28:35,587 - sentiment - INFO - LunarCrush ID lookup successful for BCH (ID: 5)
+2025-06-30 22:28:42,790 - sentiment - INFO - TokenMetrics API call for BCH: 200
+2025-06-30 22:28:42,791 - sentiment - INFO - TokenMetrics response for BCH: success=True, length=10
+2025-06-30 22:28:42,791 - sentiment - INFO - TokenMetrics extracted for BCH: TM_Grade=84.34, TA_Grade=92.79, Quant_Grade=50.51
+2025-06-30 22:28:49,170 - sentiment - INFO - LunarCrush API call for BB: 404
+2025-06-30 22:28:49,170 - sentiment - INFO - Symbol query failed for BB, trying ID lookup approach...
+2025-06-30 22:28:49,699 - sentiment - INFO - LunarCrush ID lookup successful for BB (ID: 152186)
+2025-06-30 22:28:56,752 - sentiment - INFO - TokenMetrics API call for BB: 200
+2025-06-30 22:28:56,753 - sentiment - INFO - TokenMetrics response for BB: success=True, length=10
+2025-06-30 22:28:56,753 - sentiment - INFO - TokenMetrics extracted for BB: TM_Grade=86.41, TA_Grade=96.27, Quant_Grade=46.99
+2025-06-30 22:29:03,150 - sentiment - INFO - LunarCrush API call for KSM: 404
+2025-06-30 22:29:03,151 - sentiment - INFO - Symbol query failed for KSM, trying ID lookup approach...
+2025-06-30 22:29:03,772 - sentiment - INFO - LunarCrush ID lookup successful for KSM (ID: 2921)
+2025-06-30 22:29:12,018 - sentiment - INFO - TokenMetrics API call for KSM: 200
+2025-06-30 22:29:12,019 - sentiment - INFO - TokenMetrics response for KSM: success=True, length=10
+2025-06-30 22:29:12,020 - sentiment - INFO - TokenMetrics extracted for KSM: TM_Grade=19.59, TA_Grade=9.87, Quant_Grade=58.45
+2025-06-30 22:29:19,409 - sentiment - INFO - LunarCrush API call for TRX: 404
+2025-06-30 22:29:19,409 - sentiment - INFO - Symbol query failed for TRX, trying ID lookup approach...
+2025-06-30 22:29:19,886 - sentiment - INFO - LunarCrush ID lookup successful for TRX (ID: 12)
+2025-06-30 22:29:26,919 - sentiment - INFO - TokenMetrics API call for TRX: 200
+2025-06-30 22:29:26,919 - sentiment - INFO - TokenMetrics response for TRX: success=True, length=10
+2025-06-30 22:29:26,919 - sentiment - INFO - TokenMetrics extracted for TRX: TM_Grade=77.05, TA_Grade=83.31, Quant_Grade=52.01
+2025-06-30 22:29:27,447 - modules.market_regime_analyzer - WARNING - LunarCrush API key not available - stocks sentiment will use defaults
+2025-06-30 22:29:27,448 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-06-30 22:29:27,534 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250630_222926.xlsx

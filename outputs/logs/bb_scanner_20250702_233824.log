@@ -1,0 +1,1118 @@
+2025-07-02 23:38:24,745 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-07-02 23:38:31,598 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-07-02 23:38:31,599 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-07-02 23:38:32,968 - sentiment - INFO - Cached 6833 coins from LunarCrush list
+2025-07-02 23:38:33,887 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-07-02 23:39:23,955 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-07-02 23:39:23,957 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-07-02 23:39:23,957 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=91.28, TA_Grade=95.92, Quant_Grade=72.75
+2025-07-02 23:39:26,519 - modules.market_regime_analyzer - INFO - Traditional market SPY: 0.35% (STABLE)
+2025-07-02 23:39:26,705 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -1.37% (FALLING)
+2025-07-02 23:39:26,886 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: -0.03% (STABLE)
+2025-07-02 23:39:27,118 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 0.61% (STABLE)
+2025-07-02 23:39:29,106 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2175 stocks
+2025-07-02 23:39:30,313 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-07-02 23:39:31,531 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-07-02 23:39:32,631 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-07-02 23:39:33,890 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-07-02 23:39:35,151 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-07-02 23:39:36,005 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-07-02 23:39:37,296 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-07-02 23:39:37,297 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-07-02 23:39:40,274 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-07-02 23:39:40,696 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BTC
+2025-07-02 23:39:40,696 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:40,696 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:40,696 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:40,697 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:40,697 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BTC: 'clustered_patterns'
+2025-07-02 23:39:40,697 - __main__ - INFO - Pattern analysis for BTC: None (Boost: 0%)
+2025-07-02 23:39:41,093 - __main__ - INFO - Quality setup: BTC SHORT (binance) - 80% probability, Risk: 1.3%, R:R: 1.55
+2025-07-02 23:39:41,471 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BTC
+2025-07-02 23:39:41,471 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:41,471 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:41,471 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:41,471 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:41,471 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BTC: 'clustered_patterns'
+2025-07-02 23:39:41,472 - __main__ - INFO - Pattern analysis for BTC: None (Boost: 0%)
+2025-07-02 23:39:41,790 - __main__ - INFO - Quality setup: BTC SHORT (bybit) - 78% probability, Risk: 1.3%, R:R: 1.5
+2025-07-02 23:39:42,563 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BTC
+2025-07-02 23:39:42,563 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:42,563 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:42,563 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:42,563 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:42,563 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BTC: 'clustered_patterns'
+2025-07-02 23:39:42,563 - __main__ - INFO - Pattern analysis for BTC: None (Boost: 0%)
+2025-07-02 23:39:42,996 - __main__ - INFO - Quality setup: BTC SHORT (kucoin) - 80% probability, Risk: 1.3%, R:R: 1.55
+2025-07-02 23:39:43,362 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BTC
+2025-07-02 23:39:43,362 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:43,362 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:43,363 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:43,363 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:43,363 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BTC: 'clustered_patterns'
+2025-07-02 23:39:43,363 - __main__ - INFO - Pattern analysis for BTC: None (Boost: 0%)
+2025-07-02 23:39:43,735 - __main__ - INFO - Quality setup: BTC SHORT (okx) - 80% probability, Risk: 1.3%, R:R: 1.51
+2025-07-02 23:39:44,158 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETH
+2025-07-02 23:39:44,158 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:44,158 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:44,158 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:44,158 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:44,158 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETH: 'clustered_patterns'
+2025-07-02 23:39:44,158 - __main__ - INFO - Pattern analysis for ETH: None (Boost: 0%)
+2025-07-02 23:39:44,563 - __main__ - INFO - Quality setup: ETH SHORT (binance) - 83% probability, Risk: 1.3%, R:R: 3.33
+2025-07-02 23:39:44,835 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETH
+2025-07-02 23:39:44,835 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:44,835 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:44,835 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:44,835 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:44,835 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETH: 'clustered_patterns'
+2025-07-02 23:39:44,835 - __main__ - INFO - Pattern analysis for ETH: None (Boost: 0%)
+2025-07-02 23:39:45,093 - __main__ - INFO - Quality setup: ETH SHORT (bybit) - 83% probability, Risk: 1.3%, R:R: 3.33
+2025-07-02 23:39:45,578 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETH
+2025-07-02 23:39:45,578 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:45,578 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:45,578 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:45,578 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:45,578 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETH: 'clustered_patterns'
+2025-07-02 23:39:45,578 - __main__ - INFO - Pattern analysis for ETH: None (Boost: 0%)
+2025-07-02 23:39:45,997 - __main__ - INFO - Quality setup: ETH SHORT (kucoin) - 83% probability, Risk: 1.4%, R:R: 3.27
+2025-07-02 23:39:46,358 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETH
+2025-07-02 23:39:46,358 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:46,358 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:46,358 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:46,358 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:46,358 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETH: 'clustered_patterns'
+2025-07-02 23:39:46,358 - __main__ - INFO - Pattern analysis for ETH: None (Boost: 0%)
+2025-07-02 23:39:46,665 - __main__ - INFO - Quality setup: ETH SHORT (okx) - 83% probability, Risk: 1.4%, R:R: 3.26
+2025-07-02 23:39:47,814 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XRP
+2025-07-02 23:39:47,814 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:47,814 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:47,814 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:47,814 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:47,814 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XRP: 'clustered_patterns'
+2025-07-02 23:39:47,814 - __main__ - INFO - Pattern analysis for XRP: None (Boost: 0%)
+2025-07-02 23:39:48,209 - __main__ - INFO - Quality setup: XRP SHORT (binance) - 65% probability, Risk: 2.6%, R:R: 0.87
+2025-07-02 23:39:48,565 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XRP
+2025-07-02 23:39:48,565 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:48,565 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:48,565 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:48,565 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:48,565 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XRP: 'clustered_patterns'
+2025-07-02 23:39:48,565 - __main__ - INFO - Pattern analysis for XRP: None (Boost: 0%)
+2025-07-02 23:39:48,825 - __main__ - INFO - Quality setup: XRP SHORT (bybit) - 65% probability, Risk: 2.6%, R:R: 0.88
+2025-07-02 23:39:49,285 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XRP
+2025-07-02 23:39:49,285 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:49,285 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:49,285 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:49,285 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:49,285 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XRP: 'clustered_patterns'
+2025-07-02 23:39:49,285 - __main__ - INFO - Pattern analysis for XRP: None (Boost: 0%)
+2025-07-02 23:39:49,716 - __main__ - INFO - Quality setup: XRP SHORT (kucoin) - 65% probability, Risk: 2.6%, R:R: 0.85
+2025-07-02 23:39:50,268 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XRP
+2025-07-02 23:39:50,268 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:50,268 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:50,268 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:50,268 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:50,268 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XRP: 'clustered_patterns'
+2025-07-02 23:39:50,268 - __main__ - INFO - Pattern analysis for XRP: None (Boost: 0%)
+2025-07-02 23:39:50,631 - __main__ - INFO - Quality setup: XRP SHORT (okx) - 65% probability, Risk: 2.6%, R:R: 0.84
+2025-07-02 23:39:51,036 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BNB
+2025-07-02 23:39:51,036 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:51,036 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:51,036 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:51,036 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:51,036 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BNB: 'clustered_patterns'
+2025-07-02 23:39:51,036 - __main__ - INFO - Pattern analysis for BNB: None (Boost: 0%)
+2025-07-02 23:39:51,724 - __main__ - INFO - Quality setup: BNB SHORT (binance) - 78% probability, Risk: 1.3%, R:R: 1.04
+2025-07-02 23:39:52,038 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BNB
+2025-07-02 23:39:52,038 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:52,038 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:52,038 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:52,038 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:52,038 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BNB: 'clustered_patterns'
+2025-07-02 23:39:52,039 - __main__ - INFO - Pattern analysis for BNB: None (Boost: 0%)
+2025-07-02 23:39:52,378 - __main__ - INFO - Quality setup: BNB SHORT (bybit) - 75% probability, Risk: 1.3%, R:R: 1.04
+2025-07-02 23:39:52,817 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BNB
+2025-07-02 23:39:52,817 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:52,817 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:52,817 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:52,817 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:52,817 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BNB: 'clustered_patterns'
+2025-07-02 23:39:52,817 - __main__ - INFO - Pattern analysis for BNB: None (Boost: 0%)
+2025-07-02 23:39:53,260 - __main__ - INFO - Quality setup: BNB SHORT (kucoin) - 75% probability, Risk: 1.3%, R:R: 1.03
+2025-07-02 23:39:53,641 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BNB
+2025-07-02 23:39:53,641 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:53,641 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:53,641 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:53,641 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:53,641 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BNB: 'clustered_patterns'
+2025-07-02 23:39:53,641 - __main__ - INFO - Pattern analysis for BNB: None (Boost: 0%)
+2025-07-02 23:39:54,435 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOGE
+2025-07-02 23:39:54,436 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:54,436 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:54,436 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:54,436 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:54,436 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOGE: 'clustered_patterns'
+2025-07-02 23:39:54,436 - __main__ - INFO - Pattern analysis for DOGE: None (Boost: 0%)
+2025-07-02 23:39:54,832 - __main__ - INFO - Quality setup: DOGE SHORT (binance) - 80% probability, Risk: 2.3%, R:R: 1.75
+2025-07-02 23:39:55,137 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOGE
+2025-07-02 23:39:55,137 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:55,137 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:55,137 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:55,137 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:55,137 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOGE: 'clustered_patterns'
+2025-07-02 23:39:55,137 - __main__ - INFO - Pattern analysis for DOGE: None (Boost: 0%)
+2025-07-02 23:39:55,389 - __main__ - INFO - Quality setup: DOGE SHORT (bybit) - 80% probability, Risk: 2.3%, R:R: 1.76
+2025-07-02 23:39:55,863 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOGE
+2025-07-02 23:39:55,863 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:55,863 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:55,863 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:55,863 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:55,864 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOGE: 'clustered_patterns'
+2025-07-02 23:39:55,864 - __main__ - INFO - Pattern analysis for DOGE: None (Boost: 0%)
+2025-07-02 23:39:56,295 - __main__ - INFO - Quality setup: DOGE SHORT (kucoin) - 80% probability, Risk: 2.3%, R:R: 1.77
+2025-07-02 23:39:56,705 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOGE
+2025-07-02 23:39:56,705 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:56,705 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:56,706 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:56,706 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:56,706 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOGE: 'clustered_patterns'
+2025-07-02 23:39:56,706 - __main__ - INFO - Pattern analysis for DOGE: None (Boost: 0%)
+2025-07-02 23:39:57,064 - __main__ - INFO - Quality setup: DOGE SHORT (okx) - 80% probability, Risk: 2.3%, R:R: 1.74
+2025-07-02 23:39:57,513 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for SUI
+2025-07-02 23:39:57,513 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:57,513 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:57,513 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:57,513 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:57,513 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for SUI: 'clustered_patterns'
+2025-07-02 23:39:57,513 - __main__ - INFO - Pattern analysis for SUI: None (Boost: 0%)
+2025-07-02 23:39:57,902 - __main__ - INFO - Quality setup: SUI SHORT (binance) - 83% probability, Risk: 2.1%, R:R: 2.21
+2025-07-02 23:39:58,341 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for SUI
+2025-07-02 23:39:58,341 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:58,341 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:58,341 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:58,341 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:58,341 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for SUI: 'clustered_patterns'
+2025-07-02 23:39:58,341 - __main__ - INFO - Pattern analysis for SUI: None (Boost: 0%)
+2025-07-02 23:39:58,597 - __main__ - INFO - Quality setup: SUI SHORT (bybit) - 81% probability, Risk: 2.0%, R:R: 2.39
+2025-07-02 23:39:59,154 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for SUI
+2025-07-02 23:39:59,154 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:59,154 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:59,154 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:59,154 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:59,154 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for SUI: 'clustered_patterns'
+2025-07-02 23:39:59,154 - __main__ - INFO - Pattern analysis for SUI: None (Boost: 0%)
+2025-07-02 23:39:59,579 - __main__ - INFO - Quality setup: SUI SHORT (kucoin) - 83% probability, Risk: 2.0%, R:R: 2.4
+2025-07-02 23:39:59,958 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for SUI
+2025-07-02 23:39:59,958 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:39:59,958 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:39:59,958 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:39:59,958 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:39:59,958 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for SUI: 'clustered_patterns'
+2025-07-02 23:39:59,958 - __main__ - INFO - Pattern analysis for SUI: None (Boost: 0%)
+2025-07-02 23:40:00,307 - __main__ - INFO - Quality setup: SUI SHORT (okx) - 83% probability, Risk: 2.0%, R:R: 2.4
+2025-07-02 23:40:01,061 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ADA
+2025-07-02 23:40:01,061 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:01,061 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:01,061 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:01,061 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:01,061 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ADA: 'clustered_patterns'
+2025-07-02 23:40:01,061 - __main__ - INFO - Pattern analysis for ADA: None (Boost: 0%)
+2025-07-02 23:40:01,462 - __main__ - INFO - Quality setup: ADA SHORT (binance) - 83% probability, Risk: 2.1%, R:R: 2.36
+2025-07-02 23:40:01,744 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ADA
+2025-07-02 23:40:01,744 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:01,744 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:01,744 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:01,744 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:01,745 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ADA: 'clustered_patterns'
+2025-07-02 23:40:01,745 - __main__ - INFO - Pattern analysis for ADA: None (Boost: 0%)
+2025-07-02 23:40:02,002 - __main__ - INFO - Quality setup: ADA SHORT (bybit) - 83% probability, Risk: 2.1%, R:R: 2.34
+2025-07-02 23:40:02,623 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ADA
+2025-07-02 23:40:02,624 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:02,624 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:02,624 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:02,624 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:02,624 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ADA: 'clustered_patterns'
+2025-07-02 23:40:02,624 - __main__ - INFO - Pattern analysis for ADA: None (Boost: 0%)
+2025-07-02 23:40:03,045 - __main__ - INFO - Quality setup: ADA SHORT (kucoin) - 83% probability, Risk: 2.1%, R:R: 2.32
+2025-07-02 23:40:03,422 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ADA
+2025-07-02 23:40:03,423 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:03,423 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:03,423 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:03,423 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:03,423 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ADA: 'clustered_patterns'
+2025-07-02 23:40:03,423 - __main__ - INFO - Pattern analysis for ADA: None (Boost: 0%)
+2025-07-02 23:40:03,783 - __main__ - INFO - Quality setup: ADA SHORT (okx) - 83% probability, Risk: 2.1%, R:R: 2.31
+2025-07-02 23:40:05,666 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for TRX
+2025-07-02 23:40:05,666 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:05,666 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:05,666 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:05,666 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:05,666 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for TRX: 'clustered_patterns'
+2025-07-02 23:40:05,666 - __main__ - INFO - Pattern analysis for TRX: None (Boost: 0%)
+2025-07-02 23:40:06,125 - __main__ - INFO - Quality setup: TRX SHORT (binance) - 78% probability, Risk: 1.1%, R:R: 1.63
+2025-07-02 23:40:06,651 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for TRX
+2025-07-02 23:40:06,651 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:06,652 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:06,652 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:06,652 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:06,652 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for TRX: 'clustered_patterns'
+2025-07-02 23:40:06,652 - __main__ - INFO - Pattern analysis for TRX: None (Boost: 0%)
+2025-07-02 23:40:06,897 - __main__ - INFO - Quality setup: TRX SHORT (bybit) - 83% probability, Risk: 1.0%, R:R: 1.72
+2025-07-02 23:40:07,445 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for TRX
+2025-07-02 23:40:07,445 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:07,445 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:07,445 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:07,445 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:07,445 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for TRX: 'clustered_patterns'
+2025-07-02 23:40:07,445 - __main__ - INFO - Pattern analysis for TRX: None (Boost: 0%)
+2025-07-02 23:40:07,878 - __main__ - INFO - Quality setup: TRX SHORT (kucoin) - 78% probability, Risk: 1.0%, R:R: 1.61
+2025-07-02 23:40:08,279 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for TRX
+2025-07-02 23:40:08,280 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:08,280 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:08,280 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:08,280 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:08,280 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for TRX: 'clustered_patterns'
+2025-07-02 23:40:08,280 - __main__ - INFO - Pattern analysis for TRX: None (Boost: 0%)
+2025-07-02 23:40:08,664 - __main__ - INFO - Quality setup: TRX SHORT (okx) - 78% probability, Risk: 1.0%, R:R: 1.7
+2025-07-02 23:40:09,063 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AVAX
+2025-07-02 23:40:09,063 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:09,063 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:09,063 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:09,063 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:09,063 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AVAX: 'clustered_patterns'
+2025-07-02 23:40:09,063 - __main__ - INFO - Pattern analysis for AVAX: None (Boost: 0%)
+2025-07-02 23:40:09,446 - __main__ - INFO - Quality setup: AVAX SHORT (binance) - 80% probability, Risk: 2.5%, R:R: 1.52
+2025-07-02 23:40:09,800 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AVAX
+2025-07-02 23:40:09,800 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:09,800 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:09,800 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:09,800 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:09,800 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AVAX: 'clustered_patterns'
+2025-07-02 23:40:09,800 - __main__ - INFO - Pattern analysis for AVAX: None (Boost: 0%)
+2025-07-02 23:40:10,040 - __main__ - INFO - Quality setup: AVAX SHORT (bybit) - 80% probability, Risk: 2.5%, R:R: 1.54
+2025-07-02 23:40:10,457 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AVAX
+2025-07-02 23:40:10,457 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:10,457 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:10,457 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:10,457 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:10,457 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AVAX: 'clustered_patterns'
+2025-07-02 23:40:10,457 - __main__ - INFO - Pattern analysis for AVAX: None (Boost: 0%)
+2025-07-02 23:40:10,892 - __main__ - INFO - Quality setup: AVAX SHORT (kucoin) - 80% probability, Risk: 2.5%, R:R: 1.51
+2025-07-02 23:40:11,290 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AVAX
+2025-07-02 23:40:11,290 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:11,290 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:11,290 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:11,290 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:11,290 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AVAX: 'clustered_patterns'
+2025-07-02 23:40:11,290 - __main__ - INFO - Pattern analysis for AVAX: None (Boost: 0%)
+2025-07-02 23:40:11,644 - __main__ - INFO - Quality setup: AVAX SHORT (okx) - 80% probability, Risk: 2.6%, R:R: 1.49
+2025-07-02 23:40:12,599 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOT
+2025-07-02 23:40:12,599 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:12,599 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:12,599 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:12,599 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:12,599 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOT: 'clustered_patterns'
+2025-07-02 23:40:12,599 - __main__ - INFO - Pattern analysis for DOT: None (Boost: 0%)
+2025-07-02 23:40:12,982 - __main__ - INFO - Quality setup: DOT SHORT (binance) - 83% probability, Risk: 1.7%, R:R: 2.74
+2025-07-02 23:40:13,331 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOT
+2025-07-02 23:40:13,331 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:13,331 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:13,331 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:13,331 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:13,331 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOT: 'clustered_patterns'
+2025-07-02 23:40:13,331 - __main__ - INFO - Pattern analysis for DOT: None (Boost: 0%)
+2025-07-02 23:40:13,676 - __main__ - INFO - Quality setup: DOT SHORT (bybit) - 83% probability, Risk: 1.7%, R:R: 2.72
+2025-07-02 23:40:14,084 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOT
+2025-07-02 23:40:14,084 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:14,084 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:14,084 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:14,084 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:14,084 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOT: 'clustered_patterns'
+2025-07-02 23:40:14,084 - __main__ - INFO - Pattern analysis for DOT: None (Boost: 0%)
+2025-07-02 23:40:14,507 - __main__ - INFO - Quality setup: DOT SHORT (kucoin) - 83% probability, Risk: 1.7%, R:R: 2.71
+2025-07-02 23:40:14,877 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DOT
+2025-07-02 23:40:14,878 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:14,878 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:14,878 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:14,878 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:14,878 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DOT: 'clustered_patterns'
+2025-07-02 23:40:14,878 - __main__ - INFO - Pattern analysis for DOT: None (Boost: 0%)
+2025-07-02 23:40:15,229 - __main__ - INFO - Quality setup: DOT SHORT (okx) - 83% probability, Risk: 1.7%, R:R: 2.79
+2025-07-02 23:40:15,634 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FIL
+2025-07-02 23:40:15,635 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:15,635 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:15,635 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:15,635 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:15,635 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FIL: 'clustered_patterns'
+2025-07-02 23:40:15,635 - __main__ - INFO - Pattern analysis for FIL: None (Boost: 0%)
+2025-07-02 23:40:16,031 - __main__ - INFO - Quality setup: FIL SHORT (binance) - 83% probability, Risk: 1.9%, R:R: 2.67
+2025-07-02 23:40:16,376 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FIL
+2025-07-02 23:40:16,376 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:16,376 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:16,376 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:16,376 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:16,376 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FIL: 'clustered_patterns'
+2025-07-02 23:40:16,376 - __main__ - INFO - Pattern analysis for FIL: None (Boost: 0%)
+2025-07-02 23:40:16,627 - __main__ - INFO - Quality setup: FIL SHORT (bybit) - 83% probability, Risk: 1.9%, R:R: 2.74
+2025-07-02 23:40:17,055 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FIL
+2025-07-02 23:40:17,055 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:17,055 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:17,055 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:17,055 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:17,055 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FIL: 'clustered_patterns'
+2025-07-02 23:40:17,055 - __main__ - INFO - Pattern analysis for FIL: None (Boost: 0%)
+2025-07-02 23:40:17,475 - __main__ - INFO - Quality setup: FIL SHORT (kucoin) - 83% probability, Risk: 1.8%, R:R: 2.86
+2025-07-02 23:40:17,860 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FIL
+2025-07-02 23:40:17,860 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:17,860 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:17,860 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:17,860 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:17,861 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FIL: 'clustered_patterns'
+2025-07-02 23:40:17,861 - __main__ - INFO - Pattern analysis for FIL: None (Boost: 0%)
+2025-07-02 23:40:18,248 - __main__ - INFO - Quality setup: FIL SHORT (okx) - 83% probability, Risk: 2.0%, R:R: 2.58
+2025-07-02 23:40:20,871 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for HBAR
+2025-07-02 23:40:20,872 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:20,872 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:20,872 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:20,872 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:20,872 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for HBAR: 'clustered_patterns'
+2025-07-02 23:40:20,872 - __main__ - INFO - Pattern analysis for HBAR: None (Boost: 0%)
+2025-07-02 23:40:21,428 - __main__ - INFO - Quality setup: HBAR SHORT (binance) - 83% probability, Risk: 1.1%, R:R: 3.61
+2025-07-02 23:40:21,913 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for HBAR
+2025-07-02 23:40:21,914 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:21,914 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:21,914 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:21,914 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:21,914 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for HBAR: 'clustered_patterns'
+2025-07-02 23:40:21,914 - __main__ - INFO - Pattern analysis for HBAR: None (Boost: 0%)
+2025-07-02 23:40:22,321 - __main__ - INFO - Quality setup: HBAR SHORT (bybit) - 83% probability, Risk: 1.2%, R:R: 3.58
+2025-07-02 23:40:22,754 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for HBAR
+2025-07-02 23:40:22,754 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:22,754 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:22,754 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:22,754 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:22,754 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for HBAR: 'clustered_patterns'
+2025-07-02 23:40:22,754 - __main__ - INFO - Pattern analysis for HBAR: None (Boost: 0%)
+2025-07-02 23:40:23,210 - __main__ - INFO - Quality setup: HBAR SHORT (kucoin) - 83% probability, Risk: 1.1%, R:R: 3.7
+2025-07-02 23:40:23,556 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for HBAR
+2025-07-02 23:40:23,556 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:23,556 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:23,556 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:23,556 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:23,556 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for HBAR: 'clustered_patterns'
+2025-07-02 23:40:23,556 - __main__ - INFO - Pattern analysis for HBAR: None (Boost: 0%)
+2025-07-02 23:40:23,908 - __main__ - INFO - Quality setup: HBAR SHORT (okx) - 83% probability, Risk: 1.2%, R:R: 3.55
+2025-07-02 23:40:26,782 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FET
+2025-07-02 23:40:26,782 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:26,782 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:26,782 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:26,782 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:26,782 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FET: 'clustered_patterns'
+2025-07-02 23:40:26,782 - __main__ - INFO - Pattern analysis for FET: None (Boost: 0%)
+2025-07-02 23:40:27,200 - __main__ - INFO - Quality setup: FET SHORT (binance) - 78% probability, Risk: 2.3%, R:R: 1.9
+2025-07-02 23:40:27,487 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FET
+2025-07-02 23:40:27,487 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:27,487 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:27,487 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:27,487 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:27,487 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FET: 'clustered_patterns'
+2025-07-02 23:40:27,487 - __main__ - INFO - Pattern analysis for FET: None (Boost: 0%)
+2025-07-02 23:40:27,780 - __main__ - INFO - Quality setup: FET SHORT (bybit) - 65% probability, Risk: 2.3%, R:R: 1.83
+2025-07-02 23:40:28,229 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FET
+2025-07-02 23:40:28,229 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:28,229 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:28,229 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:28,229 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:28,229 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FET: 'clustered_patterns'
+2025-07-02 23:40:28,229 - __main__ - INFO - Pattern analysis for FET: None (Boost: 0%)
+2025-07-02 23:40:28,649 - __main__ - INFO - Quality setup: FET SHORT (kucoin) - 75% probability, Risk: 2.3%, R:R: 1.85
+2025-07-02 23:40:29,030 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FET
+2025-07-02 23:40:29,030 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:29,030 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:29,031 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:29,031 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:29,031 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FET: 'clustered_patterns'
+2025-07-02 23:40:29,031 - __main__ - INFO - Pattern analysis for FET: None (Boost: 0%)
+2025-07-02 23:40:29,570 - __main__ - INFO - Quality setup: FET SHORT (okx) - 75% probability, Risk: 2.3%, R:R: 1.84
+2025-07-02 23:40:31,445 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ATOM
+2025-07-02 23:40:31,445 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:31,445 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:31,445 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:31,445 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:31,446 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ATOM: 'clustered_patterns'
+2025-07-02 23:40:31,446 - __main__ - INFO - Pattern analysis for ATOM: None (Boost: 0%)
+2025-07-02 23:40:31,842 - __main__ - INFO - Quality setup: ATOM SHORT (binance) - 83% probability, Risk: 1.6%, R:R: 2.32
+2025-07-02 23:40:32,118 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ATOM
+2025-07-02 23:40:32,118 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:32,119 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:32,119 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:32,119 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:32,119 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ATOM: 'clustered_patterns'
+2025-07-02 23:40:32,119 - __main__ - INFO - Pattern analysis for ATOM: None (Boost: 0%)
+2025-07-02 23:40:32,384 - __main__ - INFO - Quality setup: ATOM SHORT (bybit) - 80% probability, Risk: 2.8%, R:R: 1.31
+2025-07-02 23:40:32,832 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ATOM
+2025-07-02 23:40:32,832 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:32,832 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:32,832 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:32,832 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:32,833 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ATOM: 'clustered_patterns'
+2025-07-02 23:40:32,833 - __main__ - INFO - Pattern analysis for ATOM: None (Boost: 0%)
+2025-07-02 23:40:33,258 - __main__ - INFO - Quality setup: ATOM SHORT (kucoin) - 83% probability, Risk: 1.5%, R:R: 2.38
+2025-07-02 23:40:33,625 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ATOM
+2025-07-02 23:40:33,625 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:33,625 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:33,625 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:33,625 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:33,625 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ATOM: 'clustered_patterns'
+2025-07-02 23:40:33,625 - __main__ - INFO - Pattern analysis for ATOM: None (Boost: 0%)
+2025-07-02 23:40:34,021 - __main__ - INFO - Quality setup: ATOM SHORT (okx) - 83% probability, Risk: 1.6%, R:R: 2.35
+2025-07-02 23:40:34,555 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for KAS
+2025-07-02 23:40:34,555 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:34,555 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:34,555 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:34,555 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:34,555 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for KAS: 'clustered_patterns'
+2025-07-02 23:40:34,555 - __main__ - INFO - Pattern analysis for KAS: None (Boost: 0%)
+2025-07-02 23:40:35,492 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for KAS
+2025-07-02 23:40:35,492 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:35,492 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:35,492 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:35,492 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:35,492 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for KAS: 'clustered_patterns'
+2025-07-02 23:40:35,492 - __main__ - INFO - Pattern analysis for KAS: None (Boost: 0%)
+2025-07-02 23:40:36,343 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETC
+2025-07-02 23:40:36,343 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:36,343 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:36,343 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:36,343 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:36,343 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETC: 'clustered_patterns'
+2025-07-02 23:40:36,343 - __main__ - INFO - Pattern analysis for ETC: None (Boost: 0%)
+2025-07-02 23:40:36,736 - __main__ - INFO - Quality setup: ETC SHORT (binance) - 83% probability, Risk: 1.5%, R:R: 2.32
+2025-07-02 23:40:37,277 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETC
+2025-07-02 23:40:37,277 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:37,277 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:37,278 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:37,278 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:37,278 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETC: 'clustered_patterns'
+2025-07-02 23:40:37,278 - __main__ - INFO - Pattern analysis for ETC: None (Boost: 0%)
+2025-07-02 23:40:37,826 - __main__ - INFO - Quality setup: ETC SHORT (bybit) - 83% probability, Risk: 1.5%, R:R: 2.31
+2025-07-02 23:40:38,318 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETC
+2025-07-02 23:40:38,319 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:38,319 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:38,319 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:38,319 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:38,319 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETC: 'clustered_patterns'
+2025-07-02 23:40:38,319 - __main__ - INFO - Pattern analysis for ETC: None (Boost: 0%)
+2025-07-02 23:40:38,743 - __main__ - INFO - Quality setup: ETC SHORT (kucoin) - 83% probability, Risk: 1.5%, R:R: 2.32
+2025-07-02 23:40:39,089 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ETC
+2025-07-02 23:40:39,090 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:39,090 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:39,090 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:39,090 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:39,090 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ETC: 'clustered_patterns'
+2025-07-02 23:40:39,090 - __main__ - INFO - Pattern analysis for ETC: None (Boost: 0%)
+2025-07-02 23:40:39,461 - __main__ - INFO - Quality setup: ETC SHORT (okx) - 83% probability, Risk: 1.4%, R:R: 2.7
+2025-07-02 23:40:41,357 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for QTUM
+2025-07-02 23:40:41,358 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:41,358 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:41,358 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:41,358 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:41,358 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for QTUM: 'clustered_patterns'
+2025-07-02 23:40:41,358 - __main__ - INFO - Pattern analysis for QTUM: None (Boost: 0%)
+2025-07-02 23:40:41,760 - __main__ - INFO - Quality setup: QTUM SHORT (binance) - 83% probability, Risk: 2.5%, R:R: 2.0
+2025-07-02 23:40:42,049 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for QTUM
+2025-07-02 23:40:42,049 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:42,049 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:42,049 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:42,049 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:42,049 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for QTUM: 'clustered_patterns'
+2025-07-02 23:40:42,049 - __main__ - INFO - Pattern analysis for QTUM: None (Boost: 0%)
+2025-07-02 23:40:42,302 - __main__ - INFO - Quality setup: QTUM SHORT (bybit) - 80% probability, Risk: 2.9%, R:R: 1.74
+2025-07-02 23:40:42,812 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for QTUM
+2025-07-02 23:40:42,812 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:42,812 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:42,812 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:42,812 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:42,812 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for QTUM: 'clustered_patterns'
+2025-07-02 23:40:42,812 - __main__ - INFO - Pattern analysis for QTUM: None (Boost: 0%)
+2025-07-02 23:40:43,235 - __main__ - INFO - Quality setup: QTUM SHORT (kucoin) - 83% probability, Risk: 2.2%, R:R: 2.41
+2025-07-02 23:40:43,608 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for QTUM
+2025-07-02 23:40:43,608 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:43,608 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:43,608 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:43,608 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:43,608 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for QTUM: 'clustered_patterns'
+2025-07-02 23:40:43,608 - __main__ - INFO - Pattern analysis for QTUM: None (Boost: 0%)
+2025-07-02 23:40:43,989 - __main__ - INFO - Quality setup: QTUM SHORT (okx) - 80% probability, Risk: 2.5%, R:R: 1.97
+2025-07-02 23:40:44,395 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for VET
+2025-07-02 23:40:44,395 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:44,395 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:44,395 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:44,395 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:44,395 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for VET: 'clustered_patterns'
+2025-07-02 23:40:44,395 - __main__ - INFO - Pattern analysis for VET: None (Boost: 0%)
+2025-07-02 23:40:44,780 - __main__ - INFO - Quality setup: VET SHORT (binance) - 81% probability, Risk: 1.8%, R:R: 2.38
+2025-07-02 23:40:45,312 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for VET
+2025-07-02 23:40:45,312 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:45,312 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:45,312 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:45,312 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:45,312 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for VET: 'clustered_patterns'
+2025-07-02 23:40:45,312 - __main__ - INFO - Pattern analysis for VET: None (Boost: 0%)
+2025-07-02 23:40:45,828 - __main__ - INFO - Quality setup: VET SHORT (bybit) - 81% probability, Risk: 1.7%, R:R: 2.55
+2025-07-02 23:40:46,281 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for VET
+2025-07-02 23:40:46,281 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:46,281 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:46,281 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:46,281 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:46,281 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for VET: 'clustered_patterns'
+2025-07-02 23:40:46,281 - __main__ - INFO - Pattern analysis for VET: None (Boost: 0%)
+2025-07-02 23:40:46,701 - __main__ - INFO - Quality setup: VET SHORT (kucoin) - 81% probability, Risk: 1.9%, R:R: 2.18
+2025-07-02 23:40:47,869 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ARK
+2025-07-02 23:40:47,869 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:47,869 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:47,869 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:47,869 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:47,869 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ARK: 'clustered_patterns'
+2025-07-02 23:40:47,869 - __main__ - INFO - Pattern analysis for ARK: None (Boost: 0%)
+2025-07-02 23:40:48,285 - __main__ - INFO - Quality setup: ARK SHORT (binance) - 65% probability, Risk: 5.1%, R:R: 1.57
+2025-07-02 23:40:48,825 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for NEO
+2025-07-02 23:40:48,825 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:48,825 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:48,825 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:48,825 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:48,825 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for NEO: 'clustered_patterns'
+2025-07-02 23:40:48,825 - __main__ - INFO - Pattern analysis for NEO: None (Boost: 0%)
+2025-07-02 23:40:49,223 - __main__ - INFO - Quality setup: NEO SHORT (binance) - 81% probability, Risk: 1.5%, R:R: 3.0
+2025-07-02 23:40:49,653 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for NEO
+2025-07-02 23:40:49,654 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:49,654 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:49,654 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:49,654 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:49,654 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for NEO: 'clustered_patterns'
+2025-07-02 23:40:49,654 - __main__ - INFO - Pattern analysis for NEO: None (Boost: 0%)
+2025-07-02 23:40:50,452 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for NEO
+2025-07-02 23:40:50,453 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:50,453 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:50,453 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:50,453 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:50,453 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for NEO: 'clustered_patterns'
+2025-07-02 23:40:50,453 - __main__ - INFO - Pattern analysis for NEO: None (Boost: 0%)
+2025-07-02 23:40:50,781 - __main__ - INFO - Quality setup: NEO SHORT (okx) - 78% probability, Risk: 1.4%, R:R: 3.29
+2025-07-02 23:40:51,199 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for STX
+2025-07-02 23:40:51,199 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:51,199 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:51,199 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:51,199 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:51,199 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for STX: 'clustered_patterns'
+2025-07-02 23:40:51,199 - __main__ - INFO - Pattern analysis for STX: None (Boost: 0%)
+2025-07-02 23:40:51,848 - __main__ - INFO - Quality setup: STX SHORT (binance) - 83% probability, Risk: 1.6%, R:R: 3.37
+2025-07-02 23:40:52,394 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for STX
+2025-07-02 23:40:52,394 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:52,394 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:52,394 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:52,395 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:52,395 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for STX: 'clustered_patterns'
+2025-07-02 23:40:52,395 - __main__ - INFO - Pattern analysis for STX: None (Boost: 0%)
+2025-07-02 23:40:52,743 - __main__ - INFO - Quality setup: STX SHORT (bybit) - 68% probability, Risk: 1.4%, R:R: 3.72
+2025-07-02 23:40:53,272 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for STX
+2025-07-02 23:40:53,273 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:53,273 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:53,273 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:53,273 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:53,273 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for STX: 'clustered_patterns'
+2025-07-02 23:40:53,273 - __main__ - INFO - Pattern analysis for STX: None (Boost: 0%)
+2025-07-02 23:40:53,687 - __main__ - INFO - Quality setup: STX SHORT (kucoin) - 83% probability, Risk: 1.6%, R:R: 3.44
+2025-07-02 23:40:54,083 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for STX
+2025-07-02 23:40:54,083 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:54,083 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:54,083 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:54,083 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:54,083 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for STX: 'clustered_patterns'
+2025-07-02 23:40:54,083 - __main__ - INFO - Pattern analysis for STX: None (Boost: 0%)
+2025-07-02 23:40:54,441 - __main__ - INFO - Quality setup: STX SHORT (okx) - 68% probability, Risk: 1.5%, R:R: 3.68
+2025-07-02 23:40:54,847 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AR
+2025-07-02 23:40:54,847 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:54,847 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:54,847 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:54,847 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:54,847 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AR: 'clustered_patterns'
+2025-07-02 23:40:54,847 - __main__ - INFO - Pattern analysis for AR: None (Boost: 0%)
+2025-07-02 23:40:55,238 - __main__ - INFO - Quality setup: AR SHORT (binance) - 68% probability, Risk: 1.9%, R:R: 2.06
+2025-07-02 23:40:55,524 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AR
+2025-07-02 23:40:55,524 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:55,524 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:55,524 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:55,524 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:55,524 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AR: 'clustered_patterns'
+2025-07-02 23:40:55,524 - __main__ - INFO - Pattern analysis for AR: None (Boost: 0%)
+2025-07-02 23:40:55,778 - __main__ - INFO - Quality setup: AR SHORT (bybit) - 68% probability, Risk: 1.9%, R:R: 2.04
+2025-07-02 23:40:56,263 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AR
+2025-07-02 23:40:56,263 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:56,263 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:56,263 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:56,263 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:56,264 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AR: 'clustered_patterns'
+2025-07-02 23:40:56,264 - __main__ - INFO - Pattern analysis for AR: None (Boost: 0%)
+2025-07-02 23:40:56,734 - __main__ - INFO - Quality setup: AR SHORT (kucoin) - 71% probability, Risk: 1.8%, R:R: 2.16
+2025-07-02 23:40:57,114 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AR
+2025-07-02 23:40:57,114 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:57,114 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:57,114 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:57,114 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:57,114 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AR: 'clustered_patterns'
+2025-07-02 23:40:57,114 - __main__ - INFO - Pattern analysis for AR: None (Boost: 0%)
+2025-07-02 23:40:57,953 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CFX
+2025-07-02 23:40:57,953 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:57,953 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:57,953 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:57,954 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:57,954 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CFX: 'clustered_patterns'
+2025-07-02 23:40:57,954 - __main__ - INFO - Pattern analysis for CFX: None (Boost: 0%)
+2025-07-02 23:40:58,364 - __main__ - INFO - Quality setup: CFX SHORT (binance) - 70% probability, Risk: 6.2%, R:R: 0.6
+2025-07-02 23:40:58,987 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CFX
+2025-07-02 23:40:58,987 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:40:58,987 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:40:58,987 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:40:58,987 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:40:58,987 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CFX: 'clustered_patterns'
+2025-07-02 23:40:58,987 - __main__ - INFO - Pattern analysis for CFX: None (Boost: 0%)
+2025-07-02 23:40:59,360 - __main__ - INFO - Quality setup: CFX SHORT (okx) - 70% probability, Risk: 6.0%, R:R: 0.59
+2025-07-02 23:41:00,136 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AERGO
+2025-07-02 23:41:00,136 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:00,136 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:00,136 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:00,136 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:00,136 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AERGO: 'clustered_patterns'
+2025-07-02 23:41:00,136 - __main__ - INFO - Pattern analysis for AERGO: None (Boost: 0%)
+2025-07-02 23:41:01,771 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for STRAX
+2025-07-02 23:41:01,771 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:01,772 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:01,772 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:01,772 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:01,772 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for STRAX: 'clustered_patterns'
+2025-07-02 23:41:01,772 - __main__ - INFO - Pattern analysis for STRAX: None (Boost: 0%)
+2025-07-02 23:41:02,814 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for STRAX
+2025-07-02 23:41:02,814 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:02,814 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:02,814 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:02,815 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:02,815 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for STRAX: 'clustered_patterns'
+2025-07-02 23:41:02,815 - __main__ - INFO - Pattern analysis for STRAX: None (Boost: 0%)
+2025-07-02 23:41:03,246 - __main__ - INFO - Quality setup: STRAX SHORT (kucoin) - 85% probability, Risk: 5.8%, R:R: 0.85
+2025-07-02 23:41:03,680 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for THETA
+2025-07-02 23:41:03,680 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:03,680 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:03,680 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:03,680 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:03,681 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for THETA: 'clustered_patterns'
+2025-07-02 23:41:03,681 - __main__ - INFO - Pattern analysis for THETA: None (Boost: 0%)
+2025-07-02 23:41:04,075 - __main__ - INFO - Quality setup: THETA SHORT (binance) - 83% probability, Risk: 1.6%, R:R: 3.39
+2025-07-02 23:41:04,356 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for THETA
+2025-07-02 23:41:04,356 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:04,356 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:04,356 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:04,356 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:04,356 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for THETA: 'clustered_patterns'
+2025-07-02 23:41:04,356 - __main__ - INFO - Pattern analysis for THETA: None (Boost: 0%)
+2025-07-02 23:41:04,615 - __main__ - INFO - Quality setup: THETA SHORT (bybit) - 83% probability, Risk: 1.2%, R:R: 4.81
+2025-07-02 23:41:05,056 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for THETA
+2025-07-02 23:41:05,056 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:05,056 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:05,056 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:05,056 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:05,056 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for THETA: 'clustered_patterns'
+2025-07-02 23:41:05,056 - __main__ - INFO - Pattern analysis for THETA: None (Boost: 0%)
+2025-07-02 23:41:05,477 - __main__ - INFO - Quality setup: THETA SHORT (kucoin) - 83% probability, Risk: 1.1%, R:R: 5.17
+2025-07-02 23:41:05,854 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for THETA
+2025-07-02 23:41:05,855 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:05,855 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:05,855 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:05,855 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:05,855 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for THETA: 'clustered_patterns'
+2025-07-02 23:41:05,855 - __main__ - INFO - Pattern analysis for THETA: None (Boost: 0%)
+2025-07-02 23:41:06,293 - __main__ - INFO - Quality setup: THETA SHORT (okx) - 68% probability, Risk: 1.3%, R:R: 4.47
+2025-07-02 23:41:06,725 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for WAVES
+2025-07-02 23:41:06,725 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:06,725 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:06,725 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:06,725 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:06,725 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for WAVES: 'clustered_patterns'
+2025-07-02 23:41:06,725 - __main__ - INFO - Pattern analysis for WAVES: None (Boost: 0%)
+2025-07-02 23:41:07,556 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for WAVES
+2025-07-02 23:41:07,556 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:07,556 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:07,556 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:07,556 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:07,556 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for WAVES: 'clustered_patterns'
+2025-07-02 23:41:07,557 - __main__ - INFO - Pattern analysis for WAVES: None (Boost: 0%)
+2025-07-02 23:41:07,828 - __main__ - INFO - Quality setup: WAVES SHORT (bybit) - 71% probability, Risk: 1.1%, R:R: 2.98
+2025-07-02 23:41:08,314 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for WAVES
+2025-07-02 23:41:08,315 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:08,315 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:08,315 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:08,315 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:08,315 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for WAVES: 'clustered_patterns'
+2025-07-02 23:41:08,315 - __main__ - INFO - Pattern analysis for WAVES: None (Boost: 0%)
+2025-07-02 23:41:08,844 - __main__ - INFO - Quality setup: WAVES SHORT (kucoin) - 68% probability, Risk: 1.1%, R:R: 3.11
+2025-07-02 23:41:09,286 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FLOW
+2025-07-02 23:41:09,286 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:09,286 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:09,286 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:09,287 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:09,287 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FLOW: 'clustered_patterns'
+2025-07-02 23:41:09,287 - __main__ - INFO - Pattern analysis for FLOW: None (Boost: 0%)
+2025-07-02 23:41:09,675 - __main__ - INFO - Quality setup: FLOW SHORT (binance) - 83% probability, Risk: 1.3%, R:R: 3.4
+2025-07-02 23:41:09,945 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FLOW
+2025-07-02 23:41:09,946 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:09,946 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:09,946 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:09,946 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:09,946 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FLOW: 'clustered_patterns'
+2025-07-02 23:41:09,946 - __main__ - INFO - Pattern analysis for FLOW: None (Boost: 0%)
+2025-07-02 23:41:10,375 - __main__ - INFO - Quality setup: FLOW SHORT (bybit) - 83% probability, Risk: 1.2%, R:R: 3.82
+2025-07-02 23:41:10,797 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FLOW
+2025-07-02 23:41:10,797 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:10,797 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:10,797 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:10,797 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:10,797 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FLOW: 'clustered_patterns'
+2025-07-02 23:41:10,797 - __main__ - INFO - Pattern analysis for FLOW: None (Boost: 0%)
+2025-07-02 23:41:11,225 - __main__ - INFO - Quality setup: FLOW SHORT (kucoin) - 83% probability, Risk: 1.4%, R:R: 3.12
+2025-07-02 23:41:11,633 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for FLOW
+2025-07-02 23:41:11,633 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:11,633 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:11,633 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:11,633 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:11,633 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for FLOW: 'clustered_patterns'
+2025-07-02 23:41:11,633 - __main__ - INFO - Pattern analysis for FLOW: None (Boost: 0%)
+2025-07-02 23:41:12,021 - __main__ - INFO - Quality setup: FLOW SHORT (okx) - 83% probability, Risk: 1.4%, R:R: 3.24
+2025-07-02 23:41:12,978 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNA
+2025-07-02 23:41:12,978 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:12,978 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:12,978 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:12,978 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:12,978 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNA: 'clustered_patterns'
+2025-07-02 23:41:12,978 - __main__ - INFO - Pattern analysis for LUNA: None (Boost: 0%)
+2025-07-02 23:41:13,383 - __main__ - INFO - Quality setup: LUNA SHORT (binance) - 80% probability, Risk: 2.8%, R:R: 1.36
+2025-07-02 23:41:14,011 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNA
+2025-07-02 23:41:14,011 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:14,011 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:14,011 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:14,011 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:14,011 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNA: 'clustered_patterns'
+2025-07-02 23:41:14,011 - __main__ - INFO - Pattern analysis for LUNA: None (Boost: 0%)
+2025-07-02 23:41:14,261 - __main__ - INFO - Quality setup: LUNA SHORT (bybit) - 80% probability, Risk: 2.7%, R:R: 1.46
+2025-07-02 23:41:14,666 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNA
+2025-07-02 23:41:14,666 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:14,666 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:14,666 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:14,666 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:14,667 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNA: 'clustered_patterns'
+2025-07-02 23:41:14,667 - __main__ - INFO - Pattern analysis for LUNA: None (Boost: 0%)
+2025-07-02 23:41:15,099 - __main__ - INFO - Quality setup: LUNA SHORT (kucoin) - 80% probability, Risk: 2.4%, R:R: 1.71
+2025-07-02 23:41:15,500 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNA
+2025-07-02 23:41:15,501 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:15,501 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:15,501 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:15,501 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:15,501 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNA: 'clustered_patterns'
+2025-07-02 23:41:15,501 - __main__ - INFO - Pattern analysis for LUNA: None (Boost: 0%)
+2025-07-02 23:41:15,870 - __main__ - INFO - Quality setup: LUNA SHORT (okx) - 80% probability, Risk: 3.1%, R:R: 1.24
+2025-07-02 23:41:16,611 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for EGLD
+2025-07-02 23:41:16,611 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:16,611 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:16,611 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:16,611 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:16,611 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for EGLD: 'clustered_patterns'
+2025-07-02 23:41:16,611 - __main__ - INFO - Pattern analysis for EGLD: None (Boost: 0%)
+2025-07-02 23:41:17,006 - __main__ - INFO - Quality setup: EGLD SHORT (binance) - 83% probability, Risk: 2.1%, R:R: 2.45
+2025-07-02 23:41:17,548 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for EGLD
+2025-07-02 23:41:17,548 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:17,548 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:17,548 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:17,549 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:17,549 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for EGLD: 'clustered_patterns'
+2025-07-02 23:41:17,549 - __main__ - INFO - Pattern analysis for EGLD: None (Boost: 0%)
+2025-07-02 23:41:17,816 - __main__ - INFO - Quality setup: EGLD SHORT (bybit) - 83% probability, Risk: 2.1%, R:R: 2.3
+2025-07-02 23:41:18,249 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for EGLD
+2025-07-02 23:41:18,249 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:18,249 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:18,249 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:18,249 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:18,249 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for EGLD: 'clustered_patterns'
+2025-07-02 23:41:18,249 - __main__ - INFO - Pattern analysis for EGLD: None (Boost: 0%)
+2025-07-02 23:41:18,736 - __main__ - INFO - Quality setup: EGLD SHORT (kucoin) - 71% probability, Risk: 2.1%, R:R: 2.39
+2025-07-02 23:41:19,121 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for EGLD
+2025-07-02 23:41:19,121 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:19,121 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:19,121 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:19,121 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:19,121 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for EGLD: 'clustered_patterns'
+2025-07-02 23:41:19,121 - __main__ - INFO - Pattern analysis for EGLD: None (Boost: 0%)
+2025-07-02 23:41:19,478 - __main__ - INFO - Quality setup: EGLD SHORT (okx) - 81% probability, Risk: 2.0%, R:R: 2.54
+2025-07-02 23:41:20,675 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for IOTA
+2025-07-02 23:41:20,675 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:20,675 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:20,675 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:20,675 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:20,675 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for IOTA: 'clustered_patterns'
+2025-07-02 23:41:20,675 - __main__ - INFO - Pattern analysis for IOTA: None (Boost: 0%)
+2025-07-02 23:41:21,125 - __main__ - INFO - Quality setup: IOTA SHORT (binance) - 83% probability, Risk: 1.9%, R:R: 2.32
+2025-07-02 23:41:21,974 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for IOTA
+2025-07-02 23:41:21,975 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:21,975 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:21,975 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:21,975 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:21,975 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for IOTA: 'clustered_patterns'
+2025-07-02 23:41:21,975 - __main__ - INFO - Pattern analysis for IOTA: None (Boost: 0%)
+2025-07-02 23:41:22,400 - __main__ - INFO - Quality setup: IOTA SHORT (kucoin) - 83% probability, Risk: 1.8%, R:R: 2.44
+2025-07-02 23:41:22,786 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for IOTA
+2025-07-02 23:41:22,787 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:22,787 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:22,787 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:22,787 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:22,787 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for IOTA: 'clustered_patterns'
+2025-07-02 23:41:22,787 - __main__ - INFO - Pattern analysis for IOTA: None (Boost: 0%)
+2025-07-02 23:41:23,117 - __main__ - INFO - Quality setup: IOTA SHORT (okx) - 83% probability, Risk: 1.8%, R:R: 2.52
+2025-07-02 23:41:23,543 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XTZ
+2025-07-02 23:41:23,543 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:23,543 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:23,543 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:23,543 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:23,543 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XTZ: 'clustered_patterns'
+2025-07-02 23:41:23,543 - __main__ - INFO - Pattern analysis for XTZ: None (Boost: 0%)
+2025-07-02 23:41:23,941 - __main__ - INFO - Quality setup: XTZ SHORT (binance) - 83% probability, Risk: 1.5%, R:R: 2.0
+2025-07-02 23:41:24,200 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XTZ
+2025-07-02 23:41:24,200 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:24,200 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:24,200 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:24,200 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:24,200 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XTZ: 'clustered_patterns'
+2025-07-02 23:41:24,200 - __main__ - INFO - Pattern analysis for XTZ: None (Boost: 0%)
+2025-07-02 23:41:24,445 - __main__ - INFO - Quality setup: XTZ SHORT (bybit) - 83% probability, Risk: 1.4%, R:R: 2.14
+2025-07-02 23:41:24,873 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XTZ
+2025-07-02 23:41:24,874 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:24,874 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:24,874 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:24,874 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:24,874 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XTZ: 'clustered_patterns'
+2025-07-02 23:41:24,874 - __main__ - INFO - Pattern analysis for XTZ: None (Boost: 0%)
+2025-07-02 23:41:25,303 - __main__ - INFO - Quality setup: XTZ SHORT (kucoin) - 71% probability, Risk: 1.4%, R:R: 2.14
+2025-07-02 23:41:25,695 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for XTZ
+2025-07-02 23:41:25,695 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:25,695 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:25,695 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:25,695 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:25,695 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for XTZ: 'clustered_patterns'
+2025-07-02 23:41:25,695 - __main__ - INFO - Pattern analysis for XTZ: None (Boost: 0%)
+2025-07-02 23:41:26,094 - __main__ - INFO - Quality setup: XTZ SHORT (okx) - 83% probability, Risk: 1.5%, R:R: 2.01
+2025-07-02 23:41:26,804 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CELO
+2025-07-02 23:41:26,805 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:26,805 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:26,805 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:26,805 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:26,805 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CELO: 'clustered_patterns'
+2025-07-02 23:41:26,805 - __main__ - INFO - Pattern analysis for CELO: None (Boost: 0%)
+2025-07-02 23:41:27,047 - __main__ - INFO - Quality setup: CELO SHORT (bybit) - 71% probability, Risk: 1.6%, R:R: 3.48
+2025-07-02 23:41:27,459 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CELO
+2025-07-02 23:41:27,459 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:27,460 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:27,460 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:27,460 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:27,460 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CELO: 'clustered_patterns'
+2025-07-02 23:41:27,460 - __main__ - INFO - Pattern analysis for CELO: None (Boost: 0%)
+2025-07-02 23:41:27,879 - __main__ - INFO - Quality setup: CELO SHORT (kucoin) - 81% probability, Risk: 1.4%, R:R: 4.05
+2025-07-02 23:41:28,267 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CELO
+2025-07-02 23:41:28,268 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:28,268 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:28,268 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:28,268 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:28,268 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CELO: 'clustered_patterns'
+2025-07-02 23:41:28,268 - __main__ - INFO - Pattern analysis for CELO: None (Boost: 0%)
+2025-07-02 23:41:28,640 - __main__ - INFO - Quality setup: CELO SHORT (okx) - 68% probability, Risk: 1.5%, R:R: 3.83
+2025-07-02 23:41:29,122 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BB
+2025-07-02 23:41:29,122 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:29,122 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:29,122 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:29,122 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:29,122 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BB: 'clustered_patterns'
+2025-07-02 23:41:29,122 - __main__ - INFO - Pattern analysis for BB: None (Boost: 0%)
+2025-07-02 23:41:29,512 - __main__ - INFO - Quality setup: BB SHORT (binance) - 81% probability, Risk: 3.0%, R:R: 2.45
+2025-07-02 23:41:29,841 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BB
+2025-07-02 23:41:29,841 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:29,841 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:29,841 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:29,841 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:29,841 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BB: 'clustered_patterns'
+2025-07-02 23:41:29,841 - __main__ - INFO - Pattern analysis for BB: None (Boost: 0%)
+2025-07-02 23:41:30,072 - __main__ - INFO - Quality setup: BB SHORT (bybit) - 81% probability, Risk: 3.0%, R:R: 2.4
+2025-07-02 23:41:30,491 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for BB
+2025-07-02 23:41:30,491 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:30,491 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:30,491 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:30,491 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:30,491 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for BB: 'clustered_patterns'
+2025-07-02 23:41:30,491 - __main__ - INFO - Pattern analysis for BB: None (Boost: 0%)
+2025-07-02 23:41:30,922 - __main__ - INFO - Quality setup: BB SHORT (kucoin) - 83% probability, Risk: 2.0%, R:R: 3.61
+2025-07-02 23:41:31,380 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for PEAQ
+2025-07-02 23:41:31,380 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:31,380 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:31,380 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:31,380 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:31,380 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for PEAQ: 'clustered_patterns'
+2025-07-02 23:41:31,381 - __main__ - INFO - Pattern analysis for PEAQ: None (Boost: 0%)
+2025-07-02 23:41:32,051 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ZIL
+2025-07-02 23:41:32,051 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:32,051 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:32,052 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:32,052 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:32,052 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ZIL: 'clustered_patterns'
+2025-07-02 23:41:32,052 - __main__ - INFO - Pattern analysis for ZIL: None (Boost: 0%)
+2025-07-02 23:41:32,992 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for ZIL
+2025-07-02 23:41:32,992 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:32,992 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:32,992 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:32,992 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:32,992 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for ZIL: 'clustered_patterns'
+2025-07-02 23:41:32,992 - __main__ - INFO - Pattern analysis for ZIL: None (Boost: 0%)
+2025-07-02 23:41:35,345 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CRO
+2025-07-02 23:41:35,345 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:35,345 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:35,346 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:35,346 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:35,346 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CRO: 'clustered_patterns'
+2025-07-02 23:41:35,346 - __main__ - INFO - Pattern analysis for CRO: None (Boost: 0%)
+2025-07-02 23:41:35,784 - __main__ - INFO - Quality setup: CRO SHORT (kucoin) - 68% probability, Risk: 1.4%, R:R: 1.64
+2025-07-02 23:41:36,183 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for CRO
+2025-07-02 23:41:36,183 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:36,183 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:36,183 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:36,183 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:36,183 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for CRO: 'clustered_patterns'
+2025-07-02 23:41:36,183 - __main__ - INFO - Pattern analysis for CRO: None (Boost: 0%)
+2025-07-02 23:41:36,610 - __main__ - INFO - Quality setup: CRO SHORT (okx) - 78% probability, Risk: 1.3%, R:R: 1.81
+2025-07-02 23:41:38,786 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DYM
+2025-07-02 23:41:38,786 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:38,786 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:38,786 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:38,786 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:38,786 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DYM: 'clustered_patterns'
+2025-07-02 23:41:38,786 - __main__ - INFO - Pattern analysis for DYM: None (Boost: 0%)
+2025-07-02 23:41:39,463 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DYM
+2025-07-02 23:41:39,464 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:39,464 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:39,464 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:39,464 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:39,464 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DYM: 'clustered_patterns'
+2025-07-02 23:41:39,464 - __main__ - INFO - Pattern analysis for DYM: None (Boost: 0%)
+2025-07-02 23:41:40,271 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for DYM
+2025-07-02 23:41:40,271 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:40,271 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:40,271 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:40,271 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:40,271 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for DYM: 'clustered_patterns'
+2025-07-02 23:41:40,271 - __main__ - INFO - Pattern analysis for DYM: None (Boost: 0%)
+2025-07-02 23:41:41,321 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for AIOZ
+2025-07-02 23:41:41,322 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:41,322 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:41,322 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:41,322 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:41,322 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for AIOZ: 'clustered_patterns'
+2025-07-02 23:41:41,322 - __main__ - INFO - Pattern analysis for AIOZ: None (Boost: 0%)
+2025-07-02 23:41:42,166 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNC
+2025-07-02 23:41:42,166 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:42,166 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:42,166 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:42,167 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:42,167 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNC: 'clustered_patterns'
+2025-07-02 23:41:42,167 - __main__ - INFO - Pattern analysis for LUNC: None (Boost: 0%)
+2025-07-02 23:41:42,578 - __main__ - INFO - Quality setup: LUNC SHORT (binance) - 83% probability, Risk: 1.3%, R:R: 2.78
+2025-07-02 23:41:43,029 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNC
+2025-07-02 23:41:43,029 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:43,029 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:43,029 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:43,030 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:43,030 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNC: 'clustered_patterns'
+2025-07-02 23:41:43,030 - __main__ - INFO - Pattern analysis for LUNC: None (Boost: 0%)
+2025-07-02 23:41:43,290 - __main__ - INFO - Quality setup: LUNC SHORT (bybit) - 68% probability, Risk: 1.3%, R:R: 2.67
+2025-07-02 23:41:43,834 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNC
+2025-07-02 23:41:43,834 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:43,835 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:43,835 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:43,835 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:43,835 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNC: 'clustered_patterns'
+2025-07-02 23:41:43,835 - __main__ - INFO - Pattern analysis for LUNC: None (Boost: 0%)
+2025-07-02 23:41:44,397 - __main__ - INFO - Quality setup: LUNC SHORT (kucoin) - 68% probability, Risk: 1.3%, R:R: 2.61
+2025-07-02 23:41:44,781 - modules.pattern_analyzer - INFO - Starting multi-timeframe pattern analysis for LUNC
+2025-07-02 23:41:44,781 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 4H analysis
+2025-07-02 23:41:44,781 - modules.pattern_analyzer - WARNING - Candlestick detector not available for 1H analysis
+2025-07-02 23:41:44,781 - modules.pattern_analyzer - INFO - Timeframe confluence: NONE (4H: 0 patterns, 1H: 0 patterns)
+2025-07-02 23:41:44,781 - modules.pattern_analyzer - ERROR - Error calculating auto R/R: 'NoneType' object has no attribute 'calculate_auto_rr'
+2025-07-02 23:41:44,781 - modules.pattern_analyzer - ERROR - Error in multi-timeframe pattern analysis for LUNC: 'clustered_patterns'
+2025-07-02 23:41:44,781 - __main__ - INFO - Pattern analysis for LUNC: None (Boost: 0%)
+2025-07-02 23:41:45,173 - __main__ - INFO - Quality setup: LUNC SHORT (okx) - 83% probability, Risk: 1.3%, R:R: 2.69
+2025-07-02 23:41:51,761 - sentiment - INFO - LunarCrush API call for STRAX: 404
+2025-07-02 23:41:51,762 - sentiment - INFO - Symbol query failed for STRAX, trying ID lookup approach...
+2025-07-02 23:41:52,984 - sentiment - INFO - LunarCrush ID lookup successful for STRAX (ID: 100)
+2025-07-02 23:42:00,151 - sentiment - INFO - TokenMetrics API call for STRAX: 200
+2025-07-02 23:42:00,151 - sentiment - INFO - TokenMetrics response for STRAX: success=True, length=10
+2025-07-02 23:42:00,151 - sentiment - INFO - TokenMetrics extracted for STRAX: TM_Grade=15.92, TA_Grade=9.93, Quant_Grade=39.87
+2025-07-02 23:42:06,590 - sentiment - INFO - LunarCrush API call for HBAR: 404
+2025-07-02 23:42:06,592 - sentiment - INFO - Symbol query failed for HBAR, trying ID lookup approach...
+2025-07-02 23:42:07,485 - sentiment - INFO - LunarCrush ID lookup successful for HBAR (ID: 2136)
+2025-07-02 23:42:14,509 - sentiment - INFO - TokenMetrics API call for HBAR: 200
+2025-07-02 23:42:14,509 - sentiment - INFO - TokenMetrics response for HBAR: success=True, length=10
+2025-07-02 23:42:14,510 - sentiment - INFO - TokenMetrics extracted for HBAR: TM_Grade=40.59, TA_Grade=37.65, Quant_Grade=52.37
+2025-07-02 23:42:20,938 - sentiment - INFO - LunarCrush API call for BB: 404
+2025-07-02 23:42:20,939 - sentiment - INFO - Symbol query failed for BB, trying ID lookup approach...
+2025-07-02 23:42:22,285 - sentiment - INFO - LunarCrush ID lookup successful for BB (ID: 152186)
+2025-07-02 23:42:29,257 - sentiment - INFO - TokenMetrics API call for BB: 200
+2025-07-02 23:42:29,258 - sentiment - INFO - TokenMetrics response for BB: success=True, length=10
+2025-07-02 23:42:29,258 - sentiment - INFO - TokenMetrics extracted for BB: TM_Grade=86.07, TA_Grade=95.91, Quant_Grade=46.72
+2025-07-02 23:42:35,705 - sentiment - INFO - LunarCrush API call for FLOW: 404
+2025-07-02 23:42:35,705 - sentiment - INFO - Symbol query failed for FLOW, trying ID lookup approach...
+2025-07-02 23:42:36,919 - sentiment - INFO - LunarCrush ID lookup successful for FLOW (ID: 3555)
+2025-07-02 23:42:43,910 - sentiment - INFO - TokenMetrics API call for FLOW: 200
+2025-07-02 23:42:43,911 - sentiment - INFO - TokenMetrics response for FLOW: success=True, length=10
+2025-07-02 23:42:43,911 - sentiment - INFO - TokenMetrics extracted for FLOW: TM_Grade=26.41, TA_Grade=25.66, Quant_Grade=29.38
+2025-07-02 23:42:50,363 - sentiment - INFO - LunarCrush API call for THETA: 404
+2025-07-02 23:42:50,363 - sentiment - INFO - Symbol query failed for THETA, trying ID lookup approach...
+2025-07-02 23:42:52,618 - sentiment - INFO - LunarCrush ID lookup successful for THETA (ID: 64)
+2025-07-02 23:42:59,860 - sentiment - INFO - TokenMetrics API call for THETA: 200
+2025-07-02 23:42:59,860 - sentiment - INFO - TokenMetrics response for THETA: success=True, length=10
+2025-07-02 23:42:59,860 - sentiment - INFO - TokenMetrics extracted for THETA: TM_Grade=31.39, TA_Grade=25.67, Quant_Grade=54.29
+2025-07-02 23:43:06,293 - sentiment - INFO - LunarCrush API call for STX: 404
+2025-07-02 23:43:06,293 - sentiment - INFO - Symbol query failed for STX, trying ID lookup approach...
+2025-07-02 23:43:07,562 - sentiment - INFO - LunarCrush ID lookup successful for STX (ID: 830)
+2025-07-02 23:43:14,961 - sentiment - INFO - TokenMetrics API call for STX: 200
+2025-07-02 23:43:14,962 - sentiment - INFO - TokenMetrics response for STX: success=True, length=10
+2025-07-02 23:43:14,962 - sentiment - INFO - TokenMetrics extracted for STX: TM_Grade=50.55, TA_Grade=49.5, Quant_Grade=54.77
+2025-07-02 23:43:21,629 - sentiment - INFO - LunarCrush API call for ETH: 404
+2025-07-02 23:43:21,629 - sentiment - INFO - Symbol query failed for ETH, trying ID lookup approach...
+2025-07-02 23:43:22,738 - sentiment - INFO - LunarCrush ID lookup successful for ETH (ID: 2)
+2025-07-02 23:43:29,783 - sentiment - INFO - TokenMetrics API call for ETH: 200
+2025-07-02 23:43:29,784 - sentiment - INFO - TokenMetrics response for ETH: success=True, length=10
+2025-07-02 23:43:29,784 - sentiment - INFO - TokenMetrics extracted for ETH: TM_Grade=71.43, TA_Grade=74.1, Quant_Grade=60.74
+2025-07-02 23:43:36,207 - sentiment - INFO - LunarCrush API call for LUNC: 404
+2025-07-02 23:43:36,207 - sentiment - INFO - Symbol query failed for LUNC, trying ID lookup approach...
+2025-07-02 23:43:37,104 - sentiment - INFO - LunarCrush ID lookup successful for LUNC (ID: 1790)
+2025-07-02 23:43:45,003 - sentiment - INFO - TokenMetrics API call for LUNC: 200
+2025-07-02 23:43:45,003 - sentiment - INFO - TokenMetrics response for LUNC: success=True, length=10
+2025-07-02 23:43:45,003 - sentiment - INFO - TokenMetrics extracted for LUNC: TM_Grade=28.75, TA_Grade=25.68, Quant_Grade=41.02
+2025-07-02 23:43:51,407 - sentiment - INFO - LunarCrush API call for DOT: 404
+2025-07-02 23:43:51,407 - sentiment - INFO - Symbol query failed for DOT, trying ID lookup approach...
+2025-07-02 23:43:52,705 - sentiment - INFO - LunarCrush ID lookup successful for DOT (ID: 2780)
+2025-07-02 23:44:00,003 - sentiment - INFO - TokenMetrics API call for DOT: 200
+2025-07-02 23:44:00,003 - sentiment - INFO - TokenMetrics response for DOT: success=True, length=10
+2025-07-02 23:44:00,003 - sentiment - INFO - TokenMetrics extracted for DOT: TM_Grade=25.98, TA_Grade=25.65, Quant_Grade=27.29
+2025-07-02 23:44:06,435 - sentiment - INFO - LunarCrush API call for FIL: 404
+2025-07-02 23:44:06,435 - sentiment - INFO - Symbol query failed for FIL, trying ID lookup approach...
+2025-07-02 23:44:08,532 - sentiment - INFO - LunarCrush ID lookup successful for FIL (ID: 1813)
+2025-07-02 23:44:15,647 - sentiment - INFO - TokenMetrics API call for FIL: 200
+2025-07-02 23:44:15,647 - sentiment - INFO - TokenMetrics response for FIL: success=True, length=10
+2025-07-02 23:44:15,647 - sentiment - INFO - TokenMetrics extracted for FIL: TM_Grade=26.2, TA_Grade=25.67, Quant_Grade=28.35
+2025-07-02 23:44:15,788 - modules.market_regime_analyzer - WARNING - LunarCrush API key not available - stocks sentiment will use defaults
+2025-07-02 23:44:15,789 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-07-02 23:44:15,832 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250702_234415.xlsx

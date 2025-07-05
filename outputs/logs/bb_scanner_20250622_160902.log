@@ -1,0 +1,6 @@
+2025-06-22 16:09:02,559 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 16:09:05,733 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 16:09:31,410 - __main__ - INFO - Quality setup: QTUM LONG (kucoin) - 83% probability, Risk: 0.7%, R:R: 8.96
+2025-06-22 16:10:01,620 - sentiment - INFO - LunarCrush API call for QTUM: 404
+2025-06-22 16:10:01,621 - sentiment - WARNING - LunarCrush API error for QTUM: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:10:08,813 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_161008.xlsx

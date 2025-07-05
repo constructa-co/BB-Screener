@@ -1,0 +1,64 @@
+2025-06-24 06:43:02,567 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-24 06:43:10,486 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-06-24 06:43:10,487 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-06-24 06:43:12,218 - sentiment - INFO - Cached 6719 coins from LunarCrush list
+2025-06-24 06:43:12,771 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-06-24 06:44:02,518 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-06-24 06:44:02,518 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-06-24 06:44:02,519 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=46.99, TA_Grade=47.01, Quant_Grade=46.91
+2025-06-24 06:44:04,959 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-06-24 06:44:07,850 - modules.data_fetcher - INFO - Selected 69 coins for analysis
+2025-06-24 06:44:16,140 - __main__ - INFO - Quality setup: SEI SHORT (binance) - 83% probability, Risk: 1.4%, R:R: 15.11
+2025-06-24 06:44:16,519 - __main__ - INFO - Quality setup: SEI SHORT (bybit) - 81% probability, Risk: 1.4%, R:R: 15.09
+2025-06-24 06:44:17,147 - __main__ - INFO - Quality setup: SEI SHORT (kucoin) - 81% probability, Risk: 1.4%, R:R: 15.11
+2025-06-24 06:44:25,594 - __main__ - INFO - Quality setup: FET SHORT (kucoin) - 68% probability, Risk: 1.5%, R:R: 7.09
+2025-06-24 06:44:30,335 - __main__ - INFO - Quality setup: ATOM SHORT (bybit) - 65% probability, Risk: 2.8%, R:R: 1.66
+2025-06-24 06:44:31,229 - __main__ - INFO - Quality setup: ATOM SHORT (okx) - 65% probability, Risk: 2.8%, R:R: 1.48
+2025-06-24 06:44:36,220 - __main__ - INFO - Quality setup: QTUM SHORT (bybit) - 75% probability, Risk: 5.9%, R:R: 0.92
+2025-06-24 06:44:58,264 - __main__ - INFO - Quality setup: ONE SHORT (binance) - 68% probability, Risk: 2.2%, R:R: 4.56
+2025-06-24 06:44:58,746 - __main__ - INFO - Quality setup: ONE SHORT (bybit) - 68% probability, Risk: 1.7%, R:R: 6.01
+2025-06-24 06:44:59,381 - __main__ - INFO - Quality setup: ONE SHORT (kucoin) - 68% probability, Risk: 2.2%, R:R: 4.65
+2025-06-24 06:45:09,581 - sentiment - INFO - LunarCrush API call for SEI: 404
+2025-06-24 06:45:09,582 - sentiment - INFO - Symbol query failed for SEI, trying ID lookup approach...
+2025-06-24 06:45:10,299 - sentiment - INFO - LunarCrush ID lookup successful for SEI (ID: 145271)
+2025-06-24 06:45:17,369 - sentiment - INFO - TokenMetrics API call for SEI: 200
+2025-06-24 06:45:17,370 - sentiment - INFO - TokenMetrics response for SEI: success=True, length=10
+2025-06-24 06:45:17,370 - sentiment - INFO - TokenMetrics extracted for SEI: TM_Grade=40.33, TA_Grade=37.16, Quant_Grade=53.03
+2025-06-24 06:45:23,817 - sentiment - INFO - LunarCrush API call for QTUM: 404
+2025-06-24 06:45:23,817 - sentiment - INFO - Symbol query failed for QTUM, trying ID lookup approach...
+2025-06-24 06:45:24,431 - sentiment - INFO - LunarCrush ID lookup successful for QTUM (ID: 34)
+2025-06-24 06:45:31,600 - sentiment - INFO - TokenMetrics API call for QTUM: 200
+2025-06-24 06:45:31,601 - sentiment - INFO - TokenMetrics response for QTUM: success=True, length=10
+2025-06-24 06:45:31,601 - sentiment - INFO - TokenMetrics extracted for QTUM: TM_Grade=14.79, TA_Grade=9.93, Quant_Grade=34.22
+2025-06-24 06:45:38,007 - sentiment - INFO - LunarCrush API call for FET: 404
+2025-06-24 06:45:38,007 - sentiment - INFO - Symbol query failed for FET, trying ID lookup approach...
+2025-06-24 06:45:38,683 - sentiment - INFO - LunarCrush ID lookup successful for FET (ID: 169)
+2025-06-24 06:45:45,780 - sentiment - INFO - TokenMetrics API call for FET: 200
+2025-06-24 06:45:45,781 - sentiment - INFO - TokenMetrics response for FET: success=True, length=10
+2025-06-24 06:45:45,781 - sentiment - INFO - TokenMetrics extracted for FET: TM_Grade=19.24, TA_Grade=9.88, Quant_Grade=56.67
+2025-06-24 06:45:52,179 - sentiment - INFO - LunarCrush API call for ONE: 404
+2025-06-24 06:45:52,179 - sentiment - INFO - Symbol query failed for ONE, trying ID lookup approach...
+2025-06-24 06:45:52,767 - sentiment - INFO - LunarCrush ID lookup successful for ONE (ID: 152)
+2025-06-24 06:46:00,064 - sentiment - INFO - TokenMetrics API call for ONE: 200
+2025-06-24 06:46:00,064 - sentiment - INFO - TokenMetrics response for ONE: success=True, length=10
+2025-06-24 06:46:00,064 - sentiment - INFO - TokenMetrics extracted for ONE: TM_Grade=16.21, TA_Grade=9.8, Quant_Grade=41.81
+2025-06-24 06:46:06,480 - sentiment - INFO - LunarCrush API call for ATOM: 404
+2025-06-24 06:46:06,480 - sentiment - INFO - Symbol query failed for ATOM, trying ID lookup approach...
+2025-06-24 06:46:07,130 - sentiment - INFO - LunarCrush ID lookup successful for ATOM (ID: 19)
+2025-06-24 06:46:14,129 - sentiment - INFO - TokenMetrics API call for ATOM: 200
+2025-06-24 06:46:14,129 - sentiment - INFO - TokenMetrics response for ATOM: success=True, length=10
+2025-06-24 06:46:14,129 - sentiment - INFO - TokenMetrics extracted for ATOM: TM_Grade=16.99, TA_Grade=9.92, Quant_Grade=45.29
+2025-06-24 06:46:20,531 - sentiment - INFO - LunarCrush API call for PHA: 404
+2025-06-24 06:46:20,532 - sentiment - INFO - Symbol query failed for PHA, trying ID lookup approach...
+2025-06-24 06:46:21,058 - sentiment - INFO - LunarCrush ID lookup successful for PHA (ID: 2986)
+2025-06-24 06:46:28,328 - sentiment - INFO - TokenMetrics API call for PHA: 200
+2025-06-24 06:46:28,328 - sentiment - INFO - TokenMetrics response for PHA: success=True, length=10
+2025-06-24 06:46:28,328 - sentiment - INFO - TokenMetrics extracted for PHA: TM_Grade=18.24, TA_Grade=9.83, Quant_Grade=51.88
+2025-06-24 06:46:34,776 - sentiment - INFO - LunarCrush API call for SUI: 404
+2025-06-24 06:46:34,777 - sentiment - INFO - Symbol query failed for SUI, trying ID lookup approach...
+2025-06-24 06:46:35,394 - sentiment - INFO - LunarCrush ID lookup successful for SUI (ID: 70056)
+2025-06-24 06:46:42,489 - sentiment - INFO - TokenMetrics API call for SUI: 200
+2025-06-24 06:46:42,490 - sentiment - INFO - TokenMetrics response for SUI: success=True, length=10
+2025-06-24 06:46:42,490 - sentiment - INFO - TokenMetrics extracted for SUI: TM_Grade=19.71, TA_Grade=9.85, Quant_Grade=59.16
+2025-06-24 06:46:42,627 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-06-24 06:46:42,640 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250624_064642.xlsx

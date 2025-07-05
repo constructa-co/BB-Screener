@@ -1,0 +1,15 @@
+2025-06-22 11:00:01,880 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 11:00:04,611 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 11:00:21,355 - __main__ - INFO - Quality setup: HBAR LONG (binance) - 68% probability, Risk: 1.5%, R:R: 3.38
+2025-06-22 11:00:28,207 - __main__ - INFO - Quality setup: ETC LONG (kucoin) - 83% probability, Risk: 1.8%, R:R: 2.66
+2025-06-22 11:00:35,406 - __main__ - INFO - Quality setup: BSV LONG (okx) - 71% probability, Risk: 1.4%, R:R: 2.89
+2025-06-22 11:00:36,304 - __main__ - INFO - Quality setup: NEO LONG (kucoin) - 68% probability, Risk: 2.5%, R:R: 2.06
+2025-06-22 11:00:51,890 - __main__ - INFO - Quality setup: CORE LONG (bybit) - 73% probability, Risk: 1.1%, R:R: 5.7
+2025-06-22 11:00:53,200 - __main__ - INFO - Quality setup: ZIL LONG (bybit) - 68% probability, Risk: 0.9%, R:R: 6.62
+2025-06-22 11:00:53,872 - __main__ - INFO - Quality setup: ZIL LONG (kucoin) - 68% probability, Risk: 0.9%, R:R: 5.96
+2025-06-22 11:00:56,962 - __main__ - INFO - Quality setup: IOTA LONG (kucoin) - 83% probability, Risk: 1.7%, R:R: 3.42
+2025-06-22 11:01:00,942 - __main__ - INFO - Quality setup: PHA LONG (kucoin) - 71% probability, Risk: 3.0%, R:R: 2.18
+2025-06-22 11:01:02,103 - __main__ - INFO - Quality setup: KSM LONG (binance) - 78% probability, Risk: 0.3%, R:R: 33.03
+2025-06-22 11:01:02,485 - __main__ - INFO - Quality setup: KSM LONG (bybit) - 68% probability, Risk: 0.3%, R:R: 23.8
+2025-06-22 11:01:03,253 - __main__ - INFO - Quality setup: KSM LONG (okx) - 68% probability, Risk: 0.4%, R:R: 18.88
+2025-06-22 11:01:05,812 - __main__ - ERROR - Critical error in scanner: 'OutputGenerator' object has no attribute 'format_comprehensive_results'

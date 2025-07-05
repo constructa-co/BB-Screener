@@ -1,0 +1,15 @@
+2025-06-22 16:02:41,564 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 16:02:44,500 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 16:03:09,400 - __main__ - INFO - Quality setup: QTUM LONG (kucoin) - 83% probability, Risk: 0.7%, R:R: 8.96
+2025-06-22 16:03:23,739 - __main__ - INFO - Quality setup: MINA LONG (kucoin) - 73% probability, Risk: 0.7%, R:R: 12.25
+2025-06-22 16:03:25,767 - __main__ - INFO - Quality setup: IOTA LONG (kucoin) - 83% probability, Risk: 1.3%, R:R: 5.38
+2025-06-22 16:03:29,358 - __main__ - INFO - Quality setup: TAIKO LONG (kucoin) - 78% probability, Risk: 0.6%, R:R: 13.77
+2025-06-22 16:03:31,395 - __main__ - INFO - Quality setup: KSM LONG (kucoin) - 73% probability, Risk: 1.2%, R:R: 7.3
+2025-06-22 16:03:34,721 - __main__ - INFO - Quality setup: CKB LONG (kucoin) - 90% probability, Risk: 0.7%, R:R: 12.73
+2025-06-22 16:03:42,364 - sentiment - WARNING - LunarCrush API error for CKB: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:03:56,027 - sentiment - WARNING - LunarCrush API error for QTUM: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:04:10,587 - sentiment - WARNING - LunarCrush API error for IOTA: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:04:24,371 - sentiment - WARNING - LunarCrush API error for TAIKO: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:04:37,717 - sentiment - WARNING - LunarCrush API error for MINA: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:04:50,968 - sentiment - WARNING - LunarCrush API error for KSM: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:04:58,013 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_160457.xlsx

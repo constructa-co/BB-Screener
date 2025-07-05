@@ -1,0 +1,12 @@
+2025-06-22 16:42:42,961 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 16:42:47,524 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 16:43:10,314 - __main__ - INFO - Quality setup: KAS LONG (bybit) - 68% probability, Risk: 0.6%, R:R: 11.95
+2025-06-22 16:43:13,111 - __main__ - INFO - Quality setup: A LONG (bybit) - 78% probability, Risk: 2.5%, R:R: 2.39
+2025-06-22 16:43:34,223 - __main__ - INFO - Quality setup: COTI LONG (binance) - 78% probability, Risk: 0.9%, R:R: 9.81
+2025-06-22 16:43:44,189 - sentiment - INFO - LunarCrush API call for COTI: 404
+2025-06-22 16:43:44,189 - sentiment - WARNING - LunarCrush API error for COTI: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:43:58,898 - sentiment - INFO - LunarCrush API call for A: 404
+2025-06-22 16:43:58,899 - sentiment - WARNING - LunarCrush API error for A: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:44:12,216 - sentiment - INFO - LunarCrush API call for KAS: 404
+2025-06-22 16:44:12,217 - sentiment - WARNING - LunarCrush API error for KAS: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 16:44:19,388 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_164419.xlsx

@@ -1,0 +1,200 @@
+2025-07-02 22:38:05,085 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-07-02 22:38:11,954 - sentiment - INFO - LunarCrush API call for BTC: 404
+2025-07-02 22:38:11,955 - sentiment - INFO - Symbol query failed for BTC, trying ID lookup approach...
+2025-07-02 22:38:13,636 - sentiment - INFO - Cached 6833 coins from LunarCrush list
+2025-07-02 22:38:14,230 - sentiment - INFO - LunarCrush ID lookup successful for BTC (ID: 1)
+2025-07-02 22:39:01,907 - sentiment - INFO - TokenMetrics API call for BTC: 200
+2025-07-02 22:39:01,907 - sentiment - INFO - TokenMetrics response for BTC: success=True, length=10
+2025-07-02 22:39:01,907 - sentiment - INFO - TokenMetrics extracted for BTC: TM_Grade=91.28, TA_Grade=95.92, Quant_Grade=72.75
+2025-07-02 22:39:05,988 - modules.market_regime_analyzer - INFO - Traditional market SPY: 0.35% (STABLE)
+2025-07-02 22:39:06,172 - modules.market_regime_analyzer - INFO - Traditional market ^VIX: -0.77% (STABLE)
+2025-07-02 22:39:06,355 - modules.market_regime_analyzer - INFO - Traditional market DX-Y.NYB: -0.04% (STABLE)
+2025-07-02 22:39:06,720 - modules.market_regime_analyzer - INFO - Traditional market QQQ: 0.64% (STABLE)
+2025-07-02 22:39:09,820 - modules.market_regime_analyzer - INFO - LunarCrush stocks list fetched: 2175 stocks
+2025-07-02 22:39:11,577 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for SPY: Neutral
+2025-07-02 22:39:12,793 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AAPL: Neutral
+2025-07-02 22:39:15,737 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for MSFT: Neutral
+2025-07-02 22:39:16,620 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for NVDA: Neutral
+2025-07-02 22:39:18,549 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for TSLA: Neutral
+2025-07-02 22:39:19,864 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for AMZN: Neutral
+2025-07-02 22:39:20,860 - modules.market_regime_analyzer - INFO - LunarCrush stocks sentiment for GOOGL: Neutral
+2025-07-02 22:39:20,861 - modules.market_regime_analyzer - INFO - Market regime analysis completed for ETH
+2025-07-02 22:39:23,342 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-07-02 22:39:24,089 - __main__ - INFO - Quality setup: BTC SHORT (binance) - 80% probability, Risk: 1.4%, R:R: 1.35
+2025-07-02 22:39:24,604 - __main__ - INFO - Quality setup: BTC SHORT (bybit) - 68% probability, Risk: 1.4%, R:R: 1.34
+2025-07-02 22:39:25,279 - __main__ - INFO - Quality setup: BTC SHORT (kucoin) - 80% probability, Risk: 1.4%, R:R: 1.34
+2025-07-02 22:39:26,013 - __main__ - INFO - Quality setup: BTC SHORT (okx) - 80% probability, Risk: 1.4%, R:R: 1.33
+2025-07-02 22:39:26,765 - __main__ - INFO - Quality setup: ETH SHORT (binance) - 83% probability, Risk: 1.5%, R:R: 2.75
+2025-07-02 22:39:27,317 - __main__ - INFO - Quality setup: ETH SHORT (bybit) - 83% probability, Risk: 1.5%, R:R: 2.74
+2025-07-02 22:39:27,983 - __main__ - INFO - Quality setup: ETH SHORT (kucoin) - 83% probability, Risk: 1.6%, R:R: 2.73
+2025-07-02 22:39:28,464 - __main__ - INFO - Quality setup: ETH SHORT (okx) - 83% probability, Risk: 1.6%, R:R: 2.68
+2025-07-02 22:39:29,831 - __main__ - INFO - Quality setup: XRP SHORT (binance) - 65% probability, Risk: 2.9%, R:R: 0.67
+2025-07-02 22:39:30,220 - __main__ - INFO - Quality setup: XRP SHORT (bybit) - 65% probability, Risk: 2.9%, R:R: 0.66
+2025-07-02 22:39:30,919 - __main__ - INFO - Quality setup: XRP SHORT (kucoin) - 65% probability, Risk: 3.0%, R:R: 0.66
+2025-07-02 22:39:31,449 - __main__ - INFO - Quality setup: XRP SHORT (okx) - 65% probability, Risk: 2.9%, R:R: 0.69
+2025-07-02 22:39:32,191 - __main__ - INFO - Quality setup: BNB SHORT (binance) - 75% probability, Risk: 1.2%, R:R: 1.16
+2025-07-02 22:39:32,716 - __main__ - INFO - Quality setup: BNB SHORT (bybit) - 65% probability, Risk: 1.2%, R:R: 1.16
+2025-07-02 22:39:33,395 - __main__ - INFO - Quality setup: BNB SHORT (kucoin) - 75% probability, Risk: 1.2%, R:R: 1.14
+2025-07-02 22:39:34,175 - __main__ - INFO - Quality setup: DOGE SHORT (binance) - 83% probability, Risk: 1.8%, R:R: 2.45
+2025-07-02 22:39:34,644 - __main__ - INFO - Quality setup: DOGE SHORT (bybit) - 83% probability, Risk: 1.8%, R:R: 2.5
+2025-07-02 22:39:35,343 - __main__ - INFO - Quality setup: DOGE SHORT (kucoin) - 83% probability, Risk: 1.8%, R:R: 2.52
+2025-07-02 22:39:35,919 - __main__ - INFO - Quality setup: DOGE SHORT (okx) - 83% probability, Risk: 1.8%, R:R: 2.47
+2025-07-02 22:39:36,515 - __main__ - INFO - Quality setup: SUI SHORT (binance) - 83% probability, Risk: 2.0%, R:R: 2.46
+2025-07-02 22:39:36,922 - __main__ - INFO - Quality setup: SUI SHORT (bybit) - 71% probability, Risk: 1.8%, R:R: 2.67
+2025-07-02 22:39:37,758 - __main__ - INFO - Quality setup: SUI SHORT (kucoin) - 83% probability, Risk: 1.8%, R:R: 2.73
+2025-07-02 22:39:38,308 - __main__ - INFO - Quality setup: SUI SHORT (okx) - 83% probability, Risk: 1.8%, R:R: 2.67
+2025-07-02 22:39:38,912 - __main__ - INFO - Quality setup: ADA SHORT (binance) - 83% probability, Risk: 1.8%, R:R: 2.79
+2025-07-02 22:39:39,330 - __main__ - INFO - Quality setup: ADA SHORT (bybit) - 83% probability, Risk: 1.8%, R:R: 2.83
+2025-07-02 22:39:39,979 - __main__ - INFO - Quality setup: ADA SHORT (kucoin) - 83% probability, Risk: 1.8%, R:R: 2.8
+2025-07-02 22:39:40,493 - __main__ - INFO - Quality setup: ADA SHORT (okx) - 83% probability, Risk: 1.8%, R:R: 2.75
+2025-07-02 22:39:42,724 - __main__ - INFO - Quality setup: TRX SHORT (binance) - 75% probability, Risk: 1.2%, R:R: 1.12
+2025-07-02 22:39:43,090 - __main__ - INFO - Quality setup: TRX SHORT (bybit) - 80% probability, Risk: 1.2%, R:R: 1.09
+2025-07-02 22:39:43,810 - __main__ - INFO - Quality setup: TRX SHORT (kucoin) - 75% probability, Risk: 1.2%, R:R: 1.1
+2025-07-02 22:39:44,470 - __main__ - INFO - Quality setup: TRX SHORT (okx) - 75% probability, Risk: 1.3%, R:R: 1.05
+2025-07-02 22:39:45,101 - __main__ - INFO - Quality setup: AVAX SHORT (binance) - 83% probability, Risk: 1.9%, R:R: 2.28
+2025-07-02 22:39:45,493 - __main__ - INFO - Quality setup: AVAX SHORT (bybit) - 83% probability, Risk: 1.9%, R:R: 2.33
+2025-07-02 22:39:46,158 - __main__ - INFO - Quality setup: AVAX SHORT (kucoin) - 83% probability, Risk: 1.9%, R:R: 2.21
+2025-07-02 22:39:46,811 - __main__ - INFO - Quality setup: AVAX SHORT (okx) - 83% probability, Risk: 1.9%, R:R: 2.23
+2025-07-02 22:39:48,128 - __main__ - INFO - Quality setup: DOT SHORT (binance) - 83% probability, Risk: 1.3%, R:R: 3.92
+2025-07-02 22:39:48,526 - __main__ - INFO - Quality setup: DOT SHORT (bybit) - 83% probability, Risk: 1.3%, R:R: 4.0
+2025-07-02 22:39:49,227 - __main__ - INFO - Quality setup: DOT SHORT (kucoin) - 83% probability, Risk: 1.4%, R:R: 3.75
+2025-07-02 22:39:49,748 - __main__ - INFO - Quality setup: DOT SHORT (okx) - 83% probability, Risk: 1.3%, R:R: 3.8
+2025-07-02 22:39:50,352 - __main__ - INFO - Quality setup: FIL SHORT (binance) - 83% probability, Risk: 2.1%, R:R: 2.38
+2025-07-02 22:39:50,776 - __main__ - INFO - Quality setup: FIL SHORT (bybit) - 83% probability, Risk: 2.0%, R:R: 2.44
+2025-07-02 22:39:51,442 - __main__ - INFO - Quality setup: FIL SHORT (kucoin) - 83% probability, Risk: 2.0%, R:R: 2.44
+2025-07-02 22:39:52,006 - __main__ - INFO - Quality setup: FIL SHORT (okx) - 83% probability, Risk: 2.1%, R:R: 2.37
+2025-07-02 22:39:55,631 - __main__ - INFO - Quality setup: HBAR SHORT (binance) - 83% probability, Risk: 1.3%, R:R: 2.72
+2025-07-02 22:39:56,054 - __main__ - INFO - Quality setup: HBAR SHORT (bybit) - 83% probability, Risk: 1.3%, R:R: 2.72
+2025-07-02 22:39:56,760 - __main__ - INFO - Quality setup: HBAR SHORT (kucoin) - 81% probability, Risk: 1.3%, R:R: 2.74
+2025-07-02 22:39:57,427 - __main__ - INFO - Quality setup: HBAR SHORT (okx) - 83% probability, Risk: 1.4%, R:R: 2.54
+2025-07-02 22:39:59,628 - __main__ - INFO - Quality setup: FET SHORT (binance) - 71% probability, Risk: 2.1%, R:R: 2.09
+2025-07-02 22:40:00,113 - __main__ - INFO - Quality setup: FET SHORT (bybit) - 68% probability, Risk: 2.1%, R:R: 2.11
+2025-07-02 22:40:00,907 - __main__ - INFO - Quality setup: FET SHORT (kucoin) - 68% probability, Risk: 2.2%, R:R: 2.05
+2025-07-02 22:40:01,545 - __main__ - INFO - Quality setup: FET SHORT (okx) - 68% probability, Risk: 2.1%, R:R: 2.22
+2025-07-02 22:40:04,213 - __main__ - INFO - Quality setup: ATOM SHORT (binance) - 83% probability, Risk: 1.5%, R:R: 2.57
+2025-07-02 22:40:04,711 - __main__ - INFO - Quality setup: ATOM SHORT (bybit) - 80% probability, Risk: 2.7%, R:R: 1.43
+2025-07-02 22:40:05,404 - __main__ - INFO - Quality setup: ATOM SHORT (kucoin) - 83% probability, Risk: 1.3%, R:R: 2.86
+2025-07-02 22:40:05,943 - __main__ - INFO - Quality setup: ATOM SHORT (okx) - 81% probability, Risk: 1.5%, R:R: 2.57
+2025-07-02 22:40:07,181 - __main__ - INFO - Quality setup: ETC SHORT (binance) - 83% probability, Risk: 1.3%, R:R: 2.76
+2025-07-02 22:40:07,715 - __main__ - INFO - Quality setup: ETC SHORT (bybit) - 83% probability, Risk: 1.2%, R:R: 2.93
+2025-07-02 22:40:08,375 - __main__ - INFO - Quality setup: ETC SHORT (kucoin) - 83% probability, Risk: 1.2%, R:R: 3.08
+2025-07-02 22:40:08,963 - __main__ - INFO - Quality setup: ETC SHORT (okx) - 83% probability, Risk: 1.1%, R:R: 3.51
+2025-07-02 22:40:11,065 - __main__ - INFO - Quality setup: QTUM SHORT (binance) - 83% probability, Risk: 1.9%, R:R: 2.31
+2025-07-02 22:40:11,896 - __main__ - INFO - Quality setup: QTUM SHORT (bybit) - 83% probability, Risk: 1.5%, R:R: 3.21
+2025-07-02 22:40:12,636 - __main__ - INFO - Quality setup: QTUM SHORT (kucoin) - 80% probability, Risk: 2.1%, R:R: 1.83
+2025-07-02 22:40:13,201 - __main__ - INFO - Quality setup: QTUM SHORT (okx) - 83% probability, Risk: 1.8%, R:R: 2.38
+2025-07-02 22:40:13,804 - __main__ - INFO - Quality setup: VET SHORT (binance) - 71% probability, Risk: 1.4%, R:R: 3.07
+2025-07-02 22:40:14,791 - __main__ - INFO - Quality setup: VET SHORT (bybit) - 71% probability, Risk: 1.3%, R:R: 3.32
+2025-07-02 22:40:15,467 - __main__ - INFO - Quality setup: VET SHORT (kucoin) - 68% probability, Risk: 1.4%, R:R: 3.17
+2025-07-02 22:40:17,188 - __main__ - INFO - Quality setup: ARK SHORT (binance) - 75% probability, Risk: 5.1%, R:R: 1.4
+2025-07-02 22:40:17,800 - __main__ - INFO - Quality setup: NEO SHORT (binance) - 78% probability, Risk: 1.4%, R:R: 3.51
+2025-07-02 22:40:18,499 - __main__ - INFO - Quality setup: NEO SHORT (okx) - 68% probability, Risk: 1.2%, R:R: 4.25
+2025-07-02 22:40:19,142 - __main__ - INFO - Quality setup: STX SHORT (binance) - 81% probability, Risk: 1.1%, R:R: 4.31
+2025-07-02 22:40:20,237 - __main__ - INFO - Quality setup: STX SHORT (kucoin) - 83% probability, Risk: 1.2%, R:R: 4.02
+2025-07-02 22:40:20,819 - __main__ - INFO - Quality setup: STX SHORT (okx) - 68% probability, Risk: 1.1%, R:R: 4.41
+2025-07-02 22:40:21,443 - __main__ - INFO - Quality setup: AR SHORT (binance) - 68% probability, Risk: 1.6%, R:R: 2.77
+2025-07-02 22:40:22,597 - __main__ - INFO - Quality setup: AR SHORT (kucoin) - 71% probability, Risk: 1.4%, R:R: 3.11
+2025-07-02 22:40:23,766 - __main__ - INFO - Quality setup: CFX SHORT (binance) - 65% probability, Risk: 6.0%, R:R: 0.64
+2025-07-02 22:40:24,700 - __main__ - INFO - Quality setup: CFX SHORT (okx) - 80% probability, Risk: 6.0%, R:R: 0.62
+2025-07-02 22:40:28,025 - __main__ - INFO - Quality setup: STRAX SHORT (kucoin) - 85% probability, Risk: 6.1%, R:R: 0.77
+2025-07-02 22:40:28,641 - __main__ - INFO - Quality setup: THETA SHORT (binance) - 83% probability, Risk: 1.6%, R:R: 3.39
+2025-07-02 22:40:29,119 - __main__ - INFO - Quality setup: THETA SHORT (bybit) - 81% probability, Risk: 1.6%, R:R: 3.33
+2025-07-02 22:40:29,790 - __main__ - INFO - Quality setup: THETA SHORT (kucoin) - 83% probability, Risk: 1.5%, R:R: 3.52
+2025-07-02 22:40:30,344 - __main__ - INFO - Quality setup: THETA SHORT (okx) - 68% probability, Risk: 1.6%, R:R: 3.37
+2025-07-02 22:40:31,406 - __main__ - INFO - Quality setup: WAVES SHORT (bybit) - 68% probability, Risk: 1.2%, R:R: 2.49
+2025-07-02 22:40:32,904 - __main__ - INFO - Quality setup: FLOW SHORT (binance) - 83% probability, Risk: 1.6%, R:R: 2.6
+2025-07-02 22:40:33,270 - __main__ - INFO - Quality setup: FLOW SHORT (bybit) - 83% probability, Risk: 1.2%, R:R: 3.6
+2025-07-02 22:40:33,948 - __main__ - INFO - Quality setup: FLOW SHORT (kucoin) - 83% probability, Risk: 1.3%, R:R: 3.3
+2025-07-02 22:40:34,454 - __main__ - INFO - Quality setup: FLOW SHORT (okx) - 81% probability, Risk: 1.4%, R:R: 3.15
+2025-07-02 22:40:35,610 - __main__ - INFO - Quality setup: LUNA SHORT (binance) - 80% probability, Risk: 2.8%, R:R: 1.36
+2025-07-02 22:40:36,151 - __main__ - INFO - Quality setup: LUNA SHORT (bybit) - 80% probability, Risk: 2.7%, R:R: 1.41
+2025-07-02 22:40:36,813 - __main__ - INFO - Quality setup: LUNA SHORT (kucoin) - 70% probability, Risk: 2.9%, R:R: 1.28
+2025-07-02 22:40:37,389 - __main__ - INFO - Quality setup: LUNA SHORT (okx) - 80% probability, Risk: 3.1%, R:R: 1.24
+2025-07-02 22:40:37,999 - __main__ - INFO - Quality setup: EGLD SHORT (binance) - 83% probability, Risk: 2.3%, R:R: 2.14
+2025-07-02 22:40:38,638 - __main__ - INFO - Quality setup: EGLD SHORT (bybit) - 83% probability, Risk: 2.1%, R:R: 2.41
+2025-07-02 22:40:39,301 - __main__ - INFO - Quality setup: EGLD SHORT (kucoin) - 71% probability, Risk: 2.1%, R:R: 2.28
+2025-07-02 22:40:39,875 - __main__ - INFO - Quality setup: EGLD SHORT (okx) - 68% probability, Risk: 2.1%, R:R: 2.11
+2025-07-02 22:40:41,825 - __main__ - INFO - Quality setup: IOTA SHORT (binance) - 83% probability, Risk: 1.7%, R:R: 2.68
+2025-07-02 22:40:42,567 - __main__ - INFO - Quality setup: IOTA SHORT (kucoin) - 83% probability, Risk: 1.6%, R:R: 2.83
+2025-07-02 22:40:43,117 - __main__ - INFO - Quality setup: IOTA SHORT (okx) - 83% probability, Risk: 1.5%, R:R: 3.09
+2025-07-02 22:40:43,948 - __main__ - INFO - Quality setup: XTZ SHORT (binance) - 83% probability, Risk: 1.4%, R:R: 2.27
+2025-07-02 22:40:44,333 - __main__ - INFO - Quality setup: XTZ SHORT (bybit) - 81% probability, Risk: 1.2%, R:R: 2.61
+2025-07-02 22:40:45,009 - __main__ - INFO - Quality setup: XTZ SHORT (kucoin) - 68% probability, Risk: 1.0%, R:R: 3.27
+2025-07-02 22:40:45,563 - __main__ - INFO - Quality setup: XTZ SHORT (okx) - 83% probability, Risk: 1.3%, R:R: 2.48
+2025-07-02 22:40:46,308 - __main__ - INFO - Quality setup: CELO SHORT (bybit) - 68% probability, Risk: 1.0%, R:R: 5.32
+2025-07-02 22:40:47,338 - __main__ - INFO - Quality setup: CELO SHORT (kucoin) - 71% probability, Risk: 1.0%, R:R: 5.72
+2025-07-02 22:40:47,928 - __main__ - INFO - Quality setup: CELO SHORT (okx) - 68% probability, Risk: 1.0%, R:R: 5.76
+2025-07-02 22:40:48,540 - __main__ - INFO - Quality setup: BB SHORT (binance) - 71% probability, Risk: 2.8%, R:R: 2.58
+2025-07-02 22:40:49,225 - __main__ - INFO - Quality setup: BB SHORT (bybit) - 81% probability, Risk: 2.6%, R:R: 2.84
+2025-07-02 22:40:49,970 - __main__ - INFO - Quality setup: BB SHORT (kucoin) - 83% probability, Risk: 2.0%, R:R: 3.61
+2025-07-02 22:40:51,166 - __main__ - INFO - Quality setup: ZIL SHORT (binance) - 73% probability, Risk: 1.3%, R:R: 3.41
+2025-07-02 22:40:51,963 - __main__ - INFO - Quality setup: ZIL SHORT (kucoin) - 73% probability, Risk: 1.3%, R:R: 3.43
+2025-07-02 22:40:54,252 - __main__ - INFO - Quality setup: CRO SHORT (kucoin) - 68% probability, Risk: 1.0%, R:R: 2.33
+2025-07-02 22:40:54,821 - __main__ - INFO - Quality setup: CRO SHORT (okx) - 71% probability, Risk: 1.0%, R:R: 2.31
+2025-07-02 22:40:59,153 - __main__ - INFO - Quality setup: LUNC SHORT (binance) - 83% probability, Risk: 1.4%, R:R: 2.45
+2025-07-02 22:40:59,565 - __main__ - INFO - Quality setup: LUNC SHORT (bybit) - 68% probability, Risk: 1.4%, R:R: 2.41
+2025-07-02 22:41:00,367 - __main__ - INFO - Quality setup: LUNC SHORT (kucoin) - 68% probability, Risk: 1.4%, R:R: 2.39
+2025-07-02 22:41:00,962 - __main__ - INFO - Quality setup: LUNC SHORT (okx) - 81% probability, Risk: 1.5%, R:R: 2.3
+2025-07-02 22:41:07,800 - sentiment - INFO - LunarCrush API call for STRAX: 404
+2025-07-02 22:41:07,800 - sentiment - INFO - Symbol query failed for STRAX, trying ID lookup approach...
+2025-07-02 22:41:09,063 - sentiment - INFO - LunarCrush ID lookup successful for STRAX (ID: 100)
+2025-07-02 22:41:17,238 - sentiment - INFO - TokenMetrics API call for STRAX: 200
+2025-07-02 22:41:17,238 - sentiment - INFO - TokenMetrics response for STRAX: success=True, length=10
+2025-07-02 22:41:17,238 - sentiment - INFO - TokenMetrics extracted for STRAX: TM_Grade=15.92, TA_Grade=9.93, Quant_Grade=39.87
+2025-07-02 22:41:23,701 - sentiment - INFO - LunarCrush API call for STX: 404
+2025-07-02 22:41:23,702 - sentiment - INFO - Symbol query failed for STX, trying ID lookup approach...
+2025-07-02 22:41:25,177 - sentiment - INFO - LunarCrush ID lookup successful for STX (ID: 830)
+2025-07-02 22:41:32,447 - sentiment - INFO - TokenMetrics API call for STX: 200
+2025-07-02 22:41:32,447 - sentiment - INFO - TokenMetrics response for STX: success=True, length=10
+2025-07-02 22:41:32,448 - sentiment - INFO - TokenMetrics extracted for STX: TM_Grade=50.55, TA_Grade=49.5, Quant_Grade=54.77
+2025-07-02 22:41:38,900 - sentiment - INFO - LunarCrush API call for DOT: 404
+2025-07-02 22:41:38,900 - sentiment - INFO - Symbol query failed for DOT, trying ID lookup approach...
+2025-07-02 22:41:40,003 - sentiment - INFO - LunarCrush ID lookup successful for DOT (ID: 2780)
+2025-07-02 22:41:47,077 - sentiment - INFO - TokenMetrics API call for DOT: 200
+2025-07-02 22:41:47,078 - sentiment - INFO - TokenMetrics response for DOT: success=True, length=10
+2025-07-02 22:41:47,078 - sentiment - INFO - TokenMetrics extracted for DOT: TM_Grade=25.98, TA_Grade=25.65, Quant_Grade=27.29
+2025-07-02 22:41:53,512 - sentiment - INFO - LunarCrush API call for BB: 404
+2025-07-02 22:41:53,514 - sentiment - INFO - Symbol query failed for BB, trying ID lookup approach...
+2025-07-02 22:41:54,434 - sentiment - INFO - LunarCrush ID lookup successful for BB (ID: 152186)
+2025-07-02 22:42:01,501 - sentiment - INFO - TokenMetrics API call for BB: 200
+2025-07-02 22:42:01,501 - sentiment - INFO - TokenMetrics response for BB: success=True, length=10
+2025-07-02 22:42:01,502 - sentiment - INFO - TokenMetrics extracted for BB: TM_Grade=86.07, TA_Grade=95.91, Quant_Grade=46.72
+2025-07-02 22:42:07,951 - sentiment - INFO - LunarCrush API call for THETA: 404
+2025-07-02 22:42:07,951 - sentiment - INFO - Symbol query failed for THETA, trying ID lookup approach...
+2025-07-02 22:42:08,796 - sentiment - INFO - LunarCrush ID lookup successful for THETA (ID: 64)
+2025-07-02 22:42:15,929 - sentiment - INFO - TokenMetrics API call for THETA: 200
+2025-07-02 22:42:15,929 - sentiment - INFO - TokenMetrics response for THETA: success=True, length=10
+2025-07-02 22:42:15,929 - sentiment - INFO - TokenMetrics extracted for THETA: TM_Grade=31.39, TA_Grade=25.67, Quant_Grade=54.29
+2025-07-02 22:42:22,372 - sentiment - INFO - LunarCrush API call for ADA: 404
+2025-07-02 22:42:22,373 - sentiment - INFO - Symbol query failed for ADA, trying ID lookup approach...
+2025-07-02 22:42:23,359 - sentiment - INFO - LunarCrush ID lookup successful for ADA (ID: 11)
+2025-07-02 22:42:30,408 - sentiment - INFO - TokenMetrics API call for ADA: 200
+2025-07-02 22:42:30,408 - sentiment - INFO - TokenMetrics response for ADA: success=True, length=10
+2025-07-02 22:42:30,409 - sentiment - INFO - TokenMetrics extracted for ADA: TM_Grade=36.5, TA_Grade=33.44, Quant_Grade=48.73
+2025-07-02 22:42:36,827 - sentiment - INFO - LunarCrush API call for ETC: 404
+2025-07-02 22:42:36,828 - sentiment - INFO - Symbol query failed for ETC, trying ID lookup approach...
+2025-07-02 22:42:38,793 - sentiment - INFO - LunarCrush ID lookup successful for ETC (ID: 21)
+2025-07-02 22:42:45,953 - sentiment - INFO - TokenMetrics API call for ETC: 200
+2025-07-02 22:42:45,954 - sentiment - INFO - TokenMetrics response for ETC: success=True, length=10
+2025-07-02 22:42:45,954 - sentiment - INFO - TokenMetrics extracted for ETC: TM_Grade=66.46, TA_Grade=69.83, Quant_Grade=52.99
+2025-07-02 22:42:52,482 - sentiment - INFO - LunarCrush API call for ETH: 404
+2025-07-02 22:42:52,482 - sentiment - INFO - Symbol query failed for ETH, trying ID lookup approach...
+2025-07-02 22:42:53,772 - sentiment - INFO - LunarCrush ID lookup successful for ETH (ID: 2)
+2025-07-02 22:43:01,081 - sentiment - INFO - TokenMetrics API call for ETH: 200
+2025-07-02 22:43:01,082 - sentiment - INFO - TokenMetrics response for ETH: success=True, length=10
+2025-07-02 22:43:01,082 - sentiment - INFO - TokenMetrics extracted for ETH: TM_Grade=71.43, TA_Grade=74.1, Quant_Grade=60.74
+2025-07-02 22:43:07,528 - sentiment - INFO - LunarCrush API call for HBAR: 404
+2025-07-02 22:43:07,529 - sentiment - INFO - Symbol query failed for HBAR, trying ID lookup approach...
+2025-07-02 22:43:08,404 - sentiment - INFO - LunarCrush ID lookup successful for HBAR (ID: 2136)
+2025-07-02 22:43:16,138 - sentiment - INFO - TokenMetrics API call for HBAR: 200
+2025-07-02 22:43:16,139 - sentiment - INFO - TokenMetrics response for HBAR: success=True, length=10
+2025-07-02 22:43:16,139 - sentiment - INFO - TokenMetrics extracted for HBAR: TM_Grade=40.59, TA_Grade=37.65, Quant_Grade=52.37
+2025-07-02 22:43:22,590 - sentiment - INFO - LunarCrush API call for IOTA: 404
+2025-07-02 22:43:22,591 - sentiment - INFO - Symbol query failed for IOTA, trying ID lookup approach...
+2025-07-02 22:43:23,861 - sentiment - INFO - LunarCrush ID lookup successful for IOTA (ID: 17)
+2025-07-02 22:43:31,100 - sentiment - INFO - TokenMetrics API call for IOTA: 200
+2025-07-02 22:43:31,101 - sentiment - INFO - TokenMetrics response for IOTA: success=True, length=10
+2025-07-02 22:43:31,101 - sentiment - INFO - TokenMetrics extracted for IOTA: TM_Grade=28.12, TA_Grade=25.65, Quant_Grade=38
+2025-07-02 22:43:31,320 - modules.market_regime_analyzer - WARNING - LunarCrush API key not available - stocks sentiment will use defaults
+2025-07-02 22:43:31,321 - modules.output_generator - INFO - Market regime analysis sheet created successfully
+2025-07-02 22:43:31,369 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250702_224331.xlsx

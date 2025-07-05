@@ -1,0 +1,22 @@
+2025-06-22 09:58:34,617 - INFO - OKX exchange initialized successfully
+2025-06-22 09:58:37,274 - INFO - Loaded 3731 markets for binance
+2025-06-22 09:58:39,804 - INFO - Loaded 2631 markets for bybit
+2025-06-22 09:58:42,563 - INFO - Loaded 1264 markets for kucoin
+2025-06-22 09:58:43,844 - INFO - Loaded 2560 markets for okx
+2025-06-22 09:58:43,844 - INFO - Successfully initialized 4 exchanges
+2025-06-22 09:58:43,845 - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 09:58:44,794 - INFO - Selected 67 coins for analysis
+2025-06-22 09:58:53,351 - INFO - Quality setup: ETC LONG (binance) - 86% probability, Risk: 1.1%, R:R: 5.19
+2025-06-22 09:58:53,976 - INFO - Quality setup: ETC LONG (bybit) - 86% probability, Risk: 1.1%, R:R: 5.01
+2025-06-22 09:58:54,086 - INFO - Quality setup: ALGO LONG (bybit) - 78% probability, Risk: 1.1%, R:R: 3.25
+2025-06-22 09:58:54,841 - INFO - Quality setup: ETC LONG (kucoin) - 88% probability, Risk: 1.1%, R:R: 4.74
+2025-06-22 09:58:55,424 - INFO - Quality setup: ETC LONG (okx) - 83% probability, Risk: 1.1%, R:R: 5.37
+2025-06-22 09:58:56,075 - INFO - Quality setup: BSV LONG (okx) - 81% probability, Risk: 1.1%, R:R: 3.96
+2025-06-22 09:58:56,757 - INFO - Quality setup: AR LONG (bybit) - 68% probability, Risk: 2.8%, R:R: 2.76
+2025-06-22 09:58:57,566 - INFO - Quality setup: AR LONG (kucoin) - 68% probability, Risk: 2.8%, R:R: 2.72
+2025-06-22 09:58:58,268 - INFO - Quality setup: AR LONG (okx) - 68% probability, Risk: 2.8%, R:R: 2.69
+2025-06-22 09:58:59,123 - INFO - Quality setup: LUNA LONG (bybit) - 73% probability, Risk: 1.9%, R:R: 3.83
+2025-06-22 09:59:01,297 - INFO - Quality setup: IOTA LONG (kucoin) - 83% probability, Risk: 1.3%, R:R: 4.87
+2025-06-22 09:59:02,316 - INFO - Quality setup: KSM LONG (binance) - 68% probability, Risk: 0.3%, R:R: 26.66
+2025-06-22 09:59:03,857 - INFO - Quality setup: ONE LONG (okx) - 68% probability, Risk: 1.8%, R:R: 4.54
+2025-06-22 10:01:49,228 - INFO - Excel output saved to outputs/excel_reports/modular_bb_analysis_20250622_100149.xlsx

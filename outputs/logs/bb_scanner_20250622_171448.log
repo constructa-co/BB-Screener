@@ -1,0 +1,17 @@
+2025-06-22 17:14:48,518 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-22 17:14:52,003 - modules.data_fetcher - INFO - Selected 67 coins for analysis
+2025-06-22 17:15:17,870 - __main__ - INFO - Quality setup: KAS LONG (bybit) - 73% probability, Risk: 1.0%, R:R: 7.25
+2025-06-22 17:15:25,649 - __main__ - INFO - Quality setup: VET LONG (bybit) - 73% probability, Risk: 0.4%, R:R: 19.7
+2025-06-22 17:15:42,965 - __main__ - INFO - Quality setup: COTI LONG (binance) - 81% probability, Risk: 1.3%, R:R: 6.28
+2025-06-22 17:15:46,934 - __main__ - INFO - Quality setup: ONE LONG (okx) - 73% probability, Risk: 0.4%, R:R: 29.82
+2025-06-22 17:15:53,832 - sentiment - INFO - LunarCrush API call for COTI: 404
+2025-06-22 17:15:53,833 - sentiment - WARNING - LunarCrush API error for COTI: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 17:16:07,255 - sentiment - INFO - LunarCrush API call for ONE: 404
+2025-06-22 17:16:07,255 - sentiment - WARNING - LunarCrush API error for ONE: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 17:16:20,625 - sentiment - INFO - LunarCrush API call for VET: 404
+2025-06-22 17:16:20,626 - sentiment - WARNING - LunarCrush API error for VET: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 17:16:34,973 - sentiment - INFO - LunarCrush API call for KAS: 404
+2025-06-22 17:16:34,973 - sentiment - WARNING - LunarCrush API error for KAS: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 17:16:49,461 - sentiment - INFO - LunarCrush API call for XRP: 404
+2025-06-22 17:16:49,461 - sentiment - WARNING - LunarCrush API error for XRP: 404 - {"error":"Invalid endpoint (2)"}
+2025-06-22 17:16:57,363 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250622_171657.xlsx

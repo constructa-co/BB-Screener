@@ -1,0 +1,52 @@
+2025-06-23 06:42:53,683 - __main__ - INFO - Output directories created: outputs, outputs/excel_reports, outputs/logs, outputs/alerts
+2025-06-23 06:42:57,332 - modules.data_fetcher - INFO - Selected 71 coins for analysis
+2025-06-23 06:43:29,964 - __main__ - INFO - Quality setup: IP SHORT (bybit) - 83% probability, Risk: 2.1%, R:R: 4.98
+2025-06-23 06:43:30,645 - __main__ - INFO - Quality setup: IP SHORT (kucoin) - 83% probability, Risk: 2.2%, R:R: 5.27
+2025-06-23 06:43:31,236 - __main__ - INFO - Quality setup: IP SHORT (okx) - 83% probability, Risk: 2.0%, R:R: 5.85
+2025-06-23 06:43:39,138 - __main__ - INFO - Quality setup: EGLD LONG (binance) - 68% probability, Risk: 5.9%, R:R: 1.03
+2025-06-23 06:43:39,650 - __main__ - INFO - Quality setup: EGLD LONG (bybit) - 65% probability, Risk: 5.7%, R:R: 1.08
+2025-06-23 06:43:40,327 - __main__ - INFO - Quality setup: EGLD LONG (kucoin) - 68% probability, Risk: 5.7%, R:R: 1.07
+2025-06-23 06:43:40,878 - __main__ - INFO - Quality setup: EGLD LONG (okx) - 65% probability, Risk: 5.8%, R:R: 1.04
+2025-06-23 06:44:04,975 - sentiment - INFO - LunarCrush API call for IP: 404
+2025-06-23 06:44:04,976 - sentiment - INFO - Symbol query failed for IP, trying ID lookup approach...
+2025-06-23 06:44:06,392 - sentiment - INFO - Cached 6707 coins from LunarCrush list
+2025-06-23 06:44:07,427 - sentiment - INFO - LunarCrush ID lookup successful for IP (ID: 160026)
+2025-06-23 06:44:56,034 - sentiment - INFO - TokenMetrics API call for IP: 200
+2025-06-23 06:44:56,035 - sentiment - INFO - TokenMetrics response for IP: success=True, length=10
+2025-06-23 06:44:56,036 - sentiment - INFO - TokenMetrics extracted for IP: TM_Grade=21.19, TA_Grade=9.79
+2025-06-23 06:45:02,468 - sentiment - INFO - LunarCrush API call for EGLD: 404
+2025-06-23 06:45:02,468 - sentiment - INFO - Symbol query failed for EGLD, trying ID lookup approach...
+2025-06-23 06:45:03,097 - sentiment - INFO - LunarCrush ID lookup successful for EGLD (ID: 2128)
+2025-06-23 06:45:10,646 - sentiment - INFO - TokenMetrics API call for EGLD: 200
+2025-06-23 06:45:10,647 - sentiment - INFO - TokenMetrics response for EGLD: success=True, length=10
+2025-06-23 06:45:10,647 - sentiment - INFO - TokenMetrics extracted for EGLD: TM_Grade=16.24, TA_Grade=9.87
+2025-06-23 06:45:16,985 - sentiment - INFO - LunarCrush API call for FIL: 404
+2025-06-23 06:45:16,985 - sentiment - INFO - Symbol query failed for FIL, trying ID lookup approach...
+2025-06-23 06:45:17,631 - sentiment - INFO - LunarCrush ID lookup successful for FIL (ID: 1813)
+2025-06-23 06:45:24,905 - sentiment - INFO - TokenMetrics API call for FIL: 200
+2025-06-23 06:45:24,905 - sentiment - INFO - TokenMetrics response for FIL: success=True, length=10
+2025-06-23 06:45:24,906 - sentiment - INFO - TokenMetrics extracted for FIL: TM_Grade=13.43, TA_Grade=9.91
+2025-06-23 06:45:31,307 - sentiment - INFO - LunarCrush API call for USTC: 404
+2025-06-23 06:45:31,308 - sentiment - INFO - Symbol query failed for USTC, trying ID lookup approach...
+2025-06-23 06:45:32,104 - sentiment - INFO - LunarCrush ID lookup successful for USTC (ID: 16592)
+2025-06-23 06:45:39,173 - sentiment - INFO - TokenMetrics API call for USTC: 400
+2025-06-23 06:45:39,173 - sentiment - ERROR - TokenMetrics API error for USTC: 400 - {"success":false,"message":"Data Not Found","length":0,"data":[]}
+2025-06-23 06:45:45,540 - sentiment - INFO - LunarCrush API call for FLOW: 404
+2025-06-23 06:45:45,541 - sentiment - INFO - Symbol query failed for FLOW, trying ID lookup approach...
+2025-06-23 06:45:46,206 - sentiment - INFO - LunarCrush ID lookup successful for FLOW (ID: 3555)
+2025-06-23 06:45:53,279 - sentiment - INFO - TokenMetrics API call for FLOW: 200
+2025-06-23 06:45:53,279 - sentiment - INFO - TokenMetrics response for FLOW: success=True, length=10
+2025-06-23 06:45:53,279 - sentiment - INFO - TokenMetrics extracted for FLOW: TM_Grade=20.73, TA_Grade=17.76
+2025-06-23 06:45:59,666 - sentiment - INFO - LunarCrush API call for DASH: 404
+2025-06-23 06:45:59,667 - sentiment - INFO - Symbol query failed for DASH, trying ID lookup approach...
+2025-06-23 06:46:00,224 - sentiment - INFO - LunarCrush ID lookup successful for DASH (ID: 15)
+2025-06-23 06:46:07,312 - sentiment - INFO - TokenMetrics API call for DASH: 200
+2025-06-23 06:46:07,313 - sentiment - INFO - TokenMetrics response for DASH: success=True, length=10
+2025-06-23 06:46:07,313 - sentiment - INFO - TokenMetrics extracted for DASH: TM_Grade=15.55, TA_Grade=9.92
+2025-06-23 06:46:13,666 - sentiment - INFO - LunarCrush API call for ZIL: 404
+2025-06-23 06:46:13,666 - sentiment - INFO - Symbol query failed for ZIL, trying ID lookup approach...
+2025-06-23 06:46:14,254 - sentiment - INFO - LunarCrush ID lookup successful for ZIL (ID: 71)
+2025-06-23 06:46:21,313 - sentiment - INFO - TokenMetrics API call for ZIL: 200
+2025-06-23 06:46:21,314 - sentiment - INFO - TokenMetrics response for ZIL: success=True, length=10
+2025-06-23 06:46:21,314 - sentiment - INFO - TokenMetrics extracted for ZIL: TM_Grade=14.81, TA_Grade=9.92
+2025-06-23 06:46:21,434 - modules.output_generator - INFO - Excel output saved to outputs/excel_reports/bb_analysis_20250623_064621.xlsx
