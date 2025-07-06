@@ -666,9 +666,6 @@ class ComprehensiveBBBacktest:
                 timing_data['max_gain_achieved'] = 0.0
                 timing_data['bb_median_target_pct'] = 0.0
             
-            # Right before return statement, add:
-            print(f"DEBUG: About to return timing fields - time_to_1pct: 8.3")
-            
             return {
                 # Keep your existing working fields:
                 'max_favorable_5': max_favorable_5,
@@ -1199,6 +1196,11 @@ class ComprehensiveBBBacktest:
         """Analyze trade timing and optimal take profit targets"""
         if not bounces:
             return {}
+        
+        # ADD THIS DEBUG:
+        print(f"DEBUG: Analyzing {len(bounces)} bounces")
+        print(f"DEBUG: First bounce keys: {list(bounces[0].keys())}")
+        print(f"DEBUG: Sample timing data: time_to_1pct = {bounces[0].get('time_to_1pct', 'MISSING')}")
         
         # Duration Analysis
         duration_data = {
