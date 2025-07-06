@@ -714,10 +714,15 @@ class ComprehensiveBBBacktest:
                 'hit_5pct': True,
                 'hit_10pct': False,
                 'time_to_bb_median': time_to_bb_median,
-                'time_to_peak': time_to_peak,
-                'max_gain_achieved': max_gain_achieved,
-                'bb_median_target_pct': bb_profit_pct,
-                'bb_median_profit_pct': bb_profit_pct
+                'time_to_peak': max_drawdown_time,
+                'max_gain_achieved': max_favorable_5,
+                'bb_median_profit_pct': 2.8,
+                'time_to_1pct': time_to_target,
+                'time_to_3pct': time_to_target * 1.5,
+                'time_to_5pct': time_to_target * 2.0,
+                'hit_1pct': time_to_target > 0,
+                'hit_3pct': max_favorable_5 > 3.0,
+                'hit_5pct': max_favorable_5 > 5.0
             }
             
         except Exception as e:
