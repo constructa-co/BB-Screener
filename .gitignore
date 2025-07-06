@@ -1,0 +1,26 @@
+# API Keys and Secrets
+config.py
+*.env
+.env.*
+api_keys.py
+secrets.py
+
+# Large Output Files  
+outputs/
+*.json
+*.csv
+*.xlsx
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Backup Files
+*_backup.py
+*_broken_backup.py
