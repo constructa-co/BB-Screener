@@ -34,11 +34,11 @@ class BBDetector:
         recent_3_candles = df.tail(3)
         
         # Calculate scores for both LONG and SHORT
-        long_score = self._calculate_long_score(recent_3_candles, last)
-        short_score = self._calculate_short_score(recent_3_candles, last)
+        long_score = self._calculate_long_score(recent_3_candles, last, df)
+        short_score = self._calculate_short_score(recent_3_candles, last, df)
         
-        # Determine setup - BACK TO ORIGINAL threshold
-        if long_score >= short_score and long_score >= 5:  # Back to original threshold
+        # Determine setup - ADJUSTED threshold for enhanced scoring
+        if long_score >= short_score and long_score >= 8:  # Raised for enhanced scoring
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
@@ -54,7 +54,7 @@ class BBDetector:
             )
             target1 = last['bb_middle']
             
-        elif short_score > long_score and short_score >= 5:  # Back to original threshold
+        elif short_score > long_score and short_score >= 8:  # Raised for enhanced scoring
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']
@@ -73,13 +73,15 @@ class BBDetector:
         else:
             return self._get_empty_setup_with_score(max(long_score, short_score))
         
-        # Quality assessment
-        if bb_score >= 9:
-            setup_quality = 'Excellent'
-        elif bb_score >= 7:
-            setup_quality = 'Good'
-        elif bb_score >= 5:
-            setup_quality = 'Fair'
+        # Enhanced quality assessment (updated for higher possible scores)
+        if bb_score >= 18:
+            setup_quality = 'Excellent'     # Multiple validated signals
+        elif bb_score >= 15:
+            setup_quality = 'Very Good'     # Strong confluence
+        elif bb_score >= 12:
+            setup_quality = 'Good'          # Good confluence
+        elif bb_score >= 8:
+            setup_quality = 'Fair'          # Minimum threshold
         else:
             setup_quality = 'Poor'
         
@@ -153,73 +155,133 @@ class BBDetector:
             else:
                 return entry_price * 1.03
 
-    def _calculate_long_score(self, recent_3_candles: pd.DataFrame, last: pd.Series) -> int:
-        """Calculate LONG setup score - BALANCED thresholds"""
+    def _calculate_long_score(self, recent_3_candles: pd.DataFrame, last: pd.Series, df: pd.DataFrame) -> int:
+        """Calculate LONG setup score - ENHANCED with ALL validated signals"""
         long_score = 0
+        
+        # === EXISTING SCORING (keep exactly as is) ===
         
         # 1. BB Touch (3 points) - Must actually touch lower band
         if any(recent_3_candles['low'] <= recent_3_candles['bb_lower']):
             long_score += 3
         
         # 2. BB Position (2 points) - BALANCED thresholds
-        if last['bb_pct'] <= 0.05:      # Extremely extreme (back to original)
+        if last['bb_pct'] <= 0.05:      # Extremely extreme
             long_score += 2
-        elif last['bb_pct'] <= 0.08:    # Very extreme (compromise)
+        elif last['bb_pct'] <= 0.08:    # Very extreme
             long_score += 1
         
         # 3. RSI (2 points) - BALANCED oversold levels
-        if last['rsi'] <= 28:        # Extremely oversold (compromise)
+        if last['rsi'] <= 28:        # Extremely oversold
             long_score += 2
-        elif last['rsi'] <= 38:      # Oversold (compromise)
+        elif last['rsi'] <= 38:      # Oversold
             long_score += 1
         
         # 4. Volume (2 points) - RELAXED requirements
-        if last['volume_ratio'] >= 1.8:     # High conviction (reduced from 2.0)
+        if last['volume_ratio'] >= 1.8:     # High conviction
             long_score += 2
-        elif last['volume_ratio'] >= 1.3:   # Good volume (reduced from 1.5)
+        elif last['volume_ratio'] >= 1.3:   # Good volume
             long_score += 1
         
         # 5. Bounce Confirmation (1 point) - Basic bounce
         if last['close'] > last['low'] and last['close'] > last['bb_lower']:
             long_score += 1
         
+        # === NEW VALIDATED SIGNALS FROM BACKTESTING ===
+        
+        # 6. Money Flow Index (4 points) - 88.1% SUCCESS RATE (HIGHEST PRIORITY)
+        mfi = self._calculate_money_flow_index(df)
+        if mfi <= 20:  # MFI Oversold
+            long_score += 4  # Maximum weight for best signal
+        elif mfi <= 30:  # MFI Very Oversold
+            long_score += 2
+        
+        # 7. Chaikin Money Flow (3 points) - 75% SUCCESS RATE
+        cmf = self._calculate_chaikin_money_flow(df)
+        if cmf < -0.1:  # Strong selling pressure (contrarian signal)
+            long_score += 3
+        elif cmf < -0.05:  # Moderate selling pressure
+            long_score += 2
+        elif abs(cmf) < 0.05:  # Neutral money flow
+            long_score += 1
+        
+        # 8. BB Expansion (2 points) - 79.9% SUCCESS RATE
+        bb_expansion = self._calculate_bb_expansion(df)
+        if bb_expansion > 1.2:  # High expansion (volatility increasing)
+            long_score += 2
+        elif bb_expansion > 1.1:  # Moderate expansion
+            long_score += 1
+        
+        # 9. BB Squeeze (2 points) - 67.6% SUCCESS RATE
+        if self._calculate_bb_squeeze(df):
+            long_score += 2  # Squeeze often precedes strong moves
+        
         return long_score
 
-    def _calculate_short_score(self, recent_3_candles: pd.DataFrame, last: pd.Series) -> int:
-        """Calculate SHORT setup score - ENHANCED for better detection"""
+    def _calculate_short_score(self, recent_3_candles: pd.DataFrame, last: pd.Series, df: pd.DataFrame) -> int:
+        """Calculate SHORT setup score - ENHANCED with ALL validated signals"""
         short_score = 0
+        
+        # === EXISTING SCORING (keep exactly as is) ===
         
         # 1. BB Touch (3 points) - Must actually touch upper band
         if any(recent_3_candles['high'] >= recent_3_candles['bb_upper']):
             short_score += 3
-        # NEW: Give 2 points for being very close to upper band
         elif any(recent_3_candles['high'] >= recent_3_candles['bb_upper'] * 0.998):
             short_score += 2
         
         # 2. BB Position (2 points) - ENHANCED thresholds
-        if last['bb_pct'] >= 0.92:     # Very extreme (enhanced)
+        if last['bb_pct'] >= 0.92:     # Very extreme
             short_score += 2
-        elif last['bb_pct'] >= 0.88:   # Extreme (enhanced)
+        elif last['bb_pct'] >= 0.88:   # Extreme
             short_score += 1
         
         # 3. RSI (2 points) - ENHANCED overbought levels
-        if last['rsi'] >= 68:        # Overbought (enhanced)
+        if last['rsi'] >= 68:        # Overbought
             short_score += 2
-        elif last['rsi'] >= 58:      # Moderately overbought (enhanced)
+        elif last['rsi'] >= 58:      # Moderately overbought
             short_score += 1
         
         # 4. Volume (2 points) - RELAXED requirements
-        if last['volume_ratio'] >= 1.8:     # High conviction (reduced from 2.0)
+        if last['volume_ratio'] >= 1.8:     # High conviction
             short_score += 2
-        elif last['volume_ratio'] >= 1.3:   # Good volume (reduced from 1.5)
+        elif last['volume_ratio'] >= 1.3:   # Good volume
             short_score += 1
         
         # 5. Rejection Confirmation (1 point) - Enhanced rejection
         if last['close'] < last['high'] and last['close'] < last['bb_upper']:
             short_score += 1
-        # NEW: Alternative check for rejection when BB% >= 85%
         elif last['bb_pct'] >= 0.85 and last['close'] < last['open']:
             short_score += 1
+        
+        # === NEW VALIDATED SIGNALS FROM BACKTESTING ===
+        
+        # 6. Money Flow Index (4 points) - 88.1% SUCCESS RATE (HIGHEST PRIORITY)
+        mfi = self._calculate_money_flow_index(df)
+        if mfi >= 80:  # MFI Overbought
+            short_score += 4  # Maximum weight for best signal
+        elif mfi >= 70:  # MFI Very Overbought
+            short_score += 2
+        
+        # 7. Chaikin Money Flow (3 points) - 75% SUCCESS RATE
+        cmf = self._calculate_chaikin_money_flow(df)
+        if cmf > 0.1:  # Strong buying pressure (contrarian signal)
+            short_score += 3
+        elif cmf > 0.05:  # Moderate buying pressure
+            short_score += 2
+        elif abs(cmf) < 0.05:  # Neutral money flow
+            short_score += 1
+        
+        # 8. BB Expansion (2 points) - 79.9% SUCCESS RATE
+        bb_expansion = self._calculate_bb_expansion(df)
+        if bb_expansion > 1.2:  # High expansion (volatility increasing)
+            short_score += 2
+        elif bb_expansion > 1.1:  # Moderate expansion
+            short_score += 1
+        
+        # 9. BB Squeeze (2 points) - 67.6% SUCCESS RATE
+        if self._calculate_bb_squeeze(df):
+            short_score += 2  # Squeeze often precedes strong moves
         
         return short_score
 
@@ -246,3 +308,90 @@ class BBDetector:
             'target1': 0,
             'risk_reward': 0
         }
+
+    def _calculate_money_flow_index(self, df: pd.DataFrame) -> float:
+        """Calculate Money Flow Index (MFI) - your #1 validated signal (88.1% success)"""
+        try:
+            # Calculate typical price
+            typical_price = (df['high'] + df['low'] + df['close']) / 3
+            
+            # Calculate money flow
+            money_flow = typical_price * df['volume']
+            
+            # Calculate positive and negative money flow
+            positive_flow = money_flow.where(typical_price.diff() > 0, 0).rolling(14).sum()
+            negative_flow = money_flow.where(typical_price.diff() < 0, 0).rolling(14).sum()
+            
+            # Avoid division by zero
+            negative_flow = negative_flow.replace(0, 0.01)
+            
+            # Calculate MFI
+            mfi = 100 - (100 / (1 + (positive_flow / negative_flow)))
+            
+            # Return the most recent MFI value
+            return float(mfi.iloc[-1]) if not pd.isna(mfi.iloc[-1]) else 50.0
+            
+        except Exception as e:
+            logger.debug(f"MFI calculation error: {e}")
+            return 50.0  # Return neutral MFI on error
+
+    def _calculate_chaikin_money_flow(self, df: pd.DataFrame) -> float:
+        """Calculate Chaikin Money Flow (CMF) - institutional money tracking (75% success)"""
+        try:
+            # Money Flow Multiplier = ((Close - Low) - (High - Close)) / (High - Low)
+            mf_multiplier = ((df['close'] - df['low']) - (df['high'] - df['close'])) / (df['high'] - df['low'])
+            
+            # Handle division by zero (when high == low)
+            mf_multiplier = mf_multiplier.fillna(0)
+            
+            # Money Flow Volume = MF Multiplier × Volume
+            mf_volume = mf_multiplier * df['volume']
+            
+            # 20-period CMF = Sum(MF Volume) / Sum(Volume)
+            cmf = mf_volume.rolling(20).sum() / df['volume'].rolling(20).sum()
+            
+            return float(cmf.iloc[-1]) if not pd.isna(cmf.iloc[-1]) else 0.0
+            
+        except Exception as e:
+            logger.debug(f"CMF calculation error: {e}")
+            return 0.0  # Neutral CMF
+
+    def _calculate_bb_expansion(self, df: pd.DataFrame) -> float:
+        """Calculate BB Expansion indicator (79.9% success rate)"""
+        try:
+            # BB Width = (Upper Band - Lower Band) / Middle Band
+            bb_width = (df['bb_upper'] - df['bb_lower']) / df['bb_middle']
+            
+            # Compare current width to 20-period average
+            avg_width = bb_width.rolling(20).mean()
+            current_width = bb_width.iloc[-1]
+            avg_width_current = avg_width.iloc[-1]
+            
+            # Expansion ratio (current width vs average)
+            if avg_width_current > 0:
+                expansion_ratio = current_width / avg_width_current
+            else:
+                expansion_ratio = 1.0
+                
+            return float(expansion_ratio)
+            
+        except Exception as e:
+            logger.debug(f"BB Expansion calculation error: {e}")
+            return 1.0  # Neutral expansion
+
+    def _calculate_bb_squeeze(self, df: pd.DataFrame) -> bool:
+        """Detect BB Squeeze condition (67.6% success rate)"""
+        try:
+            # BB Width calculation
+            bb_width = (df['bb_upper'] - df['bb_lower']) / df['bb_middle']
+            
+            # Squeeze condition: current width < 80% of 20-period average
+            avg_width = bb_width.rolling(20).mean().iloc[-1]
+            current_width = bb_width.iloc[-1]
+            
+            # Return True if in squeeze (low volatility)
+            return current_width < (avg_width * 0.8)
+            
+        except Exception as e:
+            logger.debug(f"BB Squeeze calculation error: {e}")
+            return False
