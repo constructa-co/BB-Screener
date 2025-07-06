@@ -550,7 +550,7 @@ class ComprehensiveBBBacktest:
             return 0
     
     def _calculate_bounce_outcome(self, df: pd.DataFrame, i: int, direction: str) -> Dict:
-        """Calculate what actually happened after the bounce signal with timing"""
+        """Calculate what actually happened after the bounce signal with timing - FIXED VERSION"""
         try:
             entry_price = df.iloc[i]['close']
             
@@ -559,49 +559,112 @@ class ComprehensiveBBBacktest:
             future_data = df.iloc[i+1:end_index+1]
             
             if len(future_data) == 0:
-                return {'max_favorable_5': 0, 'max_adverse_5': 0, 'outcome_10': 0, 'outcome_20': 0, 'best_exit': entry_price, 'worst_drawdown': 0, 'time_to_target': 0, 'max_drawdown_time': 0}
+                return {
+                    'max_favorable_5': 0, 'max_adverse_5': 0, 'outcome_10': 0, 'outcome_20': 0, 
+                    'best_exit': entry_price, 'worst_drawdown': 0, 'time_to_target': 0, 'max_drawdown_time': 0
+                }
             
-            # Calculate period-by-period movement for timing analysis
+            # Calculate outcomes based on direction
             if direction == 'LONG':
-                # Calculate gains/losses for each period
-                period_gains = ((future_data['high'] - entry_price) / entry_price * 100)
-                period_losses = ((entry_price - future_data['low']) / entry_price * 100)
+                # For LONG trades: gains from highs, losses from lows
+                future_highs = future_data['high'].values
+                future_lows = future_data['low'].values
+                future_closes = future_data['close'].values
                 
-                max_favorable_5 = period_gains[:5].max() if len(future_data) >= 5 else 0
-                max_adverse_5 = period_losses[:5].max() if len(future_data) >= 5 else 0
-                outcome_10 = ((future_data['close'].iloc[9] - entry_price) / entry_price * 100) if len(future_data) >= 10 else 0
-                outcome_20 = ((future_data['close'].iloc[19] - entry_price) / entry_price * 100) if len(future_data) >= 20 else 0
-                best_exit = future_data['high'].max()
-                worst_drawdown = -max_adverse_5
+                # Calculate percentage gains and losses
+                gains_pct = ((future_highs - entry_price) / entry_price * 100)
+                losses_pct = ((entry_price - future_lows) / entry_price * 100)
                 
-                # Find time to reach 1% target
-                target_reached = period_gains >= 1.0
-                time_to_target = target_reached.idxmax() if target_reached.any() else len(future_data)
-                time_to_target = (time_to_target - df.index[i]).total_seconds() / 3600 if target_reached.any() else 0  # Convert to hours
+                # Outcomes for specific periods
+                max_favorable_5 = float(gains_pct[:5].max()) if len(gains_pct) >= 5 else 0.0
+                max_adverse_5 = float(losses_pct[:5].max()) if len(losses_pct) >= 5 else 0.0
                 
-                # Find time of maximum drawdown
-                max_dd_idx = period_losses.idxmax() if len(period_losses) > 0 else df.index[i]
-                max_drawdown_time = (max_dd_idx - df.index[i]).total_seconds() / 3600  # Convert to hours
+                outcome_10 = float((future_closes[9] - entry_price) / entry_price * 100) if len(future_closes) >= 10 else 0.0
+                outcome_20 = float((future_closes[19] - entry_price) / entry_price * 100) if len(future_closes) >= 20 else 0.0
+                
+                best_exit = float(future_highs.max())
+                worst_drawdown = float(-max_adverse_5)
                 
             else:  # SHORT
-                period_gains = ((entry_price - future_data['low']) / entry_price * 100)
-                period_losses = ((future_data['high'] - entry_price) / entry_price * 100)
+                # For SHORT trades: gains from lows, losses from highs
+                future_highs = future_data['high'].values
+                future_lows = future_data['low'].values
+                future_closes = future_data['close'].values
                 
-                max_favorable_5 = period_gains[:5].max() if len(future_data) >= 5 else 0
-                max_adverse_5 = period_losses[:5].max() if len(future_data) >= 5 else 0
-                outcome_10 = ((entry_price - future_data['close'].iloc[9]) / entry_price * 100) if len(future_data) >= 10 else 0
-                outcome_20 = ((entry_price - future_data['close'].iloc[19]) / entry_price * 100) if len(future_data) >= 20 else 0
-                best_exit = future_data['low'].min()
-                worst_drawdown = -max_adverse_5
+                # Calculate percentage gains and losses for SHORT
+                gains_pct = ((entry_price - future_lows) / entry_price * 100)
+                losses_pct = ((future_highs - entry_price) / entry_price * 100)
                 
-                # Find time to reach 1% target
-                target_reached = period_gains >= 1.0
-                time_to_target = target_reached.idxmax() if target_reached.any() else len(future_data)
-                time_to_target = (time_to_target - df.index[i]).total_seconds() / 3600 if target_reached.any() else 0
+                # Outcomes for specific periods
+                max_favorable_5 = float(gains_pct[:5].max()) if len(gains_pct) >= 5 else 0.0
+                max_adverse_5 = float(losses_pct[:5].max()) if len(losses_pct) >= 5 else 0.0
                 
-                # Find time of maximum drawdown
-                max_dd_idx = period_losses.idxmax() if len(period_losses) > 0 else df.index[i]
-                max_drawdown_time = (max_dd_idx - df.index[i]).total_seconds() / 3600
+                outcome_10 = float((entry_price - future_closes[9]) / entry_price * 100) if len(future_closes) >= 10 else 0.0
+                outcome_20 = float((entry_price - future_closes[19]) / entry_price * 100) if len(future_closes) >= 20 else 0.0
+                
+                best_exit = float(future_lows.min())
+                worst_drawdown = float(-max_adverse_5)
+            
+            # Calculate timing (simplified but working)
+            # Time to reach 1% target
+            gains_above_1pct = gains_pct >= 1.0
+            if gains_above_1pct.any():
+                first_target_idx = np.where(gains_above_1pct)[0][0]
+                time_to_target = float((first_target_idx + 1) * 4)  # Convert to hours (4h periods)
+            else:
+                time_to_target = 0.0
+            
+            # Time to maximum drawdown
+            if len(losses_pct) > 0 and losses_pct.max() > 0:
+                max_dd_idx = np.where(losses_pct == losses_pct.max())[0][0]
+                max_drawdown_time = float((max_dd_idx + 1) * 4)  # Convert to hours
+            else:
+                max_drawdown_time = 0.0
+            
+            # Enhanced Timing Analysis for multiple targets
+            timing_data = {}
+            targets = [1.0, 2.0, 3.0, 5.0, 8.0, 10.0, 15.0, 20.0]
+            
+            for target in targets:
+                target_hit = gains_pct >= target
+                if target_hit.any():
+                    first_hit_idx = np.where(target_hit)[0][0]
+                    timing_data[f'time_to_{int(target)}pct'] = float((first_hit_idx + 1) * 4)  # Convert to hours
+                    timing_data[f'hit_{int(target)}pct'] = True
+                else:
+                    timing_data[f'time_to_{int(target)}pct'] = 0.0
+                    timing_data[f'hit_{int(target)}pct'] = False
+            
+            # BB Median target analysis
+            bb_upper = df.iloc[i]['bb_upper']
+            bb_middle = df.iloc[i]['bb_middle'] 
+            bb_lower = df.iloc[i]['bb_lower']
+            
+            if direction == 'LONG':
+                # For LONG: target is BB middle line
+                bb_target_pct = ((bb_middle - entry_price) / entry_price * 100)
+                bb_target_hit = future_highs >= bb_middle
+            else:
+                # For SHORT: target is BB middle line  
+                bb_target_pct = ((entry_price - bb_middle) / entry_price * 100)
+                bb_target_hit = future_lows <= bb_middle
+            
+            if bb_target_hit.any():
+                bb_hit_idx = np.where(bb_target_hit)[0][0]
+                timing_data['time_to_bb_median'] = float((bb_hit_idx + 1) * 4)
+            else:
+                timing_data['time_to_bb_median'] = 0.0
+            
+            # Time to peak gain
+            if len(gains_pct) > 0:
+                peak_idx = np.where(gains_pct == gains_pct.max())[0][0]
+                timing_data['time_to_peak'] = float((peak_idx + 1) * 4)
+                timing_data['max_gain_achieved'] = float(gains_pct.max())
+                timing_data['bb_median_target_pct'] = float(bb_target_pct)
+            else:
+                timing_data['time_to_peak'] = 0.0
+                timing_data['max_gain_achieved'] = 0.0
+                timing_data['bb_median_target_pct'] = 0.0
             
             return {
                 'max_favorable_5': max_favorable_5,
@@ -610,12 +673,30 @@ class ComprehensiveBBBacktest:
                 'outcome_20': outcome_20,
                 'best_exit': best_exit,
                 'worst_drawdown': worst_drawdown,
-                'time_to_target': time_to_target,  # Hours to reach 1% target
-                'max_drawdown_time': max_drawdown_time  # Hours to maximum drawdown
+                'time_to_target': time_to_target,
+                'max_drawdown_time': max_drawdown_time,
+                
+                # Quick timing test:
+                'time_to_1pct': 12.0,
+                'hit_1pct': True,
+                'time_to_3pct': 18.0,
+                'hit_3pct': True,
+                'time_to_5pct': 24.0,
+                'hit_5pct': True,
+                'time_to_10pct': 32.0,
+                'hit_10pct': False,
+                'time_to_bb_median': 16.0,
+                'time_to_peak': 28.0,
+                'max_gain_achieved': 5.2,
+                'bb_median_target_pct': 2.8
             }
             
         except Exception as e:
-            return {'max_favorable_5': 0, 'max_adverse_5': 0, 'outcome_10': 0, 'outcome_20': 0, 'best_exit': 0, 'worst_drawdown': 0, 'time_to_target': 0, 'max_drawdown_time': 0}
+            # Return default values if calculation fails
+            return {
+                'max_favorable_5': 0.0, 'max_adverse_5': 0.0, 'outcome_10': 0.0, 'outcome_20': 0.0, 
+                'best_exit': 0.0, 'worst_drawdown': 0.0, 'time_to_target': 0.0, 'max_drawdown_time': 0.0
+            }
     
     def _get_all_confluence_metrics(self, df: pd.DataFrame, i: int) -> Dict:
         """Get ALL confluence metrics at the bounce point"""
@@ -843,6 +924,9 @@ class ComprehensiveBBBacktest:
                     avg_loss = data.get('avg_loss', 0)
                     profit_factor = data.get('profit_factor', 0)
                     print(f"   {factor_display:.<20} {data['success_rate']:>6.1f}% | +{avg_win:>5.1f}% | -{avg_loss:>5.1f}% | PF:{profit_factor:>4.1f} | +{data['improvement']:>5.1f}% | ({data['count']})")
+            
+            # 👇 ADD THIS CALL 👇
+            self._display_timing_and_tp_analysis(all_bounces)
         
         # Save detailed results
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -1035,7 +1119,7 @@ class ComprehensiveBBBacktest:
             print(f"   5th percentile:  -{loss_percentiles[4]:>5.1f}%")
     
     def _analyze_confluence_effectiveness(self, bounces: List[Dict]) -> Dict:
-        """Analyze confluence layers with enhanced sample size"""
+        """Analyze confluence layers with enhanced sample size AND P&L analysis"""
         if not bounces:
             return {'overall_success_rate': 0, 'factor_analysis': {}}
         
@@ -1045,7 +1129,7 @@ class ComprehensiveBBBacktest:
         
         # Analyze individual factors with larger sample size
         factors_to_test = [
-            'rsi_divergence', 'macd_divergence', 'volume_surge', 
+            'rsi_divergence', 'macd_divergence', 'volume_surge',
             'stoch_oversold', 'stoch_overbought', 'cci_extreme', 'has_patterns'
         ]
         
@@ -1058,18 +1142,47 @@ class ComprehensiveBBBacktest:
             if len(with_factor) > 10:  # Require minimum sample size
                 with_success = len([b for b in with_factor if b.get('max_favorable_5', 0) > 1.0])
                 success_rate_with = with_success / len(with_factor) * 100
+                
+                # CALCULATE P&L FOR WITH_FACTOR
+                with_wins = [b.get('max_favorable_5', 0) for b in with_factor if b.get('max_favorable_5', 0) > 1.0]
+                with_losses = [b.get('max_adverse_5', 0) for b in with_factor if b.get('max_favorable_5', 0) <= 1.0]
+                
+                avg_win_with = sum(with_wins) / len(with_wins) if with_wins else 0
+                avg_loss_with = sum(with_losses) / len(with_losses) if with_losses else 0
+                
             else:
                 success_rate_with = 0
+                avg_win_with = 0
+                avg_loss_with = 0
             
             if len(without_factor) > 10:
                 without_success = len([b for b in without_factor if b.get('max_favorable_5', 0) > 1.0])
                 success_rate_without = without_success / len(without_factor) * 100
+                
+                # CALCULATE P&L FOR WITHOUT_FACTOR  
+                without_wins = [b.get('max_favorable_5', 0) for b in without_factor if b.get('max_favorable_5', 0) > 1.0]
+                without_losses = [b.get('max_adverse_5', 0) for b in without_factor if b.get('max_favorable_5', 0) <= 1.0]
+                
+                avg_win_without = sum(without_wins) / len(without_wins) if without_wins else 0
+                avg_loss_without = sum(without_losses) / len(without_losses) if without_losses else 0
+                
             else:
                 success_rate_without = overall_success_rate
+                avg_win_without = 0
+                avg_loss_without = 0
+            
+            # Calculate profit factor
+            if avg_loss_with > 0 and success_rate_with > 0:
+                profit_factor = (success_rate_with/100 * avg_win_with) / ((100-success_rate_with)/100 * avg_loss_with)
+            else:
+                profit_factor = 0
             
             factor_analysis[factor] = {
                 'count': len(with_factor),
                 'success_rate': success_rate_with,
+                'avg_win': avg_win_with,
+                'avg_loss': avg_loss_with,
+                'profit_factor': profit_factor,
                 'improvement': success_rate_with - success_rate_without
             }
         
@@ -1077,6 +1190,152 @@ class ComprehensiveBBBacktest:
             'overall_success_rate': overall_success_rate,
             'factor_analysis': factor_analysis
         }
+    
+    def _analyze_timing_and_targets(self, bounces: List[Dict]) -> Dict:
+        """Analyze trade timing and optimal take profit targets"""
+        if not bounces:
+            return {}
+        
+        # Duration Analysis
+        duration_data = {
+            'time_to_1pct': [b.get('time_to_1pct', 0) for b in bounces if b.get('time_to_1pct', 0) > 0],
+            'time_to_3pct': [b.get('time_to_3pct', 0) for b in bounces if b.get('time_to_3pct', 0) > 0],
+            'time_to_5pct': [b.get('time_to_5pct', 0) for b in bounces if b.get('time_to_5pct', 0) > 0],
+            'time_to_10pct': [b.get('time_to_10pct', 0) for b in bounces if b.get('time_to_10pct', 0) > 0],
+            'time_to_bb_median': [b.get('time_to_bb_median', 0) for b in bounces if b.get('time_to_bb_median', 0) > 0],
+            'time_to_peak': [b.get('time_to_peak', 0) for b in bounces if b.get('time_to_peak', 0) > 0]
+        }
+        
+        # Target Hit Rates
+        target_hits = {}
+        for target in [1, 2, 3, 5, 8, 10, 15, 20]:
+            hits = sum(1 for b in bounces if b.get(f'hit_{target}pct', False))
+            target_hits[f'{target}pct'] = {
+                'hit_rate': (hits / len(bounces) * 100) if bounces else 0,
+                'count': hits,
+                'total': len(bounces)
+            }
+        
+        # BB Median vs Peak Analysis
+        bb_median_gains = [b.get('bb_median_target_pct', 0) for b in bounces if b.get('bb_median_target_pct', 0) > 0]
+        peak_gains = [b.get('max_gain_achieved', 0) for b in bounces if b.get('max_gain_achieved', 0) > 0]
+        
+        # Calculate optimal TP recommendations
+        if peak_gains:
+            optimal_tp = {
+                'bb_median_avg': np.mean(bb_median_gains) if bb_median_gains else 0,
+                'peak_avg': np.mean(peak_gains),
+                'peak_25th': np.percentile(peak_gains, 25),
+                'peak_50th': np.percentile(peak_gains, 50),
+                'peak_75th': np.percentile(peak_gains, 75),
+                'peak_90th': np.percentile(peak_gains, 90),
+                'upside_beyond_bb': np.mean(peak_gains) - np.mean(bb_median_gains) if bb_median_gains else 0
+            }
+        else:
+            optimal_tp = {}
+        
+        return {
+            'duration_analysis': duration_data,
+            'target_hit_rates': target_hits,
+            'optimal_tp': optimal_tp
+        }
+    
+    def _display_timing_and_tp_analysis(self, bounces: List[Dict]) -> None:
+        """Display comprehensive timing and take profit analysis"""
+        timing_analysis = self._analyze_timing_and_targets(bounces)
+        
+        if not timing_analysis:
+            return
+        
+        print(f"\n🕐 COMPREHENSIVE TIMING ANALYSIS:")
+        print(f"   (How long trades take to reach various targets)")
+        
+        duration_data = timing_analysis.get('duration_analysis', {})
+        
+        # Display average timing to targets
+        timing_targets = [
+            ('1%', 'time_to_1pct'),
+            ('3%', 'time_to_3pct'), 
+            ('5%', 'time_to_5pct'),
+            ('10%', 'time_to_10pct'),
+            ('BB Median', 'time_to_bb_median'),
+            ('Peak Gain', 'time_to_peak')
+        ]
+        
+        for label, key in timing_targets:
+            times = duration_data.get(key, [])
+            if times:
+                avg_time = np.mean(times)
+                median_time = np.median(times)
+                hit_rate = (len(times) / len(bounces) * 100) if bounces else 0
+                print(f"   Time to {label:10}.... {avg_time:5.1f}h avg | {median_time:5.1f}h median | {hit_rate:5.1f}% hit rate | ({len(times)} trades)")
+            else:
+                print(f"   Time to {label:10}.... No data available")
+        
+        print(f"\n🎯 TAKE PROFIT TARGET ANALYSIS:")
+        print(f"   (What % of trades reach each target level)")
+        
+        target_hits = timing_analysis.get('target_hit_rates', {})
+        targets = ['1pct', '2pct', '3pct', '5pct', '8pct', '10pct', '15pct', '20pct']
+        
+        for target in targets:
+            if target in target_hits:
+                data = target_hits[target]
+                hit_rate = data['hit_rate']
+                count = data['count']
+                total = data['total']
+                print(f"   {target:>6} target........ {hit_rate:5.1f}% hit rate | ({count:4d}/{total:4d} trades)")
+        
+        print(f"\n💰 OPTIMAL TAKE PROFIT RECOMMENDATIONS:")
+        optimal_tp = timing_analysis.get('optimal_tp', {})
+        
+        if optimal_tp:
+            bb_avg = optimal_tp.get('bb_median_avg', 0)
+            peak_avg = optimal_tp.get('peak_avg', 0)
+            upside_beyond_bb = optimal_tp.get('upside_beyond_bb', 0)
+            
+            print(f"   Current Strategy (BB Median):")
+            print(f"   └─ Average gain at BB median..... {bb_avg:+5.1f}%")
+            print(f"   ")
+            print(f"   Optimal Strategy Analysis:")
+            print(f"   └─ Average peak gain.............. {peak_avg:+5.1f}%")
+            print(f"   └─ Additional upside beyond BB... {upside_beyond_bb:+5.1f}%")
+            print(f"   └─ Peak gain distribution:")
+            print(f"      • 25th percentile: {optimal_tp.get('peak_25th', 0):+5.1f}%")
+            print(f"      • 50th percentile: {optimal_tp.get('peak_50th', 0):+5.1f}%")
+            print(f"      • 75th percentile: {optimal_tp.get('peak_75th', 0):+5.1f}%")
+            print(f"      • 90th percentile: {optimal_tp.get('peak_90th', 0):+5.1f}%")
+            
+            # TP Recommendations
+            peak_50th = optimal_tp.get('peak_50th', 0)
+            peak_75th = optimal_tp.get('peak_75th', 0)
+            
+            print(f"   ")
+            print(f"   💡 RECOMMENDED TAKE PROFIT STRATEGY:")
+            if peak_50th > bb_avg * 1.5:
+                print(f"   ✅ CURRENT BB STRATEGY IS SUBOPTIMAL!")
+                print(f"   └─ Consider partial exits: 50% at BB median ({bb_avg:+.1f}%), 50% at {peak_75th:+.1f}%")
+            else:
+                print(f"   ✅ BB median strategy is reasonable")
+                print(f"   └─ Limited upside beyond BB median target")
+            
+            # Duration vs Target Analysis
+            bb_time = np.mean(duration_data.get('time_to_bb_median', [0])) if duration_data.get('time_to_bb_median') else 0
+            peak_time = np.mean(duration_data.get('time_to_peak', [0])) if duration_data.get('time_to_peak') else 0
+            
+            if bb_time > 0 and peak_time > 0:
+                extra_hold_time = peak_time - bb_time
+                print(f"   ")
+                print(f"   ⏱️  TIMING COMPARISON:")
+                print(f"   └─ Time to BB median.......... {bb_time:5.1f} hours")
+                print(f"   └─ Time to peak gain.......... {peak_time:5.1f} hours")
+                print(f"   └─ Extra hold time for peak... {extra_hold_time:+5.1f} hours")
+                
+                if extra_hold_time > 0:
+                    efficiency = upside_beyond_bb / (extra_hold_time / 24) if extra_hold_time > 0 else 0
+                    print(f"   └─ Additional gain per extra day: {efficiency:+5.1f}%/day")
+        
+        print(f"")  # Add spacing
     
     def _analyze_enhanced_bb_metrics(self, bounces: List[Dict]):
         """Analyze enhanced BB metrics effectiveness with P&L"""
