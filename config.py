@@ -22,7 +22,7 @@ TOKENMETRICS_API_KEY = os.getenv('TOKENMETRICS_API_KEY')
 
 # === SCANNER CONFIGURATION ===
 SCANNER_CONFIG = {
-    "top_coins_limit": 500,
+    "top_coins_limit": 1000,
     "min_volume_24h": 1_000_000,
     "primary_timeframe": "4h",
     "confirmation_timeframes": ["1h", "1d"],
