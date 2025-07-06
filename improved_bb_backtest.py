@@ -666,6 +666,33 @@ class ComprehensiveBBBacktest:
                 timing_data['max_gain_achieved'] = 0.0
                 timing_data['bb_median_target_pct'] = 0.0
             
+            # === PROFIT TARGET TIMING ANALYSIS ===
+            entry_price = df.iloc[i]['close']
+            bb_middle = df.iloc[i]['bb_middle']
+
+            # Calculate BB median profit percentage
+            if direction == 'LONG':
+                bb_profit_pct = ((bb_middle - entry_price) / entry_price * 100)
+            else:
+                bb_profit_pct = ((entry_price - bb_middle) / entry_price * 100)
+
+            # Time to reach BB median target (same logic as your existing time_to_target)
+            gains_above_bb = gains_pct >= bb_profit_pct
+            if gains_above_bb.any():
+                bb_target_idx = np.where(gains_above_bb)[0][0]
+                time_to_bb_median = float((bb_target_idx + 1) * 4)  # Convert to hours
+            else:
+                time_to_bb_median = 0.0
+
+            # Time to peak profit (maximum gain achieved)
+            if len(gains_pct) > 0 and gains_pct.max() > 0:
+                peak_idx = np.where(gains_pct == gains_pct.max())[0][0]
+                time_to_peak = float((peak_idx + 1) * 4)  # Convert to hours
+                max_gain_achieved = float(gains_pct.max())
+            else:
+                time_to_peak = 0.0
+                max_gain_achieved = 0.0
+            
             return {
                 # Keep your existing working fields:
                 'max_favorable_5': max_favorable_5,
@@ -686,10 +713,11 @@ class ComprehensiveBBBacktest:
                 'hit_3pct': True,
                 'hit_5pct': True,
                 'hit_10pct': False,
-                'time_to_bb_median': 16.0,
-                'time_to_peak': 28.0,
-                'max_gain_achieved': 5.2,
-                'bb_median_target_pct': 2.8
+                'time_to_bb_median': time_to_bb_median,
+                'time_to_peak': time_to_peak,
+                'max_gain_achieved': max_gain_achieved,
+                'bb_median_target_pct': bb_profit_pct,
+                'bb_median_profit_pct': bb_profit_pct
             }
             
         except Exception as e:
