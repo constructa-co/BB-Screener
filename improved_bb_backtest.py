@@ -299,6 +299,18 @@ class ComprehensiveBBBacktest:
                 # Timing data
                 'time_to_target': outcome['time_to_target'],
                 'max_drawdown_time': outcome['max_drawdown_time'],
+                'time_to_1pct': outcome['time_to_1pct'],
+                'time_to_3pct': outcome['time_to_3pct'],
+                'time_to_5pct': outcome['time_to_5pct'],
+                'time_to_10pct': outcome['time_to_10pct'],
+                'time_to_bb_median': outcome['time_to_bb_median'],
+                'time_to_peak': outcome['time_to_peak'],
+                'max_gain_achieved': outcome['max_gain_achieved'],
+                'bb_median_profit_pct': outcome['bb_median_profit_pct'],
+                'hit_1pct': outcome['hit_1pct'],
+                'hit_3pct': outcome['hit_3pct'],
+                'hit_5pct': outcome['hit_5pct'],
+                'hit_10pct': outcome['hit_10pct'],
                 
                 # Confluence Metrics
                 'rsi': confluence_metrics['rsi'],
