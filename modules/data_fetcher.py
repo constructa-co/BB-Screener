@@ -80,7 +80,7 @@ class MarketDataFetcher:
             url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
             headers = {"X-CMC_PRO_API_KEY": CMC_API_KEY}
             params = {
-                "limit": 300,
+                "limit": 500,
                 "sort": "volume_24h",
                 "cryptocurrency_type": "coins"
             }

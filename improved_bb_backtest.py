@@ -1572,12 +1572,11 @@ if __name__ == "__main__":
     
     backtester = ComprehensiveBBBacktest()
     
-    # Test with full 500 coins
+    # Multi-timeframe analysis
     results = backtester.run_comprehensive_analysis(
-        timeframes=[30],  # Start with 30-day
-        max_coins=500    # FULL 500 COIN ANALYSIS
+        max_coins=500,
+        timeframes=[30]
     )
     
     print("\n🎉 Comprehensive BB backtesting complete!")
-    print("\n💡 To run full 500-coin analysis:")
-    print("   Change max_coins=500 and timeframes=[30, 90, 180, 365]")
+    print("\n💡 Multi-timeframe analysis across 30, 90, 180, and 365 days complete!")

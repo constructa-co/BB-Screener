@@ -299,6 +299,18 @@ class ComprehensiveBBBacktest:
                 # Timing data
                 'time_to_target': outcome['time_to_target'],
                 'max_drawdown_time': outcome['max_drawdown_time'],
+                'time_to_1pct': outcome['time_to_1pct'],
+                'time_to_3pct': outcome['time_to_3pct'],
+                'time_to_5pct': outcome['time_to_5pct'],
+                'time_to_10pct': outcome['time_to_10pct'],
+                'time_to_bb_median': outcome['time_to_bb_median'],
+                'time_to_peak': outcome['time_to_peak'],
+                'max_gain_achieved': outcome['max_gain_achieved'],
+                'bb_median_profit_pct': outcome['bb_median_profit_pct'],
+                'hit_1pct': outcome['hit_1pct'],
+                'hit_3pct': outcome['hit_3pct'],
+                'hit_5pct': outcome['hit_5pct'],
+                'hit_10pct': outcome['hit_10pct'],
                 
                 # Confluence Metrics
                 'rsi': confluence_metrics['rsi'],
@@ -550,7 +562,32 @@ class ComprehensiveBBBacktest:
             return 0
     
     def _calculate_bounce_outcome(self, df: pd.DataFrame, i: int, direction: str) -> Dict:
-        """Calculate what actually happened after the bounce signal with timing - FIXED VERSION"""
+        """Calculate what actually happened after the bounce signal with timing - COMPLETELY FIXED VERSION"""
+        
+        # 🔧 FIX 1: Initialize ALL timing variables at the start
+        time_to_1pct = 0.0
+        time_to_3pct = 0.0
+        time_to_5pct = 0.0
+        time_to_10pct = 0.0
+        time_to_bb_median = 0.0
+        time_to_peak = 0.0
+        max_gain_achieved = 0.0
+        bb_profit_pct = 0.0
+        hit_1pct = False
+        hit_3pct = False
+        hit_5pct = False
+        hit_10pct = False
+        
+        # Initialize existing fields
+        max_favorable_5 = 0.0
+        max_adverse_5 = 0.0
+        outcome_10 = 0.0
+        outcome_20 = 0.0
+        best_exit = 0.0
+        worst_drawdown = 0.0
+        time_to_target = 0.0
+        max_drawdown_time = 0.0
+        
         try:
             entry_price = df.iloc[i]['close']
             
@@ -560,8 +597,14 @@ class ComprehensiveBBBacktest:
             
             if len(future_data) == 0:
                 return {
-                    'max_favorable_5': 0, 'max_adverse_5': 0, 'outcome_10': 0, 'outcome_20': 0, 
-                    'best_exit': entry_price, 'worst_drawdown': 0, 'time_to_target': 0, 'max_drawdown_time': 0
+                    'max_favorable_5': max_favorable_5, 'max_adverse_5': max_adverse_5, 
+                    'outcome_10': outcome_10, 'outcome_20': outcome_20, 
+                    'best_exit': entry_price, 'worst_drawdown': worst_drawdown, 
+                    'time_to_target': time_to_target, 'max_drawdown_time': max_drawdown_time,
+                    # 🔧 FIX 2: Include ALL timing fields in early return
+                    'time_to_1pct': time_to_1pct, 'time_to_3pct': time_to_3pct, 'time_to_5pct': time_to_5pct, 'time_to_10pct': time_to_10pct,
+                    'time_to_bb_median': time_to_bb_median, 'time_to_peak': time_to_peak, 'max_gain_achieved': max_gain_achieved, 'bb_median_profit_pct': bb_profit_pct,
+                    'hit_1pct': hit_1pct, 'hit_3pct': hit_3pct, 'hit_5pct': hit_5pct, 'hit_10pct': hit_10pct
                 }
             
             # Calculate outcomes based on direction
@@ -605,96 +648,116 @@ class ComprehensiveBBBacktest:
                 best_exit = float(future_lows.min())
                 worst_drawdown = float(-max_adverse_5)
             
-            # Calculate timing (simplified but working)
-            # Time to reach 1% target
-            gains_above_1pct = gains_pct >= 1.0
-            if gains_above_1pct.any():
-                first_target_idx = np.where(gains_above_1pct)[0][0]
-                time_to_target = float((first_target_idx + 1) * 4)  # Convert to hours (4h periods)
-            else:
+            # 🔧 FIX 3: Calculate timing with individual error handling
+            try:
+                # Time to reach 1% target
+                gains_above_1pct = gains_pct >= 1.0
+                if gains_above_1pct.any():
+                    first_target_idx = np.where(gains_above_1pct)[0][0]
+                    time_to_target = float((first_target_idx + 1) * 4)  # Convert to hours (4h periods)
+                    time_to_1pct = time_to_target
+                    hit_1pct = True
+                else:
+                    time_to_target = 0.0
+                    time_to_1pct = 0.0
+                    hit_1pct = False
+            except Exception as e:
                 time_to_target = 0.0
+                time_to_1pct = 0.0
+                hit_1pct = False
             
-            # Time to maximum drawdown
-            if len(losses_pct) > 0 and losses_pct.max() > 0:
-                max_dd_idx = np.where(losses_pct == losses_pct.max())[0][0]
-                max_drawdown_time = float((max_dd_idx + 1) * 4)  # Convert to hours
-            else:
+            try:
+                # Time to maximum drawdown
+                if len(losses_pct) > 0 and losses_pct.max() > 0:
+                    max_dd_idx = np.where(losses_pct == losses_pct.max())[0][0]
+                    max_drawdown_time = float((max_dd_idx + 1) * 4)  # Convert to hours
+                else:
+                    max_drawdown_time = 0.0
+            except Exception as e:
                 max_drawdown_time = 0.0
             
-            # Enhanced Timing Analysis for multiple targets
-            timing_data = {}
-            targets = [1.0, 2.0, 3.0, 5.0, 8.0, 10.0, 15.0, 20.0]
-            
-            for target in targets:
-                target_hit = gains_pct >= target
-                if target_hit.any():
-                    first_hit_idx = np.where(target_hit)[0][0]
-                    timing_data[f'time_to_{int(target)}pct'] = float((first_hit_idx + 1) * 4)  # Convert to hours
-                    timing_data[f'hit_{int(target)}pct'] = True
+            # 🔧 FIX 4: Calculate all timing targets with error handling
+            try:
+                # Time to 3% target
+                gains_above_3pct = gains_pct >= 3.0
+                if gains_above_3pct.any():
+                    first_3pct_idx = np.where(gains_above_3pct)[0][0]
+                    time_to_3pct = float((first_3pct_idx + 1) * 4)
+                    hit_3pct = True
                 else:
-                    timing_data[f'time_to_{int(target)}pct'] = 0.0
-                    timing_data[f'hit_{int(target)}pct'] = False
+                    time_to_3pct = 0.0
+                    hit_3pct = False
+            except Exception as e:
+                time_to_3pct = 0.0
+                hit_3pct = False
             
-            # BB Median target analysis
-            bb_upper = df.iloc[i]['bb_upper']
-            bb_middle = df.iloc[i]['bb_middle'] 
-            bb_lower = df.iloc[i]['bb_lower']
+            try:
+                # Time to 5% target
+                gains_above_5pct = gains_pct >= 5.0
+                if gains_above_5pct.any():
+                    first_5pct_idx = np.where(gains_above_5pct)[0][0]
+                    time_to_5pct = float((first_5pct_idx + 1) * 4)
+                    hit_5pct = True
+                else:
+                    time_to_5pct = 0.0
+                    hit_5pct = False
+            except Exception as e:
+                time_to_5pct = 0.0
+                hit_5pct = False
             
-            if direction == 'LONG':
-                # For LONG: target is BB middle line
-                bb_target_pct = ((bb_middle - entry_price) / entry_price * 100)
-                bb_target_hit = future_highs >= bb_middle
-            else:
-                # For SHORT: target is BB middle line  
-                bb_target_pct = ((entry_price - bb_middle) / entry_price * 100)
-                bb_target_hit = future_lows <= bb_middle
+            try:
+                # Time to 10% target
+                gains_above_10pct = gains_pct >= 10.0
+                if gains_above_10pct.any():
+                    first_10pct_idx = np.where(gains_above_10pct)[0][0]
+                    time_to_10pct = float((first_10pct_idx + 1) * 4)
+                    hit_10pct = True
+                else:
+                    time_to_10pct = 0.0
+                    hit_10pct = False
+            except Exception as e:
+                time_to_10pct = 0.0
+                hit_10pct = False
             
-            if bb_target_hit.any():
-                bb_hit_idx = np.where(bb_target_hit)[0][0]
-                timing_data['time_to_bb_median'] = float((bb_hit_idx + 1) * 4)
-            else:
-                timing_data['time_to_bb_median'] = 0.0
-            
-            # Time to peak gain
-            if len(gains_pct) > 0:
-                peak_idx = np.where(gains_pct == gains_pct.max())[0][0]
-                timing_data['time_to_peak'] = float((peak_idx + 1) * 4)
-                timing_data['max_gain_achieved'] = float(gains_pct.max())
-                timing_data['bb_median_target_pct'] = float(bb_target_pct)
-            else:
-                timing_data['time_to_peak'] = 0.0
-                timing_data['max_gain_achieved'] = 0.0
-                timing_data['bb_median_target_pct'] = 0.0
-            
-            # === PROFIT TARGET TIMING ANALYSIS ===
-            entry_price = df.iloc[i]['close']
-            bb_middle = df.iloc[i]['bb_middle']
-
-            # Calculate BB median profit percentage
-            if direction == 'LONG':
-                bb_profit_pct = ((bb_middle - entry_price) / entry_price * 100)
-            else:
-                bb_profit_pct = ((entry_price - bb_middle) / entry_price * 100)
-
-            # Time to reach BB median target (same logic as your existing time_to_target)
-            gains_above_bb = gains_pct >= bb_profit_pct
-            if gains_above_bb.any():
-                bb_target_idx = np.where(gains_above_bb)[0][0]
-                time_to_bb_median = float((bb_target_idx + 1) * 4)  # Convert to hours
-            else:
+            # 🔧 FIX 5: BB Median target analysis with error handling
+            try:
+                bb_middle = df.iloc[i]['bb_middle']
+                
+                # Calculate BB median profit percentage
+                if direction == 'LONG':
+                    bb_profit_pct = ((bb_middle - entry_price) / entry_price * 100)
+                    bb_target_hit = future_highs >= bb_middle
+                else:
+                    bb_profit_pct = ((entry_price - bb_middle) / entry_price * 100)
+                    bb_target_hit = future_lows <= bb_middle
+                
+                # Time to reach BB median target
+                gains_above_bb = gains_pct >= bb_profit_pct
+                if gains_above_bb.any():
+                    bb_target_idx = np.where(gains_above_bb)[0][0]
+                    time_to_bb_median = float((bb_target_idx + 1) * 4)  # Convert to hours
+                else:
+                    time_to_bb_median = 0.0
+            except Exception as e:
+                bb_profit_pct = 0.0
                 time_to_bb_median = 0.0
-
-            # Time to peak profit (maximum gain achieved)
-            if len(gains_pct) > 0 and gains_pct.max() > 0:
-                peak_idx = np.where(gains_pct == gains_pct.max())[0][0]
-                time_to_peak = float((peak_idx + 1) * 4)  # Convert to hours
-                max_gain_achieved = float(gains_pct.max())
-            else:
+            
+            # 🔧 FIX 6: Time to peak profit with error handling
+            try:
+                if len(gains_pct) > 0 and gains_pct.max() > 0:
+                    peak_idx = np.where(gains_pct == gains_pct.max())[0][0]
+                    time_to_peak = float((peak_idx + 1) * 4)  # Convert to hours
+                    max_gain_achieved = float(gains_pct.max())
+                else:
+                    time_to_peak = 0.0
+                    max_gain_achieved = 0.0
+            except Exception as e:
                 time_to_peak = 0.0
                 max_gain_achieved = 0.0
             
+            # 🔧 FIX 7: Return statement with ALL timing fields and consistent naming
             return {
-                # Keep your existing working fields:
+                # Existing working fields
                 'max_favorable_5': max_favorable_5,
                 'max_adverse_5': max_adverse_5,
                 'outcome_10': outcome_10,
@@ -704,45 +767,32 @@ class ComprehensiveBBBacktest:
                 'time_to_target': time_to_target,
                 'max_drawdown_time': max_drawdown_time,
                 
-                # ADD the missing timing fields:
-                'time_to_1pct': 8.3,
-                'time_to_3pct': 14.7,
-                'time_to_5pct': 24.0,
-                'time_to_10pct': 32.0,
-                'hit_1pct': True,
-                'hit_3pct': True,
-                'hit_5pct': True,
-                'hit_10pct': False,
+                # 🔧 FIX 8: ALL timing fields with consistent variable names
+                'time_to_1pct': time_to_1pct,
+                'time_to_3pct': time_to_3pct,
+                'time_to_5pct': time_to_5pct,
+                'time_to_10pct': time_to_10pct,
                 'time_to_bb_median': time_to_bb_median,
-                'time_to_peak': max_drawdown_time,
-                'max_gain_achieved': max_favorable_5,
-                'bb_median_profit_pct': 2.8,
-                'time_to_1pct': time_to_target,
-                'time_to_3pct': time_to_target * 1.5,
-                'time_to_5pct': time_to_target * 2.0,
-                'hit_1pct': time_to_target > 0,
-                'hit_3pct': max_favorable_5 > 3.0,
-                'hit_5pct': max_favorable_5 > 5.0
+                'time_to_peak': time_to_peak,
+                'max_gain_achieved': max_gain_achieved,
+                'bb_median_profit_pct': bb_profit_pct,
+                'hit_1pct': hit_1pct,
+                'hit_3pct': hit_3pct,
+                'hit_5pct': hit_5pct,
+                'hit_10pct': hit_10pct
             }
             
         except Exception as e:
-            # Return default values if calculation fails
+            # 🔧 FIX 9: Exception handler includes ALL timing fields
             return {
-                'max_favorable_5': 0.0, 'max_adverse_5': 0.0, 'outcome_10': 0.0, 'outcome_20': 0.0, 
-                'best_exit': 0.0, 'worst_drawdown': 0.0, 'time_to_target': 0.0, 'max_drawdown_time': 0.0,
-                # Add timing fields with default values:
-                'time_to_1pct': 0.0,
-                'time_to_3pct': 0.0, 
-                'time_to_5pct': 0.0,
-                'time_to_10pct': 0.0,
-                'hit_1pct': False,
-                'hit_3pct': False,
-                'hit_5pct': False,
-                'hit_10pct': False,
-                'time_to_bb_median': 0.0,
-                'time_to_peak': 0.0,
-                'max_gain_achieved': 0.0,
-                'bb_median_profit_pct': 0.0
+                'max_favorable_5': max_favorable_5, 'max_adverse_5': max_adverse_5, 
+                'outcome_10': outcome_10, 'outcome_20': outcome_20, 
+                'best_exit': best_exit, 'worst_drawdown': worst_drawdown, 
+                'time_to_target': time_to_target, 'max_drawdown_time': max_drawdown_time,
+                # ALL timing fields with default values
+                'time_to_1pct': time_to_1pct, 'time_to_3pct': time_to_3pct, 'time_to_5pct': time_to_5pct, 'time_to_10pct': time_to_10pct,
+                'time_to_bb_median': time_to_bb_median, 'time_to_peak': time_to_peak, 'max_gain_achieved': max_gain_achieved, 'bb_median_profit_pct': bb_profit_pct,
+                'hit_1pct': hit_1pct, 'hit_3pct': hit_3pct, 'hit_5pct': hit_5pct, 'hit_10pct': hit_10pct
             }
     
     def _get_all_confluence_metrics(self, df: pd.DataFrame, i: int) -> Dict:
