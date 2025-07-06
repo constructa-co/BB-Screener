@@ -1,37 +1,26 @@
 # config.py - Configuration file for BB Scanner
-# Store your API keys and settings here
+import os
+from dotenv import load_dotenv
 
-# === EXCHANGE API KEYS ===
+# Load environment variables from .env file
+load_dotenv()
 
-# CoinMarketCap
-CMC_API_KEY = "7eaf27ab-6af5-436c-8df2-469d7dce91e7"
-
-# Binance
-BINANCE_API_KEY = "SZobyT8HMXQkmuk1jrm1bvTRmmPrU4RPka6CcLgGsTeqj3OvaUyCN8tkmTtcfgjI"
-BINANCE_SECRET_KEY = "07V5knOaokx5JjL6epHWV2YfTZ2uxCwCtrFDxtGMvMJLBpP0PGObrhoN56069S1a"
-
-# KuCoin
-KUCOIN_API_KEY = "685034bb35f9a40001e243a6"
-KUCOIN_SECRET = "9097f861-63b4-4bd6-98be-15f0f0040c0b"
-KUCOIN_PASSPHRASE = "buildwithconcrete"
-
-# OKX
-OKX_API_KEY = "22beacfa-7f05-4efd-806b-1e0ca23e32be"
-OKX_SECRET = "6B933F3F390ED47481F49692406224BF"
-OKX_PASSPHRASE = "Buildwithconcrete100!"
-
-# ByBit
-BYBIT_API_KEY = "VeCksFQzz7nLssX9Hu"
-BYBIT_SECRET = "yRNHLYCskyBAciRGqWanS413LdC8BBKra73M"
-
-# LunarCrush (for sentiment analysis)
-LUNAR_API_KEY = "cnj4irl0msoxh98ebhbdtkczcfmbz8vj1bogxefw"
-
-# TokenMetrics (for sentiment analysis)
-TOKENMETRICS_API_KEY = "tm-9ca2ced1-cf5c-43f6-89dd-b355cd7bfb67"
+# === EXCHANGE API KEYS (from environment) ===
+CMC_API_KEY = os.getenv('CMC_API_KEY')
+BINANCE_API_KEY = os.getenv('BINANCE_API_KEY')
+BINANCE_SECRET_KEY = os.getenv('BINANCE_SECRET_KEY')
+KUCOIN_API_KEY = os.getenv('KUCOIN_API_KEY')
+KUCOIN_SECRET = os.getenv('KUCOIN_SECRET')
+KUCOIN_PASSPHRASE = os.getenv('KUCOIN_PASSPHRASE')
+OKX_API_KEY = os.getenv('OKX_API_KEY')
+OKX_SECRET = os.getenv('OKX_SECRET')
+OKX_PASSPHRASE = os.getenv('OKX_PASSPHRASE')
+BYBIT_API_KEY = os.getenv('BYBIT_API_KEY')
+BYBIT_SECRET = os.getenv('BYBIT_SECRET')
+LUNAR_API_KEY = os.getenv('LUNAR_API_KEY')
+TOKENMETRICS_API_KEY = os.getenv('TOKENMETRICS_API_KEY')
 
 # === SCANNER CONFIGURATION ===
-
 SCANNER_CONFIG = {
     "top_coins_limit": 500,
     "min_volume_24h": 1_000_000,
@@ -87,14 +76,13 @@ NOTIFICATION_CONFIG = {
 }
 
 # === TELEGRAM SETTINGS (Optional) ===
-TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
-TELEGRAM_CHAT_ID = "YOUR_CHAT_ID_HERE"
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', "YOUR_BOT_TOKEN_HERE")
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', "YOUR_CHAT_ID_HERE")
 
 # === 3COMMAS SETTINGS (Optional) ===
-THREECOMMAS_API_KEY = "YOUR_3COMMAS_API_KEY"
-THREECOMMAS_SECRET = "YOUR_3COMMAS_SECRET"
-THREECOMMAS_EMAIL_TOKEN = "YOUR_EMAIL_TOKEN"
-
+THREECOMMAS_API_KEY = os.getenv('THREECOMMAS_API_KEY', "YOUR_3COMMAS_API_KEY")
+THREECOMMAS_SECRET = os.getenv('THREECOMMAS_SECRET', "YOUR_3COMMAS_SECRET")
+THREECOMMAS_EMAIL_TOKEN = os.getenv('THREECOMMAS_EMAIL_TOKEN', "YOUR_EMAIL_TOKEN")
 THREECOMMAS_BOT_IDS = {
     "tier1_long": "YOUR_TIER1_LONG_BOT_ID",
     "tier1_short": "YOUR_TIER1_SHORT_BOT_ID",
