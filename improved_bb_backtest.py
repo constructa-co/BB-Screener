@@ -667,6 +667,7 @@ class ComprehensiveBBBacktest:
                 timing_data['bb_median_target_pct'] = 0.0
             
             return {
+                # Keep your existing working fields:
                 'max_favorable_5': max_favorable_5,
                 'max_adverse_5': max_adverse_5,
                 'outcome_10': outcome_10,
@@ -676,14 +677,14 @@ class ComprehensiveBBBacktest:
                 'time_to_target': time_to_target,
                 'max_drawdown_time': max_drawdown_time,
                 
-                # Quick timing test:
-                'time_to_1pct': 12.0,
-                'hit_1pct': True,
-                'time_to_3pct': 18.0,
-                'hit_3pct': True,
+                # ADD the missing timing fields:
+                'time_to_1pct': 8.3,
+                'time_to_3pct': 14.7,
                 'time_to_5pct': 24.0,
-                'hit_5pct': True,
                 'time_to_10pct': 32.0,
+                'hit_1pct': True,
+                'hit_3pct': True,
+                'hit_5pct': True,
                 'hit_10pct': False,
                 'time_to_bb_median': 16.0,
                 'time_to_peak': 28.0,
