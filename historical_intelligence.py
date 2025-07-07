@@ -105,61 +105,76 @@ class HistoricalIntelligence:
         
         return df
     
-    def _find_similar_setups(self, df: pd.DataFrame, setup_type: str, bb_score: int) -> List[int]:
-        """Find historical setups similar to current live setup - FIXED VERSION"""
+    def _find_similar_setups(self, df: pd.DataFrame, current_bb_pct: float, setup_type: str) -> List[int]:
+        """Find similar BB setups using REAL data analysis (not fake placeholders)"""
         similar_indices = []
         
-        for i in range(100, len(df) - 50):  # Leave buffer for outcome analysis
+        # Use SAME logic as improved_bb_backtest.py (simple BB touch detection)
+        for i in range(20, len(df) - 20):  # Need lookback and lookahead
+            bb_pct = df.iloc[i]['bb_percentage']
             
-            # Use SAME logic as improved_bb_backtest.py that found 9,718 bounces
-            bb_pct = df['bb_percentage'].iloc[i]
-            current_setup = None
-            
-            # Simple BB touch detection (same as working backtest)
-            if setup_type == 'LONG' and bb_pct <= 0.1:  # Near lower band (relaxed from 0.05)
-                current_setup = 'LONG'
-            elif setup_type == 'SHORT' and bb_pct >= 0.9:  # Near upper band (relaxed from 0.95)
-                current_setup = 'SHORT'
-            
-            # If we found a BB touch of the same type, include it
-            if current_setup == setup_type:
+            # Simple BB touch criteria (same as your working backtest)
+            if setup_type == 'LONG' and bb_pct <= 10:  # Lower band touch
+                similar_indices.append(i)
+            elif setup_type == 'SHORT' and bb_pct >= 90:  # Upper band touch
                 similar_indices.append(i)
         
         return similar_indices
     
-    def _analyze_setup_performance(self, setup_indices: List[int], df: pd.DataFrame) -> Dict[str, Any]:
-        """Analyze performance of historical setups"""
+    def _calculate_setup_performance(self, df: pd.DataFrame, similar_indices: List[int], setup_type: str) -> Dict:
+        """Calculate REAL performance from historical setups (not fake data)"""
+        if len(similar_indices) < 10:
+            return {'insufficient_data': True}
         
-        performance_data = []
+        successful_trades = 0
+        total_gains = []
+        total_losses = []
+        timing_data = []
         
-        for idx in setup_indices:
-            outcome = self._calculate_trade_outcome(df, idx)
-            if outcome:
-                performance_data.append(outcome)
+        for idx in similar_indices:
+            if idx + 20 >= len(df):  # Need lookahead data
+                continue
+                
+            entry_price = df.iloc[idx]['close']
+            future_data = df.iloc[idx+1:idx+21]  # Next 20 periods (80 hours)
+            
+            if setup_type == 'LONG':
+                gains = ((future_data['high'] - entry_price) / entry_price * 100)
+                losses = ((future_data['low'] - entry_price) / entry_price * 100)
+            else:
+                gains = ((entry_price - future_data['low']) / entry_price * 100)
+                losses = ((entry_price - future_data['high']) / entry_price * 100)
+            
+            max_gain = gains.max()
+            max_loss = losses.min()
+            
+            # Success criteria (same as improved_bb_backtest.py)
+            if max_gain >= abs(max_loss) * 1.5:  # Risk/reward >= 1.5
+                successful_trades += 1
+                total_gains.append(max_gain)
+                
+                # Calculate time to target (3% gain)
+                target_hits = gains >= 3.0
+                if target_hits.any():
+                    time_to_target = target_hits.idxmax() - df.index[idx]
+                    timing_data.append(time_to_target * 4)  # Convert to hours (4h candles)
+            else:
+                total_losses.append(abs(max_loss))
         
-        if not performance_data:
-            return {'error': 'No valid outcomes calculated'}
-        
-        # Calculate statistics
-        wins = [p for p in performance_data if p['outcome'] == 'WIN']
-        losses = [p for p in performance_data if p['outcome'] == 'LOSS']
-        
-        win_rate = len(wins) / len(performance_data) * 100
-        avg_win = np.mean([p['pnl_pct'] for p in wins]) if wins else 0
-        avg_loss = np.mean([p['pnl_pct'] for p in losses]) if losses else 0
-        avg_duration = np.mean([p['duration_hours'] for p in performance_data])
-        
-        # Monthly performance breakdown
-        monthly_stats = self._calculate_monthly_performance(performance_data, df, setup_indices)
+        total_trades = len(similar_indices)
+        win_rate = (successful_trades / total_trades * 100) if total_trades > 0 else 0
+        avg_win = np.mean(total_gains) if total_gains else 0
+        avg_loss = np.mean(total_losses) if total_losses else 0
+        avg_timing = np.mean(timing_data) if timing_data else 0
         
         return {
-            'total_trades': len(performance_data),
-            'win_rate': win_rate,
-            'avg_win_pct': avg_win,
-            'avg_loss_pct': avg_loss,
-            'avg_duration_hours': avg_duration,
-            'monthly_performance': monthly_stats,
-            'raw_data': performance_data
+            'total_trades': total_trades,
+            'successful_trades': successful_trades,
+            'win_rate': round(win_rate, 1),
+            'avg_win': round(avg_win, 1),
+            'avg_loss': round(avg_loss, 1),
+            'avg_timing_hours': round(avg_timing, 1),
+            'profit_factor': round((avg_win * successful_trades) / (avg_loss * (total_trades - successful_trades)), 2) if total_trades > successful_trades else 0
         }
     
     def _calculate_trade_outcome(self, df: pd.DataFrame, entry_idx: int) -> Optional[Dict[str, Any]]:
@@ -433,6 +448,35 @@ class HistoricalIntelligence:
     def _get_insufficient_data_analysis(self, count: int) -> Dict[str, Any]:
         return {'error': 'insufficient_data', 'message': f'Only {count} similar setups found (minimum 5 required)'}
     
+    def _generate_trade_quality_analysis(self, performance: Dict, symbol: str) -> Dict:
+        """Generate trade quality with REAL performance data"""
+        if performance.get('insufficient_data'):
+            return {'insufficient_data': True}
+        
+        win_rate = performance['win_rate']
+        
+        # Grade based on REAL win rate
+        if win_rate >= 80:
+            grade = "A+"
+        elif win_rate >= 70:
+            grade = "A"
+        elif win_rate >= 60:
+            grade = "B+"
+        elif win_rate >= 50:
+            grade = "B"
+        else:
+            grade = "C"
+        
+        return {
+            'grade': grade,
+            'similar_setups_won': f"{performance['successful_trades']}/{performance['total_trades']}",
+            'win_rate_pct': performance['win_rate'],
+            'avg_win_pct': performance['avg_win'],
+            'avg_loss_pct': performance['avg_loss'],
+            'avg_timing_hours': performance['avg_timing_hours'],
+            'profit_factor': performance['profit_factor']
+        }
+
     def _get_error_analysis(self) -> Dict[str, Any]:
         return {'error': 'analysis_error', 'message': 'Error occurred during historical analysis'}
 
@@ -442,24 +486,43 @@ class EnhancedOutputGenerator:
     Enhanced output generator that combines live analysis with historical intelligence
     """
     
-    def display_enhanced_trade_analysis(self, symbol: str, live_analysis: Dict[str, Any], 
-                                      historical_intelligence: Dict[str, Any]) -> None:
-        """
-        Display comprehensive trade analysis combining live and historical data
-        """
+    # ALSO UPDATE THE DISPLAY METHOD TO SHOW REAL DATA:
+    def display_enhanced_trade_analysis(self, symbol: str, live_analysis: Dict, historical_data: Dict):
+        """Display with REAL historical data (not placeholders)"""
         
-        print(f"\n{'='*80}")
-        print(f"🎯 COMPREHENSIVE TRADE ANALYSIS: {symbol}")
-        print(f"{'='*80}")
+        if historical_data.get('insufficient_data') or historical_data.get('error'):
+            print(f"⚠️ Historical Analysis: Insufficient data for {symbol}")
+            return
         
-        # Live Analysis Section
-        self._display_live_analysis(symbol, live_analysis)
+        print(f"\n🎯 COMPREHENSIVE TRADE ANALYSIS: {symbol}")
+        print("=" * 80)
         
-        # Historical Intelligence Section
-        if 'error' not in historical_intelligence:
-            self._display_historical_intelligence(historical_intelligence)
+        # Live analysis (unchanged)
+        setup_type = live_analysis.get('setup_type', 'UNKNOWN')
+        bb_score = live_analysis.get('bb_analysis', {}).get('score', 0)
+        probability = live_analysis.get('probability', 0)
+        
+        print(f"\n📊 LIVE SETUP ANALYSIS:")
+        print(f"📊 {symbol} - {setup_type}")
+        print(f"   🎯 Probability: {probability}% | BB Score: {bb_score}/34")
+        
+        # REAL historical analysis
+        trade_quality = historical_data.get('trade_quality_analysis', {})
+        
+        if not trade_quality.get('insufficient_data'):
+            print(f"\n📊 TRADE QUALITY SCORING:")
+            print(f"🏆 TRADE GRADE: {trade_quality.get('grade', 'N/A')} (Historical Analysis)")
+            print(f"   • Similar setups won: {trade_quality.get('similar_setups_won', 'N/A')} ({trade_quality.get('win_rate_pct', 0)}%)")
+            print(f"   • Average win: +{trade_quality.get('avg_win_pct', 0)}% in {trade_quality.get('avg_timing_hours', 0)} hours")
+            print(f"   • Average loss: -{trade_quality.get('avg_loss_pct', 0)}%")
+            print(f"   • Profit factor: {trade_quality.get('profit_factor', 0)}")
+            
+            print(f"\n📈 PERFORMANCE PREDICTION:")
+            print(f"🔮 EXPECTED OUTCOMES (Based on {trade_quality.get('similar_setups_won', 'N/A').split('/')[1] if '/' in str(trade_quality.get('similar_setups_won', '')) else 'N/A'} similar trades):")
+            print(f"   • {trade_quality.get('win_rate_pct', 0)}% chance: Win +{trade_quality.get('avg_win_pct', 0)}% in ~{trade_quality.get('avg_timing_hours', 0)} hours")
+            print(f"   • {100 - trade_quality.get('win_rate_pct', 0)}% chance: Loss -{trade_quality.get('avg_loss_pct', 0)}%")
         else:
-            print(f"\n⚠️ Historical Analysis: {historical_intelligence.get('message', 'Unable to analyze')}")
+            print(f"⚠️ Historical Analysis: Insufficient similar setups found for {symbol}")
     
     def _display_live_analysis(self, symbol: str, live_analysis: Dict[str, Any]) -> None:
         """Display live analysis section"""
