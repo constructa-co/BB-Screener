@@ -492,6 +492,9 @@ class OutputGenerator:
             # Enhanced recommendations
             self._display_recommendations(df)
             
+            # Display detailed scoring breakdown
+            self.display_detailed_scoring_breakdown(df)
+            
         except Exception as e:
             logger.error(f"Error displaying terminal summary: {e}")
 
@@ -717,3 +720,63 @@ class OutputGenerator:
                         
         except Exception as e:
             logger.error(f"Error displaying sentiment summary: {e}")
+
+    def display_detailed_scoring_breakdown(self, df: pd.DataFrame):
+        """Display detailed scoring breakdown for trades with scoring details"""
+        try:
+            # Check if scoring_details column exists
+            if 'scoring_details' not in df.columns:
+                return
+            
+            # Get trades with scoring details
+            scoring_trades = df[df['scoring_details'].notna()].head(5)
+            
+            if scoring_trades.empty:
+                return
+            
+            print(f"\n" + "="*80)
+            print("📊 DETAILED SCORING BREAKDOWN")
+            print("="*80)
+            
+            for i, (_, trade) in enumerate(scoring_trades.iterrows(), 1):
+                scoring_details = trade['scoring_details']
+                if not scoring_details or 'breakdown' not in scoring_details:
+                    continue
+                
+                print(f"\n{i}. {trade['symbol']} - {trade['setup_type']} | Score: {trade['bb_score']}/{scoring_details.get('total_possible', 34)}")
+                print(f"   Quality: {trade['setup_quality']} | Probability: {trade['probability']}%")
+                
+                # Display tier scores
+                tier_scores = scoring_details.get('tier_scores', {})
+                if tier_scores:
+                    print(f"   📈 Tier Breakdown:")
+                    print(f"      • Base BB: {tier_scores.get('base_bb', 0)}/10 pts")
+                    print(f"      • Money Flow: {tier_scores.get('money_flow', 0)}/7 pts")
+                    print(f"      • BB Specific: {tier_scores.get('bb_specific', 0)}/8 pts")
+                    print(f"      • Volume & Momentum: {tier_scores.get('volume_momentum', 0)}/6 pts")
+                    print(f"      • Divergence: {tier_scores.get('divergence', 0)}/3 pts")
+                
+                # Display detailed breakdown
+                breakdown = scoring_details.get('breakdown', [])
+                if breakdown:
+                    print(f"   🔍 Detailed Breakdown:")
+                    for item in breakdown[:8]:  # Show first 8 items to avoid clutter
+                        print(f"      • {item}")
+                    
+                    if len(breakdown) > 8:
+                        print(f"      • ... and {len(breakdown) - 8} more indicators")
+                
+                # Display key indicator values
+                indicator_values = scoring_details.get('indicator_values', {})
+                if indicator_values:
+                    print(f"   📊 Key Indicators:")
+                    for indicator, value in indicator_values.items():
+                        if isinstance(value, float):
+                            print(f"      • {indicator.upper()}: {value:.3f}")
+                        else:
+                            print(f"      • {indicator.upper()}: {value}")
+                
+                print()  # Add spacing between trades
+                
+        except Exception as e:
+            logger.error(f"Error displaying detailed scoring breakdown: {e}")
