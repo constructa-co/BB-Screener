@@ -238,6 +238,17 @@ class OutputGenerator:
                             ['Recommendation', 'Enable market regime analysis for enhanced intelligence']
                         ], columns=['Metric', 'Value'])
                         regime_df.to_excel(writer, sheet_name='Market_Regime_Analysis', index=False)
+                    
+                    # ADD ENHANCED SCORING COLUMNS TO MAIN ANALYSIS SHEET
+                    if not df.empty and 'scoring_details' in df.columns:
+                        # Convert DataFrame back to list of dicts for enhanced processing
+                        setups = df.to_dict('records')
+                        if setups:  # Only if we have setups to process
+                            # Get the workbook from the writer
+                            workbook = writer.book
+                            if 'All_Analysis' in workbook.sheetnames:
+                                worksheet = workbook['All_Analysis']
+                                self._add_enhanced_columns_to_excel(worksheet, setups)
             
             except PermissionError:
                 # File might be open - try a different filename
@@ -832,3 +843,109 @@ class OutputGenerator:
         breakdown_text += "=" * 60 + "\n"
         
         return breakdown_text
+
+    def _extract_enhanced_scoring_data(self, setup_data):
+        """Extract enhanced scoring data for Excel output"""
+        enhanced_data = {}
+        
+        # Basic enhanced data
+        enhanced_data['bb_score_34'] = setup_data.get('bb_score', 0)
+        enhanced_data['setup_quality_enhanced'] = setup_data.get('setup_quality', 'None')
+        
+        # Extract scoring details if available
+        scoring_details = setup_data.get('scoring_details', {})
+        
+        if scoring_details:
+            # Tier breakdown
+            tier_scores = scoring_details.get('tier_scores', {})
+            enhanced_data['tier_base_bb'] = tier_scores.get('base_bb', 0)
+            enhanced_data['tier_money_flow'] = tier_scores.get('money_flow', 0)
+            enhanced_data['tier_bb_specific'] = tier_scores.get('bb_specific', 0)
+            enhanced_data['tier_volume_momentum'] = tier_scores.get('volume_momentum', 0)
+            enhanced_data['tier_divergence'] = tier_scores.get('divergence', 0)
+            
+            # Key indicator values
+            indicator_values = scoring_details.get('indicator_values', {})
+            enhanced_data['mfi_value'] = indicator_values.get('mfi', 0)
+            enhanced_data['cmf_value'] = indicator_values.get('cmf', 0)
+            enhanced_data['bb_expansion_ratio'] = indicator_values.get('bb_expansion', 0)
+            enhanced_data['volume_surge_detected'] = indicator_values.get('volume_surge', False)
+            enhanced_data['bb_trend_direction'] = indicator_values.get('bb_trend', 'Unknown')
+            
+            # Component breakdown summary (first 5 components for Excel)
+            breakdown = scoring_details.get('breakdown', [])
+            for i, component in enumerate(breakdown[:5], 1):
+                enhanced_data[f'component_{i}'] = component
+                
+            # Total components count
+            enhanced_data['total_components'] = len(breakdown)
+            
+            # Check for high-value MFI signals (88% success rate indicator)
+            mfi_signal_detected = any('MFI' in comp and '⭐' in comp for comp in breakdown)
+            enhanced_data['mfi_priority_signal'] = mfi_signal_detected
+            
+        else:
+            # Default values if no scoring details
+            enhanced_data.update({
+                'tier_base_bb': 0,
+                'tier_money_flow': 0,
+                'tier_bb_specific': 0,
+                'tier_volume_momentum': 0,
+                'tier_divergence': 0,
+                'mfi_value': 0,
+                'cmf_value': 0,
+                'bb_expansion_ratio': 0,
+                'volume_surge_detected': False,
+                'bb_trend_direction': 'Unknown',
+                'total_components': 0,
+                'mfi_priority_signal': False
+            })
+        
+        return enhanced_data
+
+    def _add_enhanced_columns_to_excel(self, worksheet, setups):
+        """Add enhanced scoring columns to the Excel worksheet"""
+        
+        # Get existing headers (assume they're in row 1)
+        existing_headers = []
+        for col in range(1, worksheet.max_column + 1):
+            header = worksheet.cell(row=1, column=col).value
+            if header:
+                existing_headers.append(header)
+        
+        # Define new enhanced headers
+        enhanced_headers = [
+            'bb_score_34',
+            'setup_quality_enhanced', 
+            'tier_base_bb',
+            'tier_money_flow',
+            'tier_bb_specific', 
+            'tier_volume_momentum',
+            'tier_divergence',
+            'mfi_value',
+            'cmf_value',
+            'bb_expansion_ratio',
+            'volume_surge_detected',
+            'bb_trend_direction',
+            'total_components',
+            'mfi_priority_signal',
+            'component_1',
+            'component_2', 
+            'component_3',
+            'component_4',
+            'component_5'
+        ]
+        
+        # Add new headers
+        start_col = len(existing_headers) + 1
+        for i, header in enumerate(enhanced_headers):
+            worksheet.cell(row=1, column=start_col + i, value=header)
+        
+        # Add enhanced data for each setup
+        for row_idx, setup in enumerate(setups, start=2):  # Start from row 2 (after headers)
+            enhanced_data = self._extract_enhanced_scoring_data(setup)
+            
+            for i, header in enumerate(enhanced_headers):
+                value = enhanced_data.get(header, '')
+                worksheet.cell(row=row_idx, column=start_col + i, value=value)
+

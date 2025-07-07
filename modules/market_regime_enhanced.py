@@ -154,22 +154,8 @@ class EnhancedMarketRegimeAnalyzer:
         - Extreme negative (<-1%): Contrarian bullish (market bottom signal)  
         - Moderate levels: Neutral to trending sentiment
         """
-        funding_data = {}
-        
         try:
-            # DIAGNOSTIC: Check available methods
-            for exchange_name, exchange in self.exchanges.items():
-                try:
-                    print(f"DEBUG: Available methods for {exchange_name}:")
-                    methods = [method for method in dir(exchange) if 'funding' in method.lower()]
-                    print(f"DEBUG: Funding-related methods: {methods}")
-                    
-                    # Also check for general public methods
-                    public_methods = [method for method in dir(exchange) if method.startswith('public')]
-                    print(f"DEBUG: First 10 public methods: {public_methods[:10]}")
-                    
-                except Exception as e:
-                    print(f"DEBUG: Error checking methods for {exchange_name}: {e}")
+            funding_data = {}
             
             # Get funding rates from multiple exchanges
             for exchange_name, exchange in self.exchanges.items():
