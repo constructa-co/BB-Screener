@@ -113,11 +113,14 @@ class OutputGenerator:
             logger.error(f"Error recommending action: {e}")
             return 'NO SETUP'
 
-    def generate_excel_output(self, df: pd.DataFrame, market_regime: Dict = None) -> str:
+    def generate_excel_output(self, df: pd.DataFrame, market_regime: Dict = None, filename: str = None) -> str:
         """Generate comprehensive Excel output with multiple sheets in organized folder (ENHANCED with market regime)"""
         try:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"bb_analysis_{timestamp}.xlsx"
+            if filename is None:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"bb_analysis_{timestamp}.xlsx"
+            
+            # Save to excel_reports folder
             filepath = os.path.join(self.excel_dir, filename)
             
             # Ensure market regime columns exist with actual data or defaults
@@ -458,23 +461,16 @@ class OutputGenerator:
             print("Market sentiment analysis unavailable")
 
     def display_terminal_summary(self, df: pd.DataFrame, market_sentiment: Dict[str, Any] = None):
-        """Display enhanced terminal summary with market regime"""
+        """Display comprehensive terminal summary"""
         try:
-            # NEW: Display market regime if available
-            if hasattr(self, '_market_regime_data') and self._market_regime_data:
-                self._display_market_regime_summary(self._market_regime_data)
-            
-            # Existing terminal summary code continues here...
-            if df.empty:
-                print("\n" + "="*80)
-                print("No trading opportunities found matching the criteria.")
-                print("="*80)
-                return
-            
             print("\n" + "="*80)
             print("CRYPTO BB BOUNCE SCANNER - ANALYSIS SUMMARY")
             print("="*80)
             print(f"Total coins analyzed: {len(df)}")
+            
+            if df.empty:
+                print("No analysis results found.")
+                return
             
             # Tier breakdown
             tier_counts = df['tier'].value_counts()
@@ -1025,87 +1021,4 @@ class OutputGenerator:
                 except Exception as e:
                     # If writing still fails, use empty string
                     worksheet.cell(row=row_idx, column=start_col + i, value="")
-
-    # ADD NEW METHOD: Market Regime Terminal Display
-    def _display_market_regime_summary(self, market_regime: Dict):
-        """Display 6-line market regime summary"""
-        print("\n" + "="*80)
-        print("🌊 MARKET REGIME INTELLIGENCE")
-        print("="*80)
-        
-        regime_type = market_regime.get('regime_type', 'UNKNOWN')
-        confidence = market_regime.get('regime_confidence', 50)
-        bb_suitability = market_regime.get('bb_suitability', 'UNKNOWN')
-        position_mult = market_regime.get('position_multiplier', 1.0)
-        
-        print(f"📊 Regime: {regime_type} ({confidence}% confidence)")
-        print(f"🎯 BB Strategy Suitability: {bb_suitability}")
-        print(f"💰 Position Sizing: {position_mult}x multiplier")
-        print(f"🏥 Market Health: {market_regime.get('market_health_score', 50)}/100")
-        print(f"₿ BTC Health: {market_regime.get('btc_health_score', 50)}/100")
-        print(f"🌍 Alt Season: {market_regime.get('alt_season_indicator', 'UNKNOWN')}")
-
-    # ADD NEW METHOD: Format results with market context (for front columns)
-    def format_comprehensive_results_with_market_context(self, all_results: List[Dict], market_baselines: Dict = None) -> pd.DataFrame:
-        """Format results with market context and reordered columns"""
-        
-        if not all_results:
-            return pd.DataFrame()
-        
-        # Convert to DataFrame
-        df = pd.DataFrame(all_results)
-        
-        # Get market baselines if not provided
-        if market_baselines is None:
-            market_baselines = {'overall_success_rate': 72.4}  # Fallback
-        
-        # ADD NEW FRONT COLUMNS
-        df['technical_probability'] = (df.get('bb_score', 0) / 34 * 100).round(1)
-        df['historical_probability'] = df.get('historical_win_rate', 0)
-        df['historical_profit'] = df.get('historical_avg_win', 0)
-        df['historical_drawdown'] = df.get('historical_avg_loss', 0) 
-        df['historical_duration'] = df.get('historical_avg_duration', 0)
-        
-        # Add market context
-        df['market_context'] = df.apply(lambda row: self._calculate_market_context(
-            row.get('bb_score', 0), market_baselines.get('overall_success_rate', 72.4)
-        ), axis=1)
-        
-        # REORDER COLUMNS - PRIORITY COLUMNS FIRST
-        priority_columns = [
-            'symbol', 'setup_type', 'exchange',
-            'technical_probability', 'historical_probability', 
-            'historical_profit', 'historical_drawdown', 'historical_duration',
-            'market_context', 'probability', 'bb_score',
-            'entry_price', 'stop_price', 'target1', 'risk_reward', 'risk_pct'
-        ]
-        
-        # Get remaining columns (preserve all existing data)
-        remaining_columns = [col for col in df.columns if col not in priority_columns]
-        final_columns = priority_columns + remaining_columns
-        
-        # Reorder DataFrame
-        available_columns = [col for col in final_columns if col in df.columns]
-        df_reordered = df[available_columns].copy()
-        
-        return df_reordered
-
-    # ADD HELPER METHOD: Market context classification
-    def _calculate_market_context(self, bb_score: int, market_baseline: float) -> str:
-        """Calculate market context classification"""
-        score_percentage = (bb_score / 34) * 100
-        
-        if score_percentage > market_baseline + 15:
-            return "SIGNIFICANTLY_ABOVE_MARKET"
-        elif score_percentage > market_baseline + 5:
-            return "ABOVE_MARKET"
-        elif score_percentage > market_baseline - 5:
-            return "MARKET_AVERAGE"
-        else:
-            return "BELOW_MARKET"
-
-    # ADD METHOD TO STORE MARKET REGIME DATA
-    def set_market_regime_data(self, market_regime: Dict):
-        """Store market regime data for display"""
-        self._market_regime_data = market_regime
 

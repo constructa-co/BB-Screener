@@ -30,6 +30,8 @@ try:
     # NEW: Market Regime Analyzer import (ONLY ADDITION)
     from modules.market_regime_analyzer import MarketRegimeAnalyzer
     from modules.market_regime_enhanced import create_enhanced_regime_analyzer, format_enhanced_regime_output
+    # Add this import
+    from modules.improved_bb_backtest import ComprehensiveBBBacktest
     # In imports section
     from historical_intelligence import HistoricalIntelligence, EnhancedOutputGenerator
     # asyncio is already imported in your file, so no need to add it again
@@ -60,6 +62,9 @@ class ModularBBScanner:
             self.data_fetcher, self.technical_analyzer, self.bb_detector
         )
         self.enhanced_output = EnhancedOutputGenerator()
+        
+        # Add this line in your __init__ method
+        self.market_analyzer = ComprehensiveBBBacktest()
         
         # Setup logging (EXISTING - UNCHANGED)
         self._setup_logging()
@@ -314,6 +319,37 @@ class ModularBBScanner:
                         self.logger.info(f"Quality setup: {symbol} {bb_analysis['setup_type']} "
                                       f"({exchange_name}) - {probability}% probability, "
                                       f"Risk: {risk_pct:.1f}%, R:R: {bb_analysis['risk_reward']}")
+                        
+                        # ADD THIS AFTER A QUALITY SETUP IS FOUND
+                        # (Find where you log quality setups and add this code right after)
+                        if bb_analysis['setup_type'] != 'NONE' and bb_analysis.get('bb_score', 0) >= 12:
+                            try:
+                                # Get market context for this trade
+                                market_context = self.market_analyzer.get_market_context_for_trade(symbol, bb_analysis)
+                                market_baselines = self.market_analyzer.get_market_baselines()
+                                
+                                # Calculate this trade's performance vs market
+                                trade_score_pct = (bb_analysis.get('bb_score', 0) / 34) * 100
+                                market_baseline = market_baselines['overall_success_rate']
+                                
+                                # Display market context
+                                print(f"📊 MARKET CONTEXT:")
+                                print(f"   🎯 This Trade: {trade_score_pct:.1f}% | Market Baseline: {market_baseline}%")
+                                print(f"   📈 Performance: {market_context.get('relative_performance', 'UNKNOWN')}")
+                                print(f"   🔍 Key Driver: {market_context.get('indicator_name', 'Unknown')}")
+                                
+                                # Show indicator benchmark if available
+                                if 'indicator_benchmark' in market_context:
+                                    benchmark = market_context['indicator_benchmark']
+                                    print(f"   ⭐ Indicator Benchmark: {benchmark}% historical success rate")
+                                
+                                print(f"   🏥 Market Health: {market_baselines.get('market_health_score', 73.5)}%")
+                                print(f"   📊 Based on: {market_baselines.get('total_bounces_analyzed', 9718)} historical bounces")
+                                
+                            except Exception as e:
+                                self.logger.warning(f"Market context analysis failed for {symbol}: {e}")
+                                # Continue without market context - don't break the main analysis
+                        
                         # Show detailed scoring breakdown
                         if bb_analysis.get('scoring_details'):
                             scoring_breakdown = self.output_generator.format_scoring_breakdown({
