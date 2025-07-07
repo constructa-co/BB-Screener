@@ -295,14 +295,15 @@ class ModularBBScanner:
                     
                     result.update({
                         'historical_probability': market_baselines.get('overall_success_rate', 72.4),
-                        'historical_win_rate': market_context.get('historical_win_rate', 0),
+                        'historical_bb_baseline': market_context.get('asset_bb_baseline_rate', 72.4),  # Standard BB win rate for this asset
+                        'historical_component_success': market_context.get('component_success_rate', 0),  # BB + component combo win rate
                         'historical_avg_win': market_context.get('avg_profit', 0),
                         'historical_avg_loss': market_context.get('avg_loss', 0),
                         'historical_avg_duration': market_context.get('avg_duration', 0),
                         'market_baseline': market_baselines.get('overall_success_rate', 72.4),
-                        'market_health': market_baselines.get('market_health', 73.5),
-                        'total_bounces_analyzed': market_baselines.get('total_bounces', 9718),
-                        'indicator_benchmark': market_context.get('indicator_success_rate', 0),
+                        'market_health': market_baselines.get('market_health_score', 73.5),
+                        'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),
+                        'indicator_benchmark': market_context.get('indicator_benchmark', 0),
                         'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
                     })
                     
@@ -310,7 +311,8 @@ class ModularBBScanner:
                     self.logger.warning(f"Could not get market context for {symbol}: {str(e)}")
                     result.update({
                         'historical_probability': 72.4,
-                        'historical_win_rate': 0,
+                        'historical_bb_baseline': 72.4,
+                        'historical_component_success': 0,
                         'historical_avg_win': 0,
                         'historical_avg_loss': 0,
                         'historical_avg_duration': 0,
