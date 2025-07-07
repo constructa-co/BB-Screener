@@ -135,162 +135,102 @@ class ModularBBScanner:
                 
                 # Step 2: BB Detection (EXISTING - UNCHANGED)
                 bb_analysis = self.bb_detector.analyze_bb_setup(df)
-                if bb_analysis['setup_type'] == 'NONE':
-                    continue
-                
-                # Step 2.5: Pattern Recognition Analysis (SUPPLEMENTARY DATA)
-                try:
-                    from modules.pattern_analyzer import PatternAnalyzer
-                    pattern_analyzer = PatternAnalyzer()
-                    
-                    # Get 1H data for multi-timeframe analysis
-                    df_1h = self.data_fetcher.fetch_ohlcv(exchange_name, symbol, '1h')
-                    if df_1h is not None and len(df_1h) >= 50:
-                        
-                        # Calculate ATR for pattern significance
-                        atr_value = self._calculate_atr(df, period=14)
-                        
-                        # Comprehensive multi-timeframe pattern analysis
-                        pattern_data = pattern_analyzer.analyze_comprehensive_patterns(
-                            symbol, df, df_1h, atr_value, bb_analysis
-                        )
-                        
-                        # Enhance BB result with pattern data
-                        bb_analysis['pattern_analysis'] = pattern_data
-                        bb_analysis['pattern_boost'] = pattern_data.get('excel_summary', {}).get('total_pattern_boost', 0)
-                        bb_analysis['patterns_detected'] = pattern_data.get('excel_summary', {}).get('all_patterns_detected', 'None')
-                        bb_analysis['pattern_confidence'] = pattern_data.get('excel_summary', {}).get('final_pattern_confidence', 0)
-                        
-                        self.logger.info(f"Pattern analysis for {symbol}: {pattern_data.get('excel_summary', {}).get('all_patterns_detected', 'None')} "
-                                       f"(Boost: {pattern_data.get('excel_summary', {}).get('total_pattern_boost', 0)}%)")
-                    else:
-                        # No 1H data available
+                # print(f"DEBUG: {symbol}/{exchange_name} BB setup: {bb_analysis['setup_type']}")
+                # --- ML DATASET FIX: Always create a result for every coin ---
+                last_candle = df.iloc[-1]
+
+                # Initialize all variables to default values
+                probability = 0
+                risk_pct = 0
+                gain_pct = 0
+                div_info = {'detected': False, 'strength': '', 'confidence': 0, 'indicators': []}
+                confirmations = {'volume_confirmation': False, 'momentum_alignment': False, 'risk_reward_acceptable': False}
+                pattern_data = None
+                rr_data = {}
+
+                # Only calculate these if there is a BB setup
+                if bb_analysis['setup_type'] != 'NONE':
+                    # Step 2.5: Pattern Recognition Analysis (SUPPLEMENTARY DATA)
+                    try:
+                        from modules.pattern_analyzer import PatternAnalyzer
+                        pattern_analyzer = PatternAnalyzer()
+                        # Get 1H data for multi-timeframe analysis
+                        df_1h = self.data_fetcher.fetch_ohlcv(exchange_name, symbol, '1h')
+                        if df_1h is not None and len(df_1h) >= 50:
+                            # Calculate ATR for pattern significance
+                            atr_value = self._calculate_atr(df, period=14)
+                            # Comprehensive multi-timeframe pattern analysis
+                            pattern_data = pattern_analyzer.analyze_comprehensive_patterns(
+                                symbol, df, df_1h, atr_value, bb_analysis
+                            )
+                            # Enhance BB result with pattern data
+                            bb_analysis['pattern_analysis'] = pattern_data
+                            bb_analysis['pattern_boost'] = pattern_data.get('excel_summary', {}).get('total_pattern_boost', 0)
+                            bb_analysis['patterns_detected'] = pattern_data.get('excel_summary', {}).get('all_patterns_detected', 'None')
+                            bb_analysis['pattern_confidence'] = pattern_data.get('excel_summary', {}).get('final_pattern_confidence', 0)
+                            self.logger.info(f"Pattern analysis for {symbol}: {pattern_data.get('excel_summary', {}).get('all_patterns_detected', 'None')} "
+                                           f"(Boost: {pattern_data.get('excel_summary', {}).get('total_pattern_boost', 0)}%)")
+                        else:
+                            # No 1H data available
+                            bb_analysis['pattern_analysis'] = None
+                            bb_analysis['pattern_boost'] = 0
+                            bb_analysis['patterns_detected'] = 'No 1H data'
+                            bb_analysis['pattern_confidence'] = 0
+                    except Exception as e:
+                        # Graceful fallback - BB analysis continues unaffected
+                        self.logger.warning(f"Pattern analysis failed for {symbol}: {str(e)}")
                         bb_analysis['pattern_analysis'] = None
                         bb_analysis['pattern_boost'] = 0
-                        bb_analysis['patterns_detected'] = 'No 1H data'
+                        bb_analysis['patterns_detected'] = 'Analysis failed'
                         bb_analysis['pattern_confidence'] = 0
-                        
-                except Exception as e:
-                    # Graceful fallback - BB analysis continues unaffected
-                    self.logger.warning(f"Pattern analysis failed for {symbol}: {str(e)}")
-                    bb_analysis['pattern_analysis'] = None
-                    bb_analysis['pattern_boost'] = 0
-                    bb_analysis['patterns_detected'] = 'Analysis failed'
-                    bb_analysis['pattern_confidence'] = 0
 
-                # Step 3: Technical Analysis (EXISTING - UNCHANGED)
-                has_1h_confirmation = self.technical_analyzer.get_1h_confirmation(
-                    exchange_name, symbol, bb_analysis['setup_type'], self.data_fetcher
-                )
-                
-                # Skip if no 1H confirmation (EXISTING - UNCHANGED)
-                if not has_1h_confirmation:
-                    self.logger.debug(f"{symbol} {bb_analysis['setup_type']} lacks 1H confirmation")
-                    continue
-                
-                # Validate current price (EXISTING - UNCHANGED)
-                price_valid, current_price = self.data_fetcher.validate_current_price(
-                    exchange_name, symbol, bb_analysis['entry']
-                )
-                
-                if not price_valid:
-                    self.logger.debug(f"{symbol} price moved too much since scan")
-                    continue
-                
-                # Update entry price (EXISTING - UNCHANGED)
-                bb_analysis['entry'] = current_price
-                
-                # UPDATED: Enhanced divergence detection (EXISTING - UNCHANGED)
-                bull_divergence = self.technical_analyzer.detect_enhanced_bullish_divergence(df)
-                bear_divergence = self.technical_analyzer.detect_enhanced_bearish_divergence(df)
-                
-                # Step 4: Risk Assessment (EXISTING - UNCHANGED)
-                probability, confirmations = self.risk_manager.calculate_comprehensive_probability(
-                    df, bb_analysis, bull_divergence, bear_divergence
-                )
-                
-                # Apply quality filters (EXISTING - UNCHANGED)
-                risk_pct = abs((bb_analysis['entry'] - bb_analysis['stop']) / bb_analysis['entry'] * 100)
-                
-                # Skip poor quality setups (EXISTING - UNCHANGED)
-                risk_metrics = {'risk_pct': risk_pct}
-                if not self.risk_manager.apply_quality_filters(bb_analysis, risk_metrics):
-                    continue
-                
-                # Calculate gain potential (EXISTING - UNCHANGED)
-                gain_pct = abs((bb_analysis['target1'] - bb_analysis['entry']) / bb_analysis['entry'] * 100)
-                
-                # Get last candle data (EXISTING - UNCHANGED)
-                last_candle = df.iloc[-1]
-                
-                # Determine divergence info based on setup type (EXISTING - UNCHANGED)
-                if bb_analysis['setup_type'] == 'LONG':
-                    div_info = bull_divergence
-                else:
-                    div_info = bear_divergence
-                
-                # Create result record (ENHANCED with market regime data)
-                
-                # Extract risk/reward data from pattern analysis
-                rr_data = pattern_data.get('auto_risk_reward', {}) if pattern_data else {}
-                
+                    # Step 3: Technical Analysis (EXISTING - UNCHANGED)
+                    has_1h_confirmation = self.technical_analyzer.get_1h_confirmation(
+                        exchange_name, symbol, bb_analysis['setup_type'], self.data_fetcher
+                    )
+                    # Validate current price (EXISTING - UNCHANGED)
+                    price_valid, current_price = self.data_fetcher.validate_current_price(
+                        exchange_name, symbol, bb_analysis['entry']
+                    )
+                    # Update entry price (EXISTING - UNCHANGED)
+                    bb_analysis['entry'] = current_price if price_valid else bb_analysis['entry']
+
+                    # UPDATED: Enhanced divergence detection (EXISTING - UNCHANGED)
+                    bull_divergence = self.technical_analyzer.detect_enhanced_bullish_divergence(df)
+                    bear_divergence = self.technical_analyzer.detect_enhanced_bearish_divergence(df)
+
+                    # Step 4: Risk Assessment (EXISTING - UNCHANGED)
+                    probability, confirmations = self.risk_manager.calculate_comprehensive_probability(
+                        df, bb_analysis, bull_divergence, bear_divergence
+                    )
+                    # Calculate risk_pct and gain_pct
+                    risk_pct = abs((bb_analysis['entry'] - bb_analysis['stop']) / bb_analysis['entry'] * 100) if bb_analysis['entry'] else 0
+                    gain_pct = abs((bb_analysis['target1'] - bb_analysis['entry']) / bb_analysis['entry'] * 100) if bb_analysis['entry'] else 0
+
+                    # Determine divergence info based on setup type
+                    if bb_analysis['setup_type'] == 'LONG':
+                        div_info = bull_divergence
+                    else:
+                        div_info = bear_divergence
+
+                    # Extract risk/reward data from pattern analysis
+                    rr_data = pattern_data.get('auto_risk_reward', {}) if pattern_data else {}
+
+                # Always create a basic result record for ML training
                 result = {
-                    # EXISTING data (UNCHANGED)
+                    # Basic coin data (ALWAYS COLLECTED)
                     'symbol': symbol,
                     'exchange': exchange_name,
-                    'setup_type': bb_analysis['setup_type'],
-                    'probability': probability,
-                    'bb_score': bb_analysis['bb_score'],
-                    'setup_quality': bb_analysis['setup_quality'],
-                    
-                    'entry': round(bb_analysis['entry'], 6) if bb_analysis['entry'] != 0 else 0,
-                    'stop': round(bb_analysis['stop'], 6) if bb_analysis['stop'] != 0 else 0,
-                    'target1': round(bb_analysis['target1'], 6) if bb_analysis['target1'] != 0 else 0,
-                    'risk_reward': bb_analysis['risk_reward'],
-                    'risk_pct': round(risk_pct, 2),
-                    'gain_pct': round(gain_pct, 2),
-                    
-                    'divergence_detected': div_info['detected'],
-                    'divergence_strength': div_info['strength'],
-                    'divergence_confidence': div_info['confidence'],
-                    'divergence_indicators': ', '.join(div_info['indicators']) if div_info['indicators'] else 'None',
-                    
-                    'bb_pct': round(last_candle['bb_pct'], 3),
-                    'rsi': round(last_candle['rsi'], 1),
-                    'volume_ratio': round(last_candle['volume_ratio'], 2),
-                    'atr_pct': round(last_candle['atr_pct'], 3),
-                    
-                    'volume_confirmation': confirmations['volume_confirmation'],
-                    'momentum_alignment': confirmations['momentum_alignment'],
-                    'rr_acceptable': confirmations['risk_reward_acceptable'],
-                    'risk_acceptable': risk_pct <= 8.0,
-                    
+                    'setup_type': bb_analysis.get('setup_type', 'NONE'),
+                    'bb_score': bb_analysis.get('bb_score', 0),
+                    'setup_quality': bb_analysis.get('setup_quality', 'None'),
                     'timestamp': datetime.now(),
-                    
-                    # Pattern analysis data (add after line 260)
-                    'patterns_detected': bb_analysis.get('patterns_detected', 'None'),
-                    'significant_patterns': bb_analysis.get('significant_patterns', 'None'), 
-                    'pattern_confidence': bb_analysis.get('pattern_confidence', 0),
-                    'pattern_boost': bb_analysis.get('pattern_boost', 0),
-                    'pattern_quality_best': bb_analysis.get('pattern_quality_best', 0),
-                    'auto_take_profit': bb_analysis.get('auto_take_profit', 0),
-                    'risk_reward_ratio': bb_analysis.get('risk_reward_ratio', 0),
-
-                    # Chart pattern data (add these 4 lines)
-                    'chart_patterns_detected': bb_analysis.get('chart_patterns_detected', 'None'),
-                    'best_chart_pattern': bb_analysis.get('best_chart_pattern', 'None'),
-                    'chart_pattern_confidence': bb_analysis.get('chart_pattern_confidence', 0),
-                    'chart_pattern_target': bb_analysis.get('chart_pattern_target', 0),
-
-                    # Support/Resistance data (add these 6 lines)
-                    'support_levels': rr_data.get('support_levels', 'None'),
-                    'resistance_levels': rr_data.get('resistance_levels', 'None'),
-                    'sr_analysis_success': rr_data.get('sr_analysis_success', False),
-                    'sl_level_strength': rr_data.get('sl_level_strength', 'None'),
-                    'tp_level_strength': rr_data.get('tp_level_strength', 'None'),
-                    'validation_notes': rr_data.get('validation_notes', 'None'),
-
-                    # NEW: Market regime data (8 new columns)
+                    # Technical data (ALWAYS AVAILABLE for ML)
+                    'bb_pct': round(last_candle.get('bb_pct', 0), 3),
+                    'rsi': round(last_candle.get('rsi', 0), 1),
+                    'volume_ratio': round(last_candle.get('volume_ratio', 0), 2),
+                    'atr_pct': round(last_candle.get('atr_pct', 0), 3),
+                    # Market regime data (ALWAYS INCLUDED)
                     'regime_confidence': market_regime.get('regime_confidence', 50) if market_regime else 50,
                     'regime_type': market_regime.get('regime_type', 'MIXED') if market_regime else 'MIXED',
                     'bb_suitability': market_regime.get('bb_suitability', 'FAIR') if market_regime else 'FAIR',
@@ -299,58 +239,111 @@ class ModularBBScanner:
                     'alt_market_outlook': market_regime.get('alt_market_outlook', 'FAIR') if market_regime else 'FAIR',
                     'market_health_score': market_regime.get('market_health_score', 50) if market_regime else 50,
                     'alt_season_indicator': market_regime.get('alt_season_indicator', 'NEUTRAL') if market_regime else 'NEUTRAL',
-                    
-                    # ENHANCED SCORING DATA (for ML training):
-                    'bb_score_34': bb_analysis.get('bb_score', 0),  # New scoring system
+                    # Enhanced scoring data (ALWAYS INCLUDED)
+                    'bb_score_34': bb_analysis.get('bb_score', 0),
                     'setup_quality_enhanced': bb_analysis.get('setup_quality', 'None'),
-                    
-                    # SCORING DETAILS (if available):
                     'scoring_details': bb_analysis.get('scoring_details', {}),
-                    
-                    # TIER BREAKDOWN:
+                    # Tier breakdown (defaults to 0 for "no setup")
                     'tier_base_bb': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('base_bb', 0),
                     'tier_money_flow': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('money_flow', 0),
                     'tier_bb_specific': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('bb_specific', 0),
                     'tier_volume_momentum': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('volume_momentum', 0),
                     'tier_divergence': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('divergence', 0),
-                    
-                    # KEY INDICATOR VALUES:
+                    # Key indicator values (defaults to 0 for "no setup")
                     'mfi_value': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('mfi', 0),
                     'cmf_value': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('cmf', 0),
                     'bb_expansion_ratio': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('bb_expansion', 0),
                     'volume_surge_detected': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('volume_surge', False),
                     'bb_trend_direction': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('bb_trend', ''),
-                    
-                    # COMPONENT DETAILS (first 5 for ML):
+                    # Component details (defaults to empty for "no setup")
                     'component_1': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[0] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 0 else '',
                     'component_2': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[1] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 1 else '',
                     'component_3': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[2] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 2 else '',
                     'component_4': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[3] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 3 else '',
                     'component_5': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[4] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 4 else '',
-                    
-                    # PRIORITY SIGNALS:
+                    # Priority signals (defaults to False for "no setup")
                     'mfi_priority_signal': 'MFI' in str(bb_analysis.get('scoring_details', {}).get('breakdown', [])) and '4 pts' in str(bb_analysis.get('scoring_details', {}).get('breakdown', [])),
                     'total_components': len(bb_analysis.get('scoring_details', {}).get('breakdown', []))
                 }
-                
+
+                # IF there's a BB setup - add the trading-specific data
+                if bb_analysis['setup_type'] != 'NONE':
+                    # Add trading-specific fields to the result
+                    result.update({
+                        'probability': probability,  # From existing calculation
+                        'entry': round(bb_analysis['entry'], 6) if bb_analysis['entry'] != 0 else 0,
+                        'stop': round(bb_analysis['stop'], 6) if bb_analysis['stop'] != 0 else 0,
+                        'target1': round(bb_analysis['target1'], 6) if bb_analysis['target1'] != 0 else 0,
+                        'risk_reward': bb_analysis['risk_reward'],
+                        'risk_pct': round(risk_pct, 2),
+                        'gain_pct': round(gain_pct, 2),
+                        'divergence_detected': div_info['detected'],
+                        'divergence_strength': div_info['strength'],
+                        'divergence_confidence': div_info['confidence'],
+                        'divergence_indicators': ', '.join(div_info['indicators']) if div_info['indicators'] else 'None',
+                        'volume_confirmation': confirmations['volume_confirmation'],
+                        'momentum_alignment': confirmations['momentum_alignment'],
+                        'rr_acceptable': confirmations['risk_reward_acceptable'],
+                        'risk_acceptable': risk_pct <= 8.0,
+                        'patterns_detected': bb_analysis.get('patterns_detected', 'None'),
+                        'significant_patterns': bb_analysis.get('significant_patterns', 'None'),
+                        'pattern_confidence': bb_analysis.get('pattern_confidence', 0),
+                        'pattern_boost': bb_analysis.get('pattern_boost', 0),
+                        # ... all other existing trading fields
+                    })
+                    # Display logic for quality setups (12+ BB score) - UNCHANGED
+                    bb_score = bb_analysis.get('bb_score', 0)
+                    if bb_score >= 12:
+                        self.logger.info(f"Quality setup: {symbol} {bb_analysis['setup_type']} "
+                                      f"({exchange_name}) - {probability}% probability, "
+                                      f"Risk: {risk_pct:.1f}%, R:R: {bb_analysis['risk_reward']}")
+                        # Show detailed scoring breakdown
+                        if bb_analysis.get('scoring_details'):
+                            scoring_breakdown = self.output_generator.format_scoring_breakdown({
+                                'symbol': symbol,
+                                'setup_type': bb_analysis['setup_type'],
+                                'bb_score': bb_analysis['bb_score'],
+                                'scoring_details': bb_analysis['scoring_details']
+                            })
+                            print(scoring_breakdown)
+                else:
+                    # NO BB SETUP - add default values for trading fields
+                    result.update({
+                        'probability': 0,
+                        'entry': 0,
+                        'stop': 0,
+                        'target1': 0,
+                        'risk_reward': 0,
+                        'risk_pct': 0,
+                        'gain_pct': 0,
+                        'divergence_detected': False,
+                        'divergence_strength': '',
+                        'divergence_confidence': 0,
+                        'divergence_indicators': 'None',
+                        'volume_confirmation': False,
+                        'momentum_alignment': False,
+                        'rr_acceptable': False,
+                        'risk_acceptable': False,
+                        'patterns_detected': 'None',
+                        'significant_patterns': 'None',
+                        'pattern_confidence': 0,
+                        'pattern_boost': 0,
+                        'pattern_quality_best': 0,
+                        'auto_take_profit': 0,
+                        'risk_reward_ratio': 0,
+                        'chart_patterns_detected': 'None',
+                        'best_chart_pattern': 'None',
+                        'chart_pattern_confidence': 0,
+                        'chart_pattern_target': 0,
+                        'support_levels': 'None',
+                        'resistance_levels': 'None',
+                        'sr_analysis_success': False,
+                        'sl_level_strength': 'None',
+                        'tp_level_strength': 'None',
+                        'validation_notes': 'None'
+                    })
+                # ALWAYS add the result (setup or no setup) - THIS IS THE KEY CHANGE!
                 all_analyses.append(result)
-                
-                # NEW: Filter for terminal display (12+ BB score)
-                bb_score = bb_analysis.get('bb_score', 0)
-                if bb_score >= 12:  # Quality threshold for terminal display
-                    self.logger.info(f"Quality setup: {symbol} {bb_analysis['setup_type']} "
-                                  f"({exchange_name}) - {probability}% probability, "
-                                  f"Risk: {risk_pct:.1f}%, R:R: {bb_analysis['risk_reward']}")
-                    
-                    # Display detailed scoring breakdown for quality setups
-                    if bb_analysis.get('scoring_details'):
-                        scoring_breakdown = self.output_generator.format_scoring_breakdown({
-                            'symbol': symbol,
-                            'setup_type': bb_analysis['setup_type'],
-                            'bb_score': bb_analysis['bb_score'],
-                            'scoring_details': bb_analysis['scoring_details']
-                        })
-                        print(scoring_breakdown)  # Display detailed breakdown
                 
             except Exception as e:
                 self.logger.debug(f"Error analyzing {symbol} on {exchange_name}: {e}")
