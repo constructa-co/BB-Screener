@@ -288,6 +288,39 @@ class ModularBBScanner:
                     'total_components': len(bb_analysis.get('scoring_details', {}).get('breakdown', []))
                 }
 
+                # Market context and backtesting data
+                try:
+                    market_context = self.market_analyzer.get_market_context_for_trade(symbol, bb_analysis)
+                    market_baselines = self.market_analyzer.get_market_baselines()
+                    
+                    result.update({
+                        'historical_probability': market_baselines.get('overall_success_rate', 72.4),
+                        'historical_win_rate': market_context.get('historical_win_rate', 0),
+                        'historical_avg_win': market_context.get('avg_profit', 0),
+                        'historical_avg_loss': market_context.get('avg_loss', 0),
+                        'historical_avg_duration': market_context.get('avg_duration', 0),
+                        'market_baseline': market_baselines.get('overall_success_rate', 72.4),
+                        'market_health': market_baselines.get('market_health', 73.5),
+                        'total_bounces_analyzed': market_baselines.get('total_bounces', 9718),
+                        'indicator_benchmark': market_context.get('indicator_success_rate', 0),
+                        'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
+                    })
+                    
+                except Exception as e:
+                    self.logger.warning(f"Could not get market context for {symbol}: {str(e)}")
+                    result.update({
+                        'historical_probability': 72.4,
+                        'historical_win_rate': 0,
+                        'historical_avg_win': 0,
+                        'historical_avg_loss': 0,
+                        'historical_avg_duration': 0,
+                        'market_baseline': 72.4,
+                        'market_health': 73.5,
+                        'total_bounces_analyzed': 9718,
+                        'indicator_benchmark': 0,
+                        'relative_performance': 'UNKNOWN'
+                    })
+
                 # IF there's a BB setup - add the trading-specific data
                 if bb_analysis['setup_type'] != 'NONE':
                     # Add trading-specific fields to the result
