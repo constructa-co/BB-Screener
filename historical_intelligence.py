@@ -872,6 +872,8 @@ class HistoricalIntelligence:
         if not bounces:
             return {}
         
+
+        
         # Define success same as your backtest: >1% favorable move within 5 periods
         successful_bounces = [b for b in bounces if b.get('max_favorable_5', 0) > 1.0]
         win_rate = len(successful_bounces) / len(bounces) * 100
@@ -884,10 +886,23 @@ class HistoricalIntelligence:
         avg_loss = np.mean(losses) if losses else 0
         profit_factor = (avg_win * len(gains)) / (avg_loss * len(losses)) if losses else 0
         
-        # Calculate timing statistics (same as your backtest)
-        target_hits = [b for b in bounces if b.get('hit_1pct', False)]
-        target_hit_rate = len(target_hits) / len(bounces) * 100
-        avg_time_to_target = np.mean([b['time_to_1pct'] for b in target_hits]) if target_hits else 0
+        # FIXED: Calculate timing statistics using the correct fields from bounce records
+        timing_data_1pct = [b['time_to_1pct'] for b in bounces if b.get('time_to_1pct', 0) > 0]
+        timing_data_3pct = [b['time_to_3pct'] for b in bounces if b.get('time_to_3pct', 0) > 0]
+        timing_data_5pct = [b['time_to_5pct'] for b in bounces if b.get('time_to_5pct', 0) > 0]
+        timing_data_10pct = [b['time_to_10pct'] for b in bounces if b.get('time_to_10pct', 0) > 0]
+        timing_data_bb_median = [b['time_to_bb_median'] for b in bounces if b.get('time_to_bb_median', 0) > 0]
+        timing_data_peak = [b['time_to_peak'] for b in bounces if b.get('time_to_peak', 0) > 0]
+        
+        # Calculate timing averages
+        avg_timing_1pct = np.mean(timing_data_1pct) if timing_data_1pct else 0
+        avg_timing_3pct = np.mean(timing_data_3pct) if timing_data_3pct else 0
+        avg_timing_5pct = np.mean(timing_data_5pct) if timing_data_5pct else 0
+        avg_timing_10pct = np.mean(timing_data_10pct) if timing_data_10pct else 0
+        avg_timing_bb_median = np.mean(timing_data_bb_median) if timing_data_bb_median else 0
+        avg_timing_peak = np.mean(timing_data_peak) if timing_data_peak else 0
+        
+
         
         # ANALYZE CONFLUENCE FACTORS (same as your backtest)
         confluence_analysis = {}
@@ -913,8 +928,15 @@ class HistoricalIntelligence:
             'avg_win': avg_win,
             'avg_loss': avg_loss,
             'profit_factor': profit_factor,
-            'target_hit_rate': target_hit_rate,
-            'avg_time_to_target': avg_time_to_target,
+            'avg_timing_1pct': round(avg_timing_1pct, 1),
+            'avg_timing_3pct': round(avg_timing_3pct, 1),
+            'avg_timing_5pct': round(avg_timing_5pct, 1),
+            'avg_timing_10pct': round(avg_timing_10pct, 1),
+            'avg_timing_bb_median': round(avg_timing_bb_median, 1),
+            'avg_timing_peak': round(avg_timing_peak, 1),
+            'avg_timing_hours': round(avg_timing_3pct, 1),  # Use 3% as primary timing metric
+            'target_hit_rate': len(timing_data_1pct) / len(bounces) * 100 if bounces else 0,
+            'avg_time_to_target': avg_timing_1pct,
             'successful_trades': len(successful_bounces),
             'losing_trades': len(bounces) - len(successful_bounces),
             'confluence_analysis': confluence_analysis
@@ -945,7 +967,12 @@ class HistoricalIntelligence:
         successful_trades = 0
         total_gains = []
         total_losses = []
-        timing_data = []
+        timing_data_1pct = []
+        timing_data_3pct = []
+        timing_data_5pct = []
+        timing_data_10pct = []
+        timing_data_bb_median = []
+        timing_data_peak = []
         
         for idx in similar_indices:
             if idx + 20 >= len(df):  # Need lookahead data
@@ -954,27 +981,60 @@ class HistoricalIntelligence:
             # NEW (use your exact working method):
             outcome = self._calculate_bounce_outcome_exact_copy(df, idx, setup_type)
             
-            # Extract data from the outcome
+
+            
+            # Extract data from the outcome - FIXED to use correct field names
             max_gain = outcome.get('max_gain_achieved', 0)
             max_loss = abs(outcome.get('worst_drawdown', 0))
             
-            # Success criteria (same as improved_bb_backtest.py)
-            if max_gain >= max_loss * 1.5:  # Risk/reward >= 1.5
-                successful_trades += 1
+            # ALWAYS add the trade data (don't filter by success criteria)
+            if max_gain > 0:
                 total_gains.append(max_gain)
-                
-                # Use timing data from the outcome
-                time_to_3pct = outcome.get('time_to_3pct', 0)
-                if time_to_3pct > 0:
-                    timing_data.append(time_to_3pct)
+                successful_trades += 1
             else:
                 total_losses.append(max_loss)
+            
+            # FIXED: Properly extract ALL timing data from the outcome
+            time_to_1pct = outcome.get('time_to_1pct', 0)
+            time_to_3pct = outcome.get('time_to_3pct', 0)
+            time_to_5pct = outcome.get('time_to_5pct', 0)
+            time_to_10pct = outcome.get('time_to_10pct', 0)
+            time_to_bb_median = outcome.get('time_to_bb_median', 0)
+            time_to_peak = outcome.get('time_to_peak', 0)
+            
+            # Only add timing data if it's valid (> 0)
+            if time_to_1pct > 0:
+                timing_data_1pct.append(time_to_1pct)
+            if time_to_3pct > 0:
+                timing_data_3pct.append(time_to_3pct)
+            if time_to_5pct > 0:
+                timing_data_5pct.append(time_to_5pct)
+            if time_to_10pct > 0:
+                timing_data_10pct.append(time_to_10pct)
+            if time_to_bb_median > 0:
+                timing_data_bb_median.append(time_to_bb_median)
+            if time_to_peak > 0:
+                timing_data_peak.append(time_to_peak)
         
         total_trades = len(similar_indices)
         win_rate = (successful_trades / total_trades * 100) if total_trades > 0 else 0
         avg_win = np.mean(total_gains) if total_gains else 0
         avg_loss = np.mean(total_losses) if total_losses else 0
-        avg_timing = np.mean(timing_data) if timing_data else 0
+        
+        # FIXED: Calculate proper timing averages
+        avg_timing_1pct = np.mean(timing_data_1pct) if timing_data_1pct else 0
+        avg_timing_3pct = np.mean(timing_data_3pct) if timing_data_3pct else 0
+        avg_timing_5pct = np.mean(timing_data_5pct) if timing_data_5pct else 0
+        avg_timing_10pct = np.mean(timing_data_10pct) if timing_data_10pct else 0
+        avg_timing_bb_median = np.mean(timing_data_bb_median) if timing_data_bb_median else 0
+        avg_timing_peak = np.mean(timing_data_peak) if timing_data_peak else 0
+        
+        # FIXED: Calculate proper profit factor
+        total_win_amount = avg_win * successful_trades if successful_trades > 0 else 0
+        total_loss_amount = avg_loss * (total_trades - successful_trades) if (total_trades - successful_trades) > 0 else 0
+        profit_factor = (total_win_amount / total_loss_amount) if total_loss_amount > 0 else 0
+        
+
         
         return {
             'total_trades': total_trades,
@@ -982,8 +1042,14 @@ class HistoricalIntelligence:
             'win_rate': round(win_rate, 1),
             'avg_win': round(avg_win, 1),
             'avg_loss': round(avg_loss, 1),
-            'avg_timing_hours': round(avg_timing, 1),
-            'profit_factor': round((avg_win * successful_trades) / (avg_loss * (total_trades - successful_trades)), 2) if total_trades > successful_trades else 0
+            'avg_timing_1pct': round(avg_timing_1pct, 1),
+            'avg_timing_3pct': round(avg_timing_3pct, 1),
+            'avg_timing_5pct': round(avg_timing_5pct, 1),
+            'avg_timing_10pct': round(avg_timing_10pct, 1),
+            'avg_timing_bb_median': round(avg_timing_bb_median, 1),
+            'avg_timing_peak': round(avg_timing_peak, 1),
+            'avg_timing_hours': round(avg_timing_3pct, 1),  # Use 3% as primary timing metric
+            'profit_factor': round(profit_factor, 2)
         }
     
     def _calculate_trade_outcome(self, df: pd.DataFrame, entry_idx: int) -> Optional[Dict[str, Any]]:
@@ -1292,6 +1358,8 @@ class HistoricalIntelligence:
         successful = stats.get('successful_trades', 0)
         win_rate = stats.get('win_rate', 0)
         avg_win = stats.get('avg_win', 0)
+        avg_loss = stats.get('avg_loss', 0)
+        profit_factor = stats.get('profit_factor', 0)
         
         # Grade based on REAL performance
         if win_rate >= 80:
@@ -1310,15 +1378,24 @@ class HistoricalIntelligence:
             'similar_setups_won': f"{successful}/{total}",
             'win_rate_pct': round(win_rate, 1),
             'avg_win_pct': round(avg_win, 1),
-            'avg_time_hours': round(stats.get('avg_time_to_target', 0), 1)
+            'avg_loss_pct': round(avg_loss, 1),
+            'avg_timing_hours': round(stats.get('avg_timing_hours', 0), 1),  # FIXED: Use correct field name
+            'profit_factor': round(profit_factor, 2)
         }
     
     def _generate_timing_intelligence_real(self, stats: Dict) -> Dict:
         """Generate timing intelligence with REAL data"""
+        avg_timing_3pct = stats.get('avg_timing_3pct', 0)
+        target_hit_rate = stats.get('target_hit_rate', 0)
+        
         return {
-            'avg_time_to_target': round(stats.get('avg_time_to_target', 0), 1),
-            'target_hit_rate': round(stats.get('target_hit_rate', 0), 1),
-            'recommended_timeframe': "2-24 hours" if stats.get('avg_time_to_target', 0) < 24 else "1-3 days"
+            'avg_time_to_target': round(avg_timing_3pct, 1),  # FIXED: Use 3% timing as primary
+            'target_hit_rate': round(target_hit_rate, 1),
+            'recommended_timeframe': "2-24 hours" if avg_timing_3pct < 24 else "1-3 days",
+            'avg_timing_1pct': round(stats.get('avg_timing_1pct', 0), 1),
+            'avg_timing_3pct': round(avg_timing_3pct, 1),
+            'avg_timing_5pct': round(stats.get('avg_timing_5pct', 0), 1),
+            'avg_timing_10pct': round(stats.get('avg_timing_10pct', 0), 1)
         }
     
     def _generate_risk_assessment_real(self, stats: Dict) -> Dict:
@@ -1345,12 +1422,13 @@ class HistoricalIntelligence:
         win_rate = stats.get('win_rate', 0)
         avg_win = stats.get('avg_win', 0)
         avg_loss = stats.get('avg_loss', 0)
+        avg_timing_3pct = stats.get('avg_timing_3pct', 0)
         
         return {
             'win_probability': round(win_rate, 1),
             'expected_win_range': f"+{avg_win-1:.1f}% to +{avg_win+1:.1f}%",
             'expected_loss_range': f"-{avg_loss-0.5:.1f}% to -{avg_loss+0.5:.1f}%",
-            'avg_trade_duration': round(stats.get('avg_time_to_target', 0), 1)
+            'avg_trade_duration': round(avg_timing_3pct, 1)  # FIXED: Use 3% timing as primary
         }
 
     def _get_error_analysis(self) -> Dict[str, Any]:
