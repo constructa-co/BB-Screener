@@ -49,15 +49,15 @@ class BBDetector:
         long_score = self._calculate_long_score_detailed(recent_3_candles, last, df, scoring_details)
         short_score = self._calculate_short_score_detailed(recent_3_candles, last, df, scoring_details)
         
-        # Determine setup
-        if long_score > short_score and long_score >= 12:
+        # Determine setup - ADJUSTED threshold for enhanced scoring
+        if long_score > short_score and long_score >= 12:  # NEW - institutional selectivity
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
             stop = self._calculate_adaptive_stop_loss(entry, last['atr'], last['bb_upper'], last['bb_lower'], 'LONG', df)
             target1 = last['bb_middle']
             
-        elif short_score > long_score and short_score >= 12:
+        elif short_score > long_score and short_score >= 12:  # NEW - institutional selectivity
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']
@@ -67,17 +67,17 @@ class BBDetector:
         else:
             return self._get_empty_setup_with_score(max(long_score, short_score))
         
-        # Enhanced quality assessment
+        # Enhanced quality assessment for higher possible scores
         if bb_score >= 25:
-            setup_quality = 'Exceptional'
+            setup_quality = 'Exceptional'    # Multiple high-tier signals
         elif bb_score >= 22:
-            setup_quality = 'Excellent'
+            setup_quality = 'Excellent'     # Strong confluence across tiers
         elif bb_score >= 18:
-            setup_quality = 'Very Good'
+            setup_quality = 'Very Good'     # Good multi-tier confluence
         elif bb_score >= 15:
-            setup_quality = 'Good'
+            setup_quality = 'Good'          # Solid confluence
         elif bb_score >= 12:
-            setup_quality = 'Fair'
+            setup_quality = 'Fair'          # Minimum threshold
         else:
             setup_quality = 'Poor'
         

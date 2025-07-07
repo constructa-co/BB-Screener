@@ -310,16 +310,6 @@ class ModularBBScanner:
                                   f"({exchange_name}) - {probability}% probability, "
                                   f"Risk: {risk_pct:.1f}%, R:R: {bb_analysis['risk_reward']}")
                 
-                # Display detailed scoring breakdown for quality setups
-                if bb_analysis.get('scoring_details'):
-                    scoring_breakdown = self.output_generator.format_scoring_breakdown({
-                        'symbol': symbol,
-                        'setup_type': bb_analysis['setup_type'],
-                        'bb_score': bb_analysis['bb_score'],
-                        'scoring_details': bb_analysis['scoring_details']
-                    })
-                    print(scoring_breakdown)  # Display detailed breakdown
-                
             except Exception as e:
                 self.logger.debug(f"Error analyzing {symbol} on {exchange_name}: {e}")
                 continue
