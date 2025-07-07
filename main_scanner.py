@@ -135,7 +135,7 @@ class ModularBBScanner:
                 
                 # Step 2: BB Detection (EXISTING - UNCHANGED)
                 bb_analysis = self.bb_detector.analyze_bb_setup(df)
-                print(f"DEBUG: {symbol}/{exchange_name} BB setup: {bb_analysis['setup_type']}")
+                # print(f"DEBUG: {symbol}/{exchange_name} BB setup: {bb_analysis['setup_type']}")
                 if bb_analysis['setup_type'] == 'NONE':
                     continue
                 
