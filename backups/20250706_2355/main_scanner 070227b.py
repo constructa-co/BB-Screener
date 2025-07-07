@@ -30,8 +30,6 @@ try:
     # NEW: Market Regime Analyzer import (ONLY ADDITION)
     from modules.market_regime_analyzer import MarketRegimeAnalyzer
     from modules.market_regime_enhanced import create_enhanced_regime_analyzer, format_enhanced_regime_output
-    # In imports section
-    from historical_intelligence import HistoricalIntelligence, EnhancedOutputGenerator
     # asyncio is already imported in your file, so no need to add it again
     from config import *
 except ImportError as e:
@@ -54,12 +52,6 @@ class ModularBBScanner:
         
         # NEW: Market Regime Analyzer initialization (ONLY ADDITION)
         self.regime_analyzer = MarketRegimeAnalyzer(self.data_fetcher, self.sentiment_analyzer)
-        
-        # In __init__ method  
-        self.historical_intelligence = HistoricalIntelligence(
-            self.data_fetcher, self.technical_analyzer, self.bb_detector
-        )
-        self.enhanced_output = EnhancedOutputGenerator()
         
         # Setup logging (EXISTING - UNCHANGED)
         self._setup_logging()
@@ -223,15 +215,6 @@ class ModularBBScanner:
 
                     # Extract risk/reward data from pattern analysis
                     rr_data = pattern_data.get('auto_risk_reward', {}) if pattern_data else {}
-
-                # In analyze_coin_comprehensive method (after BB analysis)
-                if bb_analysis['setup_type'] != 'NONE':
-                    historical_data = self.historical_intelligence.analyze_historical_performance(
-                        symbol, bb_analysis
-                    )
-                    self.enhanced_output.display_enhanced_trade_analysis(
-                        symbol, bb_analysis, historical_data
-                    )
 
                 # Always create a basic result record for ML training
                 result = {
