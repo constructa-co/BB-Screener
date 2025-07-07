@@ -904,84 +904,121 @@ class OutputGenerator:
         return enhanced_data
 
     def _sanitize_excel_value(self, value):
-        """Sanitize values for Excel compatibility"""
-        if value is None:
+        """AGGRESSIVE sanitization for Excel compatibility - prevents ALL corruption"""
+        
+        # Handle None/NaN values first
+        if value is None or pd.isna(value):
             return ""
+        
+        # Handle numpy types that cause issues
+        if hasattr(value, 'dtype'):
+            if 'float' in str(value.dtype) and pd.isna(value):
+                return ""
+            value = value.item() if hasattr(value, 'item') else str(value)
         
         # Handle boolean values
         if isinstance(value, bool):
             return "TRUE" if value else "FALSE"
         
-        # Handle numeric values
+        # Handle numeric values aggressively
         if isinstance(value, (int, float)):
-            # Check for infinity or NaN
-            if value == float('inf') or value == float('-inf'):
-                return ""
-            if value != value:  # NaN check
-                return ""
-            return value
+            # Check for all problematic numeric values
+            if pd.isna(value) or value == float('inf') or value == float('-inf'):
+                return 0  # Use 0 instead of empty string for numbers
+            if abs(value) > 1e15:  # Extremely large numbers
+                return 0
+            return round(float(value), 6)  # Limit precision
         
-        # Handle strings
+        # Handle complex objects (dictionaries, lists, etc.)
+        if isinstance(value, (dict, list, tuple, set)):
+            try:
+                # Convert to simple string representation
+                str_val = str(value)
+                if len(str_val) > 1000:  # Limit length
+                    return str_val[:1000] + "..."
+                return str_val
+            except:
+                return "COMPLEX_OBJECT"
+        
+        # Handle strings aggressively
         if isinstance(value, str):
-            # Remove problematic characters
-            value = value.replace('\n', ' ').replace('\r', ' ')
-            # Limit length to prevent Excel issues
-            if len(value) > 32767:  # Excel cell limit
-                value = value[:32767]
+            # Remove all problematic characters
+            value = value.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+            value = value.replace('\x00', '').replace('\x01', '').replace('\x02', '')
+            
+            # Remove any non-printable characters
+            value = ''.join(char for char in value if char.isprintable() or char.isspace())
+            
+            # Limit length aggressively
+            if len(value) > 500:  # Much shorter limit
+                value = value[:500] + "..."
+            
+            # Handle empty strings
+            if not value.strip():
+                return ""
+                
             return value
         
-        # Handle lists/arrays (convert to string)
-        if isinstance(value, (list, tuple)):
-            return str(value)
+        # Handle datetime objects
+        if hasattr(value, 'strftime'):
+            try:
+                return value.strftime('%Y-%m-%d %H:%M:%S')
+            except:
+                return str(value)
         
-        # Default: convert to string
-        return str(value)
+        # Final fallback - convert everything to string and sanitize
+        try:
+            str_value = str(value)
+            if len(str_value) > 500:
+                str_value = str_value[:500]
+            # Remove any remaining problematic characters
+            return ''.join(char for char in str_value if char.isprintable() or char.isspace())
+        except:
+            return "SANITIZATION_ERROR"
 
     def _add_enhanced_columns_to_excel(self, worksheet, setups):
-        """Add enhanced scoring columns to the Excel worksheet with proper data sanitization"""
+        """Add enhanced scoring columns with AGGRESSIVE sanitization"""
         
-        # Get existing headers (assume they're in row 1)
+        # Enhanced headers (same as before)
+        enhanced_headers = [
+            'bb_score_34', 'setup_quality_enhanced', 'tier_base_bb',
+            'tier_money_flow', 'tier_bb_specific', 'tier_volume_momentum',
+            'tier_divergence', 'mfi_value', 'cmf_value', 'bb_expansion_ratio',
+            'volume_surge_detected', 'bb_trend_direction', 'total_components',
+            'mfi_priority_signal', 'component_1', 'component_2', 'component_3',
+            'component_4', 'component_5'
+        ]
+        
+        # Get existing headers
         existing_headers = []
         for col in range(1, worksheet.max_column + 1):
             header = worksheet.cell(row=1, column=col).value
             if header:
                 existing_headers.append(header)
         
-        # Define new enhanced headers
-        enhanced_headers = [
-            'bb_score_34',
-            'setup_quality_enhanced', 
-            'tier_base_bb',
-            'tier_money_flow',
-            'tier_bb_specific', 
-            'tier_volume_momentum',
-            'tier_divergence',
-            'mfi_value',
-            'cmf_value',
-            'bb_expansion_ratio',
-            'volume_surge_detected',
-            'bb_trend_direction',
-            'total_components',
-            'mfi_priority_signal',
-            'component_1',
-            'component_2', 
-            'component_3',
-            'component_4',
-            'component_5'
-        ]
-        
         # Add new headers
         start_col = len(existing_headers) + 1
         for i, header in enumerate(enhanced_headers):
-            worksheet.cell(row=1, column=start_col + i, value=header)
+            worksheet.cell(row=1, column=start_col + i, value=str(header))  # Ensure header is string
         
-        # Add enhanced data for each setup with sanitization
-        for row_idx, setup in enumerate(setups, start=2):  # Start from row 2 (after headers)
+        # Add enhanced data with DOUBLE sanitization
+        for row_idx, setup in enumerate(setups, start=2):
             enhanced_data = self._extract_enhanced_scoring_data(setup)
             
             for i, header in enumerate(enhanced_headers):
                 raw_value = enhanced_data.get(header, '')
-                # SANITIZE THE VALUE BEFORE WRITING
+                
+                # DOUBLE SANITIZATION - be extra aggressive
                 sanitized_value = self._sanitize_excel_value(raw_value)
-                worksheet.cell(row=row_idx, column=start_col + i, value=sanitized_value)
+                final_value = self._sanitize_excel_value(sanitized_value)  # Second pass
+                
+                # Final safety check
+                if final_value is None:
+                    final_value = ""
+                
+                try:
+                    worksheet.cell(row=row_idx, column=start_col + i, value=final_value)
+                except Exception as e:
+                    # If writing still fails, use empty string
+                    worksheet.cell(row=row_idx, column=start_col + i, value="")
 
