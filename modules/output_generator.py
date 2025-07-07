@@ -903,8 +903,42 @@ class OutputGenerator:
         
         return enhanced_data
 
+    def _sanitize_excel_value(self, value):
+        """Sanitize values for Excel compatibility"""
+        if value is None:
+            return ""
+        
+        # Handle boolean values
+        if isinstance(value, bool):
+            return "TRUE" if value else "FALSE"
+        
+        # Handle numeric values
+        if isinstance(value, (int, float)):
+            # Check for infinity or NaN
+            if value == float('inf') or value == float('-inf'):
+                return ""
+            if value != value:  # NaN check
+                return ""
+            return value
+        
+        # Handle strings
+        if isinstance(value, str):
+            # Remove problematic characters
+            value = value.replace('\n', ' ').replace('\r', ' ')
+            # Limit length to prevent Excel issues
+            if len(value) > 32767:  # Excel cell limit
+                value = value[:32767]
+            return value
+        
+        # Handle lists/arrays (convert to string)
+        if isinstance(value, (list, tuple)):
+            return str(value)
+        
+        # Default: convert to string
+        return str(value)
+
     def _add_enhanced_columns_to_excel(self, worksheet, setups):
-        """Add enhanced scoring columns to the Excel worksheet"""
+        """Add enhanced scoring columns to the Excel worksheet with proper data sanitization"""
         
         # Get existing headers (assume they're in row 1)
         existing_headers = []
@@ -941,11 +975,13 @@ class OutputGenerator:
         for i, header in enumerate(enhanced_headers):
             worksheet.cell(row=1, column=start_col + i, value=header)
         
-        # Add enhanced data for each setup
+        # Add enhanced data for each setup with sanitization
         for row_idx, setup in enumerate(setups, start=2):  # Start from row 2 (after headers)
             enhanced_data = self._extract_enhanced_scoring_data(setup)
             
             for i, header in enumerate(enhanced_headers):
-                value = enhanced_data.get(header, '')
-                worksheet.cell(row=row_idx, column=start_col + i, value=value)
+                raw_value = enhanced_data.get(header, '')
+                # SANITIZE THE VALUE BEFORE WRITING
+                sanitized_value = self._sanitize_excel_value(raw_value)
+                worksheet.cell(row=row_idx, column=start_col + i, value=sanitized_value)
 

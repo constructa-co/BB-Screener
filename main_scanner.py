@@ -135,7 +135,6 @@ class ModularBBScanner:
                 
                 # Step 2: BB Detection (EXISTING - UNCHANGED)
                 bb_analysis = self.bb_detector.analyze_bb_setup(df)
-                # print(f"DEBUG: {symbol}/{exchange_name} BB setup: {bb_analysis['setup_type']}")
                 if bb_analysis['setup_type'] == 'NONE':
                     continue
                 
@@ -299,26 +298,59 @@ class ModularBBScanner:
                     'btc_health_score': market_regime.get('btc_health_score', 50) if market_regime else 50,
                     'alt_market_outlook': market_regime.get('alt_market_outlook', 'FAIR') if market_regime else 'FAIR',
                     'market_health_score': market_regime.get('market_health_score', 50) if market_regime else 50,
-                    'alt_season_indicator': market_regime.get('alt_season_indicator', 'NEUTRAL') if market_regime else 'NEUTRAL'
+                    'alt_season_indicator': market_regime.get('alt_season_indicator', 'NEUTRAL') if market_regime else 'NEUTRAL',
+                    
+                    # ENHANCED SCORING DATA (for ML training):
+                    'bb_score_34': bb_analysis.get('bb_score', 0),  # New scoring system
+                    'setup_quality_enhanced': bb_analysis.get('setup_quality', 'None'),
+                    
+                    # SCORING DETAILS (if available):
+                    'scoring_details': bb_analysis.get('scoring_details', {}),
+                    
+                    # TIER BREAKDOWN:
+                    'tier_base_bb': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('base_bb', 0),
+                    'tier_money_flow': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('money_flow', 0),
+                    'tier_bb_specific': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('bb_specific', 0),
+                    'tier_volume_momentum': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('volume_momentum', 0),
+                    'tier_divergence': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('divergence', 0),
+                    
+                    # KEY INDICATOR VALUES:
+                    'mfi_value': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('mfi', 0),
+                    'cmf_value': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('cmf', 0),
+                    'bb_expansion_ratio': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('bb_expansion', 0),
+                    'volume_surge_detected': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('volume_surge', False),
+                    'bb_trend_direction': bb_analysis.get('scoring_details', {}).get('indicator_values', {}).get('bb_trend', ''),
+                    
+                    # COMPONENT DETAILS (first 5 for ML):
+                    'component_1': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[0] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 0 else '',
+                    'component_2': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[1] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 1 else '',
+                    'component_3': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[2] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 2 else '',
+                    'component_4': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[3] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 3 else '',
+                    'component_5': bb_analysis.get('scoring_details', {}).get('breakdown', [''])[4] if len(bb_analysis.get('scoring_details', {}).get('breakdown', [])) > 4 else '',
+                    
+                    # PRIORITY SIGNALS:
+                    'mfi_priority_signal': 'MFI' in str(bb_analysis.get('scoring_details', {}).get('breakdown', [])) and '4 pts' in str(bb_analysis.get('scoring_details', {}).get('breakdown', [])),
+                    'total_components': len(bb_analysis.get('scoring_details', {}).get('breakdown', []))
                 }
                 
                 all_analyses.append(result)
                 
-                # EXISTING logging (UNCHANGED)
-                if probability >= 65:
+                # NEW: Filter for terminal display (12+ BB score)
+                bb_score = bb_analysis.get('bb_score', 0)
+                if bb_score >= 12:  # Quality threshold for terminal display
                     self.logger.info(f"Quality setup: {symbol} {bb_analysis['setup_type']} "
                                   f"({exchange_name}) - {probability}% probability, "
                                   f"Risk: {risk_pct:.1f}%, R:R: {bb_analysis['risk_reward']}")
-                
-                # Display detailed scoring breakdown for quality setups
-                if bb_analysis.get('scoring_details'):
-                    scoring_breakdown = self.output_generator.format_scoring_breakdown({
-                        'symbol': symbol,
-                        'setup_type': bb_analysis['setup_type'],
-                        'bb_score': bb_analysis['bb_score'],
-                        'scoring_details': bb_analysis['scoring_details']
-                    })
-                    print(scoring_breakdown)  # Display detailed breakdown
+                    
+                    # Display detailed scoring breakdown for quality setups
+                    if bb_analysis.get('scoring_details'):
+                        scoring_breakdown = self.output_generator.format_scoring_breakdown({
+                            'symbol': symbol,
+                            'setup_type': bb_analysis['setup_type'],
+                            'bb_score': bb_analysis['bb_score'],
+                            'scoring_details': bb_analysis['scoring_details']
+                        })
+                        print(scoring_breakdown)  # Display detailed breakdown
                 
             except Exception as e:
                 self.logger.debug(f"Error analyzing {symbol} on {exchange_name}: {e}")
@@ -448,10 +480,57 @@ class ModularBBScanner:
                 print("No analysis results found.")
                 return
             
-            print(f"Step 4: Formatting and categorizing results...")
+            # NEW: Analysis summary display
+            quality_results = {}
+            all_analysis_data = []  # Keep ALL data for Excel
+            
+            for result in all_results:
+                # Save ALL data for Excel (ML training)
+                all_analysis_data.append(result)
+                
+                # Only track quality setups for summary (12+ BB score)
+                bb_score = result.get('bb_score', 0)
+                if bb_score >= 12:  # Quality threshold
+                    quality_results[result.get('symbol', 'Unknown')] = result
+            
+            # Display analysis summary
+            print(f"\n🔍 ANALYSIS SUMMARY:")
+            print(f"   • Total coins analyzed: {len(all_results)}")
+            print(f"   • Quality setups found: {len(quality_results)}")
+            print(f"   • Success rate: {len(quality_results)/len(all_results)*100:.1f}%")
+            
+            if quality_results:
+                print(f"\n🎯 QUALITY SETUPS (12+ points):")
+                print("=" * 80)
+                for symbol, result in quality_results.items():
+                    # Display quality setup details
+                    setup_type = result.get('setup_type', 'Unknown')
+                    bb_score = result.get('bb_score', 0)
+                    probability = result.get('probability', 0)
+                    risk_pct = result.get('risk_pct', 0)
+                    risk_reward = result.get('risk_reward', 0)
+                    
+                    print(f"\n📊 {symbol} - {setup_type}")
+                    print(f"   🎯 BB Score: {bb_score}/16 | Probability: {probability}%")
+                    print(f"   💰 Risk: {risk_pct:.1f}% | R:R: {risk_reward}:1")
+                    
+                    # Show detailed scoring breakdown for quality setups
+                    if result.get('scoring_details'):
+                        scoring_breakdown = self.output_generator.format_scoring_breakdown({
+                            'symbol': symbol,
+                            'setup_type': setup_type,
+                            'bb_score': bb_score,
+                            'scoring_details': result.get('scoring_details')
+                        })
+                        print(scoring_breakdown)
+            else:
+                print(f"\n⏳ No quality setups found in current market conditions")
+                print(f"   Waiting for institutional-grade opportunities (12+ points)")
+            
+            print(f"\nStep 4: Formatting and categorizing results...")
             # Format results inline
             import pandas as pd
-            df_all = self.output_generator.format_comprehensive_results(all_results)
+            df_all = self.output_generator.format_comprehensive_results(all_analysis_data)  # Use ALL data for Excel
             
             # Sort and filter results
             # Results are already formatted and sorted by output_generator
@@ -477,10 +556,11 @@ class ModularBBScanner:
                 
                 print("✅ Analysis complete!")
                 
-                # Generate Excel output (ENHANCED with market regime)
+                # Generate Excel output (ENHANCED with market regime) - ALL data for ML training
                 excel_filename = self.output_generator.generate_excel_output(df_enhanced, market_regime)
                 print(f"📊 Excel results saved to: {excel_filename}")
                 print(f"📁 Organized in: outputs/excel_reports/")
+                print(f"💾 Excel contains ALL {len(all_analysis_data)} analyzed coins (for ML training)")
 
             except Exception as e:
                 self.logger.error(f"Critical error in scanner: {e}")
