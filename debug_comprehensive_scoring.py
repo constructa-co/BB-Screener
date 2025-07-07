@@ -15,7 +15,7 @@ def debug_comprehensive_scoring():
     print("=" * 70)
     
     try:
-        from bb_detector import BBDetector
+        from modules.bb_detector import BBDetector
         
         detector = BBDetector()
         print("✅ BBDetector imported successfully")

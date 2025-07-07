@@ -14,7 +14,7 @@ def test_enhanced_scoring():
     print("=" * 60)
     
     try:
-        from bb_detector import BBDetector
+        from modules.bb_detector import BBDetector
         
         detector = BBDetector()
         

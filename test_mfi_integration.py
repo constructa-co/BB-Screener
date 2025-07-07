@@ -16,7 +16,7 @@ def test_mfi_integration():
     
     try:
         # Import your enhanced BB detector
-        from bb_detector import BBDetector
+        from modules.bb_detector import BBDetector
         
         detector = BBDetector()
         print("✅ BBDetector imported successfully")

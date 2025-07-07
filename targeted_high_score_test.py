@@ -48,7 +48,7 @@ def test_targeted_scoring():
     print("=" * 50)
     
     try:
-        from bb_detector import BBDetector
+        from modules.bb_detector import BBDetector
         
         detector = BBDetector()
         
