@@ -298,9 +298,9 @@ class ModularBBScanner:
                         'historical_probability': market_baselines.get('overall_success_rate', 72.4),
                         'historical_bb_baseline': market_context.get('asset_bb_baseline_rate', 72.4),  # Standard BB win rate for this asset
                         'historical_component_success': market_context.get('component_success_rate', 0),  # BB + component combo win rate
-                        'historical_avg_win': historical_data.get('avg_win', 0),
-                        'historical_avg_loss': historical_data.get('avg_loss', 0),
-                        'historical_avg_duration': historical_data.get('avg_duration', 0),
+                        'historical_avg_win': historical_data.get('trade_quality_analysis', {}).get('avg_win_pct', 0),
+                        'historical_avg_loss': historical_data.get('trade_quality_analysis', {}).get('avg_loss_pct', 0),
+                        'historical_avg_duration': historical_data.get('timing_intelligence', {}).get('avg_timing_3pct', 0),
                         'market_baseline': market_baselines.get('overall_success_rate', 72.4),
                         'market_health': market_baselines.get('market_health_score', 73.5),
                         'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),
