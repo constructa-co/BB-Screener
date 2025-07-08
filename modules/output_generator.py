@@ -115,7 +115,7 @@ class OutputGenerator:
             return 'NO SETUP'
 
     def generate_excel_output(self, df: pd.DataFrame, market_regime: Dict = None, filename: str = None) -> str:
-        """Generate comprehensive Excel output with Market Overview tab"""
+        """Generate comprehensive Excel output with Market Overview tab (and all previous sheets)"""
         try:
             if filename is None:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -133,14 +133,36 @@ class OutputGenerator:
                         df[col] = default_val
             market_data = self._run_market_overview_analysis()
             with pd.ExcelWriter(filepath, engine='openpyxl', mode='w') as writer:
+                # Sheet 1: All results
                 if not df.empty:
                     df.to_excel(writer, sheet_name='All_Analysis', index=False)
-                    premium_trades = df[df['bb_probability'] >= 80]
-                    if not premium_trades.empty:
-                        premium_trades.to_excel(writer, sheet_name='Premium_High_Only', index=False)
-                self._create_market_overview_sheet(writer, market_data)
+                # Sheet 2: Premium and High probability only
+                premium_high = df[df['tier'].isin(['PREMIUM', 'HIGH'])] if not df.empty and 'tier' in df.columns else pd.DataFrame()
+                if not premium_high.empty:
+                    premium_high.to_excel(writer, sheet_name='Premium_High_Only', index=False)
+                # Sheet 3: Trade recommendations
+                trade_recs = df[df['action'].isin(['TAKE TRADE', 'CONSIDER'])] if not df.empty and 'action' in df.columns else pd.DataFrame()
+                if not trade_recs.empty:
+                    trade_recs.to_excel(writer, sheet_name='Trade_Recommendations', index=False)
+                # Sheet 4: Low risk trades (≤3% risk)
+                low_risk = df[(df['risk_pct'] <= 3.0) & (df['setup_type'] != 'NONE')] if not df.empty and 'risk_pct' in df.columns and 'setup_type' in df.columns else pd.DataFrame()
+                if not low_risk.empty:
+                    low_risk.to_excel(writer, sheet_name='Low_Risk_Trades', index=False)
+                # Sheet 5: Monitoring list
+                monitor_list = df[df['action'].isin(['MONITOR', 'WATCH ONLY'])] if not df.empty and 'action' in df.columns else pd.DataFrame()
+                if not monitor_list.empty:
+                    monitor_list.to_excel(writer, sheet_name='Monitoring_List', index=False)
+                # Sheet 6: Top 10 with sentiment (if sentiment data exists)
+                sentiment_cols = ['lunar_data_available', 'tm_data_available']
+                if not df.empty and any(col in df.columns for col in sentiment_cols):
+                    top_10_sentiment = df.head(10)
+                    if not top_10_sentiment.empty:
+                        top_10_sentiment.to_excel(writer, sheet_name='Top_10_Sentiment', index=False)
+                # Sheet 7: Market Regime Analysis Dashboard
                 if market_regime:
                     self._create_market_regime_sheet(writer, market_regime)
+                # ADDITIONAL SHEET: Market Overview (improved BB backtest output)
+                self._create_market_overview_sheet(writer, market_data)
             logger.info(f"Excel output with Market Overview saved to {filepath}")
             return filepath
         except Exception as e:
