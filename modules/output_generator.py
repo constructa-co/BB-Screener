@@ -222,13 +222,29 @@ class OutputGenerator:
         """Run the improved_bb_backtest analysis and return summary data"""
         try:
             from modules.improved_bb_backtest import ComprehensiveBBBacktest
+            from datetime import datetime
+            logger.info("Running real-time market overview analysis...")
+
+            # Instantiate and run the comprehensive backtest for a 30-day window
             backtester = ComprehensiveBBBacktest()
-            logger.info("Running market overview analysis...")
+            results = backtester.run_comprehensive_analysis(timeframes=[30], max_coins=500)
+
+            # Extract the 30-day results
+            results_30d = results.get('30d', {})
+            coins_analyzed = len([k for k, v in results_30d.items() if v and isinstance(v, dict) and v.get('total_bounces', 0) > 0])
+            total_bounces = sum(v.get('total_bounces', 0) for v in results_30d.values() if isinstance(v, dict))
+            successful_bounces = 0
+            for v in results_30d.values():
+                if isinstance(v, dict) and 'bounces' in v:
+                    successful_bounces += len([b for b in v['bounces'] if b.get('max_favorable_5', 0) > 1.0])
+            overall_success_rate = round((successful_bounces / total_bounces) * 100, 1) if total_bounces > 0 else 0.0
+            market_health = overall_success_rate  # You can adjust this if you have a different health formula
+
             market_data = {
-                'total_bounces': 9055,
-                'coins_analyzed': 111,
-                'overall_success_rate': 74.5,
-                'market_health': 73.5,
+                'total_bounces': total_bounces,
+                'coins_analyzed': coins_analyzed,
+                'overall_success_rate': overall_success_rate,
+                'market_health': market_health,
                 'analysis_date': datetime.now().strftime("%Y-%m-%d")
             }
             return market_data
