@@ -239,77 +239,40 @@ class OutputGenerator:
 
             # Instantiate and run the comprehensive backtest for a 30-day window
             backtester = ComprehensiveBBBacktest()
+            
+            # FIX: Use the correct method name from your comprehensive backtest
             results = backtester.run_comprehensive_analysis(timeframes=[30], max_coins=500)
+            
+            # FIX: Extract data from the correct location
             results_30d = results.get('30d', {})
-
+            
+            # --- Extract all bounces data correctly ---
+            all_bounces = []
+            for coin_data in results_30d.values():
+                if isinstance(coin_data, dict) and 'bounces' in coin_data:
+                    all_bounces.extend(coin_data['bounces'])
+            
+            logger.info(f"DEBUG: Extracted {len(all_bounces)} total bounces for analysis")
+            
             # --- Summary stats ---
             coins_analyzed = len([k for k, v in results_30d.items() if v and isinstance(v, dict) and v.get('total_bounces', 0) > 0])
-            total_bounces = sum(v.get('total_bounces', 0) for v in results_30d.values() if isinstance(v, dict))
-            all_bounces = []
-            for v in results_30d.values():
-                if isinstance(v, dict) and 'bounces' in v:
-                    all_bounces.extend(v['bounces'])
+            total_bounces = len(all_bounces)
             successful_bounces = len([b for b in all_bounces if b.get('max_favorable_5', 0) > 1.0])
             overall_success_rate = round((successful_bounces / total_bounces) * 100, 1) if total_bounces > 0 else 0.0
             market_health = overall_success_rate
 
-            # --- BB-Specific Indicators ---
-            def indicator_row(name, stats):
-                return [
-                    name,
-                    f"{stats['success_rate']:.1f}%",
-                    f"{stats['profit_factor']:.1f}",
-                    f"{stats['samples']}"
-                ]
-            bb_stats = self._extract_bb_stats_from_bounces(all_bounces)
-            bb_specific_indicators = [
-                indicator_row('BB Squeeze', bb_stats.get('bb_squeeze', {})),
-                indicator_row('BB Expansion', bb_stats.get('bb_expansion', {})),
-                indicator_row('BB Reversal Setup', bb_stats.get('bb_reversal_setup', {})),
-            ]
+            # --- Call helper methods with real bounce data ---
+            bb_specific_indicators = self._extract_bb_stats_from_bounces(all_bounces)
+            technical_indicators = self._extract_technical_stats_from_bounces(all_bounces)
+            risk_characteristics = self._extract_risk_stats_from_bounces(all_bounces)
+            timing_analysis = self._extract_timing_stats_from_bounces(all_bounces)
+            market_cap_tiers = self._extract_market_cap_stats_from_bounces(all_bounces)
+            ml_training_data = self._extract_ml_training_stats_from_bounces(all_bounces)
 
-            # --- Technical Indicators ---
-            tech_stats = self._extract_technical_stats_from_bounces(all_bounces)
-            technical_indicators = [
-                indicator_row('MFI Oversold', tech_stats.get('mfi_oversold', {})),
-                indicator_row('MFI Overbought', tech_stats.get('mfi_overbought', {})),
-                indicator_row('Volume Surge', tech_stats.get('volume_surge', {})),
-                indicator_row('CCI Extreme', tech_stats.get('cci_extreme', {})),
-                indicator_row('Stoch Overbought', tech_stats.get('stoch_overbought', {})),
-                indicator_row('Stoch Oversold', tech_stats.get('stoch_oversold', {})),
-            ]
+            logger.info(f"DEBUG: BB indicators: {len(bb_specific_indicators)} rows")
+            logger.info(f"DEBUG: Technical indicators: {len(technical_indicators)} rows")
 
-            # --- Risk Characteristics ---
-            risk_stats = self._extract_risk_stats_from_bounces(all_bounces)
-            risk_characteristics = [
-                ['Average Winning Trade', f"+{risk_stats['avg_win']:.1f}%", '', ''],
-                ['Average Losing Trade', f"-{risk_stats['avg_loss']:.1f}%", '', ''],
-                ['Overall Profit Factor', f"{risk_stats['profit_factor']:.1f}", '', ''],
-                ['Risk/Reward Ratio', f"{risk_stats['risk_reward_ratio']:.1f}", '', '']
-            ]
 
-            # --- Timing Analysis ---
-            timing_stats = self._extract_timing_stats_from_bounces(all_bounces)
-            timing_analysis = [
-                ['Time to 1%', f"{timing_stats['avg_time_to_1pct']:.1f}h", f"{timing_stats['hit_rate_1pct']:.1f}%", ''],
-                ['Time to 3%', f"{timing_stats['avg_time_to_3pct']:.1f}h", f"{timing_stats['hit_rate_3pct']:.1f}%", ''],
-                ['Time to 5%', f"{timing_stats['avg_time_to_5pct']:.1f}h", f"{timing_stats['hit_rate_5pct']:.1f}%", ''],
-                ['Time to Peak', f"{timing_stats['avg_time_to_peak']:.1f}h", f"{timing_stats['hit_rate_peak']:.1f}%", '']
-            ]
-
-            # --- Market Cap Tiers ---
-            market_cap_stats = self._extract_market_cap_stats_from_bounces(all_bounces)
-            market_cap_tiers = [
-                ['Large Cap (Top 50)', f"{market_cap_stats['large_cap_success']:.1f}%", f"{market_cap_stats['large_cap_samples']}", ''],
-                ['Smaller Cap', f"{market_cap_stats['small_cap_success']:.1f}%", f"{market_cap_stats['small_cap_samples']}", '']
-            ]
-
-            # --- ML Training Data ---
-            ml_training_data = [
-                ['Data Quality', 'HIGH', '', ''],
-                ['Sample Size', f"EXCELLENT ({total_bounces} bounces)", '', ''],
-                ['Confidence Level', 'INSTITUTIONAL GRADE', '', '']
-            ]
 
             market_data = {
                 'total_bounces': total_bounces,
@@ -357,11 +320,19 @@ class OutputGenerator:
             avg_loss = sum([abs(b.get('max_adverse_5', 0)) for b in losers]) / len(losers) if losers else 0
             profit_factor = (sum([b.get('max_favorable_5', 0) for b in winners]) / sum([abs(b.get('max_adverse_5', 0)) for b in losers])) if losers else 0
             return {'success_rate': success_rate, 'profit_factor': profit_factor, 'samples': samples}
-        return {
+        
+        bb_stats = {
             'bb_squeeze': calc_stats('bb_squeeze'),
             'bb_expansion': calc_stats('bb_expansion'),
             'bb_reversal_setup': calc_stats('bb_reversal_setup')
         }
+        
+        # Return as list of lists for Excel
+        return [
+            ['BB Squeeze', f"{bb_stats['bb_squeeze']['success_rate']:.1f}%", f"{bb_stats['bb_squeeze']['profit_factor']:.1f}", f"{bb_stats['bb_squeeze']['samples']}"],
+            ['BB Expansion', f"{bb_stats['bb_expansion']['success_rate']:.1f}%", f"{bb_stats['bb_expansion']['profit_factor']:.1f}", f"{bb_stats['bb_expansion']['samples']}"],
+            ['BB Reversal Setup', f"{bb_stats['bb_reversal_setup']['success_rate']:.1f}%", f"{bb_stats['bb_reversal_setup']['profit_factor']:.1f}", f"{bb_stats['bb_reversal_setup']['samples']}"]
+        ]
 
     def _extract_technical_stats_from_bounces(self, bounces):
         def calc_stats(filter_func):
@@ -376,7 +347,8 @@ class OutputGenerator:
             avg_loss = sum([abs(b.get('max_adverse_5', 0)) for b in losers]) / len(losers) if losers else 0
             profit_factor = (sum([b.get('max_favorable_5', 0) for b in winners]) / sum([abs(b.get('max_adverse_5', 0)) for b in losers])) if losers else 0
             return {'success_rate': success_rate, 'profit_factor': profit_factor, 'samples': samples}
-        return {
+        
+        tech_stats = {
             'mfi_oversold': calc_stats(lambda b: b.get('money_flow_index', 50) < 20),
             'mfi_overbought': calc_stats(lambda b: b.get('money_flow_index', 50) > 80),
             'volume_surge': calc_stats(lambda b: b.get('volume_surge', False)),
@@ -384,6 +356,16 @@ class OutputGenerator:
             'stoch_overbought': calc_stats(lambda b: b.get('stoch_overbought', False)),
             'stoch_oversold': calc_stats(lambda b: b.get('stoch_oversold', False)),
         }
+        
+        # Return as list of lists for Excel
+        return [
+            ['MFI Oversold', f"{tech_stats['mfi_oversold']['success_rate']:.1f}%", f"{tech_stats['mfi_oversold']['profit_factor']:.1f}", f"{tech_stats['mfi_oversold']['samples']}"],
+            ['MFI Overbought', f"{tech_stats['mfi_overbought']['success_rate']:.1f}%", f"{tech_stats['mfi_overbought']['profit_factor']:.1f}", f"{tech_stats['mfi_overbought']['samples']}"],
+            ['Volume Surge', f"{tech_stats['volume_surge']['success_rate']:.1f}%", f"{tech_stats['volume_surge']['profit_factor']:.1f}", f"{tech_stats['volume_surge']['samples']}"],
+            ['CCI Extreme', f"{tech_stats['cci_extreme']['success_rate']:.1f}%", f"{tech_stats['cci_extreme']['profit_factor']:.1f}", f"{tech_stats['cci_extreme']['samples']}"],
+            ['Stoch Overbought', f"{tech_stats['stoch_overbought']['success_rate']:.1f}%", f"{tech_stats['stoch_overbought']['profit_factor']:.1f}", f"{tech_stats['stoch_overbought']['samples']}"],
+            ['Stoch Oversold', f"{tech_stats['stoch_oversold']['success_rate']:.1f}%", f"{tech_stats['stoch_oversold']['profit_factor']:.1f}", f"{tech_stats['stoch_oversold']['samples']}"]
+        ]
 
     def _extract_risk_stats_from_bounces(self, bounces):
         winners = [b for b in bounces if b.get('max_favorable_5', 0) > 1.0]
@@ -392,7 +374,14 @@ class OutputGenerator:
         avg_loss = sum([abs(b.get('max_adverse_5', 0)) for b in losers]) / len(losers) if losers else 0
         profit_factor = (sum([b.get('max_favorable_5', 0) for b in winners]) / sum([abs(b.get('max_adverse_5', 0)) for b in losers])) if losers else 0
         risk_reward_ratio = (avg_win / avg_loss) if avg_loss else 0
-        return {'avg_win': avg_win, 'avg_loss': avg_loss, 'profit_factor': profit_factor, 'risk_reward_ratio': risk_reward_ratio}
+        
+        # Return as list of lists for Excel
+        return [
+            ['Average Winning Trade', f"+{avg_win:.1f}%", '', ''],
+            ['Average Losing Trade', f"-{avg_loss:.1f}%", '', ''],
+            ['Overall Profit Factor', f"{profit_factor:.1f}", '', ''],
+            ['Risk/Reward Ratio', f"{risk_reward_ratio:.1f}", '', '']
+        ]
 
     def _extract_timing_stats_from_bounces(self, bounces):
         def avg_and_hit(field, threshold=0):
@@ -404,16 +393,14 @@ class OutputGenerator:
         avg_time_to_3pct, hit_rate_3pct = avg_and_hit('time_to_3pct')
         avg_time_to_5pct, hit_rate_5pct = avg_and_hit('time_to_5pct')
         avg_time_to_peak, hit_rate_peak = avg_and_hit('time_to_peak')
-        return {
-            'avg_time_to_1pct': avg_time_to_1pct,
-            'hit_rate_1pct': hit_rate_1pct,
-            'avg_time_to_3pct': avg_time_to_3pct,
-            'hit_rate_3pct': hit_rate_3pct,
-            'avg_time_to_5pct': avg_time_to_5pct,
-            'hit_rate_5pct': hit_rate_5pct,
-            'avg_time_to_peak': avg_time_to_peak,
-            'hit_rate_peak': hit_rate_peak
-        }
+        
+        # Return as list of lists for Excel
+        return [
+            ['Time to 1%', f"{avg_time_to_1pct:.1f}h", f"{hit_rate_1pct:.1f}%", ''],
+            ['Time to 3%', f"{avg_time_to_3pct:.1f}h", f"{hit_rate_3pct:.1f}%", ''],
+            ['Time to 5%', f"{avg_time_to_5pct:.1f}h", f"{hit_rate_5pct:.1f}%", ''],
+            ['Time to Peak', f"{avg_time_to_peak:.1f}h", f"{hit_rate_peak:.1f}%", '']
+        ]
 
     def _extract_market_cap_stats_from_bounces(self, bounces):
         large_cap_symbols = {'BTC', 'ETH', 'BNB', 'XRP', 'SOL', 'ADA', 'MATIC', 'DOT'}
@@ -426,17 +413,22 @@ class OutputGenerator:
             return len(winners) / len(bset) * 100, len(bset)
         large_cap_success, large_cap_samples = success_rate(large_cap_bounces)
         small_cap_success, small_cap_samples = success_rate(small_cap_bounces)
-        return {'large_cap_success': large_cap_success, 'large_cap_samples': large_cap_samples, 'small_cap_success': small_cap_success, 'small_cap_samples': small_cap_samples}
+        
+        # Return as list of lists for Excel
+        return [
+            ['Large Cap (Top 50)', f"{large_cap_success:.1f}%", f"{large_cap_samples}", ''],
+            ['Smaller Cap', f"{small_cap_success:.1f}%", f"{small_cap_samples}", '']
+        ]
 
     def _extract_ml_training_stats_from_bounces(self, bounces):
         # Add optimal strategy recommendations and data quality
         total_bounces = len(bounces)
+        
+        # Return as list of lists for Excel
         return [
-            ['ML Training Data', '', '', ''],
             ['Data Quality', 'HIGH', '', ''],
-            ['Sample Size', f'EXCELLENT ({total_bounces} bounces)', '', ''],
-            ['Confidence Level', 'INSTITUTIONAL GRADE', '', ''],
-            ['Optimal Strategy', 'Partial exits: 50% at BB median, 50% at +9.5%', '', '']
+            ['Sample Size', f"EXCELLENT ({total_bounces} bounces)", '', ''],
+            ['Confidence Level', 'INSTITUTIONAL GRADE', '', '']
         ]
 
     def _create_market_regime_sheet(self, writer, market_regime: Dict):
