@@ -345,33 +345,89 @@ class OutputGenerator:
 
     # --- Helper extraction methods ---
     def _extract_bb_stats_from_bounces(self, bounces):
-        # Implement logic to calculate BB Squeeze, Expansion, Reversal Setup stats from bounces
-        # Return dict with keys: bb_squeeze, bb_expansion, bb_reversal_setup
-        # Each value: {'success_rate': float, 'profit_factor': float, 'samples': int}
-        # ...
-        return {}
+        # Calculate BB Squeeze, Expansion, Reversal Setup stats from bounces
+        def calc_stats(filter_key):
+            filtered = [b for b in bounces if b.get(filter_key)]
+            samples = len(filtered)
+            if samples == 0:
+                return {'success_rate': 0, 'profit_factor': 0, 'samples': 0}
+            winners = [b for b in filtered if b.get('max_favorable_5', 0) > 1.0]
+            losers = [b for b in filtered if b.get('max_favorable_5', 0) <= 1.0]
+            success_rate = len(winners) / samples * 100 if samples else 0
+            avg_win = sum([b.get('max_favorable_5', 0) for b in winners]) / len(winners) if winners else 0
+            avg_loss = sum([abs(b.get('max_adverse_5', 0)) for b in losers]) / len(losers) if losers else 0
+            profit_factor = (sum([b.get('max_favorable_5', 0) for b in winners]) / sum([abs(b.get('max_adverse_5', 0)) for b in losers])) if losers else 0
+            return {'success_rate': success_rate, 'profit_factor': profit_factor, 'samples': samples}
+        return {
+            'bb_squeeze': calc_stats('bb_squeeze'),
+            'bb_expansion': calc_stats('bb_expansion'),
+            'bb_reversal_setup': calc_stats('bb_reversal_setup')
+        }
 
     def _extract_technical_stats_from_bounces(self, bounces):
-        # Implement logic to calculate technical indicator stats from bounces
-        # Return dict with keys: mfi_oversold, mfi_overbought, volume_surge, cci_extreme, stoch_overbought, stoch_oversold
-        # Each value: {'success_rate': float, 'profit_factor': float, 'samples': int}
-        # ...
-        return {}
+        def calc_stats(filter_func):
+            filtered = [b for b in bounces if filter_func(b)]
+            samples = len(filtered)
+            if samples == 0:
+                return {'success_rate': 0, 'profit_factor': 0, 'samples': 0}
+            winners = [b for b in filtered if b.get('max_favorable_5', 0) > 1.0]
+            losers = [b for b in filtered if b.get('max_favorable_5', 0) <= 1.0]
+            success_rate = len(winners) / samples * 100 if samples else 0
+            avg_win = sum([b.get('max_favorable_5', 0) for b in winners]) / len(winners) if winners else 0
+            avg_loss = sum([abs(b.get('max_adverse_5', 0)) for b in losers]) / len(losers) if losers else 0
+            profit_factor = (sum([b.get('max_favorable_5', 0) for b in winners]) / sum([abs(b.get('max_adverse_5', 0)) for b in losers])) if losers else 0
+            return {'success_rate': success_rate, 'profit_factor': profit_factor, 'samples': samples}
+        return {
+            'mfi_oversold': calc_stats(lambda b: b.get('money_flow_index', 50) < 20),
+            'mfi_overbought': calc_stats(lambda b: b.get('money_flow_index', 50) > 80),
+            'volume_surge': calc_stats(lambda b: b.get('volume_surge', False)),
+            'cci_extreme': calc_stats(lambda b: abs(b.get('cci', 0)) > 100),
+            'stoch_overbought': calc_stats(lambda b: b.get('stoch_overbought', False)),
+            'stoch_oversold': calc_stats(lambda b: b.get('stoch_oversold', False)),
+        }
 
     def _extract_risk_stats_from_bounces(self, bounces):
-        # Implement logic to calculate risk stats (avg_win, avg_loss, profit_factor, risk_reward_ratio)
-        # ...
-        return {'avg_win': 0, 'avg_loss': 0, 'profit_factor': 0, 'risk_reward_ratio': 0}
+        winners = [b for b in bounces if b.get('max_favorable_5', 0) > 1.0]
+        losers = [b for b in bounces if b.get('max_favorable_5', 0) <= 1.0]
+        avg_win = sum([b.get('max_favorable_5', 0) for b in winners]) / len(winners) if winners else 0
+        avg_loss = sum([abs(b.get('max_adverse_5', 0)) for b in losers]) / len(losers) if losers else 0
+        profit_factor = (sum([b.get('max_favorable_5', 0) for b in winners]) / sum([abs(b.get('max_adverse_5', 0)) for b in losers])) if losers else 0
+        risk_reward_ratio = (avg_win / avg_loss) if avg_loss else 0
+        return {'avg_win': avg_win, 'avg_loss': avg_loss, 'profit_factor': profit_factor, 'risk_reward_ratio': risk_reward_ratio}
 
     def _extract_timing_stats_from_bounces(self, bounces):
-        # Implement logic to calculate timing stats (avg_time_to_1pct, hit_rate_1pct, etc.)
-        # ...
-        return {'avg_time_to_1pct': 0, 'hit_rate_1pct': 0, 'avg_time_to_3pct': 0, 'hit_rate_3pct': 0, 'avg_time_to_5pct': 0, 'hit_rate_5pct': 0, 'avg_time_to_peak': 0, 'hit_rate_peak': 0}
+        def avg_and_hit(field, threshold=0):
+            vals = [b.get(field, 0) for b in bounces if b.get(field, 0) > threshold]
+            avg = sum(vals) / len(vals) if vals else 0
+            hit_rate = len(vals) / len(bounces) * 100 if bounces else 0
+            return avg, hit_rate
+        avg_time_to_1pct, hit_rate_1pct = avg_and_hit('time_to_1pct')
+        avg_time_to_3pct, hit_rate_3pct = avg_and_hit('time_to_3pct')
+        avg_time_to_5pct, hit_rate_5pct = avg_and_hit('time_to_5pct')
+        avg_time_to_peak, hit_rate_peak = avg_and_hit('time_to_peak')
+        return {
+            'avg_time_to_1pct': avg_time_to_1pct,
+            'hit_rate_1pct': hit_rate_1pct,
+            'avg_time_to_3pct': avg_time_to_3pct,
+            'hit_rate_3pct': hit_rate_3pct,
+            'avg_time_to_5pct': avg_time_to_5pct,
+            'hit_rate_5pct': hit_rate_5pct,
+            'avg_time_to_peak': avg_time_to_peak,
+            'hit_rate_peak': hit_rate_peak
+        }
 
     def _extract_market_cap_stats_from_bounces(self, bounces):
-        # Implement logic to calculate market cap tier stats
-        # ...
-        return {'large_cap_success': 0, 'large_cap_samples': 0, 'small_cap_success': 0, 'small_cap_samples': 0}
+        large_cap_symbols = {'BTC', 'ETH', 'BNB', 'XRP', 'SOL', 'ADA', 'MATIC', 'DOT'}
+        large_cap_bounces = [b for b in bounces if b.get('symbol', '').upper() in large_cap_symbols]
+        small_cap_bounces = [b for b in bounces if b.get('symbol', '').upper() not in large_cap_symbols]
+        def success_rate(bset):
+            if not bset:
+                return 0, 0
+            winners = [b for b in bset if b.get('max_favorable_5', 0) > 1.0]
+            return len(winners) / len(bset) * 100, len(bset)
+        large_cap_success, large_cap_samples = success_rate(large_cap_bounces)
+        small_cap_success, small_cap_samples = success_rate(small_cap_bounces)
+        return {'large_cap_success': large_cap_success, 'large_cap_samples': large_cap_samples, 'small_cap_success': small_cap_success, 'small_cap_samples': small_cap_samples}
 
     def _create_market_regime_sheet(self, writer, market_regime: Dict):
         """Create comprehensive market regime analysis sheet (RESTORED FULL VERSION)"""
