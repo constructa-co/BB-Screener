@@ -214,6 +214,18 @@ class MinimalConfidenceModule:
             Dict: Enhanced trade data with confidence scores added
         """
         
+        # Add None check to prevent errors
+        if trade_data is None:
+            logger.error("Trade data is None in enhance_trade_with_confidence")
+            return {
+                'technical_confidence': 0.0,
+                'historical_confidence': 0.0,
+                'sentiment_confidence': 0.0,
+                'composite_confidence': 0.0,
+                'confidence_tier': 'ERROR',
+                'confidence_rationale': 'Trade data was None'
+            }
+
         try:
             # Calculate confidence scores
             # Main scanner stores sentiment data directly in trade_data, not in nested 'sentiment_data'
