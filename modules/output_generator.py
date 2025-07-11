@@ -128,9 +128,24 @@ class OutputGenerator:
                     'bb_suitability': 'FAIR',
                     'position_multiplier': 1.0
                 }
-                for col, default_val in regime_columns.items():
+
+                # NEW: Add confidence columns with defaults
+                confidence_columns = {
+                'technical_confidence': 0.0,
+                'historical_confidence': 0.0,
+                'sentiment_confidence': 0.0,
+                'composite_confidence': 0.0,
+                'confidence_tier': 'UNRATED',
+                'confidence_rationale': 'No analysis available'
+                }
+
+                for col, default_val in {**regime_columns, **confidence_columns}.items():
                     if col not in df.columns:
                         df[col] = default_val
+                
+                # Update confidence data with real calculations
+                df = self.update_confidence_data(df)
+                
             market_data = self._run_market_overview_analysis()
             with pd.ExcelWriter(filepath, engine='openpyxl', mode='w') as writer:
                 # Sheet 1: All results
@@ -161,8 +176,28 @@ class OutputGenerator:
                 # Sheet 7: Market Regime Analysis Dashboard
                 if market_regime:
                     self._create_market_regime_sheet(writer, market_regime)
+                
+                # NEW: Add confidence summary sheet (ONLY ADDITION)
+                if not df.empty and 'composite_confidence' in df.columns:
+                    confident_trades = df[df['composite_confidence'] > 0].copy()
+                    if not confident_trades.empty:
+                        top_confident = confident_trades.sort_values('composite_confidence', ascending=False).head(20)
+                        top_confident.to_excel(writer, sheet_name='Confidence_Summary', index=False)
+
                 # ADDITIONAL SHEET: Market Overview (improved BB backtest output)
                 self._create_market_overview_sheet(writer, market_data)
+                
+                # ADD ENHANCED SCORING COLUMNS TO MAIN ANALYSIS SHEET
+                if not df.empty and 'scoring_details' in df.columns:
+                    # Convert DataFrame back to list of dicts for enhanced processing
+                    setups = df.to_dict('records')
+                    if setups:  # Only if we have setups to process
+                        # Get the workbook from the writer
+                        workbook = writer.book
+                        if 'All_Analysis' in workbook.sheetnames:
+                            worksheet = workbook['All_Analysis']
+                            self._add_enhanced_columns_to_excel(worksheet, setups)
+                
             logger.info(f"Excel output with Market Overview saved to {filepath}")
             return filepath
         except Exception as e:
@@ -1659,4 +1694,154 @@ class OutputGenerator:
     def set_market_regime_data(self, market_regime: Dict):
         """Store market regime data for display"""
         self._market_regime_data = market_regime
+
+    def _calculate_sentiment_confidence(self, trade_data):
+        """Calculate real sentiment confidence from LunarCrush + TokenMetrics"""
+        try:
+            tm_grade = trade_data.get('tm_trader_grade', 50)
+            lunar_score = trade_data.get('lunar_galaxy_score', 50)
+            
+            # If we have both data sources, average them
+            if trade_data.get('tm_data_available') and trade_data.get('lunar_data_available'):
+                return (tm_grade + lunar_score) / 2
+            # If we only have TokenMetrics
+            elif trade_data.get('tm_data_available'):
+                return tm_grade
+            # If we only have LunarCrush
+            elif trade_data.get('lunar_data_available'):
+                return lunar_score
+            else:
+                return 0.0  # No sentiment data available
+        except Exception as e:
+            logger.error(f"Error calculating sentiment confidence: {e}")
+            return 0.0
+
+    def _calculate_historical_confidence(self, trade_data):
+        """Calculate real historical confidence from coin-specific data"""
+        try:
+            # Use coin-specific historical data if available
+            historical_success = trade_data.get('historical_component_success', 0)
+            historical_win_rate = trade_data.get('historical_win_rate', 0)
+            
+            # Prefer historical_component_success if available, otherwise use historical_win_rate
+            if historical_success > 0:
+                return historical_success
+            elif historical_win_rate > 0:
+                return historical_win_rate
+            else:
+                return 0.0  # No historical data available
+        except Exception as e:
+            logger.error(f"Error calculating historical confidence: {e}")
+            return 0.0
+
+    def _calculate_technical_confidence(self, trade_data):
+        """Calculate technical confidence from BB score and other technical indicators"""
+        try:
+            bb_score = trade_data.get('bb_score', 0)
+            probability = trade_data.get('probability', 0)
+            
+            # Use probability if available, otherwise calculate from BB score
+            if probability > 0:
+                return probability
+            elif bb_score > 0:
+                # Convert BB score to percentage (34 max score)
+                return (bb_score / 34) * 100
+            else:
+                return 0.0
+        except Exception as e:
+            logger.error(f"Error calculating technical confidence: {e}")
+            return 0.0
+
+    def _calculate_composite_confidence(self, trade_data):
+        """Calculate composite confidence from all three components"""
+        try:
+            technical = self._calculate_technical_confidence(trade_data)
+            historical = self._calculate_historical_confidence(trade_data)
+            sentiment = self._calculate_sentiment_confidence(trade_data)
+            
+            # Weight the components (technical is most important)
+            weights = {'technical': 0.5, 'historical': 0.3, 'sentiment': 0.2}
+            
+            composite = (technical * weights['technical'] + 
+                        historical * weights['historical'] + 
+                        sentiment * weights['sentiment'])
+            
+            return round(composite, 1)
+        except Exception as e:
+            logger.error(f"Error calculating composite confidence: {e}")
+            return 0.0
+
+    def _assign_confidence_tier(self, composite_confidence):
+        """Assign confidence tier based on composite confidence score"""
+        try:
+            if composite_confidence >= 80:
+                return 'HIGH_CONFIDENCE'
+            elif composite_confidence >= 65:
+                return 'MEDIUM_CONFIDENCE'
+            elif composite_confidence >= 50:
+                return 'LOW_CONFIDENCE'
+            elif composite_confidence > 0:
+                return 'WATCH_ONLY'
+            else:
+                return 'UNRATED'
+        except Exception as e:
+            logger.error(f"Error assigning confidence tier: {e}")
+            return 'UNRATED'
+
+    def _generate_confidence_rationale(self, trade_data):
+        """Generate confidence rationale based on available data"""
+        try:
+            rationale_parts = []
+            
+            # Technical rationale
+            technical_conf = self._calculate_technical_confidence(trade_data)
+            if technical_conf > 0:
+                rationale_parts.append(f"Technical: {technical_conf:.1f}%")
+            
+            # Historical rationale
+            historical_conf = self._calculate_historical_confidence(trade_data)
+            if historical_conf > 0:
+                rationale_parts.append(f"Historical: {historical_conf:.1f}%")
+            
+            # Sentiment rationale
+            sentiment_conf = self._calculate_sentiment_confidence(trade_data)
+            if sentiment_conf > 0:
+                rationale_parts.append(f"Sentiment: {sentiment_conf:.1f}%")
+            
+            if rationale_parts:
+                return " | ".join(rationale_parts)
+            else:
+                return "No confidence data available"
+        except Exception as e:
+            logger.error(f"Error generating confidence rationale: {e}")
+            return "Error calculating confidence"
+
+    def update_confidence_data(self, df):
+        """Update DataFrame with real confidence calculations"""
+        try:
+            if df.empty:
+                return df
+            
+            # Calculate confidence for each row
+            for index, row in df.iterrows():
+                trade_data = row.to_dict()
+                
+                # Calculate individual confidence components
+                technical_conf = self._calculate_technical_confidence(trade_data)
+                historical_conf = self._calculate_historical_confidence(trade_data)
+                sentiment_conf = self._calculate_sentiment_confidence(trade_data)
+                composite_conf = self._calculate_composite_confidence(trade_data)
+                
+                # Update the DataFrame
+                df.at[index, 'technical_confidence'] = technical_conf
+                df.at[index, 'historical_confidence'] = historical_conf
+                df.at[index, 'sentiment_confidence'] = sentiment_conf
+                df.at[index, 'composite_confidence'] = composite_conf
+                df.at[index, 'confidence_tier'] = self._assign_confidence_tier(composite_conf)
+                df.at[index, 'confidence_rationale'] = self._generate_confidence_rationale(trade_data)
+            
+            return df
+        except Exception as e:
+            logger.error(f"Error updating confidence data: {e}")
+            return df
 

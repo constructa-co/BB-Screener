@@ -128,7 +128,18 @@ class OutputGenerator:
                     'bb_suitability': 'FAIR',
                     'position_multiplier': 1.0
                 }
-                for col, default_val in regime_columns.items():
+
+                # NEW: Add confidence columns with defaults
+                confidence_columns = {
+                'technical_confidence': 0.0,
+                'historical_confidence': 0.0,
+                'sentiment_confidence': 0.0,
+                'composite_confidence': 0.0,
+                'confidence_tier': 'UNRATED',
+                'confidence_rationale': 'No analysis available'
+                }
+
+                for col, default_val in {**regime_columns, **confidence_columns}.items():
                     if col not in df.columns:
                         df[col] = default_val
             market_data = self._run_market_overview_analysis()
@@ -161,6 +172,14 @@ class OutputGenerator:
                 # Sheet 7: Market Regime Analysis Dashboard
                 if market_regime:
                     self._create_market_regime_sheet(writer, market_regime)
+                
+                # NEW: Add confidence summary sheet (ONLY ADDITION)
+                if not df.empty and 'composite_confidence' in df.columns:
+                    confident_trades = df[df['composite_confidence'] > 0].copy()
+                    if not confident_trades.empty:
+                        top_confident = confident_trades.sort_values('composite_confidence', ascending=False).head(20)
+                        top_confident.to_excel(writer, sheet_name='Confidence_Summary', index=False)
+
                 # ADDITIONAL SHEET: Market Overview (improved BB backtest output)
                 self._create_market_overview_sheet(writer, market_data)
             logger.info(f"Excel output with Market Overview saved to {filepath}")
