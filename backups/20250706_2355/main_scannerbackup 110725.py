@@ -34,8 +34,6 @@ try:
     from modules.improved_bb_backtest import ComprehensiveBBBacktest
     # In imports section
     from historical_intelligence import HistoricalIntelligence, EnhancedOutputGenerator
-    # Minimal Confidence Module import
-    from modules.minimal_confidence_module import MinimalConfidenceModule, enhance_all_trades_with_confidence
     # asyncio is already imported in your file, so no need to add it again
     from config import *
 except ImportError as e:
@@ -67,9 +65,6 @@ class ModularBBScanner:
         
         # Add this line in your __init__ method
         self.market_analyzer = ComprehensiveBBBacktest()
-
-        # NEW: Confidence Module
-        self.confidence_module = MinimalConfidenceModule()
         
         # Setup logging (EXISTING - UNCHANGED)
         self._setup_logging()
@@ -567,17 +562,11 @@ class ModularBBScanner:
                 print("No analysis results found.")
                 return
             
-            # NEW: Add confidence enhancement (ADD THESE LINES AFTER LINE 565)
-            print("🎯 Evaluating trade confidence...")
-            enhanced_trades = enhance_all_trades_with_confidence(
-            all_results, market_regime, self.confidence_module
-            )
-
             # NEW: Analysis summary display
             quality_results = {}
             all_analysis_data = []  # Keep ALL data for Excel
             
-            for result in enhanced_trades:
+            for result in all_results:
                 # Save ALL data for Excel (ML training)
                 all_analysis_data.append(result)
                 
