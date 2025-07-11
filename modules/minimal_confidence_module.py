@@ -100,8 +100,8 @@ class MinimalConfidenceModule:
         technical_confidence = min(100.0, technical_confidence + confluence_bonus)
         
         # Extract historical confidence
-        historical_win_rate = trade_data.get('historical_win_rate', 0)
-        similar_count = trade_data.get('similar_trade_count', 0)
+        historical_win_rate = trade_data.get('historical_win_rate', trade_data.get('historical_probability', 0))
+        similar_count = trade_data.get('similar_trade_count', trade_data.get('total_bounces_analyzed', 0))
         
         # Apply sample size penalty
         if similar_count < 20:

@@ -577,9 +577,21 @@ class ModularBBScanner:
             
             # NEW: Add confidence enhancement (ADD THESE LINES AFTER LINE 565)
             print("🎯 Evaluating trade confidence...")
-            enhanced_trades = enhance_all_trades_with_confidence(
-            all_results, market_regime, self.confidence_module
-            )
+            
+            # Debug: Show first trade structure
+            if all_results:
+                print(f"🔧 DEBUG: First trade keys: {list(all_results[0].keys())}")
+                print(f"🔧 DEBUG: First trade bb_score: {all_results[0].get('bb_score', 'NOT_FOUND')}")
+            
+            try:
+                enhanced_trades = enhance_all_trades_with_confidence(
+                    all_results, market_regime, self.confidence_module
+                )
+                print(f"✅ Confidence enhancement complete: {len(enhanced_trades)} trades enhanced")
+            except Exception as e:
+                print(f"❌ Confidence enhancement failed: {e}")
+                # Fallback to original data
+                enhanced_trades = all_results
 
             # NEW: Analysis summary display
             quality_results = {}
