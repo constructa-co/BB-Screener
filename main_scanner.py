@@ -252,6 +252,7 @@ class ModularBBScanner:
                     'bb_score': bb_analysis.get('bb_score', 0),
                     'setup_quality': bb_analysis.get('setup_quality', 'None'),
                     'timestamp': datetime.now(),
+                    # Debug: Check what bb_score is stored
                     # Technical data (ALWAYS AVAILABLE for ML)
                     'bb_pct': round(last_candle.get('bb_pct', 0), 3),
                     'rsi': round(last_candle.get('rsi', 0), 1),
@@ -588,6 +589,15 @@ class ModularBBScanner:
                     all_results, market_regime, self.confidence_module
                 )
                 print(f"✅ Confidence enhancement complete: {len(enhanced_trades)} trades enhanced")
+                
+                # Debug: Show first enhanced trade confidence data
+                if enhanced_trades:
+                    first_trade = enhanced_trades[0]
+                    print(f"🔧 DEBUG: First enhanced trade - Symbol: {first_trade.get('symbol', 'UNKNOWN')}")
+                    print(f"🔧 DEBUG: BB Score: {first_trade.get('bb_score', 'NOT_FOUND')}")
+                    print(f"🔧 DEBUG: Composite Confidence: {first_trade.get('composite_confidence', 'NOT_FOUND')}")
+                    print(f"🔧 DEBUG: Confidence Tier: {first_trade.get('confidence_tier', 'NOT_FOUND')}")
+                
             except Exception as e:
                 print(f"❌ Confidence enhancement failed: {e}")
                 # Fallback to original data
