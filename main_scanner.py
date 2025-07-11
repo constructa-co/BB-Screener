@@ -570,6 +570,7 @@ class ModularBBScanner:
             # Run comprehensive analysis (ENHANCED with market regime)
             all_results = loop.run_until_complete(self.scan_all_coins_comprehensive(market_regime))
             
+            print(f"🔧 DEBUG: all_results length = {len(all_results) if all_results else 0}")
             if not all_results:
                 print("No analysis results found.")
                 return
