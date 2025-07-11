@@ -270,6 +270,13 @@ class ModularBBScanner:
                     'bb_score_34': bb_analysis.get('bb_score', 0),
                     'setup_quality_enhanced': bb_analysis.get('setup_quality', 'None'),
                     'scoring_details': bb_analysis.get('scoring_details', {}),
+                    # NEW: Add confidence fields here
+                    'technical_confidence': 0.0,  # Will be populated by confidence module
+                    'historical_confidence': 0.0,  # Will be populated by confidence module  
+                    'sentiment_confidence': 0.0,   # Will be populated by confidence module
+                    'composite_confidence': 0.0,   # Will be populated by confidence module
+                    'confidence_tier': 'UNRATED', # Will be populated by confidence module
+                    'confidence_rationale': 'No analysis available',  # Will be populated by confidence module
                     # Tier breakdown (defaults to 0 for "no setup")
                     'tier_base_bb': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('base_bb', 0),
                     'tier_money_flow': bb_analysis.get('scoring_details', {}).get('tier_scores', {}).get('money_flow', 0),
@@ -650,7 +657,7 @@ class ModularBBScanner:
                 print("✅ Analysis complete!")
                 
                 # Generate Excel output (ENHANCED with market regime) - ALL data for ML training
-                excel_filename = self.output_generator.generate_excel_output(df_enhanced, market_regime)
+                excel_filename = self.output_generator.generate_excel_output(enhanced_trades, market_regime)
                 print(f"📊 Excel results saved to: {excel_filename}")
                 print(f"📁 Organized in: outputs/excel_reports/")
                 print(f"💾 Excel contains ALL {len(all_analysis_data)} analyzed coins (for ML training)")
