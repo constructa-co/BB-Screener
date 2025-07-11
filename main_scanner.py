@@ -576,18 +576,32 @@ class ModularBBScanner:
                 return
             
             # NEW: Add confidence enhancement
-            print("🎯 Evaluating trade confidence...")
-            
-            try:
-                enhanced_trades = enhance_all_trades_with_confidence(
-                    all_results, market_regime, self.confidence_module
+            # Phase 1: Apply neutral sentiment to ALL trades
+            print("🎯 Phase 1: Ranking all trades with neutral sentiment...")
+            phase1_trades = []
+            for trade in all_results:
+                enhanced_trade = self.confidence_module.enhance_trade_with_confidence(
+                    trade, market_regime, use_neutral_sentiment=True
                 )
-                print(f"✅ Confidence enhancement complete: {len(enhanced_trades)} trades enhanced")
-                
-            except Exception as e:
-                print(f"❌ Confidence enhancement failed: {e}")
-                # Fallback to original data
-                enhanced_trades = all_results
+                phase1_trades.append(enhanced_trade)
+
+            # Phase 2: Apply real sentiment to top 10 trades with sentiment_data
+            print("🎯 Phase 2: Enhancing top trades with real sentiment...")
+            final_trades = []
+            top_10_count = 0
+            for trade in phase1_trades:
+                if trade.get('sentiment_data') and top_10_count < 10:
+                    # Re-enhance with real sentiment
+                    enhanced_trade = self.confidence_module.enhance_trade_with_confidence(
+                        trade, market_regime, use_neutral_sentiment=False
+                    )
+                    final_trades.append(enhanced_trade)
+                    top_10_count += 1
+                else:
+                    # Keep phase 1 results (neutral sentiment)
+                    final_trades.append(trade)
+
+            enhanced_trades = final_trades
 
             # NEW: Analysis summary display
             quality_results = {}
