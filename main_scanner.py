@@ -571,32 +571,18 @@ class ModularBBScanner:
             # Run comprehensive analysis (ENHANCED with market regime)
             all_results = loop.run_until_complete(self.scan_all_coins_comprehensive(market_regime))
             
-            print(f"🔧 DEBUG: all_results length = {len(all_results) if all_results else 0}")
             if not all_results:
                 print("No analysis results found.")
                 return
             
-            # NEW: Add confidence enhancement (ADD THESE LINES AFTER LINE 565)
+            # NEW: Add confidence enhancement
             print("🎯 Evaluating trade confidence...")
-            
-            # Debug: Show first trade structure
-            if all_results:
-                print(f"🔧 DEBUG: First trade keys: {list(all_results[0].keys())}")
-                print(f"🔧 DEBUG: First trade bb_score: {all_results[0].get('bb_score', 'NOT_FOUND')}")
             
             try:
                 enhanced_trades = enhance_all_trades_with_confidence(
                     all_results, market_regime, self.confidence_module
                 )
                 print(f"✅ Confidence enhancement complete: {len(enhanced_trades)} trades enhanced")
-                
-                # Debug: Show first enhanced trade confidence data
-                if enhanced_trades:
-                    first_trade = enhanced_trades[0]
-                    print(f"🔧 DEBUG: First enhanced trade - Symbol: {first_trade.get('symbol', 'UNKNOWN')}")
-                    print(f"🔧 DEBUG: BB Score: {first_trade.get('bb_score', 'NOT_FOUND')}")
-                    print(f"🔧 DEBUG: Composite Confidence: {first_trade.get('composite_confidence', 'NOT_FOUND')}")
-                    print(f"🔧 DEBUG: Confidence Tier: {first_trade.get('confidence_tier', 'NOT_FOUND')}")
                 
             except Exception as e:
                 print(f"❌ Confidence enhancement failed: {e}")
