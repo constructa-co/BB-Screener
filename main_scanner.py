@@ -621,6 +621,16 @@ class ModularBBScanner:
                     
                     print(f"\n📊 {symbol} - {setup_type}")
                     print(f"   🎯 BB Score: {bb_score}/16 | Probability: {probability}%")
+                    
+                    # Display confidence scores
+                    technical_conf = result.get('technical_confidence', 0)
+                    historical_conf = result.get('historical_confidence', 0)
+                    sentiment_conf = result.get('sentiment_confidence', 0)
+                    composite_conf = result.get('composite_confidence', 0)
+                    confidence_tier = result.get('confidence_tier', 'UNRATED')
+                    
+                    print(f"   🎯 Confidence: {composite_conf:.1f}% ({confidence_tier})")
+                    print(f"   📊 Technical: {technical_conf:.1f}% | Historical: {historical_conf:.1f}% | Sentiment: {sentiment_conf:.1f}%")
                     print(f"   💰 Risk: {risk_pct:.1f}% | R:R: {risk_reward}:1")
                     
                     # Show detailed scoring breakdown for quality setups
