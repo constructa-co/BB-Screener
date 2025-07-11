@@ -657,7 +657,9 @@ class ModularBBScanner:
                 print("✅ Analysis complete!")
                 
                 # Generate Excel output (ENHANCED with market regime) - ALL data for ML training
-                excel_filename = self.output_generator.generate_excel_output(enhanced_trades, market_regime)
+                # Convert enhanced_trades list back to DataFrame for Excel generation
+                df_enhanced_with_confidence = pd.DataFrame(enhanced_trades)
+                excel_filename = self.output_generator.generate_excel_output(df_enhanced_with_confidence, market_regime)
                 print(f"📊 Excel results saved to: {excel_filename}")
                 print(f"📁 Organized in: outputs/excel_reports/")
                 print(f"💾 Excel contains ALL {len(all_analysis_data)} analyzed coins (for ML training)")
