@@ -103,11 +103,7 @@ def create_sample_trades():
             'total_bounces_analyzed': 9718,
             'indicator_benchmark': 75.0,
             'relative_performance': 'ABOVE_AVERAGE',
-            # Add the fields the confidence module expects
-            'volume_surge': True,
-            'mfi_oversold': True,
-            'stoch_oversold': False,
-            'bb_expansion': True,
+            # Sentiment data (what the confidence module expects)
             'sentiment_data': {
                 'lunar_galaxy_score': 72,
                 'tm_trader_grade': 68
@@ -191,11 +187,7 @@ def create_sample_trades():
             'total_bounces_analyzed': 9718,
             'indicator_benchmark': 70.0,
             'relative_performance': 'AVERAGE',
-            # Add the fields the confidence module expects
-            'volume_surge': True,
-            'mfi_overbought': True,
-            'stoch_overbought': True,
-            'bb_expansion': True,
+            # Sentiment data (what the confidence module expects)
             'sentiment_data': {
                 'lunar_galaxy_score': 65,
                 'tm_trader_grade': 55

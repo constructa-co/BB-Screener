@@ -86,15 +86,15 @@ class MinimalConfidenceModule:
         bb_score = trade_data.get('bb_score', 0)
         technical_confidence = self.normalize_bb_score(bb_score)
         
-        # Add confluence bonuses from your existing analysis
+        # Add confluence bonuses from your existing analysis - use actual field names
         confluence_bonus = 0
-        if trade_data.get('volume_surge', False):
+        if trade_data.get('volume_surge', False) or trade_data.get('volume_surge_detected', False):
             confluence_bonus += 5
-        if trade_data.get('mfi_oversold', False):
+        if trade_data.get('mfi_oversold', False) or trade_data.get('mfi_value', 0) < 20:
             confluence_bonus += 8  # Strong signal
         if trade_data.get('stoch_oversold', False):
             confluence_bonus += 6
-        if trade_data.get('bb_expansion', False):
+        if trade_data.get('bb_expansion', False) or trade_data.get('bb_expansion_ratio', 0) > 1.5:
             confluence_bonus += 4
         
         technical_confidence = min(100.0, technical_confidence + confluence_bonus)
@@ -151,12 +151,12 @@ class MinimalConfidenceModule:
         
         rationale_parts = []
         
-        # Check key indicators
-        if trade_data.get('mfi_oversold', False):
+        # Check key indicators - use the actual field names from main scanner
+        if trade_data.get('mfi_oversold', False) or trade_data.get('mfi_value', 0) < 20:
             mfi_rate = self.indicator_performance['mfi_oversold']['success_rate']
             rationale_parts.append(f"MFI Oversold ({mfi_rate}% success)")
         
-        if trade_data.get('volume_surge', False):
+        if trade_data.get('volume_surge', False) or trade_data.get('volume_surge_detected', False):
             volume_rate = self.indicator_performance['volume_surge']['success_rate']
             rationale_parts.append(f"Volume Surge ({volume_rate}% success)")
         
@@ -164,13 +164,12 @@ class MinimalConfidenceModule:
             stoch_rate = self.indicator_performance['stoch_oversold']['success_rate']
             rationale_parts.append(f"Stoch Oversold ({stoch_rate}% success)")
         
-        if trade_data.get('bb_expansion', False):
+        if trade_data.get('bb_expansion', False) or trade_data.get('bb_expansion_ratio', 0) > 1.5:
             bb_rate = self.indicator_performance['bb_expansion']['success_rate']
             rationale_parts.append(f"BB Expansion ({bb_rate}% success)")
         
-        # Add market context if available
-        market_regime = trade_data.get('market_regime', {})
-        if market_regime.get('alt_season_indicator') == 'ALT_SEASON':
+        # Add market context if available - use actual field names
+        if trade_data.get('alt_season_indicator') == 'ALT_SEASON':
             rationale_parts.append("Alt Season conditions")
         
         # Create final rationale
