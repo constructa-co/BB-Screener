@@ -112,7 +112,7 @@ class EnhancedMarketRegimeAnalyzer:
         """Get analysis from original market regime analyzer"""
         try:
             # Call existing market regime analyzer
-            return await self.original_analyzer.analyze_market_regime('ETH', btc_data)
+            return await self.original_analyzer.analyze_market_regime(symbol, alt_df)
         except Exception as e:
             self.logger.error(f"Original regime analysis failed: {e}")
             return self._get_fallback_analysis()
