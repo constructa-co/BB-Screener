@@ -49,15 +49,15 @@ class BBDetector:
         long_score = self._calculate_long_score_detailed(recent_3_candles, last, df, scoring_details)
         short_score = self._calculate_short_score_detailed(recent_3_candles, last, df, scoring_details)
         
-        # Determine setup - ADJUSTED threshold for enhanced scoring
-        if long_score > short_score and long_score >= 12:  # NEW - institutional selectivity
+        # Determine setup - REVERTED to original threshold
+        if long_score > short_score and long_score >= 8:  # Original threshold
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
             stop = self._calculate_adaptive_stop_loss(entry, last['atr'], last['bb_upper'], last['bb_lower'], 'LONG', df)
             target1 = last['bb_middle']
             
-        elif short_score > long_score and short_score >= 12:  # NEW - institutional selectivity
+        elif short_score > long_score and short_score >= 8:  # Original threshold
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']

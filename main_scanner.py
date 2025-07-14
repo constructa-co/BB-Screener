@@ -234,7 +234,8 @@ class ModularBBScanner:
                     # Extract risk/reward data from pattern analysis
                     rr_data = pattern_data.get('auto_risk_reward', {}) if pattern_data else {}
 
-                # In analyze_coin_comprehensive method (after BB analysis)
+                # Historical analysis - only run for coins with BB setups (like July 10th version)
+                historical_data = {}
                 if bb_analysis['setup_type'] != 'NONE':
                     historical_data = self.historical_intelligence.analyze_historical_performance(
                         symbol, bb_analysis
@@ -305,22 +306,43 @@ class ModularBBScanner:
                 try:
                     market_context = self.market_analyzer.get_market_context_for_trade(symbol, bb_analysis)
                     market_baselines = self.market_analyzer.get_market_baselines()
-                    historical_data = self.historical_intelligence.analyze_historical_performance(symbol, bb_analysis)
-                    
-                    result.update({
-                        'historical_probability': market_baselines.get('overall_success_rate', 72.4),
-                        'historical_bb_baseline': market_context.get('asset_bb_baseline_rate', 72.4),  # Standard BB win rate for this asset
-                        'historical_component_success': market_context.get('component_success_rate', 0),  # BB + component combo win rate
-                        'historical_avg_win': historical_data.get('trade_quality_analysis', {}).get('avg_win_pct', 0),
-                        'historical_avg_loss': historical_data.get('trade_quality_analysis', {}).get('avg_loss_pct', 0),
-                        'historical_avg_duration': historical_data.get('timing_intelligence', {}).get('avg_timing_3pct', 0),
-                        'market_baseline': market_baselines.get('overall_success_rate', 72.4),
-                        'market_health': market_baselines.get('market_health_score', 73.5),
-                        'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),
-                        'indicator_benchmark': market_context.get('indicator_benchmark', 0),
-                        'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
-                    })
-                    
+                    # Only add historical fields if we have historical data (BB setup exists)
+                    if historical_data and not historical_data.get('insufficient_data'):
+                        result.update({
+                            'historical_probability': market_baselines.get('overall_success_rate', 72.4),
+                            'historical_bb_baseline': market_context.get('asset_bb_baseline_rate', 72.4),  # Standard BB win rate for this asset
+                            'historical_component_success': market_context.get('component_success_rate', 0),  # BB + component combo win rate
+                            'historical_avg_win': historical_data.get('trade_quality_analysis', {}).get('avg_win_pct', 0),
+                            'historical_avg_loss': historical_data.get('trade_quality_analysis', {}).get('avg_loss_pct', 0),
+                            'historical_avg_duration': historical_data.get('timing_intelligence', {}).get('avg_timing_3pct', 0),
+                            'market_baseline': market_baselines.get('overall_success_rate', 72.4),
+                            'market_health': market_baselines.get('market_health_score', 73.5),
+                            'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),
+                            'indicator_benchmark': market_context.get('indicator_benchmark', 0),
+                            'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
+                        })
+                    else:
+                        # For coins without BB setups, use market baselines only
+                        result.update({
+                            'historical_probability': market_baselines.get('overall_success_rate', 72.4),
+                            'historical_bb_baseline': market_context.get('asset_bb_baseline_rate', 72.4),
+                            'historical_component_success': market_context.get('component_success_rate', 0),
+                            'historical_avg_win': 0,  # No historical data for coins without BB setups
+                            'historical_avg_loss': 0,  # No historical data for coins without BB setups
+                            'historical_avg_duration': 0,  # No historical data for coins without BB setups
+                            'market_baseline': market_baselines.get('overall_success_rate', 72.4),
+                            'market_health': market_baselines.get('market_health_score', 73.5),
+                            'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),
+                            'indicator_benchmark': market_context.get('indicator_benchmark', 0),
+                            'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
+                        })
+                    # DEBUG: Print historical fields after update
+                    print(
+                        f"DEBUG {symbol} ({exchange_name}): "
+                        f"historical_avg_win={result.get('historical_avg_win')}, "
+                        f"historical_avg_loss={result.get('historical_avg_loss')}, "
+                        f"historical_avg_duration={result.get('historical_avg_duration')}"
+                    )
                 except Exception as e:
                     self.logger.warning(f"Could not get market context for {symbol}: {str(e)}")
                     result.update({
@@ -664,7 +686,9 @@ class ModularBBScanner:
             # Format results inline
             import pandas as pd
             df_all = self.output_generator.format_comprehensive_results(all_analysis_data)  # Use ALL data for Excel
-            
+            # DEBUG: Print DataFrame columns and a sample row
+            print("DEBUG DataFrame columns:", df_all.columns.tolist())
+            print("DEBUG Sample row:", df_all.iloc[0].to_dict() if not df_all.empty else "DataFrame is empty")
             # Sort and filter results
             # Results are already formatted and sorted by output_generator
 
