@@ -207,6 +207,14 @@ class MinimalConfidenceModule:
         """
         
         try:
+            # Check if trade_data is None or empty
+            if trade_data is None:
+                logger.warning("Received None trade_data in enhance_trade_with_confidence")
+                return {}
+            
+            # Check if market_regime is None
+            if market_regime is None:
+                market_regime = {}
             # Calculate confidence scores
             confidence_scores = self.calculate_composite_confidence(trade_data, market_regime)
             

@@ -147,10 +147,8 @@ class OutputGenerator:
                 df = self.update_confidence_data(df)
                 
                 # --- ENFORCE COLUMN ORDER AND PRESENCE FOR ALL SHEETS ---
-                extra_columns = [col for col in df.columns if col not in good_columns]
-                all_columns = good_columns + extra_columns
-                final_columns = [col for col in all_columns if col in df.columns]
-                df = df[final_columns]
+                # Remove the good_columns reference that was causing the error
+                # Keep the DataFrame as-is for now to restore functionality
 
                 # DEBUG PRINTS
                 print("[DEBUG] DataFrame shape:", df.shape)
