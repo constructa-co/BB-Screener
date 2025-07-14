@@ -146,6 +146,24 @@ class OutputGenerator:
                 # Update confidence data with real calculations
                 df = self.update_confidence_data(df)
                 
+                # --- ENFORCE COLUMN ORDER AND PRESENCE FOR ALL SHEETS ---
+                extra_columns = [col for col in df.columns if col not in good_columns]
+                all_columns = good_columns + extra_columns
+                final_columns = [col for col in all_columns if col in df.columns]
+                df = df[final_columns]
+
+                # DEBUG PRINTS
+                print("[DEBUG] DataFrame shape:", df.shape)
+                print("[DEBUG] DataFrame columns:", df.columns.tolist())
+                if 'tier' in df.columns:
+                    print("[DEBUG] Tier value counts:\n", df['tier'].value_counts())
+                else:
+                    print("[DEBUG] No 'tier' column in DataFrame")
+                if 'action' in df.columns:
+                    print("[DEBUG] Action value counts:\n", df['action'].value_counts())
+                else:
+                    print("[DEBUG] No 'action' column in DataFrame")
+
             market_data = self._run_market_overview_analysis()
             with pd.ExcelWriter(filepath, engine='openpyxl', mode='w') as writer:
                 # Sheet 1: All results
