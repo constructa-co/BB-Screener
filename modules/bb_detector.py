@@ -156,9 +156,9 @@ class BBDetector:
             long_score += 3
         
         # 2. BB Position (2 points) - BALANCED thresholds
-        if last['bb_pct'] <= 0.05:      # Extremely extreme
+        if last['bb_pct'] <= 0.02:      # Extremely extreme
             long_score += 2
-        elif last['bb_pct'] <= 0.08:    # Very extreme
+        elif last['bb_pct'] <= 0.05:    # Very extreme
             long_score += 1
         
         # 3. RSI (2 points) - BALANCED oversold levels
@@ -266,11 +266,11 @@ class BBDetector:
             scoring_details['breakdown'].append(f"BB Near Upper Band: +{points} pts")
         
         # 2. BB Position (2 points)
-        if last['bb_pct'] >= 0.92:
+        if last['bb_pct'] >= 0.98:
             points = 2
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Extreme ({last['bb_pct']:.3f}): +{points} pts")
-        elif last['bb_pct'] >= 0.88:
+        elif last['bb_pct'] >= 0.95:
             points = 1
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Very High ({last['bb_pct']:.3f}): +{points} pt")
@@ -450,9 +450,9 @@ class BBDetector:
             short_score += 2
         
         # 2. BB Position (2 points) - ENHANCED thresholds
-        if last['bb_pct'] >= 0.92:     # Very extreme
+        if last['bb_pct'] >= 0.99:     # Very extreme
             short_score += 2
-        elif last['bb_pct'] >= 0.88:   # Extreme
+        elif last['bb_pct'] >= 0.95:   # Extreme
             short_score += 1
         
         # 3. RSI (2 points) - ENHANCED overbought levels
@@ -862,11 +862,11 @@ class BBDetector:
             scoring_details['breakdown'].append(f"BB Touch Lower Band: +{points} pts")
         
         # 2. BB Position (2 points)
-        if last['bb_pct'] <= 0.05:
+        if last['bb_pct'] <= 0.02:
             points = 2
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Extreme ({last['bb_pct']:.3f}): +{points} pts")
-        elif last['bb_pct'] <= 0.08:
+        elif last['bb_pct'] <= 0.05:
             points = 1
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Very Low ({last['bb_pct']:.3f}): +{points} pt")
