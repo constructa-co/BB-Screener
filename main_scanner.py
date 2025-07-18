@@ -337,15 +337,15 @@ class ModularBBScanner:
                         self.logger.info(f"   avg_timing_3pct value: {timing_intelligence.get('avg_timing_3pct', 'NOT FOUND')}")
                     
                     result.update({
-                        'historical_probability': trade_quality.get('win_rate_pct', 72.4),  # Real asset-specific win rate
-                        'historical_bb_baseline': trade_quality.get('win_rate_pct', 72.4),  # Real asset-specific BB baseline
+                        'historical_probability': trade_quality.get('win_rate_pct', 0),  # Real asset-specific win rate
+                        'historical_bb_baseline': trade_quality.get('win_rate_pct', 0),  # Real asset-specific BB baseline
                         'historical_component_success': market_context.get('component_success_rate', 0),  # BB + component combo win rate
                         'historical_avg_win': trade_quality.get('avg_win_pct', 0),  # Real average win percentage
                         'historical_avg_loss': trade_quality.get('avg_loss_pct', 0),  # Real average loss percentage
                         'historical_avg_duration': timing_intelligence.get('avg_timing_3pct', 0),  # Real average timing
-                        'market_baseline': market_baselines.get('overall_success_rate', 72.4),  # Market-wide baseline
-                        'market_health': market_baselines.get('market_health_score', 73.5),  # Market health score
-                        'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),  # Total bounces analyzed
+                        'overall_success_rate': market_baselines.get('overall_success_rate'),  # Market-wide baseline
+                        'market_health': market_baselines.get('market_health', 0),  # Market health score
+                        'total_bounces': market_baselines.get('total_bounces', 0),  # Total bounces analyzed
                         'indicator_benchmark': market_context.get('indicator_benchmark', 0),
                         'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
                     })
@@ -358,22 +358,22 @@ class ModularBBScanner:
                         self.logger.info(f"   historical_avg_win: {result.get('historical_avg_win', 0)}%")
                         self.logger.info(f"   historical_avg_loss: {result.get('historical_avg_loss', 0)}%")
                         self.logger.info(f"   historical_avg_duration: {result.get('historical_avg_duration', 0)} hours")
-                        self.logger.info(f"   market_baseline: {result.get('market_baseline', 0)}%")
+                        self.logger.info(f"   market_baseline: {result.get('overall_success_rate', 0)}%")
                         self.logger.info(f"   market_health: {result.get('market_health', 0)}%")
-                        self.logger.info(f"   total_bounces_analyzed: {result.get('total_bounces_analyzed', 0)}")
+                        self.logger.info(f"   total_bounces_analyzed: {result.get('total_bounces', 0)}")
                     
                 except Exception as e:
                     self.logger.warning(f"Could not get market context for {symbol}: {str(e)}")
                     result.update({
-                        'historical_probability': 72.4,
-                        'historical_bb_baseline': 72.4,
+                        'historical_probability': 0,
+                        'historical_bb_baseline': 0,
                         'historical_component_success': 0,
                         'historical_avg_win': 0,
                         'historical_avg_loss': 0,
                         'historical_avg_duration': 0,
-                        'market_baseline': 72.4,
-                        'market_health': 73.5,
-                        'total_bounces_analyzed': 9718,
+                        'overall_success_rate': None,
+                        'market_health': 0,
+                        'total_bounces': 0,
                         'indicator_benchmark': 0,
                         'relative_performance': 'UNKNOWN'
                     })
