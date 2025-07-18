@@ -307,19 +307,60 @@ class ModularBBScanner:
                     market_baselines = self.market_analyzer.get_market_baselines()
                     historical_data = self.historical_intelligence.analyze_historical_performance(symbol, bb_analysis)
                     
+                    # Debug: Check if historical data is available
+                    if symbol in ['BTCUSDT', 'ETHUSDT']:
+                        self.logger.info(f"🔍 {symbol} HISTORICAL DATA STATUS:")
+                        self.logger.info(f"   Has insufficient_data: {historical_data.get('insufficient_data', False)}")
+                        self.logger.info(f"   Has error: {historical_data.get('error', False)}")
+                        self.logger.info(f"   Historical data keys: {list(historical_data.keys())}")
+                    
+                    # Get real historical data from the historical intelligence module
+                    trade_quality = historical_data.get('trade_quality_analysis', {})
+                    timing_intelligence = historical_data.get('timing_intelligence', {})
+                    
+                    # Debug: Print the real values being used
+                    if symbol in ['BTCUSDT', 'ETHUSDT']:  # Only debug for major coins to avoid spam
+                        self.logger.info(f"🔍 {symbol} HISTORICAL DATA DEBUG:")
+                        self.logger.info(f"   Trade Quality: {trade_quality}")
+                        self.logger.info(f"   Timing Intelligence: {timing_intelligence}")
+                        self.logger.info(f"   Market Baselines: {market_baselines}")
+                        
+                        # Check if real values exist
+                        self.logger.info(f"🔍 {symbol} FIELD CHECK:")
+                        self.logger.info(f"   win_rate_pct exists: {'win_rate_pct' in trade_quality}")
+                        self.logger.info(f"   win_rate_pct value: {trade_quality.get('win_rate_pct', 'NOT FOUND')}")
+                        self.logger.info(f"   avg_win_pct exists: {'avg_win_pct' in trade_quality}")
+                        self.logger.info(f"   avg_win_pct value: {trade_quality.get('avg_win_pct', 'NOT FOUND')}")
+                        self.logger.info(f"   avg_loss_pct exists: {'avg_loss_pct' in trade_quality}")
+                        self.logger.info(f"   avg_loss_pct value: {trade_quality.get('avg_loss_pct', 'NOT FOUND')}")
+                        self.logger.info(f"   avg_timing_3pct exists: {'avg_timing_3pct' in timing_intelligence}")
+                        self.logger.info(f"   avg_timing_3pct value: {timing_intelligence.get('avg_timing_3pct', 'NOT FOUND')}")
+                    
                     result.update({
-                        'historical_probability': market_baselines.get('overall_success_rate', 72.4),
-                        'historical_bb_baseline': market_context.get('asset_bb_baseline_rate', 72.4),  # Standard BB win rate for this asset
+                        'historical_probability': trade_quality.get('win_rate_pct', 72.4),  # Real asset-specific win rate
+                        'historical_bb_baseline': trade_quality.get('win_rate_pct', 72.4),  # Real asset-specific BB baseline
                         'historical_component_success': market_context.get('component_success_rate', 0),  # BB + component combo win rate
-                        'historical_avg_win': historical_data.get('trade_quality_analysis', {}).get('avg_win_pct', 0),
-                        'historical_avg_loss': historical_data.get('trade_quality_analysis', {}).get('avg_loss_pct', 0),
-                        'historical_avg_duration': historical_data.get('timing_intelligence', {}).get('avg_timing_3pct', 0),
-                        'market_baseline': market_baselines.get('overall_success_rate', 72.4),
-                        'market_health': market_baselines.get('market_health_score', 73.5),
-                        'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),
+                        'historical_avg_win': trade_quality.get('avg_win_pct', 0),  # Real average win percentage
+                        'historical_avg_loss': trade_quality.get('avg_loss_pct', 0),  # Real average loss percentage
+                        'historical_avg_duration': timing_intelligence.get('avg_timing_3pct', 0),  # Real average timing
+                        'market_baseline': market_baselines.get('overall_success_rate', 72.4),  # Market-wide baseline
+                        'market_health': market_baselines.get('market_health_score', 73.5),  # Market health score
+                        'total_bounces_analyzed': market_baselines.get('total_bounces_analyzed', 9718),  # Total bounces analyzed
                         'indicator_benchmark': market_context.get('indicator_benchmark', 0),
                         'relative_performance': market_context.get('relative_performance', 'UNKNOWN')
                     })
+                    
+                    # Debug: Show the final values for major coins
+                    if symbol in ['BTCUSDT', 'ETHUSDT']:
+                        self.logger.info(f"📊 {symbol} FINAL HISTORICAL VALUES:")
+                        self.logger.info(f"   historical_probability: {result.get('historical_probability', 0)}%")
+                        self.logger.info(f"   historical_bb_baseline: {result.get('historical_bb_baseline', 0)}%")
+                        self.logger.info(f"   historical_avg_win: {result.get('historical_avg_win', 0)}%")
+                        self.logger.info(f"   historical_avg_loss: {result.get('historical_avg_loss', 0)}%")
+                        self.logger.info(f"   historical_avg_duration: {result.get('historical_avg_duration', 0)} hours")
+                        self.logger.info(f"   market_baseline: {result.get('market_baseline', 0)}%")
+                        self.logger.info(f"   market_health: {result.get('market_health', 0)}%")
+                        self.logger.info(f"   total_bounces_analyzed: {result.get('total_bounces_analyzed', 0)}")
                     
                 except Exception as e:
                     self.logger.warning(f"Could not get market context for {symbol}: {str(e)}")
