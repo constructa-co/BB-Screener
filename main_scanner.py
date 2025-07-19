@@ -5,13 +5,22 @@ Modular architecture for clean, maintainable code
 Enhanced with Market Regime Intelligence
 """
 
-# NumPy 2.x Compatibility Fix - MUST BE FIRST
+# ULTRA-AGGRESSIVE NUMPY 2.x COMPATIBILITY PATCH - MUST BE FIRST
+import sys
 import numpy as np
-try:
-    from numpy import NaN
-except ImportError:
-    # NumPy 2.x compatibility - NaN was removed
-    NaN = np.nan
+
+# Patch NumPy immediately before any other imports
+if not hasattr(np, 'NaN'):
+    np.NaN = np.nan
+if 'NaN' not in np.__dict__:
+    np.__dict__['NaN'] = np.nan
+if hasattr(np, '__all__') and 'NaN' not in np.__all__:
+    np.__all__.append('NaN')
+
+print("✅ NumPy 2.x compatibility patch applied at startup")
+
+# GLOBAL NUMPY 2.x COMPATIBILITY PATCH - MUST BE FIRST
+import numpy_patch
 
 import argparse
 import os

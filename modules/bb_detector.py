@@ -1,15 +1,7 @@
 # bb_detector.py - Bollinger Band Detection Module
-
-# NumPy 2.x Compatibility Fix - MUST BE FIRST
-import numpy as np
-try:
-    from numpy import NaN
-except ImportError:
-    # NumPy 2.x compatibility - NaN was removed
-    NaN = np.nan
-
 import pandas as pd
 import pandas_ta as ta
+import numpy as np
 import logging
 from datetime import datetime
 from typing import Dict, Any, Optional

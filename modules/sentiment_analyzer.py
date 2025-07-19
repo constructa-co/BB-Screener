@@ -1,16 +1,8 @@
 # sentiment_analyzer.py - Sentiment Analysis Module
-
-# NumPy 2.x Compatibility Fix - MUST BE FIRST
-import numpy as np
-try:
-    from numpy import NaN
-except ImportError:
-    # NumPy 2.x compatibility - NaN was removed
-    NaN = np.nan
-
 import requests
 import pandas as pd
 import pandas_ta as ta
+import numpy as np
 import time
 import logging
 from datetime import datetime

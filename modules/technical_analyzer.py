@@ -8,16 +8,9 @@ import os
 # Add parent directory to path to access config
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# NumPy 2.x Compatibility Fix - MUST BE FIRST
-import numpy as np
-try:
-    from numpy import NaN
-except ImportError:
-    # NumPy 2.x compatibility - NaN was removed
-    NaN = np.nan
-
 import pandas as pd
 import pandas_ta as ta
+import numpy as np
 from scipy.signal import argrelextrema
 from typing import Optional, Dict, List, Any, Tuple
 import logging
