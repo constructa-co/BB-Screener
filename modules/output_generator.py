@@ -214,6 +214,10 @@ class OutputGenerator:
                             worksheet = workbook['All_Analysis']
                             self._add_enhanced_columns_to_excel(worksheet, setups)
                 
+                # Add this before return filename in generate_excel_output:
+                if not df.empty and any(col in df.columns for col in ['market_cap_tier', 'primary_sector']):
+                    self._create_market_metadata_sheet(writer, df)
+                
             logger.info(f"Excel output with Market Overview saved to {filepath}")
             return filepath
         except Exception as e:
@@ -1112,6 +1116,9 @@ class OutputGenerator:
             # Display detailed scoring breakdown
             self.display_detailed_scoring_breakdown(df)
             
+            # Add this line in display_terminal_summary method:
+            self._display_market_metadata_summary(df)
+            
         except Exception as e:
             logger.error(f"Error displaying terminal summary: {e}")
 
@@ -1647,50 +1654,34 @@ class OutputGenerator:
         print(f"₿ BTC Health: {market_regime.get('btc_health_score', 50)}/100")
         print(f"🌍 Alt Season: {market_regime.get('alt_season_indicator', 'UNKNOWN')}")
 
-    # ADD NEW METHOD: Format results with market context (for front columns)
-    def format_comprehensive_results_with_market_context(self, all_results: List[Dict], market_baselines: Dict = None) -> pd.DataFrame:
-        """Format results with market context and reordered columns"""
+    def _display_market_metadata_summary(self, df: pd.DataFrame):
+        """Display market metadata summary"""
+        if df.empty:
+            return
+            
+        print(f"\n📊 MARKET METADATA INTELLIGENCE")
+        print("=" * 50)
         
-        if not all_results:
-            return pd.DataFrame()
+        # Market Cap Distribution
+        if 'market_cap_tier' in df.columns:
+            cap_dist = df['market_cap_tier'].value_counts()
+            print(f"📈 Market Cap Distribution:")
+            for tier, count in cap_dist.items():
+                print(f"   {tier}: {count} trades")
         
-        # Convert to DataFrame
-        df = pd.DataFrame(all_results)
+        # Sector Distribution  
+        if 'primary_sector' in df.columns:
+            sector_dist = df['primary_sector'].value_counts()
+            print(f"\n🏭 Sector Distribution:")
+            for sector, count in sector_dist.items():
+                print(f"   {sector}: {count} trades")
         
-        # Get market baselines if not provided
-        if market_baselines is None:
-            market_baselines = {'overall_success_rate': 72.4}  # Fallback
-        
-        # ADD NEW FRONT COLUMNS
-        df['technical_probability'] = (df.get('bb_score', 0) / 34 * 100).round(1)
-        df['historical_probability'] = df.get('historical_win_rate', 0)
-        df['historical_profit'] = df.get('historical_avg_win', 0)
-        df['historical_drawdown'] = df.get('historical_avg_loss', 0) 
-        df['historical_duration'] = df.get('historical_avg_duration', 0)
-        
-        # Add market context
-        df['market_context'] = df.apply(lambda row: self._calculate_market_context(
-            row.get('bb_score', 0), market_baselines.get('overall_success_rate', 72.4)
-        ), axis=1)
-        
-        # REORDER COLUMNS - PRIORITY COLUMNS FIRST
-        priority_columns = [
-            'symbol', 'setup_type', 'exchange',
-            'technical_probability', 'historical_probability', 
-            'historical_profit', 'historical_drawdown', 'historical_duration',
-            'market_context', 'probability', 'bb_score',
-            'entry_price', 'stop_price', 'target1', 'risk_reward', 'risk_pct'
-        ]
-        
-        # Get remaining columns (preserve all existing data)
-        remaining_columns = [col for col in df.columns if col not in priority_columns]
-        final_columns = priority_columns + remaining_columns
-        
-        # Reorder DataFrame
-        available_columns = [col for col in final_columns if col in df.columns]
-        df_reordered = df[available_columns].copy()
-        
-        return df_reordered
+        # Performance by Market Cap
+        if 'market_cap_tier' in df.columns and 'expected_success_rate' in df.columns:
+            print(f"\n🎯 Expected Performance by Market Cap:")
+            cap_performance = df.groupby('market_cap_tier')['expected_success_rate'].mean()
+            for tier, rate in cap_performance.items():
+                print(f"   {tier}: {rate:.1f}% expected success")
 
     # ADD HELPER METHOD: Market context classification
     def _calculate_market_context(self, bb_score: int, market_baseline: float) -> str:
@@ -1860,4 +1851,94 @@ class OutputGenerator:
         except Exception as e:
             logger.error(f"Error updating confidence data: {e}")
             return df
+
+    # ADD NEW METHOD: Format results with market context (for front columns)
+    def format_comprehensive_results_with_market_context(self, all_results: List[Dict], market_baselines: Dict = None) -> pd.DataFrame:
+        """Format results with market context and reordered columns"""
+        
+        if not all_results:
+            return pd.DataFrame()
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(all_results)
+        
+        # Get market baselines if not provided
+        if market_baselines is None:
+            market_baselines = {'overall_success_rate': 72.4}  # Fallback
+        
+        # ADD NEW FRONT COLUMNS
+        df['technical_probability'] = (df.get('bb_score', 0) / 34 * 100).round(1)
+        df['historical_probability'] = df.get('historical_win_rate', 0)
+        df['historical_profit'] = df.get('historical_avg_win', 0)
+        df['historical_drawdown'] = df.get('historical_avg_loss', 0) 
+        df['historical_duration'] = df.get('historical_avg_duration', 0)
+        
+        # Add market context
+        df['market_context'] = df.apply(lambda row: self._calculate_market_context(
+            row.get('bb_score', 0), market_baselines.get('overall_success_rate', 72.4)
+        ), axis=1)
+        
+        # REORDER COLUMNS - PRIORITY COLUMNS FIRST
+        priority_columns = [
+            'symbol', 'setup_type', 'exchange',
+            'technical_probability', 'historical_probability', 
+            'historical_profit', 'historical_drawdown', 'historical_duration',
+            'market_context', 'probability', 'bb_score',
+            'entry_price', 'stop_price', 'target1', 'risk_reward', 'risk_pct'
+        ]
+        
+        # Get remaining columns (preserve all existing data)
+        remaining_columns = [col for col in df.columns if col not in priority_columns]
+        final_columns = priority_columns + remaining_columns
+        
+        # Reorder DataFrame
+        available_columns = [col for col in final_columns if col in df.columns]
+        df_reordered = df[available_columns].copy()
+        
+        return df_reordered
+
+    def _create_market_metadata_sheet(self, writer, df: pd.DataFrame):
+        """Create Market Metadata sheet in Excel"""
+        try:
+            metadata_data = []
+            metadata_data.append(['MARKET METADATA INTELLIGENCE', '', '', '', '', '', '', ''])
+            metadata_data.append(['Analysis Date', datetime.now().strftime("%Y-%m-%d"), '', '', '', '', '', ''])
+            metadata_data.append(['', '', '', '', '', '', '', ''])
+            
+            # Market Cap Distribution
+            if 'market_cap_tier' in df.columns:
+                metadata_data.append(['MARKET CAP DISTRIBUTION', '', '', '', '', '', '', ''])
+                cap_dist = df['market_cap_tier'].value_counts()
+                metadata_data.append(['Tier', 'Count', 'Percentage', 'Expected Success', '', '', '', ''])
+                for tier, count in cap_dist.items():
+                    percentage = (count / len(df) * 100) if len(df) > 0 else 0
+                    avg_success = df[df['market_cap_tier'] == tier]['expected_success_rate'].mean() if 'expected_success_rate' in df.columns else 0
+                    metadata_data.append([tier, f"{count} trades", f"{percentage:.1f}%", f"{avg_success:.1f}% expected", '', '', '', ''])
+                metadata_data.append(['', '', '', '', '', '', '', ''])
+            
+            # Sector Distribution  
+            if 'primary_sector' in df.columns:
+                metadata_data.append(['SECTOR DISTRIBUTION', '', '', '', '', '', '', ''])
+                sector_dist = df['primary_sector'].value_counts()
+                metadata_data.append(['Sector', 'Count', 'Percentage', 'Expected Success', '', '', '', ''])
+                for sector, count in sector_dist.items():
+                    percentage = (count / len(df) * 100) if len(df) > 0 else 0
+                    avg_success = df[df['primary_sector'] == sector]['expected_success_rate'].mean() if 'expected_success_rate' in df.columns else 0
+                    metadata_data.append([sector, f"{count} trades", f"{percentage:.1f}%", f"{avg_success:.1f}% expected", '', '', '', ''])
+                metadata_data.append(['', '', '', '', '', '', '', ''])
+            
+            # Performance by Market Cap
+            if 'market_cap_tier' in df.columns and 'expected_success_rate' in df.columns:
+                metadata_data.append(['EXPECTED PERFORMANCE BY MARKET CAP', '', '', '', '', '', '', ''])
+                cap_performance = df.groupby('market_cap_tier')['expected_success_rate'].mean()
+                metadata_data.append(['Market Cap Tier', 'Expected Success Rate', '', '', '', '', '', ''])
+                for tier, rate in cap_performance.items():
+                    metadata_data.append([tier, f"{rate:.1f}%", '', '', '', '', '', ''])
+            
+            # Create the sheet
+            metadata_df = pd.DataFrame(metadata_data)
+            metadata_df.to_excel(writer, sheet_name='Market_Metadata', index=False, header=False)
+            
+        except Exception as e:
+            logger.error(f"Error creating market metadata sheet: {e}")
 

@@ -36,7 +36,7 @@ try:
     from historical_intelligence import HistoricalIntelligence, EnhancedOutputGenerator
     # Minimal Confidence Module import
     from modules.minimal_confidence_module import MinimalConfidenceModule, enhance_all_trades_with_confidence
-    # asyncio is already imported in your file, so no need to add it again
+    from modules.market_metadata_enricher import MarketMetadataEnricher
     from config import *
 except ImportError as e:
     print(f"Import error: {e}")
@@ -68,12 +68,14 @@ class ModularBBScanner:
         # Add this line in your __init__ method
         self.market_analyzer = ComprehensiveBBBacktest()
 
+        # New Market Metadata Enricher:
+        self.metadata_enricher = MarketMetadataEnricher()
+
         # NEW: Confidence Module
         self.confidence_module = MinimalConfidenceModule()
         
         # Setup logging (EXISTING - UNCHANGED)
         self._setup_logging()
-        
         self.logger = logging.getLogger(__name__)
         
     def _setup_logging(self):
@@ -404,6 +406,17 @@ class ModularBBScanner:
                         # ... all other existing trading fields
                     })
                     
+                    result = self.metadata_enricher.enrich_trade_data(symbol, result)
+                    if bb_analysis['setup_type'] != 'NONE':
+                        print(f"   📊 Market Intelligence:")
+                        print(f"      Market Cap Rank: {result['market_cap_rank']}")
+                        print(f"      Market Cap Tier: {result['market_cap_tier']}")
+                        print(f"      24h Volume: ${result['volume_24h_usd']:,.0f}")
+                        print(f"      Liquidity Tier: {result['liquidity_tier']}")
+                        print(f"      Primary Sector: {result['primary_sector']}")
+                        print(f"      Expected Success Rate: {result['expected_success_rate']:.1f}%")
+                        print(f"      Position Multiplier: {result['market_cap_multiplier']:.1f}x")
+
                     # Display logic for quality setups (8+ BB score) - Updated for consistency
                     bb_score = bb_analysis.get('bb_score', 0)
                     if bb_score >= 8:
