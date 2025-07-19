@@ -433,8 +433,8 @@ class ModularBBScanner:
                                     benchmark = market_context['indicator_benchmark']
                                     print(f"   ⭐ Indicator Benchmark: {benchmark}% historical success rate")
                                 
-                                print(f"   🏥 Market Health: {market_baselines.get('market_health_score', 73.5)}%")
-                                print(f"   📊 Based on: {market_baselines.get('total_bounces_analyzed', 9718)} historical bounces")
+                                print(f"   🏥 Market Health: {market_baselines.get('market_health', 0)}%")
+                                print(f"   📊 Based on: {market_baselines.get('total_bounces', 0)} historical bounces")
                                 
                             except Exception as e:
                                 self.logger.warning(f"Market context analysis failed for {symbol}: {e}")
@@ -629,6 +629,21 @@ class ModularBBScanner:
                 print(f"❌ Confidence enhancement failed: {e}")
                 # Fallback to original data
                 enhanced_trades = all_results
+
+            # Get the global market summary data and update all trade results
+            print("📊 Updating trade results with global market summary...")
+            try:
+                market_data = self.output_generator._run_market_overview_analysis()
+                
+                # Update each trade result with the global market summary stats
+                for result in enhanced_trades:
+                    result['total_bounces'] = market_data.get('total_bounces', 0)
+                    result['overall_success_rate'] = market_data.get('overall_success_rate', 0)
+                    result['market_health'] = market_data.get('market_health', 0)
+                
+                print(f"✅ Market summary updated for {len(enhanced_trades)} trades")
+            except Exception as e:
+                print(f"⚠️ Could not update market summary: {e}")
 
             # NEW: Analysis summary display
             quality_results = {}
