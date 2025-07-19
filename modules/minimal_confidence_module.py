@@ -90,21 +90,25 @@ class MinimalConfidenceModule:
         bb_score = trade_data.get('bb_score', 0)
         technical_confidence = self.normalize_bb_score(bb_score)
         
-        # Add confluence bonuses from your existing analysis - use actual field names
+        # Add confluence bonuses from your existing analysis
         confluence_bonus = 0
-        if trade_data.get('volume_surge', False) or trade_data.get('volume_surge_detected', False):
+        if trade_data.get('volume_surge', False):
             confluence_bonus += 5
-        if trade_data.get('mfi_oversold', False) or trade_data.get('mfi_value', 0) < 20:
+        if trade_data.get('mfi_oversold', False):
             confluence_bonus += 8  # Strong signal
         if trade_data.get('stoch_oversold', False):
             confluence_bonus += 6
-        if trade_data.get('bb_expansion', False) or trade_data.get('bb_expansion_ratio', 0) > 1.5:
+        if trade_data.get('bb_expansion', False):
             confluence_bonus += 4
         
         technical_confidence = min(100.0, technical_confidence + confluence_bonus)
         
         # Extract historical confidence
+<<<<<<< HEAD
         historical_win_rate = trade_data.get('historical_bb_baseline', trade_data.get('historical_probability', 0))
+=======
+        historical_win_rate = trade_data.get('historical_probability', 0)
+>>>>>>> temp-rollback-2108
         similar_count = trade_data.get('similar_trade_count', trade_data.get('total_bounces_analyzed', 0))
         
         # Apply sample size penalty
@@ -159,12 +163,12 @@ class MinimalConfidenceModule:
         
         rationale_parts = []
         
-        # Check key indicators - use the actual field names from main scanner
-        if trade_data.get('mfi_oversold', False) or trade_data.get('mfi_value', 0) < 20:
+        # Check key indicators
+        if trade_data.get('mfi_oversold', False):
             mfi_rate = self.indicator_performance['mfi_oversold']['success_rate']
             rationale_parts.append(f"MFI Oversold ({mfi_rate}% success)")
         
-        if trade_data.get('volume_surge', False) or trade_data.get('volume_surge_detected', False):
+        if trade_data.get('volume_surge', False):
             volume_rate = self.indicator_performance['volume_surge']['success_rate']
             rationale_parts.append(f"Volume Surge ({volume_rate}% success)")
         
@@ -172,12 +176,13 @@ class MinimalConfidenceModule:
             stoch_rate = self.indicator_performance['stoch_oversold']['success_rate']
             rationale_parts.append(f"Stoch Oversold ({stoch_rate}% success)")
         
-        if trade_data.get('bb_expansion', False) or trade_data.get('bb_expansion_ratio', 0) > 1.5:
+        if trade_data.get('bb_expansion', False):
             bb_rate = self.indicator_performance['bb_expansion']['success_rate']
             rationale_parts.append(f"BB Expansion ({bb_rate}% success)")
         
-        # Add market context if available - use actual field names
-        if trade_data.get('alt_season_indicator') == 'ALT_SEASON':
+        # Add market context if available
+        market_regime = trade_data.get('market_regime', {})
+        if market_regime.get('alt_season_indicator') == 'ALT_SEASON':
             rationale_parts.append("Alt Season conditions")
         
         # Create final rationale
@@ -227,6 +232,14 @@ class MinimalConfidenceModule:
             }
 
         try:
+            # Check if trade_data is None or empty
+            if trade_data is None:
+                logger.warning("Received None trade_data in enhance_trade_with_confidence")
+                return {}
+            
+            # Check if market_regime is None
+            if market_regime is None:
+                market_regime = {}
             # Calculate confidence scores
             # Main scanner stores sentiment data directly in trade_data, not in nested 'sentiment_data'
             sentiment_data = {

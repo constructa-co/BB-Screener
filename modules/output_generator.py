@@ -146,6 +146,22 @@ class OutputGenerator:
                 # Update confidence data with real calculations
                 df = self.update_confidence_data(df)
                 
+                # --- ENFORCE COLUMN ORDER AND PRESENCE FOR ALL SHEETS ---
+                # Remove the good_columns reference that was causing the error
+                # Keep the DataFrame as-is for now to restore functionality
+
+                # DEBUG PRINTS
+                print("[DEBUG] DataFrame shape:", df.shape)
+                print("[DEBUG] DataFrame columns:", df.columns.tolist())
+                if 'tier' in df.columns:
+                    print("[DEBUG] Tier value counts:\n", df['tier'].value_counts())
+                else:
+                    print("[DEBUG] No 'tier' column in DataFrame")
+                if 'action' in df.columns:
+                    print("[DEBUG] Action value counts:\n", df['action'].value_counts())
+                else:
+                    print("[DEBUG] No 'action' column in DataFrame")
+
             market_data = self._run_market_overview_analysis()
             with pd.ExcelWriter(filepath, engine='openpyxl', mode='w') as writer:
                 # Sheet 1: All results
@@ -1731,12 +1747,12 @@ class OutputGenerator:
         """Calculate real historical confidence from coin-specific data"""
         try:
             # Use coin-specific historical data if available
-            historical_success = trade_data.get('historical_component_success', 0)
+            historical_probability = trade_data.get('historical_probability', 0)
             historical_win_rate = trade_data.get('historical_win_rate', 0)
             
-            # Prefer historical_component_success if available, otherwise use historical_win_rate
-            if historical_success > 0:
-                return historical_success
+            # Prefer historical_probability if available, otherwise use historical_win_rate
+            if historical_probability > 0:
+                return historical_probability
             elif historical_win_rate > 0:
                 return historical_win_rate
             else:

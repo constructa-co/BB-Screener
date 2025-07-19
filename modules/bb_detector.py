@@ -49,15 +49,28 @@ class BBDetector:
         long_score = self._calculate_long_score_detailed(recent_3_candles, last, df, scoring_details)
         short_score = self._calculate_short_score_detailed(recent_3_candles, last, df, scoring_details)
         
+<<<<<<< HEAD
         # Determine setup - REVERTED to original threshold
         if long_score > short_score and long_score >= 8:  # Original threshold
+=======
+        # Determine setup - ADJUSTED threshold for enhanced scoring
+        # FOR LONG: Must have BB Touch AND be currently near lower band
+        long_has_bb_touch = any(recent_3_candles['low'] <= recent_3_candles['bb_lower'])
+        long_currently_near_lower = last['bb_pct'] <= 0.10  # Within 10% of lower band currently
+        
+        if long_score > short_score and long_score >= 1 and long_has_bb_touch and long_currently_near_lower:  # MANDATORY BB touch + current position for LONG
+>>>>>>> temp-rollback-2108
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
             stop = self._calculate_adaptive_stop_loss(entry, last['atr'], last['bb_upper'], last['bb_lower'], 'LONG', df)
             target1 = last['bb_middle']
             
+<<<<<<< HEAD
         elif short_score > long_score and short_score >= 8:  # Original threshold
+=======
+        elif short_score > long_score and short_score >= 1:  # Capture ALL trades for ML training
+>>>>>>> temp-rollback-2108
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']
@@ -76,8 +89,12 @@ class BBDetector:
             setup_quality = 'Very Good'     # Good multi-tier confluence
         elif bb_score >= 15:
             setup_quality = 'Good'          # Solid confluence
-        elif bb_score >= 12:
-            setup_quality = 'Fair'          # Minimum threshold
+        elif bb_score >= 8:
+            setup_quality = 'Fair'          # Lowered minimum threshold for data collection
+        elif bb_score >= 5:
+            setup_quality = 'Weak'          # Very low confidence
+        elif bb_score >= 1:
+            setup_quality = 'Minimal'       # Barely any signals
         else:
             setup_quality = 'Poor'
         
@@ -156,9 +173,9 @@ class BBDetector:
             long_score += 3
         
         # 2. BB Position (2 points) - BALANCED thresholds
-        if last['bb_pct'] <= 0.05:      # Extremely extreme
+        if last['bb_pct'] <= 0.02:      # Extremely extreme
             long_score += 2
-        elif last['bb_pct'] <= 0.08:    # Very extreme
+        elif last['bb_pct'] <= 0.05:    # Very extreme
             long_score += 1
         
         # 3. RSI (2 points) - BALANCED oversold levels
@@ -266,11 +283,11 @@ class BBDetector:
             scoring_details['breakdown'].append(f"BB Near Upper Band: +{points} pts")
         
         # 2. BB Position (2 points)
-        if last['bb_pct'] >= 0.92:
+        if last['bb_pct'] >= 0.98:
             points = 2
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Extreme ({last['bb_pct']:.3f}): +{points} pts")
-        elif last['bb_pct'] >= 0.88:
+        elif last['bb_pct'] >= 0.95:
             points = 1
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Very High ({last['bb_pct']:.3f}): +{points} pt")
@@ -450,9 +467,9 @@ class BBDetector:
             short_score += 2
         
         # 2. BB Position (2 points) - ENHANCED thresholds
-        if last['bb_pct'] >= 0.92:     # Very extreme
+        if last['bb_pct'] >= 0.99:     # Very extreme
             short_score += 2
-        elif last['bb_pct'] >= 0.88:   # Extreme
+        elif last['bb_pct'] >= 0.95:   # Extreme
             short_score += 1
         
         # 3. RSI (2 points) - ENHANCED overbought levels
@@ -855,18 +872,22 @@ class BBDetector:
         # === TIER 1: BASE BB SCORING ===
         base_score = 0
         
-        # 1. BB Touch (3 points)
+        # 1. BB Touch (3 points) - Match SHORT logic flexibility
         if any(recent_3_candles['low'] <= recent_3_candles['bb_lower']):
             points = 3
             base_score += points
             scoring_details['breakdown'].append(f"BB Touch Lower Band: +{points} pts")
+        elif any(recent_3_candles['low'] <= recent_3_candles['bb_lower'] * 1.002):
+            points = 2
+            base_score += points
+            scoring_details['breakdown'].append(f"BB Near Lower Band: +{points} pts")
         
         # 2. BB Position (2 points)
-        if last['bb_pct'] <= 0.05:
+        if last['bb_pct'] <= 0.02:
             points = 2
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Extreme ({last['bb_pct']:.3f}): +{points} pts")
-        elif last['bb_pct'] <= 0.08:
+        elif last['bb_pct'] <= 0.05:
             points = 1
             base_score += points
             scoring_details['breakdown'].append(f"BB Position Very Low ({last['bb_pct']:.3f}): +{points} pt")
