@@ -403,16 +403,17 @@ class ModularBBScanner:
                         'pattern_boost': bb_analysis.get('pattern_boost', 0),
                         # ... all other existing trading fields
                     })
-                    # Display logic for quality setups (12+ BB score) - UNCHANGED
+                    
+                    # Display logic for quality setups (8+ BB score) - Updated for consistency
                     bb_score = bb_analysis.get('bb_score', 0)
-                    if bb_score >= 12:
+                    if bb_score >= 8:
                         self.logger.info(f"Quality setup: {symbol} {bb_analysis['setup_type']} "
                                       f"({exchange_name}) - {probability}% probability, "
                                       f"Risk: {risk_pct:.1f}%, R:R: {bb_analysis['risk_reward']}")
                         
                         # ADD THIS AFTER A QUALITY SETUP IS FOUND
                         # (Find where you log quality setups and add this code right after)
-                        if bb_analysis['setup_type'] != 'NONE' and bb_analysis.get('bb_score', 0) >= 12:
+                        if bb_analysis['setup_type'] != 'NONE' and bb_analysis.get('bb_score', 0) >= 8:
                             try:
                                 # Get market context for this trade
                                 market_context = self.market_analyzer.get_market_context_for_trade(symbol, bb_analysis)
@@ -653,9 +654,9 @@ class ModularBBScanner:
                 # Save ALL data for Excel (ML training)
                 all_analysis_data.append(result)
                 
-                # Only track quality setups for summary (12+ BB score)
+                # Only track quality setups for summary (8+ BB score)
                 bb_score = result.get('bb_score', 0)
-                if bb_score >= 12:  # Quality threshold
+                if bb_score >= 8:  # Quality threshold
                     quality_results[result.get('symbol', 'Unknown')] = result
             
             # Display analysis summary
@@ -665,7 +666,7 @@ class ModularBBScanner:
             print(f"   • Success rate: {len(quality_results)/len(all_results)*100:.1f}%")
             
             if quality_results:
-                print(f"\n🎯 QUALITY SETUPS (12+ points):")
+                print(f"\n🎯 QUALITY SETUPS (8+ points):")
                 print("=" * 80)
                 for symbol, result in quality_results.items():
                     # Display quality setup details

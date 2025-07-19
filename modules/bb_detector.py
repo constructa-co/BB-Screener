@@ -54,14 +54,14 @@ class BBDetector:
         long_has_bb_touch = any(recent_3_candles['low'] <= recent_3_candles['bb_lower'])
         long_currently_near_lower = last['bb_pct'] <= 0.10  # Within 10% of lower band currently
         
-        if long_score > short_score and long_score >= 8 and long_has_bb_touch and long_currently_near_lower:  # MANDATORY BB touch + current position for LONG
+        if long_score > short_score and long_score >= 1 and long_has_bb_touch and long_currently_near_lower:  # MANDATORY BB touch + current position for LONG
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
             stop = self._calculate_adaptive_stop_loss(entry, last['atr'], last['bb_upper'], last['bb_lower'], 'LONG', df)
             target1 = last['bb_middle']
             
-        elif short_score > long_score and short_score >= 8:  # Lowered threshold for more data collection
+        elif short_score > long_score and short_score >= 1:  # Capture ALL trades for ML training
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']
@@ -80,8 +80,12 @@ class BBDetector:
             setup_quality = 'Very Good'     # Good multi-tier confluence
         elif bb_score >= 15:
             setup_quality = 'Good'          # Solid confluence
-        elif bb_score >= 12:
-            setup_quality = 'Fair'          # Minimum threshold
+        elif bb_score >= 8:
+            setup_quality = 'Fair'          # Lowered minimum threshold for data collection
+        elif bb_score >= 5:
+            setup_quality = 'Weak'          # Very low confidence
+        elif bb_score >= 1:
+            setup_quality = 'Minimal'       # Barely any signals
         else:
             setup_quality = 'Poor'
         
