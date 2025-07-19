@@ -1736,12 +1736,12 @@ class OutputGenerator:
         """Calculate real historical confidence from coin-specific data"""
         try:
             # Use coin-specific historical data if available
-            historical_success = trade_data.get('historical_component_success', 0)
+            historical_probability = trade_data.get('historical_probability', 0)
             historical_win_rate = trade_data.get('historical_win_rate', 0)
             
-            # Prefer historical_component_success if available, otherwise use historical_win_rate
-            if historical_success > 0:
-                return historical_success
+            # Prefer historical_probability if available, otherwise use historical_win_rate
+            if historical_probability > 0:
+                return historical_probability
             elif historical_win_rate > 0:
                 return historical_win_rate
             else:
