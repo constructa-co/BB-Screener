@@ -43,12 +43,8 @@ class MinimalConfidenceModule:
         """Normalize BB score to 0-100 scale."""
         return min(100.0, (bb_score / max_score) * 100)
     
-    def calculate_sentiment_score(self, sentiment_data: Dict, use_neutral: bool = False) -> float:
+    def calculate_sentiment_score(self, sentiment_data: Dict) -> float:
         """Calculate sentiment score from existing sentiment data."""
-        
-        # Handle None or empty sentiment data
-        if use_neutral or not sentiment_data or sentiment_data is None:
-            return 50.0  # Neutral default
         
         # Extract sentiment components with defaults
         lunar_score = sentiment_data.get('lunar_galaxy_score', 50)
@@ -104,11 +100,7 @@ class MinimalConfidenceModule:
         technical_confidence = min(100.0, technical_confidence + confluence_bonus)
         
         # Extract historical confidence
-<<<<<<< HEAD
-        historical_win_rate = trade_data.get('historical_bb_baseline', trade_data.get('historical_probability', 0))
-=======
         historical_win_rate = trade_data.get('historical_probability', 0)
->>>>>>> temp-rollback-2108
         similar_count = trade_data.get('similar_trade_count', trade_data.get('total_bounces_analyzed', 0))
         
         # Apply sample size penalty
@@ -121,12 +113,8 @@ class MinimalConfidenceModule:
         
         historical_confidence = historical_win_rate * sample_penalty
         
-        # Calculate sentiment confidence - extract from main scanner format
-        # Main scanner stores sentiment data directly in trade_data, not in nested 'sentiment_data'
-        sentiment_data = {
-            'lunar_galaxy_score': trade_data.get('lunar_galaxy_score', 50),
-            'tm_trader_grade': trade_data.get('tm_trader_grade', 50)
-        }
+        # Calculate sentiment confidence
+        sentiment_data = trade_data.get('sentiment_data', {})
         sentiment_confidence = self.calculate_sentiment_score(sentiment_data)
         
         # Get regime-specific weights
@@ -206,31 +194,18 @@ class MinimalConfidenceModule:
         else:
             return 70.0  # Default for mixed markets
     
-    def enhance_trade_with_confidence(self, trade_data: Dict, market_regime: Dict, use_neutral_sentiment: bool = False) -> Dict:
+    def enhance_trade_with_confidence(self, trade_data: Dict, market_regime: Dict) -> Dict:
         """
         Main integration method: enhance existing trade data with confidence scores.
         
         Args:
             trade_data: Dict containing existing trade analysis
             market_regime: Dict containing market regime data
-            use_neutral_sentiment: bool, if True, use neutral sentiment for scoring
             
         Returns:
             Dict: Enhanced trade data with confidence scores added
         """
         
-        # Add None check to prevent errors
-        if trade_data is None:
-            logger.error("Trade data is None in enhance_trade_with_confidence")
-            return {
-                'technical_confidence': 0.0,
-                'historical_confidence': 0.0,
-                'sentiment_confidence': 0.0,
-                'composite_confidence': 0.0,
-                'confidence_tier': 'ERROR',
-                'confidence_rationale': 'Trade data was None'
-            }
-
         try:
             # Check if trade_data is None or empty
             if trade_data is None:
@@ -241,55 +216,10 @@ class MinimalConfidenceModule:
             if market_regime is None:
                 market_regime = {}
             # Calculate confidence scores
-            # Main scanner stores sentiment data directly in trade_data, not in nested 'sentiment_data'
-            sentiment_data = {
-                'lunar_galaxy_score': trade_data.get('lunar_galaxy_score', 50),
-                'tm_trader_grade': trade_data.get('tm_trader_grade', 50)
-            }
-            sentiment_confidence = self.calculate_sentiment_score(sentiment_data, use_neutral_sentiment)
-            
-            # Extract technical confidence (normalized BB score)
-            bb_score = trade_data.get('bb_score', 0)
-            technical_confidence = self.normalize_bb_score(bb_score)
-            
-            # Add confluence bonuses from your existing analysis - use actual field names
-            confluence_bonus = 0
-            if trade_data.get('volume_surge', False) or trade_data.get('volume_surge_detected', False):
-                confluence_bonus += 5
-            if trade_data.get('mfi_oversold', False) or trade_data.get('mfi_value', 0) < 20:
-                confluence_bonus += 8  # Strong signal
-            if trade_data.get('stoch_oversold', False):
-                confluence_bonus += 6
-            if trade_data.get('bb_expansion', False) or trade_data.get('bb_expansion_ratio', 0) > 1.5:
-                confluence_bonus += 4
-            
-            technical_confidence = min(100.0, technical_confidence + confluence_bonus)
-            
-            # Extract historical confidence
-            historical_win_rate = trade_data.get('historical_bb_baseline', trade_data.get('historical_probability', 0))
-            similar_count = trade_data.get('similar_trade_count', trade_data.get('total_bounces_analyzed', 0))
-            
-            # Apply sample size penalty
-            if similar_count < 20:
-                sample_penalty = 0.8  # 20% penalty for small samples
-            elif similar_count < 50:
-                sample_penalty = 0.9  # 10% penalty for medium samples  
-            else:
-                sample_penalty = 1.0  # No penalty for large samples
-            
-            historical_confidence = historical_win_rate * sample_penalty
-            
-            # Get regime-specific weights
-            weights = self.get_regime_weights(market_regime)
-            
-            # Calculate composite score
-            composite_confidence = (
-                technical_confidence * weights['technical'] +
-                historical_confidence * weights['historical'] +
-                sentiment_confidence * weights['sentiment']
-            )
+            confidence_scores = self.calculate_composite_confidence(trade_data, market_regime)
             
             # Get tier classification
+            composite_confidence = confidence_scores['composite_confidence']
             tier_label, tier_emoji = self.get_confidence_tier(composite_confidence)
             
             # Generate rationale
@@ -300,10 +230,10 @@ class MinimalConfidenceModule:
                 **trade_data,  # All original fields preserved
                 
                 # New confidence fields
-                'technical_confidence': round(technical_confidence, 1),
-                'historical_confidence': round(historical_confidence, 1),
-                'sentiment_confidence': round(sentiment_confidence, 1),
-                'composite_confidence': round(composite_confidence, 1),
+                'technical_confidence': confidence_scores['technical_confidence'],
+                'historical_confidence': confidence_scores['historical_confidence'],
+                'sentiment_confidence': confidence_scores['sentiment_confidence'],
+                'composite_confidence': composite_confidence,
                 'confidence_tier': tier_label,
                 'confidence_emoji': tier_emoji,
                 'confidence_rationale': rationale,

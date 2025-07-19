@@ -49,28 +49,19 @@ class BBDetector:
         long_score = self._calculate_long_score_detailed(recent_3_candles, last, df, scoring_details)
         short_score = self._calculate_short_score_detailed(recent_3_candles, last, df, scoring_details)
         
-<<<<<<< HEAD
-        # Determine setup - REVERTED to original threshold
-        if long_score > short_score and long_score >= 8:  # Original threshold
-=======
         # Determine setup - ADJUSTED threshold for enhanced scoring
         # FOR LONG: Must have BB Touch AND be currently near lower band
         long_has_bb_touch = any(recent_3_candles['low'] <= recent_3_candles['bb_lower'])
         long_currently_near_lower = last['bb_pct'] <= 0.10  # Within 10% of lower band currently
         
         if long_score > short_score and long_score >= 1 and long_has_bb_touch and long_currently_near_lower:  # MANDATORY BB touch + current position for LONG
->>>>>>> temp-rollback-2108
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
             stop = self._calculate_adaptive_stop_loss(entry, last['atr'], last['bb_upper'], last['bb_lower'], 'LONG', df)
             target1 = last['bb_middle']
             
-<<<<<<< HEAD
-        elif short_score > long_score and short_score >= 8:  # Original threshold
-=======
         elif short_score > long_score and short_score >= 1:  # Capture ALL trades for ML training
->>>>>>> temp-rollback-2108
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']

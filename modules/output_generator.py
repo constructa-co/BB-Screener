@@ -1137,17 +1137,6 @@ class OutputGenerator:
                     
                     print(f"\n{i}. {trade['symbol']} - {trade['setup_type']} ({trade['exchange']})")
                     print(f"   🎯 Probability: {trade['probability']}% ({trade['tier']}) | BB Score: {trade['bb_score']}/11")
-                    
-                    # Display confidence scores if available
-                    if 'composite_confidence' in trade and trade['composite_confidence'] > 0:
-                        composite_conf = trade.get('composite_confidence', 0)
-                        confidence_tier = trade.get('confidence_tier', 'UNRATED')
-                        technical_conf = trade.get('technical_confidence', 0)
-                        historical_conf = trade.get('historical_confidence', 0)
-                        sentiment_conf = trade.get('sentiment_confidence', 0)
-                        
-                        print(f"   🎯 Confidence: {composite_conf:.1f}% ({confidence_tier})")
-                        print(f"   📊 Technical: {technical_conf:.1f}% | Historical: {historical_conf:.1f}% | Sentiment: {sentiment_conf:.1f}%")
                     if trade['entry'] > 0:
                         print(f"   💰 Entry: ${trade['entry']:.6f} | Stop: ${trade['stop']:.6f} | Target: ${trade['target1']:.6f}")
                         print(f"   📊 R:R: {trade['risk_reward']}:1 | Risk: {trade['risk_pct']}% {risk_flag} | Gain: {trade['gain_pct']}%")
