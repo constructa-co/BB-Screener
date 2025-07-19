@@ -50,14 +50,18 @@ class BBDetector:
         short_score = self._calculate_short_score_detailed(recent_3_candles, last, df, scoring_details)
         
         # Determine setup - ADJUSTED threshold for enhanced scoring
-        if long_score > short_score and long_score >= 12:  # NEW - institutional selectivity
+        # FOR LONG: Must have BB Touch AND be currently near lower band
+        long_has_bb_touch = any(recent_3_candles['low'] <= recent_3_candles['bb_lower'])
+        long_currently_near_lower = last['bb_pct'] <= 0.10  # Within 10% of lower band currently
+        
+        if long_score > short_score and long_score >= 8 and long_has_bb_touch and long_currently_near_lower:  # MANDATORY BB touch + current position for LONG
             setup_type = 'LONG'
             bb_score = long_score
             entry = last['close']
             stop = self._calculate_adaptive_stop_loss(entry, last['atr'], last['bb_upper'], last['bb_lower'], 'LONG', df)
             target1 = last['bb_middle']
             
-        elif short_score > long_score and short_score >= 12:  # NEW - institutional selectivity
+        elif short_score > long_score and short_score >= 8:  # Lowered threshold for more data collection
             setup_type = 'SHORT'
             bb_score = short_score
             entry = last['close']
@@ -855,11 +859,15 @@ class BBDetector:
         # === TIER 1: BASE BB SCORING ===
         base_score = 0
         
-        # 1. BB Touch (3 points)
+        # 1. BB Touch (3 points) - Match SHORT logic flexibility
         if any(recent_3_candles['low'] <= recent_3_candles['bb_lower']):
             points = 3
             base_score += points
             scoring_details['breakdown'].append(f"BB Touch Lower Band: +{points} pts")
+        elif any(recent_3_candles['low'] <= recent_3_candles['bb_lower'] * 1.002):
+            points = 2
+            base_score += points
+            scoring_details['breakdown'].append(f"BB Near Lower Band: +{points} pts")
         
         # 2. BB Position (2 points)
         if last['bb_pct'] <= 0.02:
