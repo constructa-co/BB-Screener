@@ -1,0 +1,503 @@
+#!/usr/bin/env python3
+"""
+FAIR VALUE GAP (FVG) SCANNER
+Standalone scanner for Fair Value Gaps on 5-minute charts
+Strategy: Trade gap fills in ranging market conditions
+"""
+
+import requests
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import time
+import json
+
+class FVGScanner:
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({'User-Agent': 'Mozilla/5.0'})
+        
+    def get_top_coins(self, limit=200):
+        """Get top coins by volume for scanning"""
+        try:
+            url = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing"
+            params = {
+                'start': 1,
+                'limit': limit,
+                'sortBy': 'volume_24h',
+                'sortType': 'desc',
+                'convert': 'USD',
+                'cryptoType': 'all',
+                'tagType': 'all'
+            }
+            
+            response = self.session.get(url, params=params, timeout=10)
+            data = response.json()
+            
+            coins = []
+            for coin in data['data']['cryptoCurrencyList']:
+                symbol = coin['symbol']
+                volume_24h = coin['quotes'][0]['volume24h']
+                market_cap = coin['quotes'][0]['marketCap']
+                
+                # Filter for good FVG candidates
+                if (volume_24h > 8_000_000 and  # Good volume for gap fills
+                    market_cap > 50_000_000 and   # Avoid micro-caps
+                    market_cap < 200_000_000_000): # Avoid BTC/ETH
+                    coins.append(symbol)
+            
+            return coins[:100]  # Top 100 for FVG scanning
+            
+        except Exception as e:
+            print(f"Error fetching coins: {e}")
+            return ['BTC', 'ETH', 'BNB', 'XRP', 'ADA', 'SOL', 'DOGE', 'AVAX', 'DOT', 'MATIC']
+    
+    def get_binance_klines(self, symbol, interval='5m', limit=200):
+        """Get 5-minute klines from Binance for FVG analysis"""
+        try:
+            url = "https://api.binance.com/api/v3/klines"
+            params = {
+                'symbol': f"{symbol}USDT",
+                'interval': interval,
+                'limit': limit
+            }
+            
+            response = self.session.get(url, params=params, timeout=10)
+            if response.status_code != 200:
+                return None
+                
+            data = response.json()
+            
+            df = pd.DataFrame(data, columns=[
+                'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
+                'taker_buy_quote', 'ignore'
+            ])
+            
+            # Convert to float
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                df[col] = df[col].astype(float)
+            
+            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+            
+            return df[['timestamp', 'open', 'high', 'low', 'close', 'volume']]
+            
+        except Exception as e:
+            return None
+    
+    def identify_fair_value_gaps(self, df):
+        """Identify Fair Value Gaps in the price data"""
+        gaps = []
+        
+        # Need at least 3 candles to form a gap
+        for i in range(1, len(df) - 1):
+            current = df.iloc[i]
+            previous = df.iloc[i-1]
+            next_candle = df.iloc[i+1]
+            
+            # Bullish FVG: Gap below current price (3-candle pattern)
+            # Previous candle high < Next candle low (gap exists)
+            if previous['high'] < next_candle['low']:
+                gap_top = next_candle['low']
+                gap_bottom = previous['high']
+                gap_size = (gap_top - gap_bottom) / gap_bottom * 100
+                
+                # Only consider significant gaps (0.1% - 3%)
+                if 0.1 <= gap_size <= 3.0:
+                    gaps.append({
+                        'type': 'bullish',
+                        'index': i,
+                        'timestamp': current['timestamp'],
+                        'gap_top': gap_top,
+                        'gap_bottom': gap_bottom,
+                        'gap_middle': (gap_top + gap_bottom) / 2,
+                        'gap_size_pct': gap_size,
+                        'formation_candles': [previous, current, next_candle],
+                        'volume': current['volume']
+                    })
+            
+            # Bearish FVG: Gap above current price (3-candle pattern)
+            # Previous candle low > Next candle high (gap exists)
+            elif previous['low'] > next_candle['high']:
+                gap_bottom = next_candle['high']
+                gap_top = previous['low']
+                gap_size = (gap_top - gap_bottom) / gap_bottom * 100
+                
+                # Only consider significant gaps (0.1% - 3%)
+                if 0.1 <= gap_size <= 3.0:
+                    gaps.append({
+                        'type': 'bearish',
+                        'index': i,
+                        'timestamp': current['timestamp'],
+                        'gap_top': gap_top,
+                        'gap_bottom': gap_bottom,
+                        'gap_middle': (gap_top + gap_bottom) / 2,
+                        'gap_size_pct': gap_size,
+                        'formation_candles': [previous, current, next_candle],
+                        'volume': current['volume']
+                    })
+        
+        return gaps
+    
+    def check_gap_status(self, df, gap, current_price):
+        """Check if gap is filled, partially filled, or unfilled"""
+        gap_top = gap['gap_top']
+        gap_bottom = gap['gap_bottom']
+        
+        # Check if price has returned to fill the gap since formation
+        post_gap_data = df.iloc[gap['index']+2:]  # Data after gap formation
+        
+        filled = False
+        partially_filled = False
+        fill_percentage = 0
+        
+        for _, candle in post_gap_data.iterrows():
+            # Check if any candle has touched the gap
+            if gap['type'] == 'bullish':
+                # For bullish gaps, check if price came down to fill
+                if candle['low'] <= gap_top:
+                    if candle['low'] <= gap_bottom:
+                        filled = True
+                        fill_percentage = 100
+                    else:
+                        partially_filled = True
+                        fill_percentage = (gap_top - candle['low']) / (gap_top - gap_bottom) * 100
+                    break
+            else:
+                # For bearish gaps, check if price came up to fill
+                if candle['high'] >= gap_bottom:
+                    if candle['high'] >= gap_top:
+                        filled = True
+                        fill_percentage = 100
+                    else:
+                        partially_filled = True
+                        fill_percentage = (candle['high'] - gap_bottom) / (gap_top - gap_bottom) * 100
+                    break
+        
+        # Current position relative to gap
+        if gap['type'] == 'bullish':
+            distance_to_gap = (current_price - gap_top) / current_price * 100
+        else:
+            distance_to_gap = (gap_bottom - current_price) / current_price * 100
+        
+        return {
+            'filled': filled,
+            'partially_filled': partially_filled,
+            'fill_percentage': fill_percentage,
+            'distance_to_gap_pct': distance_to_gap,
+            'current_in_gap': gap_bottom <= current_price <= gap_top
+        }
+    
+    def calculate_fvg_trade_setup(self, gap, current_price, status):
+        """Calculate entry, target, and stop for FVG trade"""
+        gap_top = gap['gap_top']
+        gap_bottom = gap['gap_bottom']
+        gap_middle = gap['gap_middle']
+        
+        if gap['type'] == 'bullish':
+            # LONG setup - price should come down to fill bullish gap
+            if current_price > gap_top and not status['filled']:
+                # Wait for price to reach gap for long entry
+                entry_price = gap_top * 0.999  # Slightly into the gap
+                target_price = gap_bottom     # Target bottom of gap
+                stop_loss = gap_top * 1.005   # Stop above gap
+                
+                trade_type = "LONG"
+                setup_direction = "waiting_for_entry"
+                
+            elif status['current_in_gap']:
+                # Price is in the gap - trade the bounce
+                entry_price = current_price
+                target_price = gap_bottom
+                stop_loss = gap_top * 1.003
+                
+                trade_type = "LONG"
+                setup_direction = "immediate_entry"
+                
+            else:
+                return None
+                
+        else:
+            # SHORT setup - price should come up to fill bearish gap
+            if current_price < gap_bottom and not status['filled']:
+                # Wait for price to reach gap for short entry
+                entry_price = gap_bottom * 1.001  # Slightly into the gap
+                target_price = gap_top           # Target top of gap
+                stop_loss = gap_bottom * 0.995   # Stop below gap
+                
+                trade_type = "SHORT"
+                setup_direction = "waiting_for_entry"
+                
+            elif status['current_in_gap']:
+                # Price is in the gap - trade the rejection
+                entry_price = current_price
+                target_price = gap_top
+                stop_loss = gap_bottom * 0.997
+                
+                trade_type = "SHORT"
+                setup_direction = "immediate_entry"
+                
+            else:
+                return None
+        
+        # Calculate metrics
+        target_pct = abs(target_price - entry_price) / entry_price * 100
+        risk_pct = abs(entry_price - stop_loss) / entry_price * 100
+        risk_reward = target_pct / risk_pct if risk_pct > 0 else 0
+        
+        return {
+            'trade_type': trade_type,
+            'setup_direction': setup_direction,
+            'entry_price': entry_price,
+            'target_price': target_price,
+            'stop_loss': stop_loss,
+            'target_pct': target_pct,
+            'risk_pct': risk_pct,
+            'risk_reward': risk_reward
+        }
+    
+    def calculate_gap_quality_score(self, gap, status, trade_setup, volume_profile):
+        """Score the quality of the FVG opportunity"""
+        score = 40  # Base score
+        
+        # Gap size scoring (sweet spot 0.3-1.5%)
+        gap_size = gap['gap_size_pct']
+        if 0.3 <= gap_size <= 1.5:
+            score += 25  # Ideal size
+        elif 0.15 <= gap_size <= 2.5:
+            score += 15  # Good size
+        elif gap_size <= 3.0:
+            score += 5   # Acceptable
+        
+        # Unfilled status bonus
+        if not status['filled']:
+            score += 20  # Unfilled gaps are valuable
+        elif status['partially_filled'] and status['fill_percentage'] < 50:
+            score += 15  # Partially filled but still good
+        
+        # Distance to gap
+        distance = abs(status['distance_to_gap_pct'])
+        if distance <= 1.0:
+            score += 20  # Very close
+        elif distance <= 2.0:
+            score += 15  # Close
+        elif distance <= 5.0:
+            score += 10  # Reasonable distance
+        
+        # Risk/Reward ratio
+        if trade_setup:
+            rr = trade_setup['risk_reward']
+            if rr >= 3.0:
+                score += 15  # Excellent R:R
+            elif rr >= 2.0:
+                score += 10  # Good R:R
+            elif rr >= 1.5:
+                score += 5   # Acceptable R:R
+        
+        # Immediate entry bonus
+        if trade_setup and trade_setup['setup_direction'] == 'immediate_entry':
+            score += 10  # Ready to trade now
+        
+        # Volume quality
+        if gap['volume'] > volume_profile['avg_volume'] * 1.5:
+            score += 10  # Good volume on gap formation
+        
+        # Gap age (prefer recent gaps)
+        gap_age = status.get('gap_age_candles', 0)
+        if gap_age <= 20:
+            score += 10  # Recent gap
+        elif gap_age <= 50:
+            score += 5   # Reasonable age
+        
+        return min(score, 100)  # Cap at 100
+    
+    def scan_for_fvg_opportunities(self):
+        """Main scanning function for FVG opportunities"""
+        print("🎯 FAIR VALUE GAP (FVG) SCANNER")
+        print("=" * 60)
+        print("🔍 Scanning 5-minute charts for gap fill opportunities...")
+        print("📊 Targets: Unfilled gaps in ranging market conditions")
+        print()
+        
+        coins = self.get_top_coins()
+        opportunities = []
+        
+        stats = {'scanned': 0, 'no_data': 0, 'gaps_found': 0, 'opportunities_found': 0}
+        
+        for i, symbol in enumerate(coins):
+            try:
+                print(f"📡 {symbol}... ", end="")
+                stats['scanned'] += 1
+                
+                # Get price data
+                df = self.get_binance_klines(symbol)
+                if df is None or len(df) < 50:
+                    print("No data")
+                    stats['no_data'] += 1
+                    continue
+                
+                current_price = df['close'].iloc[-1]
+                
+                # Volume analysis
+                volume_profile = {
+                    'avg_volume': df['volume'].tail(20).mean(),
+                    'current_volume': df['volume'].iloc[-1]
+                }
+                
+                # Find all Fair Value Gaps
+                gaps = self.identify_fair_value_gaps(df)
+                
+                if not gaps:
+                    print("No gaps")
+                    continue
+                
+                stats['gaps_found'] += len(gaps)
+                
+                # Analyze recent unfilled gaps (last 100 candles)
+                recent_gaps = [g for g in gaps if g['index'] >= len(df) - 100]
+                
+                best_opportunity = None
+                best_score = 0
+                
+                for gap in recent_gaps:
+                    # Check gap status
+                    status = self.check_gap_status(df, gap, current_price)
+                    status['gap_age_candles'] = len(df) - gap['index']
+                    
+                    # Calculate trade setup
+                    trade_setup = self.calculate_fvg_trade_setup(gap, current_price, status)
+                    
+                    if trade_setup and trade_setup['risk_reward'] >= 1.5:
+                        # Score the opportunity
+                        quality_score = self.calculate_gap_quality_score(
+                            gap, status, trade_setup, volume_profile
+                        )
+                        
+                        if quality_score > best_score and quality_score >= 55:
+                            best_score = quality_score
+                            best_opportunity = {
+                                'symbol': symbol,
+                                'gap': gap,
+                                'status': status,
+                                'trade_setup': trade_setup,
+                                'quality_score': quality_score,
+                                'current_price': current_price,
+                                'volume_profile': volume_profile
+                            }
+                
+                if best_opportunity:
+                    opportunities.append(best_opportunity)
+                    gap_type = best_opportunity['gap']['type']
+                    trade_type = best_opportunity['trade_setup']['trade_type']
+                    rr = best_opportunity['trade_setup']['risk_reward']
+                    distance = abs(best_opportunity['status']['distance_to_gap_pct'])
+                    
+                    status_icon = "🎯" if best_opportunity['trade_setup']['setup_direction'] == 'immediate_entry' else "⏳"
+                    print(f"{status_icon} {trade_type} | {gap_type.upper()} FVG | {distance:.1f}% away | R:R {rr:.1f}:1")
+                    stats['opportunities_found'] += 1
+                    time.sleep(0.1)
+                else:
+                    gaps_count = len(recent_gaps)
+                    print(f"{gaps_count} gaps (no setups)")
+                
+                time.sleep(0.05)
+                
+            except Exception as e:
+                print(f"❌ Error - {e}")
+                continue
+        
+        print(f"\n📊 SCAN RESULTS:")
+        print(f"Total scanned: {stats['scanned']}")
+        print(f"No data: {stats['no_data']}")
+        print(f"Total gaps found: {stats['gaps_found']}")
+        print(f"Trading opportunities: {stats['opportunities_found']}")
+        
+        # Sort by quality score
+        opportunities.sort(key=lambda x: x['quality_score'], reverse=True)
+        
+        return opportunities
+    
+    def display_results(self, opportunities):
+        """Display FVG scanning results"""
+        print("\n" + "=" * 80)
+        print(f"🎯 FOUND {len(opportunities)} FAIR VALUE GAP OPPORTUNITIES")
+        print("=" * 80)
+        
+        if not opportunities:
+            print("❌ No good FVG opportunities found")
+            print("💡 Try again later when more gaps form")
+            return
+        
+        print("📊 Results (sorted by quality score):")
+        print()
+        
+        for i, opp in enumerate(opportunities[:15], 1):
+            gap = opp['gap']
+            status = opp['status']
+            trade = opp['trade_setup']
+            
+            # Direction and emoji
+            if trade['trade_type'] == 'LONG':
+                direction_emoji = "📈"
+                gap_emoji = "🟢"  # Bullish gap
+            else:
+                direction_emoji = "📉"
+                gap_emoji = "🔴"  # Bearish gap
+            
+            # Setup status
+            if trade['setup_direction'] == 'immediate_entry':
+                status_text = "🎯 READY"
+            else:
+                status_text = "⏳ WAIT"
+            
+            print(f"{i:2}. {direction_emoji} {opp['symbol']:8} | Score: {opp['quality_score']:2}/100 | "
+                  f"{gap_emoji} {gap['type'].upper()} FVG | {status_text}")
+            
+            # Current position and gap details
+            distance = abs(status['distance_to_gap_pct'])
+            print(f"     Current: ${opp['current_price']:.4f} | "
+                  f"Gap: ${gap['gap_bottom']:.4f}-${gap['gap_top']:.4f} | "
+                  f"Distance: {distance:.1f}%")
+            
+            # Trade setup
+            print(f"     Entry: ${trade['entry_price']:.4f} | "
+                  f"Target: ${trade['target_price']:.4f} ({trade['target_pct']:.1f}%)")
+            
+            print(f"     Stop: ${trade['stop_loss']:.4f} ({trade['risk_pct']:.1f}%) | "
+                  f"R:R: {trade['risk_reward']:.1f}:1")
+            
+            # Gap details
+            fill_status = "UNFILLED"
+            if status['filled']:
+                fill_status = "FILLED"
+            elif status['partially_filled']:
+                fill_status = f"{status['fill_percentage']:.0f}% FILLED"
+            
+            gap_age = status['gap_age_candles']
+            print(f"     Gap: {gap['gap_size_pct']:.2f}% size | {fill_status} | "
+                  f"Age: {gap_age} candles")
+            
+            # Current status
+            if status['current_in_gap']:
+                print(f"     🎯 PRICE IN GAP - Ready for {trade['trade_type']} entry!")
+            elif trade['setup_direction'] == 'waiting_for_entry':
+                print(f"     ⏳ Waiting for price to reach gap zone")
+            
+            print()
+        
+        print("💡 FVG TRADING STRATEGY:")
+        print("• BULLISH FVG: Wait for price to return down to gap, then LONG")
+        print("• BEARISH FVG: Wait for price to return up to gap, then SHORT")
+        print("• Entry: When price touches gap zone with volume")
+        print("• Target: Opposite side of the gap (full fill)")
+        print("• Stop: Just outside the gap boundaries")
+        print("• Success Rate: ~70-80% in ranging conditions")
+        print("• Best with 2-3x leverage maximum")
+
+def main():
+    scanner = FVGScanner()
+    opportunities = scanner.scan_for_fvg_opportunities()
+    scanner.display_results(opportunities)
+
+if __name__ == "__main__":
+    main()

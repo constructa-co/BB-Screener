@@ -1,0 +1,513 @@
+#!/usr/bin/env python3
+"""
+SUPPORT/RESISTANCE LEVEL SCANNER
+Standalone scanner for key level bounces on 5-minute charts
+Strategy: Trade bounces off significant support/resistance levels
+"""
+
+import requests
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import time
+import json
+from collections import defaultdict
+
+class SupportResistanceScanner:
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({'User-Agent': 'Mozilla/5.0'})
+        
+    def get_top_coins(self, limit=200):
+        """Get top coins by volume for scanning"""
+        try:
+            url = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing"
+            params = {
+                'start': 1,
+                'limit': limit,
+                'sortBy': 'volume_24h',
+                'sortType': 'desc',
+                'convert': 'USD',
+                'cryptoType': 'all',
+                'tagType': 'all'
+            }
+            
+            response = self.session.get(url, params=params, timeout=10)
+            data = response.json()
+            
+            coins = []
+            for coin in data['data']['cryptoCurrencyList']:
+                symbol = coin['symbol']
+                volume_24h = coin['quotes'][0]['volume24h']
+                market_cap = coin['quotes'][0]['marketCap']
+                
+                # Filter for good level trading candidates
+                if (volume_24h > 10_000_000 and  # Good volume for entries/exits
+                    market_cap > 50_000_000 and   # Avoid micro-caps
+                    market_cap < 100_000_000_000): # Avoid BTC/ETH
+                    coins.append(symbol)
+            
+            return coins[:100]  # Top 100 for S/R scanning
+            
+        except Exception as e:
+            print(f"Error fetching coins: {e}")
+            return ['BTC', 'ETH', 'BNB', 'XRP', 'ADA', 'SOL', 'DOGE', 'AVAX', 'DOT', 'MATIC']
+    
+    def get_binance_klines(self, symbol, interval='5m', limit=300):
+        """Get 5-minute klines from Binance for S/R analysis"""
+        try:
+            url = "https://api.binance.com/api/v3/klines"
+            params = {
+                'symbol': f"{symbol}USDT",
+                'interval': interval,
+                'limit': limit
+            }
+            
+            response = self.session.get(url, params=params, timeout=10)
+            if response.status_code != 200:
+                return None
+                
+            data = response.json()
+            
+            df = pd.DataFrame(data, columns=[
+                'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
+                'taker_buy_quote', 'ignore'
+            ])
+            
+            # Convert to float
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                df[col] = df[col].astype(float)
+            
+            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+            
+            return df[['timestamp', 'open', 'high', 'low', 'close', 'volume']]
+            
+        except Exception as e:
+            return None
+    
+    def find_swing_points(self, df, period=3):
+        """Find swing highs and lows for S/R level identification"""
+        highs = []
+        lows = []
+        
+        for i in range(period, len(df) - period):
+            # Swing high
+            if all(df['high'].iloc[i] >= df['high'].iloc[i-j] for j in range(1, period+1)) and \
+               all(df['high'].iloc[i] >= df['high'].iloc[i+j] for j in range(1, period+1)):
+                highs.append({
+                    'index': i, 
+                    'price': df['high'].iloc[i], 
+                    'timestamp': df['timestamp'].iloc[i],
+                    'volume': df['volume'].iloc[i]
+                })
+            
+            # Swing low
+            if all(df['low'].iloc[i] <= df['low'].iloc[i-j] for j in range(1, period+1)) and \
+               all(df['low'].iloc[i] <= df['low'].iloc[i+j] for j in range(1, period+1)):
+                lows.append({
+                    'index': i, 
+                    'price': df['low'].iloc[i], 
+                    'timestamp': df['timestamp'].iloc[i],
+                    'volume': df['volume'].iloc[i]
+                })
+        
+        return highs, lows
+    
+    def identify_key_levels(self, df, highs, lows):
+        """Identify significant support and resistance levels"""
+        all_levels = []
+        current_price = df['close'].iloc[-1]
+        
+        # Combine highs and lows
+        for high in highs:
+            all_levels.append({
+                'price': high['price'],
+                'type': 'resistance',
+                'timestamp': high['timestamp'],
+                'volume': high['volume'],
+                'index': high['index']
+            })
+        
+        for low in lows:
+            all_levels.append({
+                'price': low['price'],
+                'type': 'support',
+                'timestamp': low['timestamp'],
+                'volume': low['volume'],
+                'index': low['index']
+            })
+        
+        # Group similar price levels together
+        level_groups = defaultdict(list)
+        tolerance = current_price * 0.015  # 1.5% tolerance for grouping
+        
+        for level in all_levels:
+            found_group = False
+            for group_price in level_groups.keys():
+                if abs(level['price'] - group_price) <= tolerance:
+                    level_groups[group_price].append(level)
+                    found_group = True
+                    break
+            
+            if not found_group:
+                level_groups[level['price']] = [level]
+        
+        # Convert to significant levels
+        significant_levels = []
+        for group_price, levels in level_groups.items():
+            if len(levels) >= 2:  # At least 2 touches for significance
+                avg_price = np.mean([l['price'] for l in levels])
+                avg_volume = np.mean([l['volume'] for l in levels])
+                most_recent = max(levels, key=lambda x: x['index'])
+                
+                # Determine if support or resistance based on majority
+                support_count = sum(1 for l in levels if l['type'] == 'support')
+                resistance_count = sum(1 for l in levels if l['type'] == 'resistance')
+                level_type = 'support' if support_count > resistance_count else 'resistance'
+                
+                significant_levels.append({
+                    'price': avg_price,
+                    'type': level_type,
+                    'touches': len(levels),
+                    'avg_volume': avg_volume,
+                    'last_touch_index': most_recent['index'],
+                    'strength': len(levels) * avg_volume / 1000000,  # Strength score
+                    'age_candles': len(df) - most_recent['index']
+                })
+        
+        return significant_levels
+    
+    def find_round_number_levels(self, current_price):
+        """Find psychological round number levels"""
+        round_levels = []
+        
+        # Determine appropriate round numbers based on price
+        if current_price >= 100:
+            # For prices $100+, look for $10 intervals
+            intervals = [10, 20, 50, 100]
+        elif current_price >= 10:
+            # For prices $10-$100, look for $1 and $5 intervals
+            intervals = [1, 5, 10]
+        elif current_price >= 1:
+            # For prices $1-$10, look for $0.1 and $0.5 intervals
+            intervals = [0.1, 0.5, 1.0]
+        else:
+            # For prices under $1, look for cent intervals
+            intervals = [0.01, 0.05, 0.1, 0.5]
+        
+        # Find nearby round numbers
+        for interval in intervals:
+            lower_round = (int(current_price / interval)) * interval
+            upper_round = lower_round + interval
+            
+            # Check if these levels are close enough to be relevant
+            lower_distance = abs(current_price - lower_round) / current_price
+            upper_distance = abs(current_price - upper_round) / current_price
+            
+            if lower_distance <= 0.05:  # Within 5%
+                round_levels.append({
+                    'price': lower_round,
+                    'type': 'support' if lower_round < current_price else 'resistance',
+                    'round_type': f"${interval:.2f} interval",
+                    'distance_pct': lower_distance * 100
+                })
+            
+            if upper_distance <= 0.05:  # Within 5%
+                round_levels.append({
+                    'price': upper_round,
+                    'type': 'support' if upper_round < current_price else 'resistance',
+                    'round_type': f"${interval:.2f} interval",
+                    'distance_pct': upper_distance * 100
+                })
+        
+        return round_levels
+    
+    def analyze_level_approach(self, df, level_price, level_type):
+        """Analyze how price is approaching a key level"""
+        current_price = df['close'].iloc[-1]
+        distance = abs(current_price - level_price) / current_price * 100
+        
+        # Check if price is approaching the level
+        if distance > 3.0:  # More than 3% away
+            return None
+        
+        # Analyze recent price action near the level
+        last_10_candles = df.tail(10)
+        last_5_candles = df.tail(5)
+        
+        # Volume analysis
+        avg_volume = df['volume'].tail(20).mean()
+        recent_volume = last_5_candles['volume'].mean()
+        volume_surge = recent_volume > avg_volume * 1.5
+        
+        # Momentum analysis
+        price_change_5 = (current_price - last_5_candles['close'].iloc[0]) / last_5_candles['close'].iloc[0] * 100
+        
+        # Check for rejection signs (wicks)
+        latest_candle = df.iloc[-1]
+        if level_type == 'resistance':
+            # Look for upper wicks (rejection at resistance)
+            upper_wick = (latest_candle['high'] - max(latest_candle['open'], latest_candle['close'])) / latest_candle['close'] * 100
+            rejection_signal = upper_wick > 0.5  # Upper wick > 0.5%
+            approaching_direction = 'from_below' if current_price < level_price else 'at_level'
+        else:
+            # Look for lower wicks (rejection at support)
+            lower_wick = (min(latest_candle['open'], latest_candle['close']) - latest_candle['low']) / latest_candle['close'] * 100
+            rejection_signal = lower_wick > 0.5  # Lower wick > 0.5%
+            approaching_direction = 'from_above' if current_price > level_price else 'at_level'
+        
+        # Determine setup quality
+        setup_quality = 0
+        setup_signals = []
+        
+        if distance <= 1.0:  # Very close to level
+            setup_quality += 30
+            setup_signals.append("Very close to level")
+        elif distance <= 2.0:
+            setup_quality += 20
+            setup_signals.append("Near level")
+        
+        if volume_surge:
+            setup_quality += 20
+            setup_signals.append("Volume surge")
+        
+        if rejection_signal:
+            setup_quality += 25
+            setup_signals.append("Rejection signal")
+        
+        if abs(price_change_5) > 1.0:  # Good momentum towards level
+            setup_quality += 15
+            setup_signals.append("Strong momentum")
+        
+        return {
+            'distance_pct': distance,
+            'approaching_direction': approaching_direction,
+            'volume_surge': volume_surge,
+            'rejection_signal': rejection_signal,
+            'momentum_5m': price_change_5,
+            'setup_quality': setup_quality,
+            'setup_signals': setup_signals,
+            'volume_ratio': recent_volume / avg_volume
+        }
+    
+    def calculate_trade_metrics(self, current_price, level_price, level_type, approach_data):
+        """Calculate entry, target, and stop loss for the trade"""
+        if level_type == 'support':
+            # LONG setup - bounce off support
+            entry_price = level_price * 1.002  # Slightly above support
+            stop_loss = level_price * 0.994   # 0.6% below support
+            
+            # Target based on distance to next resistance or 2-3% move
+            target_1 = entry_price * 1.02     # 2% target
+            target_2 = entry_price * 1.035    # 3.5% target
+            
+        else:
+            # SHORT setup - rejection at resistance  
+            entry_price = level_price * 0.998  # Slightly below resistance
+            stop_loss = level_price * 1.006    # 0.6% above resistance
+            
+            # Target based on distance to next support or 2-3% move
+            target_1 = entry_price * 0.98     # 2% target
+            target_2 = entry_price * 0.965    # 3.5% target
+        
+        # Calculate percentages
+        risk_pct = abs(entry_price - stop_loss) / entry_price * 100
+        reward_1_pct = abs(target_1 - entry_price) / entry_price * 100
+        reward_2_pct = abs(target_2 - entry_price) / entry_price * 100
+        
+        risk_reward_1 = reward_1_pct / risk_pct if risk_pct > 0 else 0
+        risk_reward_2 = reward_2_pct / risk_pct if risk_pct > 0 else 0
+        
+        return {
+            'entry_price': entry_price,
+            'stop_loss': stop_loss,
+            'target_1': target_1,
+            'target_2': target_2,
+            'risk_pct': risk_pct,
+            'reward_1_pct': reward_1_pct,
+            'reward_2_pct': reward_2_pct,
+            'risk_reward_1': risk_reward_1,
+            'risk_reward_2': risk_reward_2
+        }
+    
+    def scan_for_level_opportunities(self):
+        """Main scanning function for S/R opportunities"""
+        print("🎯 SUPPORT/RESISTANCE LEVEL SCANNER")
+        print("=" * 60)
+        print("🔍 Scanning 5-minute charts for key level bounces...")
+        print("📊 Targets: Support bounces (LONG) & Resistance rejections (SHORT)")
+        print()
+        
+        coins = self.get_top_coins()
+        opportunities = []
+        
+        stats = {'scanned': 0, 'no_data': 0, 'opportunities_found': 0}
+        
+        for i, symbol in enumerate(coins):
+            try:
+                print(f"📡 {symbol}... ", end="")
+                stats['scanned'] += 1
+                
+                # Get price data
+                df = self.get_binance_klines(symbol)
+                if df is None or len(df) < 100:
+                    print("No data")
+                    stats['no_data'] += 1
+                    continue
+                
+                current_price = df['close'].iloc[-1]
+                
+                # Find swing points and key levels
+                highs, lows = self.find_swing_points(df, period=3)
+                if len(highs) < 3 or len(lows) < 3:
+                    print("Insufficient swings")
+                    continue
+                
+                # Identify significant levels
+                key_levels = self.identify_key_levels(df, highs, lows)
+                round_levels = self.find_round_number_levels(current_price)
+                
+                # Combine all levels
+                all_levels = key_levels + [
+                    {
+                        'price': rl['price'],
+                        'type': rl['type'],
+                        'touches': 1,
+                        'strength': 5.0,  # Default strength for round numbers
+                        'level_source': 'round_number',
+                        'round_info': rl['round_type']
+                    }
+                    for rl in round_levels
+                ]
+                
+                # Find opportunities near current price
+                best_opportunity = None
+                best_score = 0
+                
+                for level in all_levels:
+                    approach_data = self.analyze_level_approach(df, level['price'], level['type'])
+                    
+                    if approach_data and approach_data['setup_quality'] > 30:
+                        trade_metrics = self.calculate_trade_metrics(
+                            current_price, level['price'], level['type'], approach_data
+                        )
+                        
+                        # Score the opportunity
+                        opportunity_score = (
+                            approach_data['setup_quality'] +
+                            level.get('strength', 5) +
+                            min(trade_metrics['risk_reward_1'] * 10, 30)  # R:R bonus up to 30 pts
+                        )
+                        
+                        if opportunity_score > best_score and trade_metrics['risk_reward_1'] >= 1.5:
+                            best_score = opportunity_score
+                            best_opportunity = {
+                                'symbol': symbol,
+                                'level_price': level['price'],
+                                'level_type': level['type'],
+                                'level_strength': level.get('strength', 5),
+                                'level_touches': level.get('touches', 1),
+                                'level_source': level.get('level_source', 'swing_point'),
+                                'current_price': current_price,
+                                'approach_data': approach_data,
+                                'trade_metrics': trade_metrics,
+                                'opportunity_score': opportunity_score
+                            }
+                
+                if best_opportunity:
+                    opportunities.append(best_opportunity)
+                    direction = "📈 LONG" if best_opportunity['level_type'] == 'support' else "📉 SHORT"
+                    rr = best_opportunity['trade_metrics']['risk_reward_1']
+                    print(f"{direction} @ ${best_opportunity['level_price']:.4f} - R:R {rr:.1f}:1")
+                    stats['opportunities_found'] += 1
+                    time.sleep(0.1)
+                else:
+                    print("No setups")
+                
+                time.sleep(0.05)
+                
+            except Exception as e:
+                print(f"❌ Error - {e}")
+                continue
+        
+        print(f"\n📊 SCAN RESULTS:")
+        print(f"Total scanned: {stats['scanned']}")
+        print(f"No data: {stats['no_data']}")
+        print(f"Opportunities found: {stats['opportunities_found']}")
+        
+        # Sort by opportunity score
+        opportunities.sort(key=lambda x: x['opportunity_score'], reverse=True)
+        
+        return opportunities
+    
+    def display_results(self, opportunities):
+        """Display S/R scanning results"""
+        print("\n" + "=" * 80)
+        print(f"🎯 FOUND {len(opportunities)} SUPPORT/RESISTANCE OPPORTUNITIES")
+        print("=" * 80)
+        
+        if not opportunities:
+            print("❌ No good level opportunities found")
+            print("💡 Try again later when price approaches key levels")
+            return
+        
+        print("📊 Results (sorted by opportunity score):")
+        print()
+        
+        for i, opp in enumerate(opportunities[:15], 1):
+            # Direction and emoji
+            if opp['level_type'] == 'support':
+                direction_emoji = "📈"
+                direction_text = "LONG"
+                action = "Bounce"
+            else:
+                direction_emoji = "📉"
+                direction_text = "SHORT"
+                action = "Rejection"
+            
+            print(f"{i:2}. {direction_emoji} {opp['symbol']:8} | Score: {opp['opportunity_score']:3.0f}/100 | "
+                  f"{direction_text} @ ${opp['level_price']:.4f}")
+            
+            # Current position
+            approach = opp['approach_data']
+            metrics = opp['trade_metrics']
+            
+            print(f"     Current: ${opp['current_price']:.4f} | "
+                  f"Distance: {approach['distance_pct']:.1f}% | "
+                  f"Entry: ${metrics['entry_price']:.4f}")
+            
+            print(f"     Target 1: ${metrics['target_1']:.4f} ({metrics['reward_1_pct']:.1f}%) | "
+                  f"Target 2: ${metrics['target_2']:.4f} ({metrics['reward_2_pct']:.1f}%)")
+            
+            print(f"     Stop: ${metrics['stop_loss']:.4f} ({metrics['risk_pct']:.1f}%) | "
+                  f"R:R: {metrics['risk_reward_1']:.1f}:1 / {metrics['risk_reward_2']:.1f}:1")
+            
+            # Level details
+            level_info = f"Level: {opp['level_touches']} touches"
+            if opp['level_source'] == 'round_number':
+                level_info += " (Round number)"
+            
+            print(f"     {level_info} | Strength: {opp['level_strength']:.1f}")
+            
+            # Setup signals
+            if approach['setup_signals']:
+                signals = " | ".join(approach['setup_signals'][:3])  # Top 3 signals
+                print(f"     Signals: {signals}")
+            
+            print()
+        
+        print("💡 TRADING STRATEGY:")
+        print("• Wait for price to reach the level with volume")
+        print("• LONG: Enter on bounce confirmation off support")
+        print("• SHORT: Enter on rejection confirmation at resistance")
+        print("• Use provided stops and targets")
+        print("• Best setups: Multiple touches + volume surge + rejection signals")
+
+def main():
+    scanner = SupportResistanceScanner()
+    opportunities = scanner.scan_for_level_opportunities()
+    scanner.display_results(opportunities)
+
+if __name__ == "__main__":
+    main()
