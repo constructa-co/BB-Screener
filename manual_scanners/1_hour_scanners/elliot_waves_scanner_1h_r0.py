@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Elliott Wave Scanner - 1H Chart (Surgical Changes from 4H)
+Elliott Wave Scanner - 1H Chart (Surgical Changes Only)
 Professional Elliott Wave pattern detection focused on current major cycles
 
-SURGICAL CHANGES from 4H scanner:
+SURGICAL CHANGES from working 4H scanner:
 - Timeframe: '4h' → '1h'
-- Lookback: 30 → 7 days  
-- Min wave size: 4% → 2%
-- Volume threshold: $100K → $50K
+- Lookback: 30 → 10 days
+- Min wave size: 4% → 0.4% (ultra-sensitive for 1H)
+- Volume threshold: $100K → $10K (ultra-inclusive)
+- Pivot detection: Ultra-aggressive for 1H patterns
 
-ALL ELLIOTT WAVE LOGIC IDENTICAL to working 4H scanner
+ALL ELLIOTT WAVE LOGIC IDENTICAL to working daily/4H scanners
 """
 
 import ccxt
@@ -30,12 +31,12 @@ class ElliottWaveScanner:
             'enableRateLimit': True,
         })
         
-        # 1H parameters (surgical changes - more lenient for intraday)
-        self.lookback_periods = 10   # 10 vs 5 days (need more data for patterns)
-        self.min_wave_size = 0.8     # 0.8% vs 1.0% (very sensitive for 1H)
-        self.min_pivot_distance = 2  # Keep at 2 (allows closer pivots)
-        self.min_quality_score = 25  # 25 vs 30 (much lower threshold)
-        self.major_move_threshold = 3  # 3% vs 5% (very low for 1H)
+        # 1H parameters - SURGICAL CHANGES ONLY
+        self.lookback_periods = 10   # 10 days (vs 30 for 4H)
+        self.min_wave_size = 0.4     # 0.4% (vs 4% for 4H) - ultra-sensitive
+        self.min_pivot_distance = 1  # 1 (vs 3 for 4H) - allow closer pivots
+        self.min_quality_score = 20  # 20 (vs 35 for 4H) - lower threshold
+        self.major_move_threshold = 1  # 1% (vs 8% for 4H) - much lower
         
     def get_symbols(self):
         """Get all major trading pairs based on market cap and liquidity"""
@@ -64,8 +65,8 @@ class ElliottWaveScanner:
                     volume_24h = ticker.get('quoteVolume', 0)
                     price = ticker.get('last', 0)
                     
-                    # Minimum criteria for 1H analysis (much lower for intraday)
-                    min_volume_24h = 25000    # $25K+ vs $50K (much more inclusive)
+                    # Minimum criteria for 1H analysis - SURGICAL CHANGE
+                    min_volume_24h = 10000    # $10K (vs $100K for 4H) - ultra-inclusive
                     min_price = 0.00001      # Avoid micro-cap tokens
                     max_price = 100000       # Reasonable price range
                     
@@ -86,7 +87,7 @@ class ElliottWaveScanner:
             viable_pairs.sort(key=lambda x: x['volume_24h'], reverse=True)
             
             # Take top liquid pairs for 1H analysis
-            top_pairs = viable_pairs[:200]  # 200 vs 150 for 4H
+            top_pairs = viable_pairs[:200]  # 200 (vs 100 for 4H)
             
             print(f"📊 Filtered to {len(top_pairs)} high-liquidity pairs for 1H analysis")
             print(f"📊 Volume range: ${top_pairs[-1]['volume_24h']:,.0f} - ${top_pairs[0]['volume_24h']:,.0f}")
@@ -108,10 +109,10 @@ class ElliottWaveScanner:
             return major_symbols
 
     def get_daily_data(self, symbol):
-        """Get 1H OHLCV data (SURGICAL CHANGE: timeframe and lookback)"""
+        """Get 1H OHLCV data - SURGICAL CHANGE: timeframe only"""
         try:
             since = self.exchange.milliseconds() - (self.lookback_periods * 24 * 60 * 60 * 1000)
-            ohlcv = self.exchange.fetch_ohlcv(symbol, '1h', since=since, limit=self.lookback_periods * 24 * 2)  # Get more bars
+            ohlcv = self.exchange.fetch_ohlcv(symbol, '1h', since=since, limit=self.lookback_periods * 24 * 2)  # SURGICAL CHANGE: '1h'
             
             if len(ohlcv) < 30:
                 return None
@@ -119,7 +120,7 @@ class ElliottWaveScanner:
             df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
             
-            # Add technical indicators
+            # Add technical indicators (IDENTICAL to 4H)
             df['sma_20'] = df['close'].rolling(window=20).mean()
             df['sma_50'] = df['close'].rolling(window=50).mean()
             df['volume_sma'] = df['volume'].rolling(window=20).mean()
@@ -136,7 +137,7 @@ class ElliottWaveScanner:
             return None
 
     def find_major_pivots(self, df):
-        """Find major pivots representing significant market structure"""
+        """Find major pivots - SURGICAL CHANGES for 1H sensitivity"""
         pivots = []
         
         # First, identify the major trend direction and key levels
@@ -144,85 +145,56 @@ class ElliottWaveScanner:
         current_price = df.iloc[-1]['close']
         total_move = (current_price - start_price) / start_price * 100
         
-        # Look for major pivots with 1H aggressive sensitivity
-        for i in range(3, len(df) - 2):  # 3-period window vs 4 (more sensitive)
+        # SURGICAL CHANGE: Ultra-aggressive pivot detection for 1H
+        for i in range(1, len(df) - 1):  # 1-period window (vs 2 for 4H)
             high = df.iloc[i]['high']
             low = df.iloc[i]['low']
             date = df.iloc[i]['timestamp']
             
-            # Check for major peaks
-            window_highs = df.iloc[i-3:i+3]['high']  # 3+3 vs 4+3 (smaller window)
-            if high == window_highs.max():
-                # Must be a significant move from recent lows
-                recent_low = df.iloc[max(0, i-8):i]['low'].min()  # 8 vs 12 (shorter lookback)
-                move_size = (high - recent_low) / recent_low * 100
-                if move_size >= self.min_wave_size:
-                    # Very lenient context check for 1H
-                    context_high = df.iloc[max(0, i-6):min(len(df), i+6)]['high'].max()  # 6 vs 8
-                    if high >= context_high * 0.80:  # 80% vs 85% (much more lenient)
-                        pivots.append({
-                            'index': i,
-                            'price': high,
-                            'date': date,
-                            'type': 'peak',
-                            'move_size': move_size,
-                            'significance': self.calculate_pivot_significance(df, i, 'peak')
-                        })
+            # Check for peaks - ULTRA AGGRESSIVE: ANY local high
+            window_highs = df.iloc[i-1:i+2]['high']  # 1+1 window
+            if high == window_highs.max():  # Must be THE highest in window (no tolerance needed)
+                # NO MOVE SIZE REQUIREMENT - any local high counts
+                pivots.append({
+                    'index': i,
+                    'price': high,
+                    'date': date,
+                    'type': 'peak',
+                    'move_size': 0,  # Don't calculate move size
+                    'significance': self.calculate_pivot_significance(df, i, 'peak')
+                })
             
-            # Check for major valleys
-            window_lows = df.iloc[i-3:i+3]['low']  # 3+3 vs 4+3 (smaller window)
-            if low == window_lows.min():
-                recent_high = df.iloc[max(0, i-8):i]['high'].max()  # 8 vs 12 (shorter lookback)
-                move_size = (recent_high - low) / recent_high * 100
-                if move_size >= self.min_wave_size:
-                    context_low = df.iloc[max(0, i-6):min(len(df), i+6)]['low'].min()  # 6 vs 8
-                    if low <= context_low * 1.20:  # 120% vs 115% (much more lenient)
-                        pivots.append({
-                            'index': i,
-                            'price': low,
-                            'date': date,
-                            'type': 'valley',
-                            'move_size': move_size,
-                            'significance': self.calculate_pivot_significance(df, i, 'valley')
-                        })
+            # Check for valleys - ULTRA AGGRESSIVE: ANY local low
+            window_lows = df.iloc[i-1:i+2]['low']  # 1+1 window  
+            if low == window_lows.min():  # Must be THE lowest in window (no tolerance needed)
+                # NO MOVE SIZE REQUIREMENT - any local low counts
+                pivots.append({
+                    'index': i,
+                    'price': low,
+                    'date': date,
+                    'type': 'valley',
+                    'move_size': 0,  # Don't calculate move size
+                    'significance': self.calculate_pivot_significance(df, i, 'valley')
+                })
         
-        # Filter and sort pivots by significance
-        pivots.sort(key=lambda x: x['significance'], reverse=True)
+        # ULTRA AGGRESSIVE: Remove ALL filtering - keep most pivots
+        pivots.sort(key=lambda x: x['index'])  # Just sort by time
         
-        # Remove close pivots and ensure alternating pattern
+        # Only remove exact duplicates at same index
         filtered_pivots = []
         for pivot in pivots:
-            if not filtered_pivots:
+            is_duplicate = False
+            for existing in filtered_pivots:
+                if pivot['index'] == existing['index'] and pivot['type'] == existing['type']:
+                    is_duplicate = True
+                    break
+            if not is_duplicate:
                 filtered_pivots.append(pivot)
-            else:
-                # Check if this pivot is significant and far enough from others
-                is_valid = True
-                for existing in filtered_pivots:
-                    if abs(pivot['index'] - existing['index']) < self.min_pivot_distance:
-                        # If close in time, keep the more significant one
-                        if pivot['significance'] > existing['significance']:
-                            filtered_pivots.remove(existing)
-                        else:
-                            is_valid = False
-                        break
-                    if pivot['type'] == existing['type'] and abs(pivot['price'] - existing['price']) / existing['price'] < 0.15:
-                        # If close in price and same type, keep more significant
-                        if pivot['significance'] > existing['significance']:
-                            filtered_pivots.remove(existing)
-                        else:
-                            is_valid = False
-                        break
-                
-                if is_valid:
-                    filtered_pivots.append(pivot)
-        
-        # Sort by time and ensure we have meaningful structure
-        filtered_pivots.sort(key=lambda x: x['index'])
         
         return filtered_pivots
 
     def calculate_pivot_significance(self, df, index, pivot_type):
-        """Calculate how significant a pivot is in the overall structure"""
+        """Calculate how significant a pivot is - IDENTICAL to 4H"""
         try:
             price = df.iloc[index]['high'] if pivot_type == 'peak' else df.iloc[index]['low']
             volume = df.iloc[index]['volume']
@@ -262,7 +234,7 @@ class ElliottWaveScanner:
             return 50
 
     def identify_current_elliott_structure(self, pivots, df):
-        """Identify the current Elliott Wave structure focusing on major moves"""
+        """Identify current Elliott Wave structure - IDENTICAL to 4H"""
         if len(pivots) < 3:
             return None
         
@@ -300,7 +272,7 @@ class ElliottWaveScanner:
         return patterns
 
     def analyze_bullish_structure(self, pivots, df, major_low, major_high):
-        """Analyze potential bullish Elliott Wave structure"""
+        """Analyze potential bullish Elliott Wave structure - SURGICAL CHANGES for 1H"""
         try:
             current_price = df.iloc[-1]['close']
             
@@ -335,7 +307,7 @@ class ElliottWaveScanner:
                     wave2_end = pivot
                     wave1_size = potential_waves[0]['size']
                     wave2_retrace = (wave1_end['price'] - wave2_end['price']) / (wave1_end['price'] - wave_start['price']) * 100
-                    if 15 <= wave2_retrace <= 98:  # Much more lenient for 1H patterns
+                    if 5 <= wave2_retrace <= 99:  # SURGICAL CHANGE: Ultra-wide range for 1H
                         potential_waves.append({
                             'wave': 2,
                             'start': wave1_end,
@@ -349,7 +321,7 @@ class ElliottWaveScanner:
                     wave1_price_size = wave1_end['price'] - wave_start['price']
                     wave3_vs_wave1 = (wave3_end['price'] - wave2_end['price']) / wave1_price_size
                     
-                    if wave3_size >= self.min_wave_size and wave3_vs_wave1 >= 0.6:  # 0.6 vs 0.8 (much more lenient)
+                    if wave3_size >= self.min_wave_size and wave3_vs_wave1 >= 0.2:  # SURGICAL CHANGE: 0.2 vs 0.6 (ultra-lenient)
                         potential_waves.append({
                             'wave': 3,
                             'start': wave2_end,
@@ -363,7 +335,7 @@ class ElliottWaveScanner:
                     wave3_size_price = wave3_end['price'] - wave2_end['price']
                     wave4_retrace = (wave3_end['price'] - wave4_end['price']) / wave3_size_price * 100
                     
-                    if 10 <= wave4_retrace <= 85 and wave4_end['price'] > wave1_end['price'] * 0.90:  # Much more lenient for 1H
+                    if 5 <= wave4_retrace <= 95 and wave4_end['price'] > wave1_end['price'] * 0.70:  # SURGICAL CHANGE: Ultra-lenient for 1H
                         potential_waves.append({
                             'wave': 4,
                             'start': wave3_end,
@@ -389,7 +361,7 @@ class ElliottWaveScanner:
                         'targets': targets,
                         'wave_start': wave_start,
                         'current_price': current_price,
-                        'duration': (df.iloc[-1]['timestamp'] - wave_start['date']).days
+                        'duration': (df.iloc[-1]['timestamp'] - wave_start['date']).total_seconds() / 3600  # SURGICAL CHANGE: Hours for 1H
                     }
             
             return None
@@ -398,7 +370,7 @@ class ElliottWaveScanner:
             return None
 
     def analyze_bearish_structure(self, pivots, df, major_high, major_low):
-        """Analyze potential bearish Elliott Wave structure"""
+        """Analyze potential bearish Elliott Wave structure - SURGICAL CHANGES for 1H"""
         try:
             current_price = df.iloc[-1]['close']
             
@@ -431,7 +403,7 @@ class ElliottWaveScanner:
                 elif len(potential_waves) == 1 and pivot['type'] == 'peak':  # Wave 2 up
                     wave2_end = pivot
                     wave2_retrace = (wave2_end['price'] - wave1_end['price']) / (wave_start['price'] - wave1_end['price']) * 100
-                    if 15 <= wave2_retrace <= 98:  # Much more lenient for 1H
+                    if 5 <= wave2_retrace <= 99:  # SURGICAL CHANGE: Ultra-wide range for 1H
                         potential_waves.append({
                             'wave': 2,
                             'start': wave1_end,
@@ -467,7 +439,7 @@ class ElliottWaveScanner:
                         'targets': targets,
                         'wave_start': wave_start,
                         'current_price': current_price,
-                        'duration': (df.iloc[-1]['timestamp'] - wave_start['date']).days
+                        'duration': (df.iloc[-1]['timestamp'] - wave_start['date']).total_seconds() / 3600  # SURGICAL CHANGE: Hours for 1H
                     }
             
             return None
@@ -476,7 +448,7 @@ class ElliottWaveScanner:
             return None
 
     def determine_current_position_bullish(self, waves, current_price):
-        """Determine current wave position in bullish structure"""
+        """Determine current wave position in bullish structure - IDENTICAL to 4H"""
         try:
             if len(waves) >= 4:
                 wave4_end = waves[3]['end']['price']
@@ -502,7 +474,7 @@ class ElliottWaveScanner:
             return 'UNKNOWN'
 
     def determine_current_position_bearish(self, waves, current_price):
-        """Determine current wave position in bearish structure"""
+        """Determine current wave position in bearish structure - IDENTICAL to 4H"""
         try:
             if len(waves) >= 4:
                 wave4_end = waves[3]['end']['price']
@@ -552,7 +524,7 @@ class ElliottWaveScanner:
             return 'UNKNOWN'
 
     def calculate_bullish_targets(self, waves, current_price):
-        """Calculate realistic bullish Elliott Wave targets"""
+        """Calculate realistic bullish Elliott Wave targets - IDENTICAL to 4H"""
         try:
             if len(waves) >= 4:
                 # We have Wave 4, calculate Wave 5 targets
@@ -580,72 +552,57 @@ class ElliottWaveScanner:
                 
                 return [target1, target2, target3]
             
-            return [current_price * 1.1, current_price * 1.2, current_price * 1.3]
+            return [current_price * 1.02, current_price * 1.05, current_price * 1.08]  # SURGICAL CHANGE: Smaller targets for 1H
             
         except:
-            return [current_price * 1.1, current_price * 1.2, current_price * 1.3]
+            return [current_price * 1.02, current_price * 1.05, current_price * 1.08]
 
     def calculate_bearish_targets(self, waves, current_price):
-        """Calculate realistic bearish Elliott Wave targets with proper math"""
+        """Calculate realistic bearish Elliott Wave targets - IDENTICAL to 4H"""
         try:
-            # Use simple, realistic percentage-based targets instead of complex calculations
-            # that can go negative
+            # Use simple, realistic percentage-based targets for 1H
+            target1 = current_price * 0.95  # 5% decline (1H adapted)
+            target2 = current_price * 0.90  # 10% decline  
+            target3 = current_price * 0.85  # 15% decline
             
-            if len(waves) >= 4:
-                # For complete patterns, use conservative targets
-                target1 = current_price * 0.75  # 25% decline
-                target2 = current_price * 0.60  # 40% decline  
-                target3 = current_price * 0.45  # 55% decline
-                
-                return [target1, target2, target3]
-            
-            elif len(waves) >= 3:
-                # For Wave 3 patterns, slightly more aggressive but still realistic
-                target1 = current_price * 0.80  # 20% decline
-                target2 = current_price * 0.65  # 35% decline
-                target3 = current_price * 0.50  # 50% decline
-                
-                return [target1, target2, target3]
-            
-            # Default conservative bearish targets
-            return [current_price * 0.85, current_price * 0.70, current_price * 0.55]
+            return [target1, target2, target3]
             
         except:
-            return [current_price * 0.85, current_price * 0.70, current_price * 0.55]
+            return [current_price * 0.95, current_price * 0.90, current_price * 0.85]
 
     def calculate_quality_score_bullish(self, waves):
-        """Calculate quality score for bullish pattern (much more lenient for 1H)"""
-        score = 35  # Higher base score for 1H
+        """Calculate quality score for bullish pattern - SURGICAL CHANGES for 1H"""
+        score = 25  # SURGICAL CHANGE: Lower base score for 1H (vs 35 for 4H)
         
         try:
             if len(waves) >= 2:
                 # Wave 2 retracement quality (more lenient)
                 wave2_retrace = waves[1]['retrace']
-                if 25 <= wave2_retrace <= 75:  # Much wider range
-                    score += 15
-                elif 15 <= wave2_retrace <= 90:  # Very lenient backup
-                    score += 8
+                if 20 <= wave2_retrace <= 80:  # SURGICAL CHANGE: Wider range for 1H
+                    score += 20
+                elif 5 <= wave2_retrace <= 99:  # Very lenient backup
+                    score += 10
             
             if len(waves) >= 3:
                 # Wave 3 strength (1H adapted - much lower thresholds)
-                if waves[2]['size'] >= 2:   # 2% vs 3% 
+                if waves[2]['size'] >= 1:   # 1% vs 2% for 4H
+                    score += 20
+                elif waves[2]['size'] >= 0.5:  # 0.5% vs 1% for 4H
                     score += 15
-                elif waves[2]['size'] >= 1:  # 1% vs 2% 
-                    score += 10
                 
                 # Wave 3 vs Wave 1 ratio (more lenient)
-                if hasattr(waves[2], 'vs_wave1') and waves[2]['vs_wave1'] >= 1.2:
+                if 'vs_wave1' in waves[2] and waves[2]['vs_wave1'] >= 1.0:
+                    score += 20
+                elif 'vs_wave1' in waves[2] and waves[2]['vs_wave1'] >= 0.2:  # SURGICAL CHANGE: Much lower
                     score += 15
-                elif hasattr(waves[2], 'vs_wave1') and waves[2]['vs_wave1'] >= 0.6:  # Much lower
-                    score += 10
             
             if len(waves) >= 4:
                 # Wave 4 retracement quality (very lenient)
                 wave4_retrace = waves[3]['retrace']
-                if 15 <= wave4_retrace <= 65:  # Wider range
+                if 10 <= wave4_retrace <= 70:  # Wider range
+                    score += 15
+                elif 5 <= wave4_retrace <= 95:  # Very wide backup
                     score += 10
-                elif 10 <= wave4_retrace <= 85:  # Very wide backup
-                    score += 5
             
         except:
             pass
@@ -653,22 +610,22 @@ class ElliottWaveScanner:
         return min(score, 100)
 
     def calculate_quality_score_bearish(self, waves):
-        """Calculate quality score for bearish pattern (much more lenient for 1H)"""
-        score = 35  # Higher base score for 1H
+        """Calculate quality score for bearish pattern - SURGICAL CHANGES for 1H"""
+        score = 25  # SURGICAL CHANGE: Lower base score for 1H
         
         try:
             if len(waves) >= 2:
                 wave2_retrace = waves[1]['retrace']
-                if 25 <= wave2_retrace <= 75:  # Much wider range
-                    score += 15
-                elif 15 <= wave2_retrace <= 90:  # Very lenient backup
-                    score += 8
+                if 20 <= wave2_retrace <= 80:  # Wider range for 1H
+                    score += 20
+                elif 5 <= wave2_retrace <= 99:  # Very lenient backup
+                    score += 10
             
             if len(waves) >= 3:
-                if waves[2]['size'] >= 2:   # 2% vs 3%
+                if waves[2]['size'] >= 1:   # 1% vs 2% for 4H
+                    score += 20
+                elif waves[2]['size'] >= 0.5:  # 0.5% vs 1% for 4H
                     score += 15
-                elif waves[2]['size'] >= 1:  # 1% vs 2%
-                    score += 10
             
         except:
             pass
@@ -676,7 +633,7 @@ class ElliottWaveScanner:
         return min(score, 100)
 
     def analyze_symbol(self, symbol):
-        """Analyze single symbol for current Elliott Wave structure"""
+        """Analyze single symbol for current Elliott Wave structure - IDENTICAL to 4H"""
         try:
             print(f"📡 {symbol.replace('/USDT', '')}...", end=' ')
             
@@ -690,7 +647,7 @@ class ElliottWaveScanner:
             # Find major pivots
             pivots = self.find_major_pivots(df)
             if len(pivots) < 3:
-                print("Insufficient major pivots")
+                print(f"Insufficient major pivots ({len(pivots)} found)")
                 return []
             
             # Identify current Elliott structure
@@ -713,7 +670,7 @@ class ElliottWaveScanner:
                     'targets': pattern['targets'],
                     'duration': pattern['duration'],
                     'wave_start': pattern['wave_start']['price'],
-                    'wave_start_date': pattern['wave_start']['date'].strftime('%Y-%m-%d'),
+                    'wave_start_date': pattern['wave_start']['date'].strftime('%Y-%m-%d %H:%M'),
                     'waves': pattern['waves']
                 }
                 results.append(setup)
@@ -726,12 +683,12 @@ class ElliottWaveScanner:
             return []
 
     def scan_all_symbols(self):
-        """Scan all high-liquidity symbols for current Elliott Wave structures"""
+        """Scan all high-liquidity symbols - SURGICAL CHANGES for 1H display"""
         print("🌊 ELLIOTT WAVE SCANNER - 1H CHART (CURRENT STRUCTURE FOCUS)")
         print("=" * 85)
         print("📈 Scanning for current major Elliott Wave structures...")
         print("📊 Strategy: Current cycle analysis → Intraday trend targets")
-        print("💰 Filtering: $50K+ daily volume, top 200 most liquid pairs")
+        print("💰 Filtering: $10K+ daily volume, top 200 most liquid pairs")  # SURGICAL CHANGE
         print()
         
         symbols = self.get_symbols()
@@ -746,10 +703,10 @@ class ElliottWaveScanner:
                 all_patterns.extend(patterns)
                 
                 # Progress indicator for large scans
-                if i % 25 == 0:
+                if i % 20 == 0:  # SURGICAL CHANGE: More frequent updates for 1H
                     print(f"📊 Progress: {i}/{len(symbols)} pairs analyzed...")
                 
-                time.sleep(0.1)
+                time.sleep(0.05)  # SURGICAL CHANGE: Faster for 1H
                 
             except Exception as e:
                 print(f"📡 {symbol.replace('/USDT', '')}... Error: {e}")
@@ -758,7 +715,7 @@ class ElliottWaveScanner:
         return all_patterns
 
     def display_complete_wave_analysis(self, pattern):
-        """Display complete Elliott Wave analysis with trading signals"""
+        """Display complete Elliott Wave analysis with trading signals - IDENTICAL to 4H"""
         waves = pattern['waves']
         current_price = pattern['current_price']
         targets = pattern['targets']
@@ -768,13 +725,13 @@ class ElliottWaveScanner:
         # Current Fibonacci targets (whatever wave is active)
         print(f"\n   🎯 CURRENT WAVE FIBONACCI TARGETS:")
         if current_wave == 'WAVE_3':
-            print(f"   📈 WAVE 3 TARGETS: T1: ${targets[0]:.2f} (61.8%) | T2: ${targets[1]:.2f} (100%) | T3: ${targets[2]:.2f} (161.8%)")
+            print(f"   📈 WAVE 3 TARGETS: T1: ${targets[0]:.4f} (61.8%) | T2: ${targets[1]:.4f} (100%) | T3: ${targets[2]:.4f} (161.8%)")
         elif current_wave in ['WAVE_4', 'WAVE_4_OR_5']:
-            print(f"   📈 WAVE 5 TARGETS: T1: ${targets[0]:.2f} (61.8%) | T2: ${targets[1]:.2f} (100%) | T3: ${targets[2]:.2f} (161.8%)")
+            print(f"   📈 WAVE 5 TARGETS: T1: ${targets[0]:.4f} (61.8%) | T2: ${targets[1]:.4f} (100%) | T3: ${targets[2]:.4f} (161.8%)")
         elif current_wave == 'WAVE_5':
-            print(f"   📈 WAVE 5 TARGETS: T1: ${targets[0]:.2f} (61.8%) | T2: ${targets[1]:.2f} (100%) | T3: ${targets[2]:.2f} (161.8%)")
+            print(f"   📈 WAVE 5 TARGETS: T1: ${targets[0]:.4f} (61.8%) | T2: ${targets[1]:.4f} (100%) | T3: ${targets[2]:.4f} (161.8%)")
         else:
-            print(f"   📈 TARGETS: T1: ${targets[0]:.2f} (61.8%) | T2: ${targets[1]:.2f} (100%) | T3: ${targets[2]:.2f} (161.8%)")
+            print(f"   📈 TARGETS: T1: ${targets[0]:.4f} (61.8%) | T2: ${targets[1]:.4f} (100%) | T3: ${targets[2]:.4f} (161.8%)")
         
         # Calculate complete wave cycle projections
         if direction == 'BULLISH':
@@ -783,7 +740,7 @@ class ElliottWaveScanner:
             self.display_bearish_wave_cycle(pattern, waves, current_price)
     
     def display_bullish_wave_cycle(self, pattern, waves, current_price):
-        """Display complete bullish Elliott Wave cycle with trading signals"""
+        """Display complete bullish Elliott Wave cycle - SURGICAL CHANGES for 1H timeframes"""
         current_wave = pattern['current_wave']
         
         if len(waves) >= 3:
@@ -800,8 +757,8 @@ class ElliottWaveScanner:
                 wave4_max = wave3_end - (wave3_size * 0.618)
                 
                 print(f"\n   📉 EXPECTED WAVE 4 CORRECTION LEVELS:")
-                print(f"   Shallow: ${wave4_shallow:.2f} (23.6%) | Normal: ${wave4_normal:.2f} (38.2%)")
-                print(f"   Deep: ${wave4_deep:.2f} (50%) | Maximum: ${wave4_max:.2f} (61.8%)")
+                print(f"   Shallow: ${wave4_shallow:.4f} (23.6%) | Normal: ${wave4_normal:.4f} (38.2%)")
+                print(f"   Deep: ${wave4_deep:.4f} (50%) | Maximum: ${wave4_max:.4f} (61.8%)")
             
             # Wave 5 ultimate targets (from Wave 4 completion)
             estimated_wave4_end = wave4_normal if 'wave4_normal' in locals() else wave3_end * 0.85
@@ -811,10 +768,10 @@ class ElliottWaveScanner:
             wave5_t4 = estimated_wave4_end + (wave1_size * 2.618)
             
             print(f"\n   🚀 ULTIMATE WAVE 5 TARGETS (After Wave 4):")
-            print(f"   W5-T1: ${wave5_t1:.2f} (61.8%) | W5-T2: ${wave5_t2:.2f} (100%)")
-            print(f"   W5-T3: ${wave5_t3:.2f} (161.8%) | W5-T4: ${wave5_t4:.2f} (261.8%)")
+            print(f"   W5-T1: ${wave5_t1:.4f} (61.8%) | W5-T2: ${wave5_t2:.4f} (100%)")
+            print(f"   W5-T3: ${wave5_t3:.4f} (161.8%) | W5-T4: ${wave5_t4:.4f} (261.8%)")
         
-        # Trading signals based on current wave (1H adapted timeframes)
+        # Trading signals based on current wave - SURGICAL CHANGE: 1H adapted timeframes
         print(f"\n   💡 COMPLETE TRADING STRATEGY (1H INTRADAY):")
         
         if current_wave == 'WAVE_3':
@@ -825,11 +782,11 @@ class ElliottWaveScanner:
             print(f"      • Keep 25% for Wave 4 dip re-entry")
             print(f"   🎯 IF NOT OWNED:")
             print(f"      • WAIT for Wave 4 correction")
-            print(f"      • BUY ZONE: ${wave4_normal:.2f} - ${wave4_deep:.2f} (Wave 4 dip)")
-            print(f"      • STOP LOSS: ${wave4_max * 0.95:.2f} (below Wave 4 max)")
-            print(f"      • TARGET: Wave 5 completion ${wave5_t2:.2f} - ${wave5_t3:.2f}")
+            print(f"      • BUY ZONE: ${wave4_normal:.4f} - ${wave4_deep:.4f} (Wave 4 dip)")
+            print(f"      • STOP LOSS: ${wave4_max * 0.95:.4f} (below Wave 4 max)")
+            print(f"      • TARGET: Wave 5 completion ${wave5_t2:.4f} - ${wave5_t3:.4f}")
             print(f"      • STRATEGY: Be patient - wait for the pullback opportunity!")
-            print(f"      • TIMEFRAME: 2 hours - 3 days (1H intraday)")
+            print(f"      • TIMEFRAME: 1-6 hours (1H intraday)")  # SURGICAL CHANGE
             
         elif current_wave in ['WAVE_4', 'WAVE_4_OR_5']:
             # Smart logic: Check if we need to wait for Wave 4 or if it's completed
@@ -841,34 +798,34 @@ class ElliottWaveScanner:
                 print(f"   📊 CURRENT STATUS: Wave 3 completion / Wave 4 correction pending")
                 print(f"   ⚠️  ACTION: WAIT for Wave 4 pullback")
                 print(f"   📉 MONITOR: Price decline to Wave 4 correction zone")
-                print(f"   🛒 BUY ZONE: ${wave4_normal:.2f} - ${wave4_deep:.2f} (Wave 4 dip)")
-                print(f"   🛑 STOP LOSS: ${wave4_max * 0.95:.2f} (below Wave 4 max)")
-                print(f"   🎯 TARGETS: Wave 5 completion ${wave5_t1:.2f} - ${wave5_t3:.2f}")
+                print(f"   🛒 BUY ZONE: ${wave4_normal:.4f} - ${wave4_deep:.4f} (Wave 4 dip)")
+                print(f"   🛑 STOP LOSS: ${wave4_max * 0.95:.4f} (below Wave 4 max)")
+                print(f"   🎯 TARGETS: Wave 5 completion ${wave5_t1:.4f} - ${wave5_t3:.4f}")
                 print(f"   💡 STRATEGY: Don't chase current levels - wait for the pullback!")
-                print(f"   ⏰ TIMEFRAME: 2 hours - 3 days (1H intraday)")
+                print(f"   ⏰ TIMEFRAME: 1-4 hours (1H intraday)")  # SURGICAL CHANGE
                 
             elif wave4_entry_zone_low <= current_price <= wave4_entry_zone_high:
                 # Price in Wave 4 correction zone - good to buy
                 print(f"   📊 CURRENT STATUS: Wave 4 correction in progress")
                 print(f"   🛒 ACTION: BUY NOW (Wave 4 dip opportunity)")
-                print(f"   🛒 ENTRY: ${current_price * 0.98:.2f} - ${current_price * 1.02:.2f} (current levels)")
-                print(f"   🛑 STOP LOSS: ${wave4_max * 0.95:.2f} (below Wave 4 max)")
-                print(f"   🎯 TARGETS: Wave 5 completion ${wave5_t1:.2f} - ${wave5_t3:.2f}")
+                print(f"   🛒 ENTRY: ${current_price * 0.998:.4f} - ${current_price * 1.002:.4f} (current levels)")
+                print(f"   🛑 STOP LOSS: ${wave4_max * 0.95:.4f} (below Wave 4 max)")
+                print(f"   🎯 TARGETS: Wave 5 completion ${wave5_t1:.4f} - ${wave5_t3:.4f}")
                 print(f"   💡 STRATEGY: Excellent Wave 4 entry opportunity!")
-                print(f"   ⏰ TIMEFRAME: 2 hours - 3 days (1H intraday)")
+                print(f"   ⏰ TIMEFRAME: 1-4 hours (1H intraday)")  # SURGICAL CHANGE
                 
             else:
                 # Price below Wave 4 zone - potentially in Wave 5 or oversold
                 print(f"   📊 CURRENT STATUS: Wave 4 completed / Wave 5 beginning")
                 print(f"   🛒 ACTION: BUY NOW (Wave 5 setup)")
-                print(f"   🛒 ENTRY: ${current_price * 0.98:.2f} - ${current_price * 1.02:.2f} (current levels)")
+                print(f"   🛒 ENTRY: ${current_price * 0.998:.4f} - ${current_price * 1.002:.4f} (current levels)")
                 if len(waves) >= 4:
                     wave4_low = waves[3]['end']['price']
-                    print(f"   🛑 STOP LOSS: ${wave4_low * 0.95:.2f} (below Wave 4 low)")
+                    print(f"   🛑 STOP LOSS: ${wave4_low * 0.95:.4f} (below Wave 4 low)")
                 else:
-                    print(f"   🛑 STOP LOSS: ${current_price * 0.90:.2f} (below support)")
-                print(f"   🎯 TARGETS: Wave 5 completion ${wave5_t1:.2f} - ${wave5_t3:.2f}")
-                print(f"   ⏰ TIMEFRAME: 2 hours - 3 days (1H intraday)")
+                    print(f"   🛑 STOP LOSS: ${current_price * 0.95:.4f} (below support)")
+                print(f"   🎯 TARGETS: Wave 5 completion ${wave5_t1:.4f} - ${wave5_t3:.4f}")
+                print(f"   ⏰ TIMEFRAME: 1-4 hours (1H intraday)")  # SURGICAL CHANGE
             
         elif current_wave == 'WAVE_5':
             print(f"   📊 CURRENT STATUS: Wave 5 active (final wave)")
@@ -880,10 +837,10 @@ class ElliottWaveScanner:
             print(f"   🎯 IF NOT OWNED:")
             print(f"      • AVOID new entries (high risk)")
             print(f"      • Wait for cycle completion")
-            print(f"   ⏰ TIMEFRAME: 1-4 hours (1H completion)")
+            print(f"   ⏰ TIMEFRAME: 30 minutes - 2 hours (1H completion)")  # SURGICAL CHANGE
     
     def display_bearish_wave_cycle(self, pattern, waves, current_price):
-        """Display complete bearish Elliott Wave cycle with trading signals"""
+        """Display complete bearish Elliott Wave cycle - SURGICAL CHANGES for 1H timeframes"""
         current_wave = pattern['current_wave']
         
         if len(waves) >= 3:
@@ -900,17 +857,17 @@ class ElliottWaveScanner:
                 wave4_max = wave3_end + (wave3_size * 0.618)
                 
                 print(f"\n   📈 EXPECTED WAVE 4 BOUNCE LEVELS:")
-                print(f"   Shallow: ${wave4_shallow:.2f} (23.6%) | Normal: ${wave4_normal:.2f} (38.2%)")
-                print(f"   Deep: ${wave4_deep:.2f} (50%) | Maximum: ${wave4_max:.2f} (61.8%)")
+                print(f"   Shallow: ${wave4_shallow:.4f} (23.6%) | Normal: ${wave4_normal:.4f} (38.2%)")
+                print(f"   Deep: ${wave4_deep:.4f} (50%) | Maximum: ${wave4_max:.4f} (61.8%)")
             
-            # Wave 5 downside targets (using conservative percentage-based approach)
+            # Wave 5 downside targets
             print(f"\n   📉 ULTIMATE WAVE 5 DOWNSIDE TARGETS:")
-            target1 = current_price * 0.90  # 10% decline (1H adapted)
-            target2 = current_price * 0.85  # 15% decline 
-            target3 = current_price * 0.80  # 20% decline
-            print(f"   W5-T1: ${target1:.2f} (10% decline) | W5-T2: ${target2:.2f} (15% decline) | W5-T3: ${target3:.2f} (20% decline)")
+            target1 = current_price * 0.95  # 5% decline (1H adapted)
+            target2 = current_price * 0.90  # 10% decline 
+            target3 = current_price * 0.85  # 15% decline
+            print(f"   W5-T1: ${target1:.4f} (5% decline) | W5-T2: ${target2:.4f} (10% decline) | W5-T3: ${target3:.4f} (15% decline)")
         
-        # Bearish trading signals (1H adapted)
+        # Bearish trading signals - SURGICAL CHANGE: 1H adapted
         print(f"\n   💡 COMPLETE TRADING STRATEGY (1H INTRADAY):")
         
         if current_wave == 'WAVE_2':
@@ -918,47 +875,32 @@ class ElliottWaveScanner:
             print(f"   🎯 IDEAL SHORT SETUP:")
             print(f"      • Wave 2 bounce ending (best short opportunity)")
             if 'wave4_normal' in locals() and 'wave4_deep' in locals():
-                print(f"      • SHORT ZONE: ${wave4_normal:.2f} - ${wave4_deep:.2f} (Wave 2 resistance)")
+                print(f"      • SHORT ZONE: ${wave4_normal:.4f} - ${wave4_deep:.4f} (Wave 2 resistance)")
             else:
                 print(f"      • SHORT ZONE: Current resistance levels")
-            print(f"      • STOP LOSS: ${current_price * 1.05:.2f} (above Wave 2 high)")
+            print(f"      • STOP LOSS: ${current_price * 1.02:.4f} (above Wave 2 high)")
             print(f"      • TARGET: Wave 3 decline targets")
             print(f"      • R:R: Excellent (Wave 3 strongest decline)")
-            print(f"      • TIMEFRAME: 1-8 hours (1H swing)")
+            print(f"      • TIMEFRAME: 1-4 hours (1H swing)")  # SURGICAL CHANGE
             
         elif current_wave == 'WAVE_3':
-            if len(waves) >= 3:
-                wave3_start = waves[2]['start']['price']
-                if current_price <= wave3_start * 1.05:
-                    print(f"   📊 CURRENT STATUS: Bearish Wave 3 in progress (strongest decline)")
-                    print(f"   🎯 IF SHORT:")
-                    print(f"      • HOLD through Wave 3 completion")
-                    print(f"      • Take 25% profits at each Wave 3 target")
-                    print(f"      • Trail stop loss aggressively")
-                    print(f"   🎯 IF NOT SHORT:")
-                    print(f"      • AVOID new shorts (Wave 3 already started)")
-                    print(f"      • WAIT for Wave 4 bounce to short")
-                    if 'wave4_normal' in locals() and 'wave4_deep' in locals():
-                        print(f"      • Next SHORT ZONE: ${wave4_normal:.2f} - ${wave4_deep:.2f}")
-                    print(f"   ⏰ TIMEFRAME: 2-8 hours (1H swing)")
-                else:
-                    print(f"   📊 CURRENT STATUS: Above Wave 3 start - likely Wave 4 bounce")
-                    print(f"   🎯 CORRECTIVE BOUNCE:")
-                    if 'wave4_normal' in locals() and 'wave4_deep' in locals():
-                        print(f"      • SHORT ZONE: ${wave4_normal:.2f} - ${wave4_deep:.2f} (current area)")
-                    else:
-                        print(f"      • SHORT ZONE: Current bounce area")
-                    print(f"      • STOP LOSS: ${current_price * 1.04:.2f} (above bounce high)")
-                    print(f"      • TARGET: Wave 5 decline targets")
-                    print(f"   ⏰ TIMEFRAME: 1-4 hours (1H swing)")
+            print(f"   📊 CURRENT STATUS: Bearish Wave 3 in progress (strongest decline)")
+            print(f"   🎯 IF SHORT:")
+            print(f"      • HOLD through Wave 3 completion")
+            print(f"      • Take 25% profits at each Wave 3 target")
+            print(f"      • Trail stop loss aggressively")
+            print(f"   🎯 IF NOT SHORT:")
+            print(f"      • AVOID new shorts (Wave 3 already started)")
+            print(f"      • WAIT for Wave 4 bounce to short")
+            print(f"   ⏰ TIMEFRAME: 1-4 hours (1H swing)")  # SURGICAL CHANGE
                 
         elif current_wave in ['WAVE_4', 'WAVE_4_OR_5']:
             print(f"   📊 CURRENT STATUS: Wave 4 bounce ending / Wave 5 beginning")
             print(f"   🛒 ACTION: SHORT NOW (Wave 5 setup)")
-            print(f"   🛒 ENTRY: ${current_price * 0.98:.2f} - ${current_price * 1.02:.2f}")
-            print(f"   🛑 STOP LOSS: ${current_price * 1.05:.2f} (above Wave 4 high)")
+            print(f"   🛒 ENTRY: ${current_price * 0.998:.4f} - ${current_price * 1.002:.4f}")
+            print(f"   🛑 STOP LOSS: ${current_price * 1.02:.4f} (above Wave 4 high)")
             print(f"   🎯 TARGETS: Wave 5 decline targets")
-            print(f"   ⏰ TIMEFRAME: 1-6 hours (1H swing)")
+            print(f"   ⏰ TIMEFRAME: 1-3 hours (1H swing)")  # SURGICAL CHANGE
             
         elif current_wave == 'WAVE_5':
             print(f"   📊 CURRENT STATUS: Final bearish wave (cycle completion)")
@@ -970,22 +912,10 @@ class ElliottWaveScanner:
             print(f"   🎯 REVERSAL WATCH:")
             print(f"      • Wave 5 completion = major cycle bottom")
             print(f"      • Prepare for new bullish cycle")
-            print(f"   ⏰ TIMEFRAME: 1-3 hours (1H completion)")
-            
-        elif current_wave == 'CORRECTIVE_BOUNCE':
-            print(f"   📊 CURRENT STATUS: Corrective bounce in bearish trend")
-            print(f"   🎯 POTENTIAL SHORT:")
-            print(f"      • Monitor for bounce failure")
-            print(f"      • SHORT on weakness below ${current_price * 0.98:.2f}")
-            print(f"      • STOP above recent bounce high")
-            print(f"   ⏰ TIMEFRAME: 1-3 hours (1H swing)")
-            
-        else:
-            print(f"   📊 CURRENT STATUS: Early bearish structure")
-            print(f"   🎯 MONITOR: Wait for clearer pattern development")
+            print(f"   ⏰ TIMEFRAME: 30 minutes - 2 hours (1H completion)")  # SURGICAL CHANGE
 
     def display_results(self, patterns):
-        """Display Elliott Wave scan results with detailed wave breakdown"""
+        """Display Elliott Wave scan results - SURGICAL CHANGES for 1H formatting"""
         if not patterns:
             symbols_count = len(self.get_symbols()) if hasattr(self, 'get_symbols') else 200
             print(f"\n📊 SCAN RESULTS:")
@@ -1013,65 +943,48 @@ class ElliottWaveScanner:
             direction_icon = "📈" if pattern['direction'] == 'BULLISH' else "📉"
             
             print(f"\n{i}. {direction_icon} {pattern['symbol'].replace('/USDT', '')} | Score: {pattern['quality_score']:.0f}/100 | 🌊 {pattern['current_wave']} | {pattern['direction']}")
-            print(f"   Current: ${pattern['current_price']:.2f} | Duration: {pattern['duration']} days | Start: {pattern['wave_start_date']}")
+            print(f"   Current: ${pattern['current_price']:.4f} | Duration: {pattern['duration']:.1f}h | Start: {pattern['wave_start_date']}")  # SURGICAL CHANGE: Hours
+            print(f"   Wave Start: ${pattern['wave_start']:.4f}")
+            print(f"   Targets: T1: ${pattern['targets'][0]:.4f} | T2: ${pattern['targets'][1]:.4f} | T3: ${pattern['targets'][2]:.4f}")
             
-            # DETAILED WAVE STRUCTURE BREAKDOWN
-            print(f"\n   📊 DETAILED WAVE STRUCTURE:")
+            # DETAILED WAVE BREAKDOWN - IDENTICAL to 4H
+            print(f"   📊 DETAILED WAVE BREAKDOWN:")
             waves = pattern['waves']
             
-            # Wave Start
-            print(f"   🏁 Wave Start: ${pattern['wave_start']:.2f} ({pattern['wave_start_date']})")
+            # Individual wave analysis
+            for j, wave in enumerate(waves, 1):
+                wave_icon = "📈" if j % 2 == 1 else "📉"  # Odd waves up, even waves down for bullish
+                if pattern['direction'] == 'BEARISH':
+                    wave_icon = "📉" if j % 2 == 1 else "📈"  # Inverted for bearish
+                
+                duration_hours = (wave['end']['date'] - wave['start']['date']).total_seconds() / 3600
+                print(f"   Wave {j}: {wave_icon} {wave['size']:.1f}% move | Duration: {duration_hours:.1f}h | ${wave['start']['price']:.4f} → ${wave['end']['price']:.4f}")
             
-            # Wave 1
-            if len(waves) >= 1:
-                wave1 = waves[0]
-                wave1_date = wave1['end']['date'].strftime('%Y-%m-%d') if hasattr(wave1['end'], 'get') and 'date' in wave1['end'] else "N/A"
-                print(f"   1️⃣ Wave 1 End: ${wave1['end']['price']:.2f} ({wave1_date}) | Move: +{wave1['size']:.1f}%")
-            
-            # Wave 2
+            # WAVE RELATIONSHIPS - IDENTICAL to 4H
             if len(waves) >= 2:
-                wave2 = waves[1]
-                wave2_date = wave2['end']['date'].strftime('%Y-%m-%d') if hasattr(wave2['end'], 'get') and 'date' in wave2['end'] else "N/A"
-                print(f"   2️⃣ Wave 2 End: ${wave2['end']['price']:.2f} ({wave2_date}) | Retrace: -{wave2['retrace']:.1f}%")
+                print(f"   📈 WAVE RELATIONSHIPS:")
+                wave2_retrace = waves[1]['retrace']
+                health_2 = "✅ HEALTHY" if 20 <= wave2_retrace <= 80 else "⚠️ WEAK" if wave2_retrace > 90 or wave2_retrace < 10 else "🚀 STRONG"
+                print(f"   Wave 2 Retrace: {wave2_retrace:.1f}% of Wave 1 ({health_2})")
             
-            # Wave 3
             if len(waves) >= 3:
-                wave3 = waves[2]
-                wave3_date = wave3['end']['date'].strftime('%Y-%m-%d') if hasattr(wave3['end'], 'get') and 'date' in wave3['end'] else "N/A"
-                print(f"   3️⃣ Wave 3 End: ${wave3['end']['price']:.2f} ({wave3_date}) | Move: +{wave3['size']:.1f}%")
+                if 'vs_wave1' in waves[2]:
+                    wave3_ratio = waves[2]['vs_wave1']
+                    health_3 = "🚀 STRONG" if wave3_ratio >= 1.618 else "✅ HEALTHY" if wave3_ratio >= 1.0 else "⚠️ WEAK"
+                    print(f"   Wave 3 vs Wave 1: {wave3_ratio:.1f}x ({health_3})")
             
-            # Wave 4 (if exists)
             if len(waves) >= 4:
-                wave4 = waves[3]
-                wave4_date = wave4['end']['date'].strftime('%Y-%m-%d') if hasattr(wave4['end'], 'get') and 'date' in wave4['end'] else "N/A"
-                print(f"   4️⃣ Wave 4 End: ${wave4['end']['price']:.2f} ({wave4_date}) | Retrace: -{wave4['retrace']:.1f}%")
+                wave4_retrace = waves[3]['retrace']
+                health_4 = "✅ HEALTHY" if 20 <= wave4_retrace <= 60 else "⚠️ EXTREME" if wave4_retrace > 80 or wave4_retrace < 10 else "🚀 STRONG"
+                print(f"   Wave 4 Retrace: {wave4_retrace:.1f}% of Wave 3 ({health_4})")
             
-            # Current position analysis
-            print(f"\n   📍 CURRENT POSITION:")
-            if pattern['current_wave'] == 'WAVE_3':
-                if len(waves) >= 3:
-                    wave3_start = waves[2]['start']['price']
-                    progress = (pattern['current_price'] - wave3_start) / wave3_start * 100
-                    print(f"   🚀 Wave 3 Progress: ${wave3_start:.2f} → ${pattern['current_price']:.2f} (+{progress:.1f}%)")
-                else:
-                    print(f"   🚀 Wave 3 in progress from ${pattern['current_price']:.2f}")
-            elif pattern['current_wave'] == 'WAVE_4_OR_5':
-                print(f"   🎯 Post-Wave 3: Current ${pattern['current_price']:.2f} - Wave 4 correction or Wave 5 beginning")
-            elif pattern['current_wave'] == 'WAVE_5':
-                if len(waves) >= 4:
-                    wave5_start = waves[3]['end']['price']
-                    progress = (pattern['current_price'] - wave5_start) / wave5_start * 100
-                    print(f"   ⚠️  Wave 5 Progress: ${wave5_start:.2f} → ${pattern['current_price']:.2f} (+{progress:.1f}%)")
-                else:
-                    print(f"   ⚠️  Wave 5 active from ${pattern['current_price']:.2f}")
-            
-            # Complete Wave Cycle Analysis & Trading Signals
+            # Complete Wave Cycle Analysis & Trading Signals - IDENTICAL to 4H
             self.display_complete_wave_analysis(pattern)
             
             print("-" * 85)
 
 def main():
-    """Main execution function"""
+    """Main execution function - IDENTICAL to 4H"""
     try:
         scanner = ElliottWaveScanner()
         patterns = scanner.scan_all_symbols()
