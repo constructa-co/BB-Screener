@@ -571,66 +571,82 @@ class ElliottWaveScanner:
             return [current_price * 0.95, current_price * 0.90, current_price * 0.85]
 
     def calculate_quality_score_bullish(self, waves):
-        """Calculate quality score for bullish pattern - SURGICAL CHANGES for 1H"""
-        score = 25  # SURGICAL CHANGE: Lower base score for 1H (vs 35 for 4H)
+        """Calculate quality score for bullish pattern - TIGHTENED for better quality"""
+        score = 30  # Base score for 1H
         
         try:
             if len(waves) >= 2:
-                # Wave 2 retracement quality (more lenient)
+                # Wave 2 retracement quality (tightened)
                 wave2_retrace = waves[1]['retrace']
-                if 20 <= wave2_retrace <= 80:  # SURGICAL CHANGE: Wider range for 1H
-                    score += 20
-                elif 5 <= wave2_retrace <= 99:  # Very lenient backup
-                    score += 10
+                if 25 <= wave2_retrace <= 70:  # TIGHTER range for quality
+                    score += 25
+                elif 15 <= wave2_retrace <= 85:  # Backup range
+                    score += 15
+                else:
+                    score -= 10  # Penalty for bad retracements
             
             if len(waves) >= 3:
-                # Wave 3 strength (1H adapted - much lower thresholds)
-                if waves[2]['size'] >= 1:   # 1% vs 2% for 4H
-                    score += 20
-                elif waves[2]['size'] >= 0.5:  # 0.5% vs 1% for 4H
+                # Wave 3 strength (higher requirements)
+                if waves[2]['size'] >= 2:   # 2% minimum for 1H
+                    score += 25
+                elif waves[2]['size'] >= 1:  # 1% backup
                     score += 15
+                else:
+                    score -= 5  # Penalty for weak Wave 3
                 
-                # Wave 3 vs Wave 1 ratio (more lenient)
-                if 'vs_wave1' in waves[2] and waves[2]['vs_wave1'] >= 1.0:
-                    score += 20
-                elif 'vs_wave1' in waves[2] and waves[2]['vs_wave1'] >= 0.2:  # SURGICAL CHANGE: Much lower
-                    score += 15
+                # Wave 3 vs Wave 1 ratio (tightened)
+                if 'vs_wave1' in waves[2]:
+                    ratio = waves[2]['vs_wave1']
+                    if ratio >= 1.2:
+                        score += 25
+                    elif ratio >= 0.8:
+                        score += 15
+                    elif ratio >= 0.4:
+                        score += 5
+                    else:
+                        score -= 10  # Penalty for weak Wave 3
             
             if len(waves) >= 4:
-                # Wave 4 retracement quality (very lenient)
+                # Wave 4 retracement quality (tightened)
                 wave4_retrace = waves[3]['retrace']
-                if 10 <= wave4_retrace <= 70:  # Wider range
-                    score += 15
-                elif 5 <= wave4_retrace <= 95:  # Very wide backup
+                if 20 <= wave4_retrace <= 60:  # TIGHTER range
+                    score += 20
+                elif 10 <= wave4_retrace <= 80:  # Backup
                     score += 10
+                else:
+                    score -= 5  # Penalty for extreme Wave 4
             
         except:
             pass
         
-        return min(score, 100)
+        return max(score, 0)  # Don't allow negative scores
 
     def calculate_quality_score_bearish(self, waves):
-        """Calculate quality score for bearish pattern - SURGICAL CHANGES for 1H"""
-        score = 25  # SURGICAL CHANGE: Lower base score for 1H
+        """Calculate quality score for bearish pattern - TIGHTENED for better quality"""
+        score = 30  # Base score for 1H
         
         try:
             if len(waves) >= 2:
                 wave2_retrace = waves[1]['retrace']
-                if 20 <= wave2_retrace <= 80:  # Wider range for 1H
-                    score += 20
-                elif 5 <= wave2_retrace <= 99:  # Very lenient backup
-                    score += 10
+                if 25 <= wave2_retrace <= 70:  # TIGHTER range
+                    score += 25
+                elif 15 <= wave2_retrace <= 85:  # Backup
+                    score += 15
+                else:
+                    score -= 10  # Penalty for bad retracements
             
             if len(waves) >= 3:
-                if waves[2]['size'] >= 1:   # 1% vs 2% for 4H
-                    score += 20
-                elif waves[2]['size'] >= 0.5:  # 0.5% vs 1% for 4H
+                if waves[2]['size'] >= 2:   # 2% minimum
+                    score += 25
+                elif waves[2]['size'] >= 1:  # 1% backup
                     score += 15
+                else:
+                    score -= 5  # Penalty for weak Wave 3
             
         except:
             pass
         
-        return min(score, 100)
+        return max(score, 0)  # Don't allow negative scores
 
     def analyze_symbol(self, symbol):
         """Analyze single symbol for current Elliott Wave structure - IDENTICAL to 4H"""
@@ -928,18 +944,20 @@ class ElliottWaveScanner:
             print("💡 Market may be in consolidation or early structure formation")
             return
         
-        # Sort by quality score
+        # Sort by quality score and take top 15 only
         patterns.sort(key=lambda x: x['quality_score'], reverse=True)
+        top_patterns = patterns[:15]  # LIMIT TO TOP 15 PATTERNS
         
         symbols_count = len(self.get_symbols()) if hasattr(self, 'get_symbols') else 200
         print(f"\n📊 SCAN RESULTS:")
         print(f"Total scanned: {symbols_count}")
-        print(f"Current structures: {len(patterns)}")
+        print(f"Patterns found: {len(patterns)}")
+        print(f"Top patterns shown: {len(top_patterns)}")
         print("=" * 89)
-        print(f"🌊 FOUND {len(patterns)} CURRENT ELLIOTT WAVE STRUCTURES (1H)")
+        print(f"🌊 TOP {len(top_patterns)} ELLIOTT WAVE STRUCTURES (1H)")
         print("=" * 89)
         
-        for i, pattern in enumerate(patterns, 1):
+        for i, pattern in enumerate(top_patterns, 1):
             direction_icon = "📈" if pattern['direction'] == 'BULLISH' else "📉"
             
             print(f"\n{i}. {direction_icon} {pattern['symbol'].replace('/USDT', '')} | Score: {pattern['quality_score']:.0f}/100 | 🌊 {pattern['current_wave']} | {pattern['direction']}")
@@ -958,7 +976,8 @@ class ElliottWaveScanner:
                     wave_icon = "📉" if j % 2 == 1 else "📈"  # Inverted for bearish
                 
                 duration_hours = (wave['end']['date'] - wave['start']['date']).total_seconds() / 3600
-                print(f"   Wave {j}: {wave_icon} {wave['size']:.1f}% move | Duration: {duration_hours:.1f}h | ${wave['start']['price']:.4f} → ${wave['end']['price']:.4f}")
+                wave_size = wave.get('size', 0)  # Handle missing size gracefully
+                print(f"   Wave {j}: {wave_icon} {wave_size:.1f}% move | Duration: {duration_hours:.1f}h | ${wave['start']['price']:.4f} → ${wave['end']['price']:.4f}")
             
             # WAVE RELATIONSHIPS - IDENTICAL to 4H
             if len(waves) >= 2:
