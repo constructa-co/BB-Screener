@@ -1318,11 +1318,11 @@ class ICTEnhancedBacktester:
     def detect_historical_setups_enhanced(self, df, future_df, symbol):
         """Detect ICT setups including FVGs, Order Blocks, and Breaker Blocks"""
         
-        # Enhanced market regime filter
-        if self.config.get('use_enhanced_regime', True):
-            regime = self.detect_market_regime(df)
-            if self.config.get('require_market_regime', False) and not regime['favorable']:
-                return []
+        # FIX: Define ALL variables that might be used in debug messages
+        min_quality = self.config.get('min_quality_score', 55)
+        min_confluence = self.config.get('min_confluence_factors', 3)
+        quality_filtered = 0
+        distance_filtered = 0
         
         # Category detection for weighting
         category = self.get_token_category(symbol)
@@ -1331,6 +1331,12 @@ class ICTEnhancedBacktester:
         focus_categories = self.config.get('focus_categories', None)
         if focus_categories and category not in focus_categories:
             return []
+        
+        # Enhanced market regime filter
+        if self.config.get('use_enhanced_regime', True):
+            regime = self.detect_market_regime(df)
+            if self.config.get('require_market_regime', False) and not regime['favorable']:
+                return []
         
         # Detect all ICT patterns
         order_blocks = self.detect_order_blocks(df)
@@ -1447,8 +1453,6 @@ class ICTEnhancedBacktester:
             setup_score = self.apply_incremental_quality_boost(setup_score, confluence_factors, ob, category)
             
             # Quality filtering
-            min_quality = self.config.get('min_quality_score', 55)
-            min_confluence = self.config.get('min_confluence_factors', 3)
             
             if len(confluence_factors) < min_confluence:
                 quality_filtered += 1
