@@ -1414,8 +1414,8 @@ class ICTEnhancedBacktester:
         """Detect ICT setups including FVGs, Order Blocks, and Breaker Blocks"""
         
         # FIX: Define ALL variables that might be used in debug messages
-        min_quality = self.config.get('min_quality_score', 55)
-        min_confluence = self.config.get('min_confluence_factors', 3)
+        min_quality = self.config.get('min_quality_score')  # Use actual config value, no default
+        min_confluence = self.config.get('min_confluence_factors')  # Use actual config value, no default
         quality_filtered = 0
         distance_filtered = 0
         
@@ -1609,6 +1609,7 @@ class ICTEnhancedBacktester:
             # Debug info for first few iterations
             if len(trades) == 0 and len(order_blocks) > 0:
                 print(f"   DEBUG: Score={setup_score}, Indicators={len(indicator_confluences)}, Quality={min_quality}")
+                print(f"   CONFIG DEBUG: min_quality_score={self.config.get('min_quality_score')}, min_volume_ratio={self.config.get('min_volume_ratio')}")
             
             # Quality filtering
             
