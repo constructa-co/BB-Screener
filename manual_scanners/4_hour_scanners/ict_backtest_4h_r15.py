@@ -40,8 +40,8 @@ class ICTEnhancedBacktester:
             'stop_multiplier': 0.75,   # Stop distance
             'target_method': 'ict',    # ICT method
             'lookback_months': 3,      # Extended lookback
-            'min_order_block_size': 1.5,   # INCREASED from 1.3
-            'min_volume_ratio': 2.0,       # INCREASED from 1.4
+            'min_order_block_size': 2.0,   # INCREASED from 1.3
+            'min_volume_ratio': 2.5,       # INCREASED from 2.0
             'min_quality_score': 65,       # INCREASED from 55
             'max_distance_pct': 18.0,      # Keep Phase 5 baseline
             'min_confluence_factors': 3,   # Keep Phase 5 baseline
@@ -66,7 +66,7 @@ class ICTEnhancedBacktester:
             'require_fvg_volume': True,      # NEW
             'min_indicator_confluence': 3,   # INCREASED from 2
             'use_atr_targets': True,         # NEW
-            'min_risk_reward': 0.3,         # CHANGED from 0.5 to 0.3 temporarily
+            'min_risk_reward': 0.8,         # CHANGED from 0.3 to 0.8 for better R/R
             # PHASE 7 ADDITIONS:
             'use_dynamic_targets': True,     # Enable dynamic target calculation
             'target_optimization_enabled': True,  # Enable target optimization analysis
@@ -519,8 +519,98 @@ class ICTEnhancedBacktester:
         
         return targets[:3], target_reasons[:3]
 
+    def calculate_fibonacci_targets(self, df, entry_price, direction):
+        """Calculate targets based on Fibonacci extensions from swing levels"""
+        # Find recent swing levels (wider window for better context)
+        swings = self.find_swing_levels(df, window=20)
+        
+        if len(swings['highs']) < 2 or len(swings['lows']) < 2:
+            return None, None
+        
+        if direction == 'BULLISH':
+            # Find recent swing low and swing high for bullish trades
+            recent_lows = sorted(swings['lows'][-5:])  # Last 5 swing lows
+            recent_highs = sorted(swings['highs'][-5:])  # Last 5 swing highs
+            
+            if len(recent_lows) < 2 or len(recent_highs) < 2:
+                return None, None
+            
+            # Use the most recent swing low and high
+            swing_low = recent_lows[-1]  # Most recent swing low
+            swing_high = recent_highs[-1]  # Most recent swing high
+            
+            # Ensure swing low is below entry and swing high is above
+            if swing_low >= entry_price or swing_high <= entry_price:
+                return None, None
+            
+            # Calculate Fibonacci extensions from swing low to swing high (R15: More realistic levels)
+            range_size = swing_high - swing_low
+            fib_618 = swing_low + (range_size * 0.618)  # 61.8% extension (R15: More realistic)
+            fib_100 = swing_low + (range_size * 1.000)  # 100% extension (R15: Equal move)
+            fib_161 = swing_low + (range_size * 1.618)  # 161.8% extension (R15: Golden ratio)
+            
+            return [fib_618, fib_100, fib_161], ["Fib 61.8%", "Fib 100%", "Fib 161.8%"]
+        else:
+            # Bearish - reverse the logic
+            recent_highs = sorted(swings['highs'][-5:], reverse=True)  # Last 5 swing highs
+            recent_lows = sorted(swings['lows'][-5:], reverse=True)  # Last 5 swing lows
+            
+            if len(recent_highs) < 2 or len(recent_lows) < 2:
+                return None, None
+            
+            swing_high = recent_highs[-1]  # Most recent swing high
+            swing_low = recent_lows[-1]  # Most recent swing low
+            
+            # Ensure swing high is above entry and swing low is below
+            if swing_high <= entry_price or swing_low >= entry_price:
+                return None, None
+            
+            # Calculate Fibonacci extensions from swing high to swing low (R15: More realistic levels)
+            range_size = swing_high - swing_low
+            fib_618 = swing_high - (range_size * 0.618)  # 61.8% extension (R15: More realistic)
+            fib_100 = swing_high - (range_size * 1.000)  # 100% extension (R15: Equal move)
+            fib_161 = swing_high - (range_size * 1.618)  # 161.8% extension (R15: Golden ratio)
+            
+            return [fib_618, fib_100, fib_161], ["Fib 61.8%", "Fib 100%", "Fib 161.8%"]
+
+    def calculate_support_resistance_targets(self, df, entry_price, direction):
+        """Calculate targets based on key support/resistance levels"""
+        # Find recent swing levels
+        swings = self.find_swing_levels(df, window=20)
+        
+        if direction == 'BULLISH':
+            # Find resistance levels above entry
+            resistances = [h for h in swings['highs'] if h > entry_price * 1.01]
+            if len(resistances) >= 3:
+                return sorted(resistances)[:3], ["R1", "R2", "R3"]
+        else:
+            # Find support levels below entry
+            supports = [l for l in swings['lows'] if l < entry_price * 0.99]
+            if len(supports) >= 3:
+                return sorted(supports, reverse=True)[:3], ["S1", "S2", "S3"]
+        
+        return None, None
+
+    def calculate_atr_dynamic_targets(self, df, entry_price, direction, setup_type):
+        """Calculate ATR-based targets that adapt to volatility"""
+        atr = df.iloc[-1]['atr']
+        
+        if setup_type == 'order_block':
+            # Order Blocks: Higher targets due to stronger moves
+            multipliers = [1.5, 2.5, 4.0]  # More aggressive
+        else:
+            # FVGs: Lower targets due to weaker moves
+            multipliers = [1.0, 1.8, 2.8]  # More conservative
+        
+        if direction == 'BULLISH':
+            targets = [entry_price + (atr * m) for m in multipliers]
+        else:
+            targets = [entry_price - (atr * m) for m in multipliers]
+        
+        return targets, [f"{m}x ATR" for m in multipliers]
+
     def calculate_swing_based_targets(self, df, entry_price, direction):
-        """Calculate targets based on recent swing highs/lows"""
+        """Calculate targets based on recent swing highs/lows (LEGACY - kept for compatibility)"""
         # Find recent swings
         swings = self.find_swing_levels(df, window=10)
         
@@ -558,33 +648,58 @@ class ICTEnhancedBacktester:
         return targets, ["1x ATR", "2x ATR", "3x ATR"]
 
     def calculate_ict_targets(self, df, entry_price, direction, setup_type='order_block'):
-        """PHASE 8: Smart target calculation using multiple methods"""
+        """PHASE 14: Fibonacci-based intelligent target calculation"""
         
-        # Try swing-based targets first
-        targets, reasons = self.calculate_swing_based_targets(df, entry_price, direction)
-        
+        # Try Fibonacci-based targets first (NEW for R14)
+        targets, reasons = self.calculate_fibonacci_targets(df, entry_price, direction)
         if targets:
             return targets[:3], reasons[:3]
         
-        # Use ATR-based targets as secondary method
-        if self.config.get('use_atr_targets', True):
-            return self.calculate_atr_based_targets(df, entry_price, direction)
+        # Try Support/Resistance targets second
+        targets, reasons = self.calculate_support_resistance_targets(df, entry_price, direction)
+        if targets:
+            return targets[:3], reasons[:3]
         
-        # Original percentage fallback
+        # Try ATR-based dynamic targets third
+        targets, reasons = self.calculate_atr_dynamic_targets(df, entry_price, direction, setup_type)
+        if targets:
+            return targets[:3], reasons[:3]
+        
+        # Fallback to optimized percentage targets (if all else fails)
         if direction == 'BULLISH':
-            targets = [
-                entry_price * 1.008,  # 0.8%
-                entry_price * 1.015,  # 1.5%
-                entry_price * 1.025   # 2.5%
-            ]
-            target_reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+            if setup_type == 'order_block':
+                # Order Block trades: fallback targets
+                targets = [
+                    entry_price * 1.050,  # 5.0% - Fallback OB T1
+                    entry_price * 1.080,  # 8.0% - Fallback OB T2
+                    entry_price * 1.120   # 12.0% - Fallback OB T3
+                ]
+                target_reasons = ["T1: +5.0% (Fallback)", "T2: +8.0% (Fallback)", "T3: +12.0% (Fallback)"]
+            else:
+                # FVG trades: fallback targets
+                targets = [
+                    entry_price * 1.040,  # 4.0% - Fallback FVG T1
+                    entry_price * 1.065,  # 6.5% - Fallback FVG T2
+                    entry_price * 1.090   # 9.0% - Fallback FVG T3
+                ]
+                target_reasons = ["T1: +4.0% (Fallback)", "T2: +6.5% (Fallback)", "T3: +9.0% (Fallback)"]
         else:
-            targets = [
-                entry_price * 0.992,
-                entry_price * 0.985,
-                entry_price * 0.975
-            ]
-            target_reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
+            if setup_type == 'order_block':
+                # Order Block trades: fallback targets
+                targets = [
+                    entry_price * 0.950,  # -5.0% - Fallback OB T1
+                    entry_price * 0.920,  # -8.0% - Fallback OB T2
+                    entry_price * 0.880   # -12.0% - Fallback OB T3
+                ]
+                target_reasons = ["T1: -5.0% (Fallback)", "T2: -8.0% (Fallback)", "T3: -12.0% (Fallback)"]
+            else:
+                # FVG trades: fallback targets
+                targets = [
+                    entry_price * 0.960,  # -4.0% - Fallback FVG T1
+                    entry_price * 0.935,  # -6.5% - Fallback FVG T2
+                    entry_price * 0.910   # -9.0% - Fallback FVG T3
+                ]
+                target_reasons = ["T1: -4.0% (Fallback)", "T2: -6.5% (Fallback)", "T3: -9.0% (Fallback)"]
         
         return targets[:3], target_reasons[:3]
 
@@ -1272,11 +1387,11 @@ class ICTEnhancedBacktester:
         for target, count in target_hits.items():
             pct = count / total_trades * 100
             if target == 'T1':
-                print(f"{target} Hit Rate: {pct:.1f}% ({count} trades) [Target: 0.8%]")
+                print(f"{target} Hit Rate: {pct:.1f}% ({count} trades) [Target: Fibonacci/S/R/ATR]")
             elif target == 'T2':
-                print(f"{target} Hit Rate: {pct:.1f}% ({count} trades) [Target: 1.2%]")
+                print(f"{target} Hit Rate: {pct:.1f}% ({count} trades) [Target: Fibonacci/S/R/ATR]")
             else:
-                print(f"{target} Hit Rate: {pct:.1f}% ({count} trades) [Target: 2.0%]")
+                print(f"{target} Hit Rate: {pct:.1f}% ({count} trades) [Target: Fibonacci/S/R/ATR]")
         
         stop_hits = len([t for t in trades if t['hit_stop']])
         print(f"Stop Loss Hit: {stop_hits/total_trades*100:.1f}% ({stop_hits} trades)")
@@ -1340,7 +1455,7 @@ class ICTEnhancedBacktester:
             print(f"Quality Score: {best_trade['quality_score']}")
         
         print(f"\n🔧 PHASE 6 FEATURES:")
-        print(f"✅ Fix 1: Optimized targets (0.8%, 1.2%, 2.0%)")
+        print(f"✅ Fix 1: Fibonacci-based targets (61.8%, 100%, 161.8%)")
         print(f"✅ Fix 2: Retracement entry (25% into OB, midpoint for FVG)")
         print(f"✅ Fix 3: Enhanced quality scoring")
         print(f"✅ Fix 4: Dynamic category weighting")
@@ -1632,10 +1747,10 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss
             if ob['type'] == 'bullish':
-                # Use fixed percentage stop for consistent R/R
-                stop_loss = entry_price * 0.995  # 0.5% stop
+                # Use wider stop for better R/R
+                stop_loss = entry_price * 0.985  # 1.5% stop - WIDER
             else:
-                stop_loss = entry_price * 1.005  # 0.5% stop
+                stop_loss = entry_price * 1.015  # 1.5% stop - WIDER
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1653,9 +1768,9 @@ class ICTEnhancedBacktester:
             target_distance = abs(targets[0] - entry_price)
             risk_reward = target_distance / stop_distance if stop_distance > 0 else 0
 
-            if risk_reward < self.config.get('min_risk_reward', 1.5):
+            if risk_reward < self.config.get('min_risk_reward', 0.8):
                 distance_filtered += 1
-                print(f"   R/R filtered: {risk_reward:.2f} < 1.5")  # Add this debug
+                print(f"   R/R filtered: {risk_reward:.2f} < 0.8")  # Updated debug
                 continue
             
             # Apply category performance multiplier to position sizing
@@ -1759,9 +1874,9 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss (beyond the gap)
             if fvg['type'] == 'bullish':
-                stop_loss = entry_price * 0.995  # 0.5% stop
+                stop_loss = entry_price * 0.985  # 1.5% stop - WIDER
             else:
-                stop_loss = entry_price * 1.005  # 0.5% stop
+                stop_loss = entry_price * 1.015  # 1.5% stop - WIDER
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1778,8 +1893,8 @@ class ICTEnhancedBacktester:
             target_distance = abs(targets[0] - entry_price)
             risk_reward = target_distance / stop_distance if stop_distance > 0 else 0
 
-            if risk_reward < self.config.get('min_risk_reward', 1.5):
-                print(f"   FVG R/R filtered: {risk_reward:.2f} < 1.5")  # Add this debug
+            if risk_reward < self.config.get('min_risk_reward', 0.8):
+                print(f"   FVG R/R filtered: {risk_reward:.2f} < 0.8")  # Updated debug
                 continue
             
             # Apply category performance multiplier to FVG position sizing
@@ -1884,7 +1999,7 @@ class ICTEnhancedBacktester:
             print(f"   ✅ Max FVG Age: {self.config.get('max_fvg_age', 30)} bars")
         if self.config.get('use_breaker_blocks', True):
             print(f"   ✅ Breaker Block Detection: Enabled")
-        print(f"   ✅ Adjusted Targets: 0.8%, 1.2%, 2.0%")
+        print(f"   ✅ Fibonacci Targets: 61.8%, 100%, 161.8%")
         
         print()
         
@@ -2379,11 +2494,11 @@ class ICTEnhancedBacktester:
             
             # Recommendations
             if t1_hit_rate < 60:
-                print(f"  ⚠️  T1 hit rate is low - consider reducing from 0.8% to 0.6%")
+                print(f"  ⚠️  T1 hit rate is low - consider adjusting Fibonacci levels")
             if t2_hit_rate < 10:
-                print(f"  ⚠️  T2 hit rate is very low - consider reducing from 1.2% to 1.0%")
+                print(f"  ⚠️  T2 hit rate is very low - consider adjusting Fibonacci levels")
             if t3_hit_rate < 5:
-                print(f"  ⚠️  T3 hit rate is very low - consider reducing from 2.0% to 1.5%")
+                print(f"  ⚠️  T3 hit rate is very low - consider adjusting Fibonacci levels")
         
         # Overall recommendations
         print(f"\n💡 RISK/REWARD OPTIMIZATION RECOMMENDATIONS:")
@@ -2420,9 +2535,9 @@ def main():
             'stop_multiplier': 0.75,        # Stop distance
             'target_method': 'ict',         # ICT method
             'lookback_months': 3,           # Extended lookback
-            'min_order_block_size': 1.5,    # INCREASED from 1.3
-            'min_volume_ratio': 2.0,        # INCREASED from 1.4
-            'min_quality_score': 65,        # INCREASED from 55
+            'min_order_block_size': 2.0,    # INCREASED from 1.5
+            'min_volume_ratio': 2.5,        # INCREASED from 2.0
+            'min_quality_score': 70,        # INCREASED from 65
             'max_distance_pct': 18.0,       # Keep proven baseline
             'min_confluence_factors': 3,    # Keep proven baseline
             'max_ob_age': 40,              # DECREASED from 50
@@ -2451,15 +2566,15 @@ def main():
     }
     
     print("Select optimization mode:")
-    print("1. Test Phase 9 on 8 tokens (quick)")
-    print("2. Test Phase 9 on all 89 tokens")
-    print("3. Phase 9 with/without indicator confluence")
+    print("1. Test Phase 15 on 8 tokens (quick)")
+    print("2. Test Phase 15 on all 89 tokens")
+    print("3. Phase 15 with/without indicator confluence")
     
     choice = input("\nEnter choice (1-3): ").strip()
     
     if choice == "1":
         # Quick test with 8 tokens
-        print("\n🚀 TESTING PHASE 9 DYNAMIC CATEGORY MANAGEMENT ON 8 TOKENS")
+        print("\n🚀 TESTING PHASE 15 OPTIMIZED FIBONACCI TARGETS ON 8 TOKENS")
         print("=" * 70)
         
         test_symbols = [
@@ -2484,7 +2599,7 @@ def main():
             
             t1_hit_rate = len([t for t in results if t['hit_target'] == 1]) / total_trades * 100
             
-            print(f"\n🎯 PHASE 9 DYNAMIC CATEGORY MANAGEMENT QUICK TEST RESULTS:")
+            print(f"\n🎯 PHASE 15 OPTIMIZED FIBONACCI TARGETS QUICK TEST RESULTS:")
             print(f"=" * 50)
             print(f"📊 Total Trades: {total_trades}")
             print(f"🏆 Win Rate: {win_rate:.1f}%")
@@ -2505,7 +2620,7 @@ def main():
                 
     elif choice == "2":
         # Full 89-token test
-        print("\n🚀 TESTING PHASE 9 DYNAMIC CATEGORY MANAGEMENT ON ALL 89 TOKENS")
+        print("\n🚀 TESTING PHASE 15 OPTIMIZED FIBONACCI TARGETS ON ALL 89 TOKENS")
         print("=" * 70)
         
         backtester = ICTEnhancedBacktester(config=phase9_config['config'])
@@ -2538,8 +2653,8 @@ def main():
             print(f"📊 Total Trades Found: {total_trades}")
             print(f"🏆 Win Rate: {win_rate:.1f}%")
             print(f"💰 Total Return: {total_return:.1f}%")
-            print(f"🎯 T1 Hit Rate: {t1_hit_rate:.1f}% (0.8% target)")
-            print(f"🎯 T2 Hit Rate: {t2_hit_rate:.1f}% (1.2% target)")
+            print(f"🎯 T1 Hit Rate: {t1_hit_rate:.1f}% (Fibonacci/S/R/ATR target)")
+            print(f"🎯 T2 Hit Rate: {t2_hit_rate:.1f}% (Fibonacci/S/R/ATR target)")
             print(f"🛡️ Stop Hit Rate: {stop_hits/total_trades*100:.1f}%")
             
             print(f"\n📊 PERFORMANCE BY SETUP TYPE:")

@@ -40,8 +40,8 @@ class ICTEnhancedBacktester:
             'stop_multiplier': 0.75,   # Stop distance
             'target_method': 'ict',    # ICT method
             'lookback_months': 3,      # Extended lookback
-            'min_order_block_size': 1.5,   # INCREASED from 1.3
-            'min_volume_ratio': 2.0,       # INCREASED from 1.4
+            'min_order_block_size': 2.0,   # INCREASED from 1.3
+            'min_volume_ratio': 2.5,       # INCREASED from 2.0
             'min_quality_score': 65,       # INCREASED from 55
             'max_distance_pct': 18.0,      # Keep Phase 5 baseline
             'min_confluence_factors': 3,   # Keep Phase 5 baseline
@@ -66,7 +66,7 @@ class ICTEnhancedBacktester:
             'require_fvg_volume': True,      # NEW
             'min_indicator_confluence': 3,   # INCREASED from 2
             'use_atr_targets': True,         # NEW
-            'min_risk_reward': 0.3,         # CHANGED from 0.5 to 0.3 temporarily
+            'min_risk_reward': 0.8,         # CHANGED from 0.3 to 0.8 for better R/R
             # PHASE 7 ADDITIONS:
             'use_dynamic_targets': True,     # Enable dynamic target calculation
             'target_optimization_enabled': True,  # Enable target optimization analysis
@@ -573,18 +573,18 @@ class ICTEnhancedBacktester:
         # Original percentage fallback
         if direction == 'BULLISH':
             targets = [
-                entry_price * 1.008,  # 0.8%
-                entry_price * 1.015,  # 1.5%
-                entry_price * 1.025   # 2.5%
+                entry_price * 1.006,  # 0.6% - REDUCED from 0.8%
+                entry_price * 1.009,  # 0.9% - REDUCED from 1.5%
+                entry_price * 1.015   # 1.5% - REDUCED from 2.5%
             ]
-            target_reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+            target_reasons = ["T1: +0.6%", "T2: +0.9%", "T3: +1.5%"]
         else:
             targets = [
-                entry_price * 0.992,
-                entry_price * 0.985,
-                entry_price * 0.975
+                entry_price * 0.994,  # -0.6%
+                entry_price * 0.991,  # -0.9%
+                entry_price * 0.985   # -1.5%
             ]
-            target_reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
+            target_reasons = ["T1: -0.6%", "T2: -0.9%", "T3: -1.5%"]
         
         return targets[:3], target_reasons[:3]
 
@@ -1632,10 +1632,10 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss
             if ob['type'] == 'bullish':
-                # Use fixed percentage stop for consistent R/R
-                stop_loss = entry_price * 0.995  # 0.5% stop
+                # Use wider stop for better R/R
+                stop_loss = entry_price * 0.985  # 1.5% stop - WIDER
             else:
-                stop_loss = entry_price * 1.005  # 0.5% stop
+                stop_loss = entry_price * 1.015  # 1.5% stop - WIDER
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1759,9 +1759,9 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss (beyond the gap)
             if fvg['type'] == 'bullish':
-                stop_loss = entry_price * 0.995  # 0.5% stop
+                stop_loss = entry_price * 0.985  # 1.5% stop - WIDER
             else:
-                stop_loss = entry_price * 1.005  # 0.5% stop
+                stop_loss = entry_price * 1.015  # 1.5% stop - WIDER
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -2420,9 +2420,9 @@ def main():
             'stop_multiplier': 0.75,        # Stop distance
             'target_method': 'ict',         # ICT method
             'lookback_months': 3,           # Extended lookback
-            'min_order_block_size': 1.5,    # INCREASED from 1.3
-            'min_volume_ratio': 2.0,        # INCREASED from 1.4
-            'min_quality_score': 65,        # INCREASED from 55
+            'min_order_block_size': 2.0,    # INCREASED from 1.5
+            'min_volume_ratio': 2.5,        # INCREASED from 2.0
+            'min_quality_score': 70,        # INCREASED from 65
             'max_distance_pct': 18.0,       # Keep proven baseline
             'min_confluence_factors': 3,    # Keep proven baseline
             'max_ob_age': 40,              # DECREASED from 50
@@ -2451,15 +2451,15 @@ def main():
     }
     
     print("Select optimization mode:")
-    print("1. Test Phase 9 on 8 tokens (quick)")
-    print("2. Test Phase 9 on all 89 tokens")
-    print("3. Phase 9 with/without indicator confluence")
+    print("1. Test Phase 10 on 8 tokens (quick)")
+    print("2. Test Phase 10 on all 89 tokens")
+    print("3. Phase 10 with/without indicator confluence")
     
     choice = input("\nEnter choice (1-3): ").strip()
     
     if choice == "1":
         # Quick test with 8 tokens
-        print("\n🚀 TESTING PHASE 9 DYNAMIC CATEGORY MANAGEMENT ON 8 TOKENS")
+        print("\n🚀 TESTING PHASE 10 ULTRA-OPTIMIZED PARAMETERS ON 8 TOKENS")
         print("=" * 70)
         
         test_symbols = [
@@ -2484,7 +2484,7 @@ def main():
             
             t1_hit_rate = len([t for t in results if t['hit_target'] == 1]) / total_trades * 100
             
-            print(f"\n🎯 PHASE 9 DYNAMIC CATEGORY MANAGEMENT QUICK TEST RESULTS:")
+            print(f"\n🎯 PHASE 10 ULTRA-OPTIMIZED PARAMETERS QUICK TEST RESULTS:")
             print(f"=" * 50)
             print(f"📊 Total Trades: {total_trades}")
             print(f"🏆 Win Rate: {win_rate:.1f}%")
@@ -2505,7 +2505,7 @@ def main():
                 
     elif choice == "2":
         # Full 89-token test
-        print("\n🚀 TESTING PHASE 9 DYNAMIC CATEGORY MANAGEMENT ON ALL 89 TOKENS")
+        print("\n🚀 TESTING PHASE 10 ULTRA-OPTIMIZED PARAMETERS ON ALL 89 TOKENS")
         print("=" * 70)
         
         backtester = ICTEnhancedBacktester(config=phase9_config['config'])

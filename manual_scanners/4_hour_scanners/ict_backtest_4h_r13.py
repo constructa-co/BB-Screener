@@ -40,8 +40,8 @@ class ICTEnhancedBacktester:
             'stop_multiplier': 0.75,   # Stop distance
             'target_method': 'ict',    # ICT method
             'lookback_months': 3,      # Extended lookback
-            'min_order_block_size': 1.5,   # INCREASED from 1.3
-            'min_volume_ratio': 2.0,       # INCREASED from 1.4
+            'min_order_block_size': 2.0,   # INCREASED from 1.3
+            'min_volume_ratio': 2.5,       # INCREASED from 2.0
             'min_quality_score': 65,       # INCREASED from 55
             'max_distance_pct': 18.0,      # Keep Phase 5 baseline
             'min_confluence_factors': 3,   # Keep Phase 5 baseline
@@ -66,7 +66,7 @@ class ICTEnhancedBacktester:
             'require_fvg_volume': True,      # NEW
             'min_indicator_confluence': 3,   # INCREASED from 2
             'use_atr_targets': True,         # NEW
-            'min_risk_reward': 0.3,         # CHANGED from 0.5 to 0.3 temporarily
+            'min_risk_reward': 0.8,         # CHANGED from 0.3 to 0.8 for better R/R
             # PHASE 7 ADDITIONS:
             'use_dynamic_targets': True,     # Enable dynamic target calculation
             'target_optimization_enabled': True,  # Enable target optimization analysis
@@ -560,31 +560,51 @@ class ICTEnhancedBacktester:
     def calculate_ict_targets(self, df, entry_price, direction, setup_type='order_block'):
         """PHASE 8: Smart target calculation using multiple methods"""
         
-        # Try swing-based targets first
-        targets, reasons = self.calculate_swing_based_targets(df, entry_price, direction)
+        # Try swing-based targets first (DISABLED for R13)
+        # targets, reasons = self.calculate_swing_based_targets(df, entry_price, direction)
+        # 
+        # if targets:
+        #     return targets[:3], reasons[:3]
         
-        if targets:
-            return targets[:3], reasons[:3]
+        # Use ATR-based targets as secondary method (DISABLED for R12)
+        # if self.config.get('use_atr_targets', True):
+        #     return self.calculate_atr_based_targets(df, entry_price, direction)
         
-        # Use ATR-based targets as secondary method
-        if self.config.get('use_atr_targets', True):
-            return self.calculate_atr_based_targets(df, entry_price, direction)
-        
-        # Original percentage fallback
+        # Dynamic target scaling based on setup type and category performance
         if direction == 'BULLISH':
-            targets = [
-                entry_price * 1.008,  # 0.8%
-                entry_price * 1.015,  # 1.5%
-                entry_price * 1.025   # 2.5%
-            ]
-            target_reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+            if setup_type == 'order_block':
+                # Order Block trades: avg 8.15% → OPTIMIZED for R13
+                targets = [
+                    entry_price * 1.050,  # 5.0% - Dynamic OB T1 (optimized)
+                    entry_price * 1.080,  # 8.0% - Dynamic OB T2 (90th percentile)
+                    entry_price * 1.120   # 12.0% - Dynamic OB T3 (95th percentile)
+                ]
+                target_reasons = ["T1: +5.0% (OB)", "T2: +8.0% (OB)", "T3: +12.0% (OB)"]
+            else:
+                # FVG trades: avg 4.74% → OPTIMIZED for R13
+                targets = [
+                    entry_price * 1.040,  # 4.0% - Dynamic FVG T1 (optimized)
+                    entry_price * 1.065,  # 6.5% - Dynamic FVG T2 (90th percentile)
+                    entry_price * 1.090   # 9.0% - Dynamic FVG T3 (95th percentile)
+                ]
+                target_reasons = ["T1: +4.0% (FVG)", "T2: +6.5% (FVG)", "T3: +9.0% (FVG)"]
         else:
-            targets = [
-                entry_price * 0.992,
-                entry_price * 0.985,
-                entry_price * 0.975
-            ]
-            target_reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
+            if setup_type == 'order_block':
+                # Order Block trades: OPTIMIZED for R13
+                targets = [
+                    entry_price * 0.950,  # -5.0% - Dynamic OB T1 (optimized)
+                    entry_price * 0.920,  # -8.0% - Dynamic OB T2 (90th percentile)
+                    entry_price * 0.880   # -12.0% - Dynamic OB T3 (95th percentile)
+                ]
+                target_reasons = ["T1: -5.0% (OB)", "T2: -8.0% (OB)", "T3: -12.0% (OB)"]
+            else:
+                # FVG trades: OPTIMIZED for R13
+                targets = [
+                    entry_price * 0.960,  # -4.0% - Dynamic FVG T1 (optimized)
+                    entry_price * 0.935,  # -6.5% - Dynamic FVG T2 (90th percentile)
+                    entry_price * 0.910   # -9.0% - Dynamic FVG T3 (95th percentile)
+                ]
+                target_reasons = ["T1: -4.0% (FVG)", "T2: -6.5% (FVG)", "T3: -9.0% (FVG)"]
         
         return targets[:3], target_reasons[:3]
 
@@ -1632,10 +1652,10 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss
             if ob['type'] == 'bullish':
-                # Use fixed percentage stop for consistent R/R
-                stop_loss = entry_price * 0.995  # 0.5% stop
+                # Use wider stop for better R/R
+                stop_loss = entry_price * 0.985  # 1.5% stop - WIDER
             else:
-                stop_loss = entry_price * 1.005  # 0.5% stop
+                stop_loss = entry_price * 1.015  # 1.5% stop - WIDER
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1653,9 +1673,9 @@ class ICTEnhancedBacktester:
             target_distance = abs(targets[0] - entry_price)
             risk_reward = target_distance / stop_distance if stop_distance > 0 else 0
 
-            if risk_reward < self.config.get('min_risk_reward', 1.5):
+            if risk_reward < self.config.get('min_risk_reward', 0.8):
                 distance_filtered += 1
-                print(f"   R/R filtered: {risk_reward:.2f} < 1.5")  # Add this debug
+                print(f"   R/R filtered: {risk_reward:.2f} < 0.8")  # Updated debug
                 continue
             
             # Apply category performance multiplier to position sizing
@@ -1759,9 +1779,9 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss (beyond the gap)
             if fvg['type'] == 'bullish':
-                stop_loss = entry_price * 0.995  # 0.5% stop
+                stop_loss = entry_price * 0.985  # 1.5% stop - WIDER
             else:
-                stop_loss = entry_price * 1.005  # 0.5% stop
+                stop_loss = entry_price * 1.015  # 1.5% stop - WIDER
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1778,8 +1798,8 @@ class ICTEnhancedBacktester:
             target_distance = abs(targets[0] - entry_price)
             risk_reward = target_distance / stop_distance if stop_distance > 0 else 0
 
-            if risk_reward < self.config.get('min_risk_reward', 1.5):
-                print(f"   FVG R/R filtered: {risk_reward:.2f} < 1.5")  # Add this debug
+            if risk_reward < self.config.get('min_risk_reward', 0.8):
+                print(f"   FVG R/R filtered: {risk_reward:.2f} < 0.8")  # Updated debug
                 continue
             
             # Apply category performance multiplier to FVG position sizing
@@ -2420,9 +2440,9 @@ def main():
             'stop_multiplier': 0.75,        # Stop distance
             'target_method': 'ict',         # ICT method
             'lookback_months': 3,           # Extended lookback
-            'min_order_block_size': 1.5,    # INCREASED from 1.3
-            'min_volume_ratio': 2.0,        # INCREASED from 1.4
-            'min_quality_score': 65,        # INCREASED from 55
+            'min_order_block_size': 2.0,    # INCREASED from 1.5
+            'min_volume_ratio': 2.5,        # INCREASED from 2.0
+            'min_quality_score': 70,        # INCREASED from 65
             'max_distance_pct': 18.0,       # Keep proven baseline
             'min_confluence_factors': 3,    # Keep proven baseline
             'max_ob_age': 40,              # DECREASED from 50
@@ -2451,15 +2471,15 @@ def main():
     }
     
     print("Select optimization mode:")
-    print("1. Test Phase 9 on 8 tokens (quick)")
-    print("2. Test Phase 9 on all 89 tokens")
-    print("3. Phase 9 with/without indicator confluence")
+    print("1. Test Phase 13 on 8 tokens (quick)")
+    print("2. Test Phase 13 on all 89 tokens")
+    print("3. Phase 13 with/without indicator confluence")
     
     choice = input("\nEnter choice (1-3): ").strip()
     
     if choice == "1":
         # Quick test with 8 tokens
-        print("\n🚀 TESTING PHASE 9 DYNAMIC CATEGORY MANAGEMENT ON 8 TOKENS")
+        print("\n🚀 TESTING PHASE 13 OPTIMIZED TARGET SCALING ON 8 TOKENS")
         print("=" * 70)
         
         test_symbols = [
@@ -2484,7 +2504,7 @@ def main():
             
             t1_hit_rate = len([t for t in results if t['hit_target'] == 1]) / total_trades * 100
             
-            print(f"\n🎯 PHASE 9 DYNAMIC CATEGORY MANAGEMENT QUICK TEST RESULTS:")
+            print(f"\n🎯 PHASE 13 OPTIMIZED TARGET SCALING QUICK TEST RESULTS:")
             print(f"=" * 50)
             print(f"📊 Total Trades: {total_trades}")
             print(f"🏆 Win Rate: {win_rate:.1f}%")
@@ -2505,7 +2525,7 @@ def main():
                 
     elif choice == "2":
         # Full 89-token test
-        print("\n🚀 TESTING PHASE 9 DYNAMIC CATEGORY MANAGEMENT ON ALL 89 TOKENS")
+        print("\n🚀 TESTING PHASE 13 OPTIMIZED TARGET SCALING ON ALL 89 TOKENS")
         print("=" * 70)
         
         backtester = ICTEnhancedBacktester(config=phase9_config['config'])
