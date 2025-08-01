@@ -234,7 +234,7 @@ class ElliottWaveScanner:
             return 50
 
     def identify_current_elliott_structure(self, pivots, df):
-        """Identify current Elliott Wave structure - IDENTICAL to 4H"""
+        """Identify current Elliott Wave structure - FOCUS ON ACTIVE STRUCTURES"""
         if len(pivots) < 3:
             return None
         
@@ -307,7 +307,7 @@ class ElliottWaveScanner:
                     wave2_end = pivot
                     wave1_size = potential_waves[0]['size']
                     wave2_retrace = (wave1_end['price'] - wave2_end['price']) / (wave1_end['price'] - wave_start['price']) * 100
-                    if 5 <= wave2_retrace <= 99:  # SURGICAL CHANGE: Ultra-wide range for 1H
+                    if 20 <= wave2_retrace <= 80:  # TIGHTENED for bearish patterns
                         potential_waves.append({
                             'wave': 2,
                             'start': wave1_end,
@@ -321,7 +321,7 @@ class ElliottWaveScanner:
                     wave1_price_size = wave1_end['price'] - wave_start['price']
                     wave3_vs_wave1 = (wave3_end['price'] - wave2_end['price']) / wave1_price_size
                     
-                    if wave3_size >= self.min_wave_size and wave3_vs_wave1 >= 0.2:  # SURGICAL CHANGE: 0.2 vs 0.6 (ultra-lenient)
+                    if wave3_size >= self.min_wave_size and wave3_vs_wave1 >= 0.8:  # TIGHTENED: 0.8 vs 0.2
                         potential_waves.append({
                             'wave': 3,
                             'start': wave2_end,
@@ -335,14 +335,30 @@ class ElliottWaveScanner:
                     wave3_size_price = wave3_end['price'] - wave2_end['price']
                     wave4_retrace = (wave3_end['price'] - wave4_end['price']) / wave3_size_price * 100
                     
-                    if 5 <= wave4_retrace <= 95 and wave4_end['price'] > wave1_end['price'] * 0.70:  # SURGICAL CHANGE: Ultra-lenient for 1H
+                    if 25 <= wave4_retrace <= 70 and wave4_end['price'] > wave1_end['price'] * 0.90:  # TIGHTENED ranges
                         potential_waves.append({
                             'wave': 4,
                             'start': wave3_end,
                             'end': wave4_end,
                             'retrace': wave4_retrace
                         })
-                        break  # We have enough for analysis
+                
+                elif len(potential_waves) == 4 and pivot['type'] == 'peak':  # Potential Wave 5
+                    wave5_end = pivot
+                    wave4_size_price = wave4_end['price'] - wave3_end['price']
+                    wave5_size = (wave5_end['price'] - wave4_end['price']) / wave4_end['price'] * 100
+                    wave1_price_size = wave1_end['price'] - wave_start['price']
+                    wave5_vs_wave1 = (wave5_end['price'] - wave4_end['price']) / wave1_price_size
+                    
+                    if wave5_size >= self.min_wave_size and wave5_vs_wave1 >= 0.5:  # Wave 5 should be significant
+                        potential_waves.append({
+                            'wave': 5,
+                            'start': wave4_end,
+                            'end': wave5_end,
+                            'size': wave5_size,
+                            'vs_wave1': wave5_vs_wave1
+                        })
+                        break  # Complete 5-wave cycle
             
             # Determine current position and calculate targets
             if len(potential_waves) >= 3:
@@ -350,6 +366,14 @@ class ElliottWaveScanner:
                 targets = self.calculate_bullish_targets(potential_waves, current_price)
                 
                 quality_score = self.calculate_quality_score_bullish(potential_waves)
+                
+                # CRITICAL: Filter out broken structures and completed cycles
+                if current_wave == 'BROKEN_STRUCTURE':
+                    return None
+                
+                # CRITICAL: Filter out post-Wave 5 corrections (cycle completed)
+                if current_wave == 'POST_WAVE_5_CORRECTION':
+                    return None
                 
                 if quality_score >= self.min_quality_score:
                     return {
@@ -429,6 +453,14 @@ class ElliottWaveScanner:
                 
                 quality_score = self.calculate_quality_score_bearish(potential_waves)
                 
+                # CRITICAL: Filter out broken structures and completed cycles
+                if current_wave == 'BROKEN_STRUCTURE':
+                    return None
+                
+                # CRITICAL: Filter out post-Wave 5 corrections (cycle completed)
+                if current_wave == 'POST_WAVE_5_CORRECTION':
+                    return None
+                
                 if quality_score >= self.min_quality_score:
                     return {
                         'type': 'BEARISH_IMPULSE',
@@ -448,94 +480,152 @@ class ElliottWaveScanner:
             return None
 
     def determine_current_position_bullish(self, waves, current_price):
-        """Determine current wave position in bullish structure - IDENTICAL to 4H"""
+        """Determine current wave position in bullish structure - CORRECTED WAVE POSITION LOGIC"""
         try:
+            # CORRECTED: Track wave completion sequence + current price context
+            
             if len(waves) >= 4:
-                wave4_end = waves[3]['end']['price']
-                wave3_end = waves[2]['end']['price']
-                if current_price > wave4_end:
+                # We have completed Waves 1,2,3,4 - check for Wave 5
+                wave4_completion_price = waves[3]['end']['price']
+                wave3_peak_price = waves[2]['end']['price']
+                
+                # If current price > Wave 4 completion, we're in Wave 5
+                if current_price > wave4_completion_price:
                     return 'WAVE_5'
-                elif current_price > wave3_end:
+                # If current price is between Wave 4 and Wave 3, still correcting in Wave 4
+                elif wave4_completion_price < current_price <= wave3_peak_price:
                     return 'WAVE_4'
+                # If below Wave 4 completion, this is a BROKEN structure (not Wave 4 extension)
                 else:
-                    return 'WAVE_3'
+                    return 'BROKEN_STRUCTURE'
+            
+            elif len(waves) >= 5:
+                # We have completed Waves 1,2,3,4,5 - check if we're in post-Wave 5 correction
+                wave5_completion_price = waves[4]['end']['price']
+                wave4_completion_price = waves[3]['end']['price']
+                
+                # If current price is below Wave 5 completion, we're in post-Wave 5 correction
+                if current_price < wave5_completion_price:
+                    return 'POST_WAVE_5_CORRECTION'
+                # If current price is at/near Wave 5 completion, still in Wave 5
+                elif current_price >= wave5_completion_price * 0.98:
+                    return 'WAVE_5_ENDING'
+                # If above Wave 5 completion, new cycle starting
+                else:
+                    return 'NEW_CYCLE_STARTING'
+            
             elif len(waves) >= 3:
-                wave3_end = waves[2]['end']['price']
-                wave2_end = waves[1]['end']['price']
-                if current_price > wave3_end:
-                    return 'WAVE_4_OR_5'
-                elif current_price > wave2_end:
-                    return 'WAVE_3'
+                # We have completed Waves 1,2,3 - looking for Wave 4 or 5
+                wave3_completion_price = waves[2]['end']['price'] 
+                wave2_completion_price = waves[1]['end']['price']
+                
+                # If above Wave 3 completion, either Wave 5 or new cycle
+                if current_price > wave3_completion_price:
+                    return 'WAVE_5_OR_NEW_CYCLE'
+                # If between Wave 2 and Wave 3 completions, in Wave 4 correction
+                elif wave2_completion_price < current_price <= wave3_completion_price:
+                    return 'WAVE_4'
+                # If at/below Wave 2 level, deep Wave 4 or broken structure
                 else:
+                    return 'DEEP_WAVE_4_OR_BROKEN'
+            
+            elif len(waves) >= 2:
+                # We have completed Waves 1,2 - looking for Wave 3
+                wave2_completion_price = waves[1]['end']['price']
+                wave1_completion_price = waves[0]['end']['price']
+                
+                # If above Wave 2 completion, likely in Wave 3
+                if current_price > wave2_completion_price:
+                    return 'WAVE_3'
+                # If between Wave 1 and Wave 2, still in Wave 2 correction
+                elif wave1_completion_price < current_price <= wave2_completion_price:
                     return 'WAVE_2'
+                # If below Wave 1 completion, broken structure
+                else:
+                    return 'BROKEN_STRUCTURE'
             else:
                 return 'EARLY_STRUCTURE'
         except:
             return 'UNKNOWN'
 
     def determine_current_position_bearish(self, waves, current_price):
-        """Determine current wave position in bearish structure - IDENTICAL to 4H"""
+        """Determine current wave position in bearish structure - CORRECTED WAVE POSITION LOGIC"""
         try:
+            # CORRECTED: Track wave completion sequence for bearish patterns
+            
             if len(waves) >= 4:
-                wave4_end = waves[3]['end']['price']
-                wave3_end = waves[2]['end']['price']
-                wave2_end = waves[1]['end']['price']
-                wave1_end = waves[0]['end']['price']
+                # We have completed Waves 1,2,3,4 - check for Wave 5
+                wave4_completion_price = waves[3]['end']['price']
+                wave3_low_price = waves[2]['end']['price']
                 
-                # For bearish: lower prices = further in pattern
-                if current_price < wave4_end:
+                # For bearish: if current price < Wave 4 completion, we're in Wave 5 down
+                if current_price < wave4_completion_price:
                     return 'WAVE_5'
-                elif current_price < wave3_end:
-                    return 'WAVE_4_OR_5'
-                elif current_price < wave2_end:
-                    return 'WAVE_3'
-                elif current_price < wave1_end:
-                    return 'WAVE_2'
+                # If current price is between Wave 4 and Wave 3, still bouncing in Wave 4
+                elif wave4_completion_price < current_price <= wave3_low_price:
+                    return 'WAVE_4'
+                # If above Wave 3 low, this is a BROKEN structure (not strong Wave 4)
                 else:
-                    return 'EARLY_STRUCTURE'
-                    
+                    return 'BROKEN_STRUCTURE'
+            
             elif len(waves) >= 3:
-                wave3_end = waves[2]['end']['price']
-                wave2_end = waves[1]['end']['price']
-                wave1_end = waves[0]['end']['price']
+                # We have completed Waves 1,2,3 - looking for Wave 4 or 5
+                wave3_completion_price = waves[2]['end']['price']
+                wave2_completion_price = waves[1]['end']['price']
                 
-                if current_price < wave3_end:
-                    return 'WAVE_4_OR_5'
-                elif current_price < wave2_end:
-                    return 'WAVE_3'
-                elif current_price < wave1_end:
-                    return 'WAVE_2'
+                # If below Wave 3 completion, likely Wave 5 or extension
+                if current_price < wave3_completion_price:
+                    return 'WAVE_5_OR_EXTENSION'
+                # If between Wave 2 and Wave 3 completions, in Wave 4 bounce
+                elif wave2_completion_price < current_price <= wave3_completion_price:
+                    return 'WAVE_4'
+                # If above Wave 2 level, strong Wave 4 bounce
                 else:
-                    return 'CORRECTIVE_BOUNCE'
-                    
+                    return 'STRONG_WAVE_4'
+            
             elif len(waves) >= 2:
-                wave2_end = waves[1]['end']['price']
-                wave1_end = waves[0]['end']['price']
+                # We have completed Waves 1,2 - looking for Wave 3
+                wave2_completion_price = waves[1]['end']['price']
+                wave1_completion_price = waves[0]['end']['price']
                 
-                if current_price < wave2_end:
+                # If below Wave 2 completion, likely in Wave 3 down
+                if current_price < wave2_completion_price:
                     return 'WAVE_3'
-                elif current_price < wave1_end:
+                # If between Wave 1 and Wave 2, still in Wave 2 bounce
+                elif wave1_completion_price < current_price <= wave2_completion_price:
                     return 'WAVE_2'
+                # If above Wave 1 completion, broken structure
                 else:
-                    return 'CORRECTIVE_BOUNCE'
+                    return 'BROKEN_STRUCTURE'
             else:
-                return 'WAVE_1_OR_2'
+                return 'EARLY_STRUCTURE'
         except:
             return 'UNKNOWN'
 
     def calculate_bullish_targets(self, waves, current_price):
-        """Calculate realistic bullish Elliott Wave targets - IDENTICAL to 4H"""
+        """Calculate realistic bullish Elliott Wave targets - CORRECTED TARGET LOGIC"""
         try:
             if len(waves) >= 4:
                 # We have Wave 4, calculate Wave 5 targets
                 wave1_size = waves[0]['end']['price'] - waves[0]['start']['price']
                 wave4_end = waves[3]['end']['price']
                 
+                # Calculate theoretical Elliott targets
                 target1 = wave4_end + (wave1_size * 0.618)  # 61.8% projection
                 target2 = wave4_end + wave1_size            # 100% projection
                 target3 = wave4_end + (wave1_size * 1.618)  # 161.8% projection
                 
-                return [target1, target2, target3]
+                # CRITICAL: Ensure all targets are above current price
+                adjusted_targets = []
+                for target in [target1, target2, target3]:
+                    if target <= current_price:
+                        # If theoretical target is below current price, adjust upward
+                        adjusted_target = current_price * (1.02 + (len(adjusted_targets) * 0.03))
+                        adjusted_targets.append(adjusted_target)
+                    else:
+                        adjusted_targets.append(target)
+                
+                return adjusted_targets
             
             elif len(waves) >= 3:
                 # Estimate based on Wave 3 completion
@@ -546,107 +636,169 @@ class ElliottWaveScanner:
                 wave3_size = waves[2]['end']['price'] - waves[2]['start']['price']
                 estimated_wave4_end = wave3_end - (wave3_size * 0.38)
                 
+                # Calculate theoretical targets
                 target1 = estimated_wave4_end + (wave1_size * 0.618)
                 target2 = estimated_wave4_end + wave1_size
                 target3 = estimated_wave4_end + (wave1_size * 1.618)
                 
-                return [target1, target2, target3]
+                # CRITICAL: Ensure all targets are above current price
+                adjusted_targets = []
+                for target in [target1, target2, target3]:
+                    if target <= current_price:
+                        # If theoretical target is below current price, adjust upward
+                        adjusted_target = current_price * (1.02 + (len(adjusted_targets) * 0.03))
+                        adjusted_targets.append(adjusted_target)
+                    else:
+                        adjusted_targets.append(target)
+                
+                return adjusted_targets
             
-            return [current_price * 1.02, current_price * 1.05, current_price * 1.08]  # SURGICAL CHANGE: Smaller targets for 1H
+            # Default targets for early structures - ensure they're above current price
+            return [current_price * 1.02, current_price * 1.05, current_price * 1.08]
             
         except:
+            # Fallback: ensure targets are always above current price
             return [current_price * 1.02, current_price * 1.05, current_price * 1.08]
 
     def calculate_bearish_targets(self, waves, current_price):
-        """Calculate realistic bearish Elliott Wave targets - IDENTICAL to 4H"""
+        """Calculate realistic bearish Elliott Wave targets - CORRECTED TARGET LOGIC"""
         try:
-            # Use simple, realistic percentage-based targets for 1H
-            target1 = current_price * 0.95  # 5% decline (1H adapted)
-            target2 = current_price * 0.90  # 10% decline  
-            target3 = current_price * 0.85  # 15% decline
+            if len(waves) >= 4:
+                # We have Wave 4, calculate Wave 5 downside targets
+                wave1_size = waves[0]['start']['price'] - waves[0]['end']['price']
+                wave4_end = waves[3]['end']['price']
+                
+                # Calculate theoretical Elliott downside targets
+                target1 = wave4_end - (wave1_size * 0.618)  # 61.8% projection
+                target2 = wave4_end - wave1_size            # 100% projection
+                target3 = wave4_end - (wave1_size * 1.618)  # 161.8% projection
+                
+                # CRITICAL: Ensure all targets are below current price
+                adjusted_targets = []
+                for target in [target1, target2, target3]:
+                    if target >= current_price:
+                        # If theoretical target is above current price, adjust downward
+                        adjusted_target = current_price * (0.95 - (len(adjusted_targets) * 0.05))
+                        adjusted_targets.append(adjusted_target)
+                    else:
+                        adjusted_targets.append(target)
+                
+                return adjusted_targets
             
-            return [target1, target2, target3]
+            elif len(waves) >= 3:
+                # Estimate based on Wave 3 completion
+                wave3_end = waves[2]['end']['price']
+                wave1_size = waves[0]['start']['price'] - waves[0]['end']['price']
+                
+                # Estimate Wave 4 bounce (typically 38% of Wave 3)
+                wave3_size = waves[2]['start']['price'] - waves[2]['end']['price']
+                estimated_wave4_end = wave3_end + (wave3_size * 0.38)
+                
+                # Calculate theoretical targets
+                target1 = estimated_wave4_end - (wave1_size * 0.618)
+                target2 = estimated_wave4_end - wave1_size
+                target3 = estimated_wave4_end - (wave1_size * 1.618)
+                
+                # CRITICAL: Ensure all targets are below current price
+                adjusted_targets = []
+                for target in [target1, target2, target3]:
+                    if target >= current_price:
+                        # If theoretical target is above current price, adjust downward
+                        adjusted_target = current_price * (0.95 - (len(adjusted_targets) * 0.05))
+                        adjusted_targets.append(adjusted_target)
+                    else:
+                        adjusted_targets.append(target)
+                
+                return adjusted_targets
+            
+            # Default targets for early structures - ensure they're below current price
+            return [current_price * 0.95, current_price * 0.90, current_price * 0.85]
             
         except:
+            # Fallback: ensure targets are always below current price
             return [current_price * 0.95, current_price * 0.90, current_price * 0.85]
 
     def calculate_quality_score_bullish(self, waves):
-        """Calculate quality score for bullish pattern - TIGHTENED for better quality"""
-        score = 30  # Base score for 1H
+        """Calculate quality score - MUCH MORE STRICT for quality patterns"""
+        score = 20  # Lower base score
         
         try:
             if len(waves) >= 2:
-                # Wave 2 retracement quality (tightened)
+                # Wave 2 retracement (very strict)
                 wave2_retrace = waves[1]['retrace']
-                if 25 <= wave2_retrace <= 70:  # TIGHTER range for quality
-                    score += 25
-                elif 15 <= wave2_retrace <= 85:  # Backup range
-                    score += 15
+                if 30 <= wave2_retrace <= 65:  # IDEAL range
+                    score += 30
+                elif 20 <= wave2_retrace <= 80:  # Acceptable
+                    score += 20
                 else:
-                    score -= 10  # Penalty for bad retracements
+                    score -= 15  # Heavy penalty for bad retracements
             
             if len(waves) >= 3:
-                # Wave 3 strength (higher requirements)
-                if waves[2]['size'] >= 2:   # 2% minimum for 1H
+                # Wave 3 strength (much stricter)
+                if waves[2]['size'] >= 3:   # 3% minimum for 1H quality
+                    score += 35
+                elif waves[2]['size'] >= 2:  # 2% backup
                     score += 25
-                elif waves[2]['size'] >= 1:  # 1% backup
-                    score += 15
-                else:
-                    score -= 5  # Penalty for weak Wave 3
-                
-                # Wave 3 vs Wave 1 ratio (tightened)
-                if 'vs_wave1' in waves[2]:
-                    ratio = waves[2]['vs_wave1']
-                    if ratio >= 1.2:
-                        score += 25
-                    elif ratio >= 0.8:
-                        score += 15
-                    elif ratio >= 0.4:
-                        score += 5
-                    else:
-                        score -= 10  # Penalty for weak Wave 3
-            
-            if len(waves) >= 4:
-                # Wave 4 retracement quality (tightened)
-                wave4_retrace = waves[3]['retrace']
-                if 20 <= wave4_retrace <= 60:  # TIGHTER range
-                    score += 20
-                elif 10 <= wave4_retrace <= 80:  # Backup
+                elif waves[2]['size'] >= 1:  # 1% minimal
                     score += 10
                 else:
-                    score -= 5  # Penalty for extreme Wave 4
+                    score -= 20  # Heavy penalty for weak Wave 3
+                
+                # Wave 3 vs Wave 1 ratio (strict requirements)
+                if 'vs_wave1' in waves[2]:
+                    ratio = waves[2]['vs_wave1']
+                    if ratio >= 1.618:  # Golden ratio ideal
+                        score += 40
+                    elif ratio >= 1.2:  # Strong Wave 3
+                        score += 30
+                    elif ratio >= 0.8:  # Acceptable
+                        score += 15
+                    else:
+                        score -= 20  # Penalty for weak Wave 3
+            
+            if len(waves) >= 4:
+                # Wave 4 retracement (strict)
+                wave4_retrace = waves[3]['retrace']
+                if 25 <= wave4_retrace <= 50:  # IDEAL range
+                    score += 25
+                elif 20 <= wave4_retrace <= 70:  # Acceptable
+                    score += 15
+                else:
+                    score -= 10  # Penalty for extreme Wave 4
             
         except:
-            pass
+            score -= 10  # Penalty for calculation errors
         
-        return max(score, 0)  # Don't allow negative scores
+        return max(score, 0)
 
     def calculate_quality_score_bearish(self, waves):
-        """Calculate quality score for bearish pattern - TIGHTENED for better quality"""
-        score = 30  # Base score for 1H
+        """Calculate quality score - MUCH MORE STRICT for bearish patterns"""
+        score = 20  # Lower base score
         
         try:
             if len(waves) >= 2:
                 wave2_retrace = waves[1]['retrace']
-                if 25 <= wave2_retrace <= 70:  # TIGHTER range
-                    score += 25
-                elif 15 <= wave2_retrace <= 85:  # Backup
-                    score += 15
+                if 30 <= wave2_retrace <= 65:  # IDEAL range
+                    score += 30
+                elif 20 <= wave2_retrace <= 80:  # Acceptable
+                    score += 20
                 else:
-                    score -= 10  # Penalty for bad retracements
+                    score -= 15  # Heavy penalty
             
             if len(waves) >= 3:
-                if waves[2]['size'] >= 2:   # 2% minimum
+                if waves[2]['size'] >= 3:   # 3% minimum
+                    score += 35
+                elif waves[2]['size'] >= 2:  # 2% backup
                     score += 25
-                elif waves[2]['size'] >= 1:  # 1% backup
-                    score += 15
+                elif waves[2]['size'] >= 1:  # 1% minimal
+                    score += 10
                 else:
-                    score -= 5  # Penalty for weak Wave 3
+                    score -= 20  # Heavy penalty for weak Wave 3
             
         except:
-            pass
+            score -= 10
         
-        return max(score, 0)  # Don't allow negative scores
+        return max(score, 0)
 
     def analyze_symbol(self, symbol):
         """Analyze single symbol for current Elliott Wave structure - IDENTICAL to 4H"""
