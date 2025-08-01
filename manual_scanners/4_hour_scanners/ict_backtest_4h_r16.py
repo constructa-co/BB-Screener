@@ -525,7 +525,14 @@ class ICTEnhancedBacktester:
         swings = self.find_swing_levels(df, window=20)
         
         if len(swings['highs']) < 2 or len(swings['lows']) < 2:
-            return None, None
+            # Fallback to percentage targets
+            if direction == 'BULLISH':
+                targets = [entry_price * 1.008, entry_price * 1.015, entry_price * 1.025]
+                reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+            else:
+                targets = [entry_price * 0.992, entry_price * 0.985, entry_price * 0.975]
+                reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
+            return targets, reasons
         
         if direction == 'BULLISH':
             # Find recent swing low and swing high for bullish trades
@@ -533,7 +540,10 @@ class ICTEnhancedBacktester:
             recent_highs = sorted(swings['highs'][-5:])  # Last 5 swing highs
             
             if len(recent_lows) < 2 or len(recent_highs) < 2:
-                return None, None
+                # Fallback to percentage targets
+                targets = [entry_price * 1.008, entry_price * 1.015, entry_price * 1.025]
+                reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+                return targets, reasons
             
             # Use the most recent swing low and high
             swing_low = recent_lows[-1]  # Most recent swing low
@@ -541,7 +551,10 @@ class ICTEnhancedBacktester:
             
             # Ensure swing low is below entry and swing high is above
             if swing_low >= entry_price or swing_high <= entry_price:
-                return None, None
+                # Fallback to percentage targets
+                targets = [entry_price * 1.008, entry_price * 1.015, entry_price * 1.025]
+                reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+                return targets, reasons
             
                             # Calculate Fibonacci extensions from swing low to swing high (R16: Ultra-conservative levels)
                 range_size = swing_high - swing_low
@@ -556,14 +569,20 @@ class ICTEnhancedBacktester:
             recent_lows = sorted(swings['lows'][-5:], reverse=True)  # Last 5 swing lows
             
             if len(recent_highs) < 2 or len(recent_lows) < 2:
-                return None, None
+                # Fallback to percentage targets
+                targets = [entry_price * 0.992, entry_price * 0.985, entry_price * 0.975]
+                reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
+                return targets, reasons
             
             swing_high = recent_highs[-1]  # Most recent swing high
             swing_low = recent_lows[-1]  # Most recent swing low
             
             # Ensure swing high is above entry and swing low is below
             if swing_high <= entry_price or swing_low >= entry_price:
-                return None, None
+                # Fallback to percentage targets
+                targets = [entry_price * 0.992, entry_price * 0.985, entry_price * 0.975]
+                reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
+                return targets, reasons
             
                             # Calculate Fibonacci extensions from swing high to swing low (R16: Ultra-conservative levels)
                 range_size = swing_high - swing_low
@@ -589,7 +608,14 @@ class ICTEnhancedBacktester:
             if len(supports) >= 3:
                 return sorted(supports, reverse=True)[:3], ["S1", "S2", "S3"]
         
-        return None, None
+        # Fallback to percentage targets
+        if direction == 'BULLISH':
+            targets = [entry_price * 1.008, entry_price * 1.015, entry_price * 1.025]
+            reasons = ["T1: +0.8% (Fallback)", "T2: +1.5% (Fallback)", "T3: +2.5% (Fallback)"]
+        else:
+            targets = [entry_price * 0.992, entry_price * 0.985, entry_price * 0.975]
+            reasons = ["T1: -0.8% (Fallback)", "T2: -1.5% (Fallback)", "T3: -2.5% (Fallback)"]
+        return targets, reasons
 
     def calculate_atr_dynamic_targets(self, df, entry_price, direction, setup_type):
         """Calculate ATR-based targets that adapt to volatility"""
@@ -626,7 +652,13 @@ class ICTEnhancedBacktester:
                 return sorted(supports, reverse=True)[:3], ["Swing Low 1", "Swing Low 2", "Swing Low 3"]
         
         # Fallback to percentage targets
-        return None, None
+        if direction == 'BULLISH':
+            targets = [entry_price * 1.008, entry_price * 1.015, entry_price * 1.025]
+            reasons = ["T1: +0.8% (Fallback)", "T2: +1.5% (Fallback)", "T3: +2.5% (Fallback)"]
+        else:
+            targets = [entry_price * 0.992, entry_price * 0.985, entry_price * 0.975]
+            reasons = ["T1: -0.8% (Fallback)", "T2: -1.5% (Fallback)", "T3: -2.5% (Fallback)"]
+        return targets, reasons
 
     def calculate_atr_based_targets(self, df, entry_price, direction):
         """Calculate targets based on ATR multiples"""
@@ -651,19 +683,28 @@ class ICTEnhancedBacktester:
         """PHASE 14: Fibonacci-based intelligent target calculation"""
         
         # Try Fibonacci-based targets first (NEW for R14)
-        targets, reasons = self.calculate_fibonacci_targets(df, entry_price, direction)
-        if targets:
-            return targets[:3], reasons[:3]
+        try:
+            targets, reasons = self.calculate_fibonacci_targets(df, entry_price, direction)
+            if targets and reasons:
+                return targets[:3], reasons[:3]
+        except:
+            pass
         
         # Try Support/Resistance targets second
-        targets, reasons = self.calculate_support_resistance_targets(df, entry_price, direction)
-        if targets:
-            return targets[:3], reasons[:3]
+        try:
+            targets, reasons = self.calculate_support_resistance_targets(df, entry_price, direction)
+            if targets and reasons:
+                return targets[:3], reasons[:3]
+        except:
+            pass
         
         # Try ATR-based dynamic targets third
-        targets, reasons = self.calculate_atr_dynamic_targets(df, entry_price, direction, setup_type)
-        if targets:
-            return targets[:3], reasons[:3]
+        try:
+            targets, reasons = self.calculate_atr_dynamic_targets(df, entry_price, direction, setup_type)
+            if targets and reasons:
+                return targets[:3], reasons[:3]
+        except:
+            pass
         
         # Fallback to optimized percentage targets (if all else fails)
         if direction == 'BULLISH':
@@ -1327,6 +1368,169 @@ class ICTEnhancedBacktester:
             for category, multiplier in self.category_multipliers.items():
                 print(f"   {category}: {multiplier:.1f}x")
 
+    def analyze_indicator_performance(self):
+        """Analyze which indicators provide better confirmations and win rates"""
+        trades = self.all_trades
+        
+        if not trades:
+            return
+        
+        print(f"\n======================================================================")
+        print(f"📊 INDICATOR PERFORMANCE ANALYSIS")
+        print(f"======================================================================\n")
+        
+        # Group trades by indicator confirmations
+        indicator_stats = {
+            'RSI': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'MFI': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'CMF': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'ADX': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'VWAP': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'Williams_R': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'CCI': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'OBV': {'trades': [], 'win_rate': 0, 'avg_return': 0},
+            'AD': {'trades': [], 'win_rate': 0, 'avg_return': 0}
+        }
+        
+        # Analyze each trade's indicator confirmations
+        for trade in trades:
+            confluence_factors = trade.get('confluence_factors', [])
+            
+            # Handle case where confluence_factors might be an integer
+            if isinstance(confluence_factors, int):
+                continue
+            
+            for factor in confluence_factors:
+                if 'RSI' in factor:
+                    indicator_stats['RSI']['trades'].append(trade)
+                elif 'MFI' in factor:
+                    indicator_stats['MFI']['trades'].append(trade)
+                elif 'CMF' in factor:
+                    indicator_stats['CMF']['trades'].append(trade)
+                elif 'ADX' in factor:
+                    indicator_stats['ADX']['trades'].append(trade)
+                elif 'VWAP' in factor:
+                    indicator_stats['VWAP']['trades'].append(trade)
+                elif 'Williams' in factor:
+                    indicator_stats['Williams_R']['trades'].append(trade)
+                elif 'CCI' in factor:
+                    indicator_stats['CCI']['trades'].append(trade)
+                elif 'OBV' in factor:
+                    indicator_stats['OBV']['trades'].append(trade)
+                elif 'A/D' in factor:
+                    indicator_stats['AD']['trades'].append(trade)
+        
+        # Calculate statistics for each indicator
+        for indicator, stats in indicator_stats.items():
+            if stats['trades']:
+                winning_trades = [t for t in stats['trades'] if t['win']]
+                stats['win_rate'] = len(winning_trades) / len(stats['trades']) * 100
+                stats['avg_return'] = sum(t['pnl_pct'] for t in stats['trades']) / len(stats['trades'])
+        
+        # Sort indicators by win rate
+        sorted_indicators = sorted(indicator_stats.items(), key=lambda x: x[1]['win_rate'], reverse=True)
+        
+        print(f"🎯 INDICATOR WIN RATES (Ranked by Performance):")
+        print(f"{'Indicator':<12} | {'Trades':<8} | {'Win Rate':<10} | {'Avg Return':<12} | {'Best Setup':<12}")
+        print(f"{'-'*12} | {'-'*8} | {'-'*10} | {'-'*12} | {'-'*12}")
+        
+        for indicator, stats in sorted_indicators:
+            if stats['trades']:
+                # Find best setup type for this indicator
+                fvg_trades = [t for t in stats['trades'] if t.get('setup_type') == 'fvg']
+                ob_trades = [t for t in stats['trades'] if t.get('setup_type') == 'order_block']
+                
+                fvg_win_rate = len([t for t in fvg_trades if t['win']]) / len(fvg_trades) * 100 if fvg_trades else 0
+                ob_win_rate = len([t for t in ob_trades if t['win']]) / len(ob_trades) * 100 if ob_trades else 0
+                
+                best_setup = "FVG" if fvg_win_rate > ob_win_rate else "OB" if ob_win_rate > fvg_win_rate else "Equal"
+                
+                print(f"{indicator:<12} | {len(stats['trades']):<8} | {stats['win_rate']:<9.1f}% | {stats['avg_return']:<11.2f}% | {best_setup:<12}")
+        
+        print(f"\n📊 INDICATOR CONFLUENCE ANALYSIS:")
+        
+        # Analyze trades with multiple indicator confirmations
+        confluence_levels = {}
+        for trade in trades:
+            confluence_factors = trade.get('confluence_factors', [])
+            # Handle case where confluence_factors might be an integer
+            if isinstance(confluence_factors, int):
+                confluence_count = 0
+            else:
+                confluence_count = len(confluence_factors)
+            
+            if confluence_count not in confluence_levels:
+                confluence_levels[confluence_count] = []
+            confluence_levels[confluence_count].append(trade)
+        
+        print(f"{'Confluence':<12} | {'Trades':<8} | {'Win Rate':<10} | {'Avg Return':<12}")
+        print(f"{'-'*12} | {'-'*8} | {'-'*10} | {'-'*12}")
+        
+        for level in sorted(confluence_levels.keys()):
+            level_trades = confluence_levels[level]
+            winning_trades = [t for t in level_trades if t['win']]
+            win_rate = len(winning_trades) / len(level_trades) * 100 if level_trades else 0
+            avg_return = sum(t['pnl_pct'] for t in level_trades) / len(level_trades) if level_trades else 0
+            
+            print(f"{level} factors: {len(level_trades):<8} | {win_rate:<9.1f}% | {avg_return:<11.2f}%")
+        
+        print(f"\n💡 TOP PERFORMING INDICATOR COMBINATIONS:")
+        
+        # Find best indicator combinations
+        combination_stats = {}
+        for trade in trades:
+            factors = trade.get('confluence_factors', [])
+            # Handle case where factors might be an integer
+            if isinstance(factors, int):
+                continue
+            if len(factors) >= 2:
+                # Create combinations of 2-3 indicators
+                for i in range(len(factors)):
+                    for j in range(i+1, len(factors)):
+                        combo = f"{factors[i]} + {factors[j]}"
+                        if combo not in combination_stats:
+                            combination_stats[combo] = []
+                        combination_stats[combo].append(trade)
+        
+        # Calculate stats for combinations
+        combo_results = []
+        for combo, combo_trades in combination_stats.items():
+            if len(combo_trades) >= 3:  # Only show combinations with 3+ trades
+                winning_trades = [t for t in combo_trades if t['win']]
+                win_rate = len(winning_trades) / len(combo_trades) * 100
+                avg_return = sum(t['pnl_pct'] for t in combo_trades) / len(combo_trades)
+                combo_results.append((combo, len(combo_trades), win_rate, avg_return))
+        
+        # Sort by win rate
+        combo_results.sort(key=lambda x: x[2], reverse=True)
+        
+        print(f"{'Combination':<35} | {'Trades':<8} | {'Win Rate':<10} | {'Avg Return':<12}")
+        print(f"{'-'*35} | {'-'*8} | {'-'*10} | {'-'*12}")
+        
+        for combo, combo_trades, win_rate, avg_return in combo_results[:10]:  # Top 10
+            print(f"{combo:<35} | {combo_trades:<8} | {win_rate:<9.1f}% | {avg_return:<11.2f}%")
+        
+        print(f"\n🎯 RECOMMENDATIONS:")
+        
+        # Find best performing indicators
+        best_indicators = [ind for ind, stats in sorted_indicators[:3] if stats['trades']]
+        if best_indicators:
+            print(f"✅ Top 3 Indicators: {', '.join(best_indicators)}")
+        
+        # Find optimal confluence level
+        best_confluence = max(confluence_levels.keys(), key=lambda x: 
+            len([t for t in confluence_levels[x] if t['win']]) / len(confluence_levels[x]) * 100 
+            if confluence_levels[x] else 0)
+        
+        print(f"✅ Optimal Confluence Level: {best_confluence} factors")
+        
+        # Find best combination
+        if combo_results:
+            best_combo = combo_results[0]
+            print(f"✅ Best Indicator Combination: {best_combo[0]} ({best_combo[2]:.1f}% win rate)")
+        
+        print(f"\n")
+
     def analyze_enhanced_performance(self):
         """Analyze performance with Phase 7 dynamic target metrics"""
         trades = self.all_trades
@@ -1455,7 +1659,7 @@ class ICTEnhancedBacktester:
             print(f"Quality Score: {best_trade['quality_score']}")
         
         print(f"\n🔧 PHASE 6 FEATURES:")
-        print(f"✅ Fix 1: Fibonacci-based targets (61.8%, 100%, 161.8%)")
+        print(f"✅ Fix 1: Fibonacci-based targets (38.2%, 61.8%, 100%)")
         print(f"✅ Fix 2: Retracement entry (25% into OB, midpoint for FVG)")
         print(f"✅ Fix 3: Enhanced quality scoring")
         print(f"✅ Fix 4: Dynamic category weighting")
@@ -1999,7 +2203,7 @@ class ICTEnhancedBacktester:
             print(f"   ✅ Max FVG Age: {self.config.get('max_fvg_age', 30)} bars")
         if self.config.get('use_breaker_blocks', True):
             print(f"   ✅ Breaker Block Detection: Enabled")
-        print(f"   ✅ Fibonacci Targets: 61.8%, 100%, 161.8%")
+        print(f"   ✅ Fibonacci Targets: 38.2%, 61.8%, 100%")
         
         print()
         
@@ -2018,6 +2222,7 @@ class ICTEnhancedBacktester:
         
         # Analyze results
         self.analyze_enhanced_performance()
+        self.analyze_indicator_performance()  # R16: NEW - Indicator analysis
         self.analyze_category_performance()
         self.track_category_improvements()  # PHASE 9: Track category improvements
         self.analyze_losing_trade_patterns()
@@ -2566,15 +2771,15 @@ def main():
     }
     
     print("Select optimization mode:")
-    print("1. Test Phase 15 on 8 tokens (quick)")
-    print("2. Test Phase 15 on all 89 tokens")
-    print("3. Phase 15 with/without indicator confluence")
+    print("1. Test Phase 16 on 8 tokens (quick)")
+    print("2. Test Phase 16 on all 89 tokens")
+    print("3. Phase 16 with/without indicator confluence")
     
     choice = input("\nEnter choice (1-3): ").strip()
     
     if choice == "1":
         # Quick test with 8 tokens
-        print("\n🚀 TESTING PHASE 15 OPTIMIZED FIBONACCI TARGETS ON 8 TOKENS")
+        print("\n🚀 TESTING PHASE 16 ULTRA-CONSERVATIVE FIBONACCI TARGETS ON 8 TOKENS")
         print("=" * 70)
         
         test_symbols = [
@@ -2599,7 +2804,7 @@ def main():
             
             t1_hit_rate = len([t for t in results if t['hit_target'] == 1]) / total_trades * 100
             
-            print(f"\n🎯 PHASE 15 OPTIMIZED FIBONACCI TARGETS QUICK TEST RESULTS:")
+            print(f"\n🎯 PHASE 16 ULTRA-CONSERVATIVE FIBONACCI TARGETS QUICK TEST RESULTS:")
             print(f"=" * 50)
             print(f"📊 Total Trades: {total_trades}")
             print(f"🏆 Win Rate: {win_rate:.1f}%")
@@ -2620,7 +2825,7 @@ def main():
                 
     elif choice == "2":
         # Full 89-token test
-        print("\n🚀 TESTING PHASE 15 OPTIMIZED FIBONACCI TARGETS ON ALL 89 TOKENS")
+        print("\n🚀 TESTING PHASE 16 ULTRA-CONSERVATIVE FIBONACCI TARGETS ON ALL 89 TOKENS")
         print("=" * 70)
         
         backtester = ICTEnhancedBacktester(config=phase9_config['config'])
