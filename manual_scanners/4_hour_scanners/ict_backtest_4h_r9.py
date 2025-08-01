@@ -1865,17 +1865,17 @@ class ICTEnhancedBacktester:
                 'BAND/USDT', 'API3/USDT', 'GRT/USDT', 'LPT/USDT', 'STORJ/USDT', 'AR/USDT'
             ]
         
-        print("🔥 ICT PHASE 6 - FVG DETECTION FOR 80% WIN RATE")
+        print("🔥 ICT PHASE 9 - DYNAMIC CATEGORY MANAGEMENT FOR 80% WIN RATE")
         print("=" * 70)
-        print(f"📊 Testing {len(symbols)} symbols with PHASE 6 FVG DETECTION")
-        print(f"🎯 STRATEGY: Adding Fair Value Gaps to reach 80% target")
-        print(f"🔧 PHASE 6 CONFIGURATION:")
-        print(f"   • Order Block: {self.config.get('min_order_block_size', 1.3)}% moves")
-        print(f"   • Volume Ratio: {self.config.get('min_volume_ratio', 1.4)}x minimum")
-        print(f"   • Quality Score: {self.config.get('min_quality_score', 55)} minimum")
-        print(f"   • Distance Limit: {self.config.get('max_distance_pct', 18.0)}%")
-        print(f"   • Max OB Age: {self.config.get('max_ob_age', 50)} bars (tightened)")
-        print(f"   • Min Confluence: {self.config.get('min_confluence_factors', 3)} factors")
+        print(f"📊 Testing {len(symbols)} symbols with PHASE 9 DYNAMIC CATEGORY MANAGEMENT")
+        print(f"🎯 STRATEGY: Performance-based position sizing to reach 80% target")
+        print(f"🔧 PHASE 9 CONFIGURATION:")
+        print(f"   • Order Block: {self.config.get('min_order_block_size')}% moves")
+        print(f"   • Volume Ratio: {self.config.get('min_volume_ratio')}x minimum")
+        print(f"   • Quality Score: {self.config.get('min_quality_score')} minimum")
+        print(f"   • Distance Limit: {self.config.get('max_distance_pct')}%")
+        print(f"   • Max OB Age: {self.config.get('max_ob_age')} bars")
+        print(f"   • Min Confluence: {self.config.get('min_confluence_factors')} factors")
         
         print(f"\n🔧 PHASE 6 ADDITIONS:")
         if self.config.get('use_fvg_detection', True):
