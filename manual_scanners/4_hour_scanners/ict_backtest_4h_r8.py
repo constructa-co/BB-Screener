@@ -40,9 +40,9 @@ class ICTEnhancedBacktester:
             'stop_multiplier': 0.75,   # Stop distance
             'target_method': 'ict',    # ICT method
             'lookback_months': 3,      # Extended lookback
-            'min_order_block_size': 1.3,   # Keep Phase 5 baseline
-            'min_volume_ratio': 1.4,       # Keep Phase 5 baseline
-            'min_quality_score': 40,       # CHANGED from 55 to 40 for debugging
+            'min_order_block_size': 1.5,   # INCREASED from 1.3
+            'min_volume_ratio': 2.0,       # INCREASED from 1.4
+            'min_quality_score': 65,       # INCREASED from 55
             'max_distance_pct': 18.0,      # Keep Phase 5 baseline
             'min_confluence_factors': 3,   # Keep Phase 5 baseline
             # PHASE 5 SURGICAL FIXES:
@@ -53,23 +53,27 @@ class ICTEnhancedBacktester:
             'quality_boost_enabled': True,     # Enable quality improvements
             'target_win_rate': 80.0,          # Ultimate target
             'current_baseline': 64.0,         # Known working baseline
-            'max_ob_age': 50,                 # TIGHTENED from 80 to 50
+            'max_ob_age': 40,                 # DECREASED from 50
             'require_market_regime': False,   # Market regime filter
             'min_validation_move': 0,         # Minimum validation move
             'focus_categories': None,         # Category focus filter
             # PHASE 6 ADDITIONS:
             'use_fvg_detection': True,        # Enable FVG detection
-            'min_fvg_size': 0.5,             # CHANGED from 0.3
+            'min_fvg_size': 0.6,             # INCREASED from 0.5
             'max_fvg_age': 30,               # Maximum FVG age in bars
             'use_breaker_blocks': True,      # Enable breaker block detection
             'fvg_weight': 1.5,               # FVG quality score multiplier
             'require_fvg_volume': True,      # NEW
-            'min_indicator_confluence': 0,   # CHANGED from 2 to 0
+            'min_indicator_confluence': 3,   # INCREASED from 2
             'use_atr_targets': True,         # NEW
             'min_risk_reward': 0.3,         # CHANGED from 0.5 to 0.3 temporarily
             # PHASE 7 ADDITIONS:
             'use_dynamic_targets': True,     # Enable dynamic target calculation
-            'target_optimization_enabled': True  # Enable target optimization analysis
+            'target_optimization_enabled': True,  # Enable target optimization analysis
+            # PHASE 8 ADDITIONS:
+            'use_swing_targets': True,       # NEW
+            'use_dynamic_stops': True,       # NEW
+            'exclude_categories': ['Gaming/NFTs', 'DeFi']  # NEW
         }
         
         # Dynamic category weighting based on historical performance
@@ -511,113 +515,72 @@ class ICTEnhancedBacktester:
         
         return targets[:3], target_reasons[:3]
 
-    def calculate_ict_targets(self, df, entry_price, direction, setup_type='order_block'):
-        """PHASE 7: Dynamic ATR-based targets"""
+    def calculate_swing_based_targets(self, df, entry_price, direction):
+        """Calculate targets based on recent swing highs/lows"""
+        # Find recent swings
+        swings = self.find_swing_levels(df, window=10)
         
-        if self.config.get('use_atr_targets', True):
-            atr = df.iloc[-1]['atr']
-            
-            if setup_type == 'fvg':
-                # Tighter targets for FVGs
-                multipliers = [0.5, 1.0, 1.5]
-            else:
-                # Standard targets for OBs
-                multipliers = [0.8, 1.5, 2.5]
-            
-            if direction == 'BULLISH':
-                targets = [entry_price + (atr * m) for m in multipliers]
-            else:
-                targets = [entry_price - (atr * m) for m in multipliers]
-                
-            target_reasons = [f"T{i+1}: {m}x ATR" for i, m in enumerate(multipliers)]
+        if direction == 'BULLISH':
+            # Find resistance levels above entry
+            resistances = [h for h in swings['highs'] if h > entry_price * 1.002]
+            if len(resistances) >= 3:
+                return sorted(resistances)[:3], ["Swing High 1", "Swing High 2", "Swing High 3"]
         else:
-            # Original logic...
-            if self.config.get('use_optimized_targets', True):
-                # PHASE 6: More achievable targets based on data
-                if direction == 'BULLISH':
-                    targets = [
-                        entry_price * 1.008,  # 0.8% (T1 - keep as is)
-                        entry_price * 1.012,  # 1.2% (T2 - reduced from 1.6%)
-                        entry_price * 1.020   # 2.0% (T3 - reduced from 2.8%)
-                    ]
-                    target_reasons = ["T1: +0.8%", "T2: +1.2%", "T3: +2.0%"]
-                else:
-                    targets = [
-                        entry_price * 0.992,  # 0.8%
-                        entry_price * 0.988,  # 1.2%
-                        entry_price * 0.980   # 2.0%
-                    ]
-                    target_reasons = ["T1: -0.8%", "T2: -1.2%", "T3: -2.0%"]
-                
-                # FVGs might have tighter targets due to their nature
-                if setup_type == 'fvg' and self.config.get('use_fvg_detection', True):
-                    if direction == 'BULLISH':
-                        targets[0] = entry_price * 1.006  # 0.6% for FVG T1
-                    else:
-                        targets[0] = entry_price * 0.994  # 0.6% for FVG T1
-            else:
-                # Original ICT structure-based targets
-                swing_levels = self.find_swing_levels(df)
-                equal_levels = self.find_equal_levels(df)
-                targets = []
-                target_reasons = []
-                
-                try:
-                    if direction == 'BULLISH':
-                        relevant_highs = [h for h in swing_levels['highs'] if h > entry_price * 1.005]
-                        if relevant_highs:
-                            targets.append(min(relevant_highs))
-                            target_reasons.append(f"Swing High @ {min(relevant_highs):.6f}")
-                        
-                        relevant_equal_highs = [h for h in equal_levels['equal_highs'] if h > entry_price * 1.01]
-                        if relevant_equal_highs:
-                            targets.append(min(relevant_equal_highs))
-                            target_reasons.append(f"Equal Highs @ {min(relevant_equal_highs):.6f}")
-                        
-                        if len(relevant_highs) > 1:
-                            targets.append(sorted(relevant_highs)[1])
-                            target_reasons.append(f"Major High @ {sorted(relevant_highs)[1]:.6f}")
-                        
-                    else:  # BEARISH
-                        relevant_lows = [l for l in swing_levels['lows'] if l < entry_price * 0.995]
-                        if relevant_lows:
-                            targets.append(max(relevant_lows))
-                            target_reasons.append(f"Swing Low @ {max(relevant_lows):.6f}")
-                        
-                        relevant_equal_lows = [l for l in equal_levels['equal_lows'] if l < entry_price * 0.99]
-                        if relevant_equal_lows:
-                            targets.append(max(relevant_equal_lows))
-                            target_reasons.append(f"Equal Lows @ {max(relevant_equal_lows):.6f}")
-                        
-                        if len(relevant_lows) > 1:
-                            targets.append(sorted(relevant_lows, reverse=True)[1])
-                            target_reasons.append(f"Major Low @ {sorted(relevant_lows, reverse=True)[1]:.6f}")
-                
-                except Exception as e:
-                    print(f"ICT target calculation error: {e}")
-                
-                # Ensure we have 3 targets
-                while len(targets) < 3:
-                    if direction == 'BULLISH':
-                        if len(targets) == 0:
-                            targets.append(entry_price * 1.008)
-                            target_reasons.append("Fallback +0.8%")
-                        elif len(targets) == 1:
-                            targets.append(entry_price * 1.012)
-                            target_reasons.append("Fallback +1.2%")
-                        else:
-                            targets.append(entry_price * 1.020)
-                            target_reasons.append("Fallback +2.0%")
-                    else:
-                        if len(targets) == 0:
-                            targets.append(entry_price * 0.992)
-                            target_reasons.append("Fallback -0.8%")
-                        elif len(targets) == 1:
-                            targets.append(entry_price * 0.988)
-                            target_reasons.append("Fallback -1.2%")
-                        else:
-                            targets.append(entry_price * 0.980)
-                            target_reasons.append("Fallback -2.0%")
+            # Find support levels below entry
+            supports = [l for l in swings['lows'] if l < entry_price * 0.998]
+            if len(supports) >= 3:
+                return sorted(supports, reverse=True)[:3], ["Swing Low 1", "Swing Low 2", "Swing Low 3"]
+        
+        # Fallback to percentage targets
+        return None, None
+
+    def calculate_atr_based_targets(self, df, entry_price, direction):
+        """Calculate targets based on ATR multiples"""
+        atr = df.iloc[-1]['atr']
+        
+        if direction == 'BULLISH':
+            targets = [
+                entry_price + (atr * 1.0),  # 1x ATR
+                entry_price + (atr * 2.0),  # 2x ATR
+                entry_price + (atr * 3.0)   # 3x ATR
+            ]
+        else:
+            targets = [
+                entry_price - (atr * 1.0),
+                entry_price - (atr * 2.0),
+                entry_price - (atr * 3.0)
+            ]
+        
+        return targets, ["1x ATR", "2x ATR", "3x ATR"]
+
+    def calculate_ict_targets(self, df, entry_price, direction, setup_type='order_block'):
+        """PHASE 8: Smart target calculation using multiple methods"""
+        
+        # Try swing-based targets first
+        targets, reasons = self.calculate_swing_based_targets(df, entry_price, direction)
+        
+        if targets:
+            return targets[:3], reasons[:3]
+        
+        # Use ATR-based targets as secondary method
+        if self.config.get('use_atr_targets', True):
+            return self.calculate_atr_based_targets(df, entry_price, direction)
+        
+        # Original percentage fallback
+        if direction == 'BULLISH':
+            targets = [
+                entry_price * 1.008,  # 0.8%
+                entry_price * 1.015,  # 1.5%
+                entry_price * 1.025   # 2.5%
+            ]
+            target_reasons = ["T1: +0.8%", "T2: +1.5%", "T3: +2.5%"]
+        else:
+            targets = [
+                entry_price * 0.992,
+                entry_price * 0.985,
+                entry_price * 0.975
+            ]
+            target_reasons = ["T1: -0.8%", "T2: -1.5%", "T3: -2.5%"]
         
         return targets[:3], target_reasons[:3]
 
@@ -644,6 +607,60 @@ class ICTEnhancedBacktester:
             entry_price = zone['low'] + (zone_range * 0.5)
         
         return entry_price
+
+    def calculate_dynamic_stop_loss(self, df, ob, entry_price, direction):
+        """Calculate stop loss based on market structure and volatility"""
+        atr = df.iloc[-1]['atr']
+        
+        # Method 1: Structure-based stop
+        if direction == 'BULLISH':
+            # Find recent swing low
+            recent_lows = df['low'].rolling(window=10).min()
+            structure_stop = recent_lows.iloc[-1] - (atr * 0.1)
+            
+            # Method 2: ATR-based stop
+            atr_stop = entry_price - (atr * 1.5)
+            
+            # Method 3: Order block based stop
+            ob_stop = ob['low'] - (atr * 0.2)
+            
+            # Use the tightest stop that gives at least 1:1 R/R
+            stop_loss = max(structure_stop, atr_stop, ob_stop)
+        else:
+            # Find recent swing high
+            recent_highs = df['high'].rolling(window=10).max()
+            structure_stop = recent_highs.iloc[-1] + (atr * 0.1)
+            
+            atr_stop = entry_price + (atr * 1.5)
+            ob_stop = ob['high'] + (atr * 0.2)
+            
+            stop_loss = min(structure_stop, atr_stop, ob_stop)
+        
+        return stop_loss
+
+    def calculate_position_size_multiplier(self, quality_score, setup_type, category):
+        """Calculate position size based on setup probability"""
+        base_multiplier = 1.0
+        
+        # Quality score adjustment
+        if quality_score >= 90:
+            base_multiplier *= 1.5
+        elif quality_score >= 80:
+            base_multiplier *= 1.2
+        elif quality_score < 70:
+            base_multiplier *= 0.5
+        
+        # Setup type adjustment
+        if setup_type == 'fvg':
+            base_multiplier *= 1.3  # FVGs are more reliable
+        
+        # Category adjustment
+        if category == 'Layer 2/Scaling':
+            base_multiplier *= 1.2
+        elif category in ['Gaming/NFTs', 'DeFi']:
+            base_multiplier *= 0.5
+        
+        return min(base_multiplier, 2.0)  # Cap at 2x
 
     def detect_order_blocks(self, df):
         """Detect ICT Order Blocks"""
@@ -1327,6 +1344,11 @@ class ICTEnhancedBacktester:
         # Category detection for weighting
         category = self.get_token_category(symbol)
         
+        # Exclude poor performing categories
+        exclude_categories = self.config.get('exclude_categories', [])
+        if category in exclude_categories:
+            return []
+        
         # Focus categories filter
         focus_categories = self.config.get('focus_categories', None)
         if focus_categories and category not in focus_categories:
@@ -1431,6 +1453,32 @@ class ICTEnhancedBacktester:
                 if df.iloc[-1]['cmf'] > 0.1:
                     indicator_score += 10
                     indicator_confluences.append("Positive CMF")
+                
+                # RESTORE MISSING INDICATORS FROM PHASE 2/3
+                # Accumulation/Distribution
+                if df.iloc[-1]['accumulation_distribution'] > df.iloc[-5]['accumulation_distribution']:
+                    indicator_score += 10
+                    indicator_confluences.append("A/D Rising")
+                    
+                # On Balance Volume trend
+                if df.iloc[-1]['on_balance_volume'] > df.iloc[-5]['on_balance_volume']:
+                    indicator_score += 10
+                    indicator_confluences.append("OBV Rising")
+                    
+                # Williams %R
+                if df.iloc[-1]['williams_r'] < -80:
+                    indicator_score += 10
+                    indicator_confluences.append("Williams Oversold")
+                    
+                # CCI
+                if df.iloc[-1]['cci'] < -100:
+                    indicator_score += 10
+                    indicator_confluences.append("CCI Oversold")
+                    
+                # VWAP deviation
+                if df.iloc[-1]['vwap_deviation'] < -2:
+                    indicator_score += 15
+                    indicator_confluences.append("Below VWAP")
             else:  # bearish
                 if df.iloc[-1]['rsi'] > 60:
                     indicator_score += 15
@@ -1441,6 +1489,27 @@ class ICTEnhancedBacktester:
                 if df.iloc[-1]['cmf'] < -0.1:
                     indicator_score += 10
                     indicator_confluences.append("Negative CMF")
+                
+                # RESTORE MISSING INDICATORS FROM PHASE 2/3
+                if df.iloc[-1]['accumulation_distribution'] < df.iloc[-5]['accumulation_distribution']:
+                    indicator_score += 10
+                    indicator_confluences.append("A/D Falling")
+                    
+                if df.iloc[-1]['on_balance_volume'] < df.iloc[-5]['on_balance_volume']:
+                    indicator_score += 10
+                    indicator_confluences.append("OBV Falling")
+                    
+                if df.iloc[-1]['williams_r'] > -20:
+                    indicator_score += 10
+                    indicator_confluences.append("Williams Overbought")
+                    
+                if df.iloc[-1]['cci'] > 100:
+                    indicator_score += 10
+                    indicator_confluences.append("CCI Overbought")
+                    
+                if df.iloc[-1]['vwap_deviation'] > 2:
+                    indicator_score += 15
+                    indicator_confluences.append("Above VWAP")
 
             setup_score += indicator_score
             confluence_factors.extend(indicator_confluences)
