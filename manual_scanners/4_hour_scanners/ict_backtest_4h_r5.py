@@ -9,6 +9,11 @@ PHASE 6 ADDITIONS:
 3. Fixed the all_trades1 error
 4. Tighter OB age filter (50 bars)
 5. Adjusted T2/T3 targets for better hit rates
+
+PHASE 7 ADDITIONS (R5):
+6. Drawdown analysis for optimal stop loss placement
+7. Take profit optimization analysis
+8. Risk/reward ratio improvement
 """
 
 import ccxt
@@ -1520,7 +1525,397 @@ class ICTEnhancedBacktester:
         self.analyze_category_performance()
         self.analyze_losing_trade_patterns()
         
+        # PHASE 7: New analysis methods
+        self.analyze_drawdown_statistics()
+        self.analyze_take_profit_optimization()
+        self.analyze_risk_reward_optimization()
+        
         return all_trades  # FIXED: Changed from all_trades1 to all_trades
+
+    def analyze_drawdown_statistics(self):
+        """PHASE 7: Analyze drawdown patterns in winning trades for optimal stop loss placement"""
+        trades = self.all_trades
+        winning_trades = [t for t in trades if t['win']]
+        
+        if not winning_trades:
+            print("❌ No winning trades to analyze drawdown")
+            return
+        
+        print("\n" + "=" * 70)
+        print("📉 DRAWDOWN ANALYSIS FOR OPTIMAL STOP LOSS PLACEMENT")
+        print("=" * 70)
+        
+        # Analyze max adverse excursion in winning trades
+        max_adverse_excursions = [t['max_adverse_excursion'] for t in winning_trades]
+        
+        print(f"\n📊 MAX ADVERSE EXCURSION IN WINNING TRADES:")
+        print(f"Total Winning Trades: {len(winning_trades)}")
+        print(f"Average Max Drawdown: {np.mean(max_adverse_excursions):.2f}%")
+        print(f"Median Max Drawdown: {np.median(max_adverse_excursions):.2f}%")
+        print(f"Min Max Drawdown: {np.min(max_adverse_excursions):.2f}%")
+        print(f"Max Max Drawdown: {np.max(max_adverse_excursions):.2f}%")
+        
+        # Drawdown percentiles
+        percentiles = [10, 25, 50, 75, 90, 95, 99]
+        print(f"\n📊 DRAWDOWN PERCENTILES:")
+        for p in percentiles:
+            value = np.percentile(max_adverse_excursions, p)
+            print(f"  {p}th percentile: {value:.2f}%")
+        
+        # Analyze by setup type
+        setup_drawdowns = {}
+        for trade in winning_trades:
+            setup_type = trade.get('setup_type', 'order_block')
+            if setup_type not in setup_drawdowns:
+                setup_drawdowns[setup_type] = []
+            setup_drawdowns[setup_type].append(trade['max_adverse_excursion'])
+        
+        print(f"\n📊 DRAWDOWN BY SETUP TYPE:")
+        for setup_type, drawdowns in setup_drawdowns.items():
+            if drawdowns:
+                avg_dd = np.mean(drawdowns)
+                median_dd = np.median(drawdowns)
+                max_dd = np.max(drawdowns)
+                print(f"  {setup_type}: {len(drawdowns)} trades")
+                print(f"    Average: {avg_dd:.2f}%, Median: {median_dd:.2f}%, Max: {max_dd:.2f}%")
+        
+        # Analyze by quality score
+        quality_drawdowns = {
+            'Low (50-70)': [t['max_adverse_excursion'] for t in winning_trades if 50 <= t['quality_score'] < 70],
+            'Medium (70-85)': [t['max_adverse_excursion'] for t in winning_trades if 70 <= t['quality_score'] < 85],
+            'High (85+)': [t['max_adverse_excursion'] for t in winning_trades if t['quality_score'] >= 85]
+        }
+        
+        print(f"\n📊 DRAWDOWN BY QUALITY SCORE:")
+        for quality_range, drawdowns in quality_drawdowns.items():
+            if drawdowns:
+                avg_dd = np.mean(drawdowns)
+                median_dd = np.median(drawdowns)
+                print(f"  {quality_range}: {len(drawdowns)} trades, Avg: {avg_dd:.2f}%, Median: {median_dd:.2f}%")
+        
+        # Stop loss recommendations
+        print(f"\n💡 STOP LOSS RECOMMENDATIONS:")
+        
+        # Conservative stop (90th percentile)
+        conservative_stop = np.percentile(max_adverse_excursions, 90)
+        print(f"  Conservative Stop (90th percentile): {conservative_stop:.2f}%")
+        print(f"    Would protect {len([d for d in max_adverse_excursions if d <= conservative_stop])} out of {len(winning_trades)} winning trades")
+        
+        # Moderate stop (75th percentile)
+        moderate_stop = np.percentile(max_adverse_excursions, 75)
+        print(f"  Moderate Stop (75th percentile): {moderate_stop:.2f}%")
+        print(f"    Would protect {len([d for d in max_adverse_excursions if d <= moderate_stop])} out of {len(winning_trades)} winning trades")
+        
+        # Aggressive stop (50th percentile)
+        aggressive_stop = np.percentile(max_adverse_excursions, 50)
+        print(f"  Aggressive Stop (50th percentile): {aggressive_stop:.2f}%")
+        print(f"    Would protect {len([d for d in max_adverse_excursions if d <= aggressive_stop])} out of {len(winning_trades)} winning trades")
+        
+        # Current stop analysis
+        current_stop_hits = len([t for t in trades if t['hit_stop']])
+        total_trades = len(trades)
+        current_stop_rate = current_stop_hits / total_trades * 100 if total_trades > 0 else 0
+        
+        print(f"\n📊 CURRENT STOP LOSS PERFORMANCE:")
+        print(f"  Current Stop Hit Rate: {current_stop_rate:.1f}% ({current_stop_hits}/{total_trades})")
+        
+        if current_stop_rate > 10:
+            print(f"  ⚠️  Stop rate is high - consider wider stops")
+        elif current_stop_rate < 2:
+            print(f"  ✅ Stop rate is low - stops may be too wide")
+        else:
+            print(f"  ✅ Stop rate is reasonable")
+        
+        # Risk/reward optimization
+        print(f"\n🎯 RISK/REWARD OPTIMIZATION:")
+        avg_win = np.mean([t['pnl_pct'] for t in winning_trades])
+        
+        for stop_type, stop_pct in [("Conservative", conservative_stop), 
+                                   ("Moderate", moderate_stop), 
+                                   ("Aggressive", aggressive_stop)]:
+            risk_reward_ratio = avg_win / stop_pct if stop_pct > 0 else 0
+            print(f"  {stop_type} Stop ({stop_pct:.2f}%): {risk_reward_ratio:.2f}:1 R/R ratio")
+        
+        return {
+            'conservative_stop': conservative_stop,
+            'moderate_stop': moderate_stop,
+            'aggressive_stop': aggressive_stop,
+            'avg_drawdown': np.mean(max_adverse_excursions),
+            'median_drawdown': np.median(max_adverse_excursions)
+        }
+
+    def analyze_take_profit_optimization(self):
+        """PHASE 7: Analyze take profit levels and timing for optimization"""
+        trades = self.all_trades
+        
+        if not trades:
+            print("❌ No trades to analyze take profit optimization")
+            return
+        
+        print("\n" + "=" * 70)
+        print("🎯 TAKE PROFIT OPTIMIZATION ANALYSIS")
+        print("=" * 70)
+        
+        # Analyze target hit rates
+        target_hits = {}
+        for i in range(1, 4):
+            target_hits[f'T{i}'] = len([t for t in trades if t['hit_target'] == i])
+        
+        total_trades = len(trades)
+        
+        print(f"\n📊 CURRENT TARGET HIT RATES:")
+        for target, hits in target_hits.items():
+            hit_rate = hits / total_trades * 100 if total_trades > 0 else 0
+            print(f"  {target}: {hit_rate:.1f}% ({hits}/{total_trades})")
+        
+        # Analyze winning trades that didn't hit targets
+        winning_trades = [t for t in trades if t['win']]
+        winning_no_target = [t for t in winning_trades if t['hit_target'] is None]
+        
+        if winning_no_target:
+            print(f"\n📊 WINNING TRADES WITHOUT TARGET HITS:")
+            print(f"  Total: {len(winning_no_target)} trades")
+            avg_exit_pnl = np.mean([t['pnl_pct'] for t in winning_no_target])
+            print(f"  Average Exit PnL: {avg_exit_pnl:.2f}%")
+            
+            # Analyze exit timing
+            exit_times = [t['bars_held'] for t in winning_no_target]
+            print(f"  Average Hold Time: {np.mean(exit_times):.1f} bars")
+            print(f"  Median Hold Time: {np.median(exit_times):.1f} bars")
+        
+        # Analyze target levels vs actual moves
+        print(f"\n📊 TARGET LEVEL ANALYSIS:")
+        
+        # Get all target levels used
+        all_targets = []
+        for trade in trades:
+            if 'targets' in trade and trade['targets']:
+                entry_price = trade['entry_price']
+                direction = trade['direction']
+                
+                for i, target in enumerate(trade['targets']):
+                    if direction == 'BULLISH':
+                        target_pct = (target - entry_price) / entry_price * 100
+                    else:
+                        target_pct = (entry_price - target) / entry_price * 100
+                    
+                    all_targets.append({
+                        'target_num': i + 1,
+                        'target_pct': target_pct,
+                        'hit': trade['hit_target'] == i + 1,
+                        'setup_type': trade.get('setup_type', 'order_block'),
+                        'direction': direction
+                    })
+        
+        if all_targets:
+            # Analyze by target number
+            for target_num in [1, 2, 3]:
+                target_data = [t for t in all_targets if t['target_num'] == target_num]
+                if target_data:
+                    hit_rate = len([t for t in target_data if t['hit']]) / len(target_data) * 100
+                    avg_target_pct = np.mean([t['target_pct'] for t in target_data])
+                    print(f"  T{target_num}: {avg_target_pct:.2f}% target, {hit_rate:.1f}% hit rate")
+        
+        # Analyze by setup type
+        setup_targets = {}
+        for target_data in all_targets:
+            setup_type = target_data['setup_type']
+            if setup_type not in setup_targets:
+                setup_targets[setup_type] = []
+            setup_targets[setup_type].append(target_data)
+        
+        print(f"\n📊 TARGET PERFORMANCE BY SETUP TYPE:")
+        for setup_type, targets in setup_targets.items():
+            if targets:
+                hit_rate = len([t for t in targets if t['hit']]) / len(targets) * 100
+                avg_target_pct = np.mean([t['target_pct'] for t in targets])
+                print(f"  {setup_type}: {avg_target_pct:.2f}% avg target, {hit_rate:.1f}% hit rate")
+        
+        # Analyze if targets are too conservative
+        print(f"\n🎯 TARGET CONSERVATIVENESS ANALYSIS:")
+        
+        # Check if we're leaving money on the table
+        winning_trades_with_targets = [t for t in winning_trades if t['hit_target'] is not None]
+        if winning_trades_with_targets:
+            avg_target_hit_pnl = np.mean([t['pnl_pct'] for t in winning_trades_with_targets])
+            avg_win_pnl = np.mean([t['pnl_pct'] for t in winning_trades])
+            
+            print(f"  Average PnL when target hit: {avg_target_hit_pnl:.2f}%")
+            print(f"  Average PnL for all wins: {avg_win_pnl:.2f}%")
+            
+            if avg_win_pnl > avg_target_hit_pnl * 1.5:
+                print(f"  ⚠️  Targets may be too conservative - wins average {avg_win_pnl/avg_target_hit_pnl:.1f}x higher than targets")
+            elif avg_win_pnl < avg_target_hit_pnl * 0.8:
+                print(f"  ✅ Targets appear appropriate - wins close to target levels")
+        
+        # Analyze target timing
+        print(f"\n⏰ TARGET TIMING ANALYSIS:")
+        
+        target_hit_times = [t['bars_held'] for t in trades if t['hit_target'] is not None]
+        if target_hit_times:
+            avg_target_time = np.mean(target_hit_times)
+            median_target_time = np.median(target_hit_times)
+            print(f"  Average time to target: {avg_target_time:.1f} bars")
+            print(f"  Median time to target: {median_target_time:.1f} bars")
+            
+            # Check if targets are hit too quickly
+            quick_hits = len([t for t in target_hit_times if t <= 3])
+            if quick_hits > len(target_hit_times) * 0.3:
+                print(f"  ⚠️  {quick_hits/len(target_hit_times)*100:.1f}% of targets hit within 3 bars - may be too tight")
+            else:
+                print(f"  ✅ Target timing appears reasonable")
+        
+        # Recommendations
+        print(f"\n💡 TAKE PROFIT RECOMMENDATIONS:")
+        
+        # Analyze if T2/T3 are being hit
+        t2_hit_rate = target_hits['T2'] / total_trades * 100 if total_trades > 0 else 0
+        t3_hit_rate = target_hits['T3'] / total_trades * 100 if total_trades > 0 else 0
+        
+        if t2_hit_rate < 5:
+            print(f"  1. ⚠️  T2 hit rate is very low ({t2_hit_rate:.1f}%) - consider reducing T2 target")
+        if t3_hit_rate < 2:
+            print(f"  2. ⚠️  T3 hit rate is very low ({t3_hit_rate:.1f}%) - consider reducing T3 target")
+        
+        # Check if T1 is too conservative
+        t1_hit_rate = target_hits['T1'] / total_trades * 100 if total_trades > 0 else 0
+        if t1_hit_rate > 80:
+            print(f"  3. ✅ T1 hit rate is excellent ({t1_hit_rate:.1f}%) - current target is well-calibrated")
+        elif t1_hit_rate < 50:
+            print(f"  4. ⚠️  T1 hit rate is low ({t1_hit_rate:.1f}%) - consider reducing T1 target")
+        
+        return {
+            'target_hit_rates': target_hits,
+            'avg_target_time': np.mean(target_hit_times) if target_hit_times else 0,
+            't1_hit_rate': t1_hit_rate,
+            't2_hit_rate': t2_hit_rate,
+            't3_hit_rate': t3_hit_rate
+        }
+
+    def analyze_risk_reward_optimization(self):
+        """PHASE 7: Comprehensive risk/reward analysis and optimization"""
+        trades = self.all_trades
+        
+        if not trades:
+            print("❌ No trades to analyze risk/reward optimization")
+            return
+        
+        print("\n" + "=" * 70)
+        print("⚖️ RISK/REWARD OPTIMIZATION ANALYSIS")
+        print("=" * 70)
+        
+        # Current risk/reward metrics
+        winning_trades = [t for t in trades if t['win']]
+        losing_trades = [t for t in trades if not t['win']]
+        
+        if winning_trades and losing_trades:
+            avg_win = np.mean([t['pnl_pct'] for t in winning_trades])
+            avg_loss = np.mean([t['pnl_pct'] for t in losing_trades])
+            win_loss_ratio = abs(avg_win / avg_loss) if avg_loss != 0 else 0
+            
+            print(f"\n📊 CURRENT RISK/REWARD METRICS:")
+            print(f"  Average Win: +{avg_win:.2f}%")
+            print(f"  Average Loss: {avg_loss:.2f}%")
+            print(f"  Win/Loss Ratio: {win_loss_ratio:.2f}:1")
+            
+            # Analyze if the ratio is sustainable
+            if win_loss_ratio < 0.5:
+                print(f"  ⚠️  Risk/Reward ratio is poor - need to improve")
+            elif win_loss_ratio < 1.0:
+                print(f"  ⚠️  Risk/Reward ratio is below 1:1 - high win rate needed")
+            elif win_loss_ratio < 2.0:
+                print(f"  ✅ Risk/Reward ratio is reasonable")
+            else:
+                print(f"  🎯 Risk/Reward ratio is excellent")
+        
+        # Analyze by setup type
+        print(f"\n📊 RISK/REWARD BY SETUP TYPE:")
+        setup_rr = {}
+        
+        for trade in trades:
+            setup_type = trade.get('setup_type', 'order_block')
+            if setup_type not in setup_rr:
+                setup_rr[setup_type] = {'wins': [], 'losses': []}
+            
+            if trade['win']:
+                setup_rr[setup_type]['wins'].append(trade['pnl_pct'])
+            else:
+                setup_rr[setup_type]['losses'].append(trade['pnl_pct'])
+        
+        for setup_type, data in setup_rr.items():
+            if data['wins'] and data['losses']:
+                avg_win = np.mean(data['wins'])
+                avg_loss = np.mean(data['losses'])
+                rr_ratio = abs(avg_win / avg_loss) if avg_loss != 0 else 0
+                win_rate = len(data['wins']) / (len(data['wins']) + len(data['losses'])) * 100
+                
+                print(f"  {setup_type}: {rr_ratio:.2f}:1 R/R, {win_rate:.1f}% win rate")
+                print(f"    Avg Win: +{avg_win:.2f}%, Avg Loss: {avg_loss:.2f}%")
+        
+        # Analyze optimal stop loss placement
+        print(f"\n🎯 OPTIMAL STOP LOSS ANALYSIS:")
+        
+        # Get drawdown analysis
+        drawdown_stats = self.analyze_drawdown_statistics()
+        
+        if drawdown_stats:
+            conservative_stop = drawdown_stats['conservative_stop']
+            moderate_stop = drawdown_stats['moderate_stop']
+            aggressive_stop = drawdown_stats['aggressive_stop']
+            
+            # Calculate potential R/R ratios with different stops
+            if winning_trades:
+                avg_win = np.mean([t['pnl_pct'] for t in winning_trades])
+                
+                print(f"  Current average win: +{avg_win:.2f}%")
+                print(f"  Conservative stop ({conservative_stop:.2f}%): {avg_win/conservative_stop:.2f}:1 R/R")
+                print(f"  Moderate stop ({moderate_stop:.2f}%): {avg_win/moderate_stop:.2f}:1 R/R")
+                print(f"  Aggressive stop ({aggressive_stop:.2f}%): {avg_win/aggressive_stop:.2f}:1 R/R")
+        
+        # Analyze take profit optimization
+        print(f"\n🎯 TAKE PROFIT OPTIMIZATION:")
+        
+        tp_stats = self.analyze_take_profit_optimization()
+        
+        if tp_stats:
+            t1_hit_rate = tp_stats['t1_hit_rate']
+            t2_hit_rate = tp_stats['t2_hit_rate']
+            t3_hit_rate = tp_stats['t3_hit_rate']
+            
+            print(f"  T1 Hit Rate: {t1_hit_rate:.1f}%")
+            print(f"  T2 Hit Rate: {t2_hit_rate:.1f}%")
+            print(f"  T3 Hit Rate: {t3_hit_rate:.1f}%")
+            
+            # Recommendations
+            if t1_hit_rate < 60:
+                print(f"  ⚠️  T1 hit rate is low - consider reducing from 0.8% to 0.6%")
+            if t2_hit_rate < 10:
+                print(f"  ⚠️  T2 hit rate is very low - consider reducing from 1.2% to 1.0%")
+            if t3_hit_rate < 5:
+                print(f"  ⚠️  T3 hit rate is very low - consider reducing from 2.0% to 1.5%")
+        
+        # Overall recommendations
+        print(f"\n💡 RISK/REWARD OPTIMIZATION RECOMMENDATIONS:")
+        
+        # Check if we need to improve R/R ratio
+        if 'win_loss_ratio' in locals() and win_loss_ratio < 1.0:
+            print(f"  1. ⚠️  Improve risk/reward ratio (currently {win_loss_ratio:.2f}:1)")
+            print(f"     - Consider wider stops to reduce average loss")
+            print(f"     - Consider higher targets to increase average win")
+        
+        # Check if win rate compensates for poor R/R
+        win_rate = len(winning_trades) / len(trades) * 100 if trades else 0
+        if win_rate > 80 and win_loss_ratio < 0.5:
+            print(f"  2. ✅ High win rate ({win_rate:.1f}%) compensates for poor R/R ratio")
+        elif win_rate < 70 and win_loss_ratio < 1.0:
+            print(f"  3. ⚠️  Both win rate ({win_rate:.1f}%) and R/R ratio need improvement")
+        
+        return {
+            'win_loss_ratio': win_loss_ratio if 'win_loss_ratio' in locals() else 0,
+            'win_rate': win_rate,
+            'avg_win': avg_win if 'avg_win' in locals() else 0,
+            'avg_loss': avg_loss if 'avg_loss' in locals() else 0
+        }
 
 def main():
     """Run Phase 6 FVG detection backtest"""
@@ -1561,8 +1956,10 @@ def main():
     print("1. Test Phase 6 on 8 tokens (quick)")
     print("2. Test Phase 6 on all 89 tokens")
     print("3. Compare with/without FVG detection")
+    print("4. Phase 7: Risk/Reward & Drawdown Analysis (8 tokens)")
+    print("5. Phase 7: Risk/Reward & Drawdown Analysis (all tokens)")
     
-    choice = input("\nEnter choice (1-3): ").strip()
+    choice = input("\nEnter choice (1-5): ").strip()
     
     if choice == "1":
         # Quick test with 8 tokens
@@ -1733,8 +2130,47 @@ def main():
         else:
             print(f"\n⚠️ FVG DETECTION NEEDS ADJUSTMENT")
     
+    elif choice == "4":
+        # Phase 7: Risk/Reward & Drawdown Analysis (8 tokens)
+        print("\n🚀 PHASE 7: RISK/REWARD & DRAWDOWN ANALYSIS ON 8 TOKENS")
+        print("=" * 70)
+        
+        test_symbols = [
+            'BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT',
+            'ARB/USDT', 'OP/USDT', 'SHIB/USDT', 'PEPE/USDT'
+        ]
+        
+        backtester = ICTEnhancedBacktester(config=phase6_config['config'])
+        results = backtester.run_enhanced_backtest(symbols=test_symbols)
+        
+        if results:
+            print(f"\n🎯 PHASE 7 ANALYSIS COMPLETE!")
+            print(f"📊 Total Trades Analyzed: {len(results)}")
+            
+            # The new analysis methods are automatically called in run_enhanced_backtest
+            print(f"✅ Drawdown analysis completed")
+            print(f"✅ Take profit optimization analysis completed")
+            print(f"✅ Risk/reward optimization analysis completed")
+    
+    elif choice == "5":
+        # Phase 7: Risk/Reward & Drawdown Analysis (all tokens)
+        print("\n🚀 PHASE 7: RISK/REWARD & DRAWDOWN ANALYSIS ON ALL TOKENS")
+        print("=" * 70)
+        
+        backtester = ICTEnhancedBacktester(config=phase6_config['config'])
+        results = backtester.run_enhanced_backtest()  # Uses all 89 tokens
+        
+        if results:
+            print(f"\n🎯 PHASE 7 ANALYSIS COMPLETE!")
+            print(f"📊 Total Trades Analyzed: {len(results)}")
+            
+            # The new analysis methods are automatically called in run_enhanced_backtest
+            print(f"✅ Drawdown analysis completed")
+            print(f"✅ Take profit optimization analysis completed")
+            print(f"✅ Risk/reward optimization analysis completed")
+    
     else:
-        print("Invalid choice. Please run again and select 1, 2, or 3.")
+        print("Invalid choice. Please run again and select 1, 2, 3, 4, or 5.")
 
 if __name__ == "__main__":
     try:

@@ -92,26 +92,22 @@ class ElliottWaveScanner:
         current_price = df.iloc[-1]['close']
         total_move = (current_price - start_price) / start_price * 100
         
-        # Calculate volatility to set dynamic thresholds
-        price_volatility = df['close'].pct_change().std() * 100
-        dynamic_min_move = max(self.min_wave_size, price_volatility * 2)
-        
         # Look for major pivots with balanced sensitivity
-        for i in range(10, len(df) - 5):  # Use 10-day window for truly major pivots
+        for i in range(7, len(df) - 3):  # Use 7-day window for major pivots
             high = df.iloc[i]['high']
             low = df.iloc[i]['low']
             date = df.iloc[i]['timestamp']
             
             # Check for major peaks
-            window_highs = df.iloc[i-10:i+6]['high']
+            window_highs = df.iloc[i-7:i+4]['high']
             if high == window_highs.max():
                 # Must be a significant move from recent lows
-                recent_low = df.iloc[max(0, i-30):i]['low'].min()
+                recent_low = df.iloc[max(0, i-20):i]['low'].min()
                 move_size = (high - recent_low) / recent_low * 100
-                if move_size >= dynamic_min_move:
-                    # More strict context check for major pivots
-                    context_high = df.iloc[max(0, i-20):min(len(df), i+20)]['high'].max()
-                    if high >= context_high * 0.95:  # Must be within 5% of major high
+                if move_size >= self.min_wave_size:
+                    # More lenient context check
+                    context_high = df.iloc[max(0, i-15):min(len(df), i+15)]['high'].max()
+                    if high >= context_high * 0.90:  # Within 10% of major high
                         pivots.append({
                             'index': i,
                             'price': high,
@@ -122,13 +118,13 @@ class ElliottWaveScanner:
                         })
             
             # Check for major valleys
-            window_lows = df.iloc[i-10:i+6]['low']
+            window_lows = df.iloc[i-7:i+4]['low']
             if low == window_lows.min():
-                recent_high = df.iloc[max(0, i-30):i]['high'].max()
+                recent_high = df.iloc[max(0, i-20):i]['high'].max()
                 move_size = (recent_high - low) / recent_high * 100
-                if move_size >= dynamic_min_move:
-                    context_low = df.iloc[max(0, i-20):min(len(df), i+20)]['low'].min()
-                    if low <= context_low * 1.05:  # Must be within 5% of major low
+                if move_size >= self.min_wave_size:
+                    context_low = df.iloc[max(0, i-15):min(len(df), i+15)]['low'].min()
+                    if low <= context_low * 1.10:  # Within 10% of major low
                         pivots.append({
                             'index': i,
                             'price': low,
@@ -138,13 +134,11 @@ class ElliottWaveScanner:
                             'significance': self.calculate_pivot_significance(df, i, 'valley')
                         })
         
-        # Enhanced filtering for major structure only
+        # Filter and sort pivots by significance
         pivots.sort(key=lambda x: x['significance'], reverse=True)
         
-        # Remove close pivots and ensure alternating pattern with stricter distance
+        # Remove close pivots and ensure alternating pattern
         filtered_pivots = []
-        min_distance_days = 15  # Increased from 5 to 15 days minimum
-        
         for pivot in pivots:
             if not filtered_pivots:
                 filtered_pivots.append(pivot)
@@ -152,15 +146,15 @@ class ElliottWaveScanner:
                 # Check if this pivot is significant and far enough from others
                 is_valid = True
                 for existing in filtered_pivots:
-                    # Stricter time separation
-                    if abs(pivot['index'] - existing['index']) < min_distance_days:
+                    if abs(pivot['index'] - existing['index']) < self.min_pivot_distance:
+                        # If close in time, keep the more significant one
                         if pivot['significance'] > existing['significance']:
                             filtered_pivots.remove(existing)
                         else:
                             is_valid = False
                         break
-                    # Stricter price separation for same type pivots
-                    if pivot['type'] == existing['type'] and abs(pivot['price'] - existing['price']) / existing['price'] < 0.20:
+                    if pivot['type'] == existing['type'] and abs(pivot['price'] - existing['price']) / existing['price'] < 0.15:
+                        # If close in price and same type, keep more significant
                         if pivot['significance'] > existing['significance']:
                             filtered_pivots.remove(existing)
                         else:
@@ -169,10 +163,6 @@ class ElliottWaveScanner:
                 
                 if is_valid:
                     filtered_pivots.append(pivot)
-        
-        # Only keep the most significant pivots (top 8 max for cleaner structure)
-        filtered_pivots.sort(key=lambda x: x['significance'], reverse=True)
-        filtered_pivots = filtered_pivots[:8]
         
         # Sort by time and ensure we have meaningful structure
         filtered_pivots.sort(key=lambda x: x['index'])
@@ -235,29 +225,25 @@ class ElliottWaveScanner:
         if not major_lows or not major_highs:
             return patterns
         
-        # Sort by significance and recency (prioritize recent significant pivots)
-        major_lows.sort(key=lambda x: (x['significance'] * 0.7 + (1 - x['index']/len(df)) * 0.3), reverse=True)
-        major_highs.sort(key=lambda x: (x['significance'] * 0.7 + (1 - x['index']/len(df)) * 0.3), reverse=True)
+        # Sort by significance and recency
+        major_lows.sort(key=lambda x: (x['significance'], -x['index']), reverse=True)
+        major_highs.sort(key=lambda x: (x['significance'], -x['index']), reverse=True)
         
-        # Try multiple starting points to find the best major structure
-        for start_low in major_lows[:2]:  # Try top 2 significant lows
-            for start_high in major_highs[:2]:  # Try top 2 significant highs
-                
-                if start_low['index'] < start_high['index']:
-                    # Potential bullish structure starting from low
-                    pattern = self.analyze_bullish_structure(pivots, df, start_low, start_high)
-                    if pattern and pattern['quality_score'] >= self.min_quality_score:
-                        patterns.append(pattern)
-                else:
-                    # Potential bearish structure starting from high
-                    pattern = self.analyze_bearish_structure(pivots, df, start_high, start_low)
-                    if pattern and pattern['quality_score'] >= self.min_quality_score:
-                        patterns.append(pattern)
+        # Try to identify the current major trend structure
+        recent_low = major_lows[0] if major_lows else None
+        recent_high = major_highs[0] if major_highs else None
         
-        # Return the highest quality pattern
-        if patterns:
-            best_pattern = max(patterns, key=lambda x: x['quality_score'])
-            return [best_pattern]
+        if recent_low and recent_high:
+            if recent_low['index'] < recent_high['index']:
+                # Potential bullish structure
+                pattern = self.analyze_bullish_structure(pivots, df, recent_low, recent_high)
+                if pattern:
+                    patterns.append(pattern)
+            else:
+                # Potential bearish structure
+                pattern = self.analyze_bearish_structure(pivots, df, recent_high, recent_low)
+                if pattern:
+                    patterns.append(pattern)
         
         return patterns
 
