@@ -42,7 +42,7 @@ class ICTEnhancedBacktester:
             'lookback_months': 3,      # Extended lookback
             'min_order_block_size': 1.3,   # Keep Phase 5 baseline
             'min_volume_ratio': 1.4,       # Keep Phase 5 baseline
-            'min_quality_score': 55,       # Keep Phase 5 baseline
+            'min_quality_score': 40,       # CHANGED from 55 to 40 for debugging
             'max_distance_pct': 18.0,      # Keep Phase 5 baseline
             'min_confluence_factors': 3,   # Keep Phase 5 baseline
             # PHASE 5 SURGICAL FIXES:
@@ -64,9 +64,9 @@ class ICTEnhancedBacktester:
             'use_breaker_blocks': True,      # Enable breaker block detection
             'fvg_weight': 1.5,               # FVG quality score multiplier
             'require_fvg_volume': True,      # NEW
-            'min_indicator_confluence': 2,   # NEW
+            'min_indicator_confluence': 0,   # CHANGED from 2 to 0
             'use_atr_targets': True,         # NEW
-            'min_risk_reward': 1.5,         # NEW
+            'min_risk_reward': 0.3,         # CHANGED from 0.5 to 0.3 temporarily
             # PHASE 7 ADDITIONS:
             'use_dynamic_targets': True,     # Enable dynamic target calculation
             'target_optimization_enabled': True  # Enable target optimization analysis
@@ -1446,11 +1446,15 @@ class ICTEnhancedBacktester:
             confluence_factors.extend(indicator_confluences)
 
             # Skip if not enough indicator confluence
-            if len(indicator_confluences) < self.config.get('min_indicator_confluence', 2):
-                continue
+            # if len(indicator_confluences) < self.config.get('min_indicator_confluence', 2):
+            #     continue
             
             # Apply quality boost with category weighting
             setup_score = self.apply_incremental_quality_boost(setup_score, confluence_factors, ob, category)
+            
+            # Debug info for first few iterations
+            if len(trades) == 0 and len(order_blocks) > 0:
+                print(f"   DEBUG: Score={setup_score}, Indicators={len(indicator_confluences)}, Quality={min_quality}")
             
             # Quality filtering
             
@@ -1473,19 +1477,10 @@ class ICTEnhancedBacktester:
             
             # Calculate stop loss
             if ob['type'] == 'bullish':
-                atr_value = df.iloc[-1]['atr']
-                ob_range = ob['high'] - ob['low']
-                atr_stop = atr_value * 2.0
-                ob_stop = ob_range * self.config['stop_multiplier']
-                stop_distance = max(atr_stop, ob_stop)
-                stop_loss = ob['low'] - stop_distance
+                # Use fixed percentage stop for consistent R/R
+                stop_loss = entry_price * 0.995  # 0.5% stop
             else:
-                atr_value = df.iloc[-1]['atr']
-                ob_range = ob['high'] - ob['low']
-                atr_stop = atr_value * 2.0
-                ob_stop = ob_range * self.config['stop_multiplier']
-                stop_distance = max(atr_stop, ob_stop)
-                stop_loss = ob['high'] + stop_distance
+                stop_loss = entry_price * 1.005  # 0.5% stop
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1505,6 +1500,7 @@ class ICTEnhancedBacktester:
 
             if risk_reward < self.config.get('min_risk_reward', 1.5):
                 distance_filtered += 1
+                print(f"   R/R filtered: {risk_reward:.2f} < 1.5")  # Add this debug
                 continue
             
             # Create trade record
@@ -1552,8 +1548,9 @@ class ICTEnhancedBacktester:
         # Process Fair Value Gaps with tighter requirements
         for fvg in fvgs:
             # Skip FVGs without volume surge if required
-            if self.config.get('require_fvg_volume', True) and not fvg.get('volume_surge', False):
-                continue
+            # Temporarily disable volume requirement for FVGs
+            # if self.config.get('require_fvg_volume', True) and not fvg.get('volume_surge', False):
+            #     continue
                 
             setup_score = 70  # Higher base score for FVGs
             confluence_factors = ["Fair Value Gap"]
@@ -1599,11 +1596,10 @@ class ICTEnhancedBacktester:
             entry_price = self.calculate_retracement_entry(fvg, 'BULLISH' if fvg['type'] == 'bullish' else 'BEARISH', 'fvg')
             
             # Calculate stop loss (beyond the gap)
-            atr_value = df.iloc[-1]['atr']
             if fvg['type'] == 'bullish':
-                stop_loss = fvg['gap_low'] - (atr_value * 1.5)
+                stop_loss = entry_price * 0.995  # 0.5% stop
             else:
-                stop_loss = fvg['gap_high'] + (atr_value * 1.5)
+                stop_loss = entry_price * 1.005  # 0.5% stop
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -1621,6 +1617,7 @@ class ICTEnhancedBacktester:
             risk_reward = target_distance / stop_distance if stop_distance > 0 else 0
 
             if risk_reward < self.config.get('min_risk_reward', 1.5):
+                print(f"   FVG R/R filtered: {risk_reward:.2f} < 1.5")  # Add this debug
                 continue
             
             # Create FVG trade record
@@ -2127,6 +2124,10 @@ class ICTEnhancedBacktester:
         # Current risk/reward metrics
         winning_trades = [t for t in trades if t['win']]
         losing_trades = [t for t in trades if not t['win']]
+        
+        if winning_trades == 0:
+            print("  ⚠️  No winning trades - cannot calculate win/loss ratio")
+            return
         
         if winning_trades and losing_trades:
             avg_win = np.mean([t['pnl_pct'] for t in winning_trades])
