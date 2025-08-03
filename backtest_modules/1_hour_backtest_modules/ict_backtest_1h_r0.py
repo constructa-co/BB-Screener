@@ -59,8 +59,8 @@ class ICTEnhancedBacktester:
             'focus_categories': None,         # Category focus filter
             # PHASE 6 ADDITIONS:
             'use_fvg_detection': True,        # Enable FVG detection
-            'min_fvg_size': 0.7,             # R21: Tightened FVG requirements
-            'max_fvg_age': 30,               # Maximum FVG age in bars
+            'min_fvg_size': 0.5,             # Reduced for 1H volatility
+            'max_fvg_age': 50,               # Increased for 1H (50 hours)
             'use_breaker_blocks': True,      # Enable breaker block detection
             'fvg_weight': 1.5,               # FVG quality score multiplier
             'require_fvg_volume': True,      # NEW
@@ -1056,7 +1056,7 @@ class ICTEnhancedBacktester:
         try:
             lookback_months = self.config.get('lookback_months', 3)
             since = self.exchange.milliseconds() - (lookback_months * 30 * 24 * 60 * 60 * 1000)
-            ohlcv = self.exchange.fetch_ohlcv(symbol, '4h', since=since, limit=1000)
+            ohlcv = self.exchange.fetch_ohlcv(symbol, '1h', since=since, limit=1000)
             
             if len(ohlcv) < 300:
                 print("Insufficient data")
@@ -2937,6 +2937,9 @@ def main():
             'use_dynamic_stops': True,       # NEW
         }
     }
+    
+    # Create phase9_config alias to fix undefined variable errors
+    phase9_config = r21_config
     
     print("Select test mode:")
     print("1. Test R21 on 36 tokens (quick)")

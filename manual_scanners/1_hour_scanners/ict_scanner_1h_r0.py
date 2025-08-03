@@ -42,8 +42,8 @@ class ICTFVGScanner:
         # R21 Proven Parameters
         self.config = {
             # FVG Detection (from R21)
-            'min_fvg_size': 0.007,          # 0.7% minimum gap (tightened from 0.6%)
-            'max_fvg_age': 30,              # Maximum age in bars
+            'min_fvg_size': 0.005,          # 0.5% for 1H volatility
+            'max_fvg_age': 50,              # 50 bars for 1H
             'min_quality_score': 70,         # Minimum quality threshold
             'max_distance_to_fvg': 0.10,    # Max 10% distance from current price
             
@@ -139,7 +139,7 @@ class ICTFVGScanner:
             logger.error(f"Error fetching symbols: {e}")
             return []
             
-    def fetch_candles(self, symbol: str, timeframe='4h', limit=200) -> pd.DataFrame:
+    def fetch_candles(self, symbol: str, timeframe='1h', limit=200) -> pd.DataFrame:
         """Fetch OHLCV data"""
         try:
             ohlcv = self.exchange.fetch_ohlcv(
@@ -1140,7 +1140,7 @@ class ICTFVGScanner:
         # Example Discord webhook:
         # webhook.send(content=message)
         
-    def run_continuous(self, scan_interval=900, max_alerts_per_scan=20):
+    def run_continuous(self, scan_interval=300, max_alerts_per_scan=20):
         """Run scanner continuously with alert limits"""
         logger.info(f"Starting continuous scanner (interval: {scan_interval}s)")
         
