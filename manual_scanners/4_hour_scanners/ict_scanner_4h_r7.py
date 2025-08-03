@@ -1025,8 +1025,8 @@ class ICTFVGScanner:
 """
         return alert
         
-    def scan_all_symbols(self, top_n=500, min_quality=75):
-        """Main scanning loop"""
+    def scan_all_symbols(self, top_n=500, min_quality=75, max_alerts=20):
+        """Main scanning loop with improved sorting and limits"""
         logger.info(f"Starting scan of top {top_n} symbols...")
         self.performance_stats['total_scans'] += 1
         
@@ -1059,24 +1059,73 @@ class ICTFVGScanner:
                         df.iloc[-1]['close']
                     )
                     
-                    # Only alert high quality setups
+                    # Only add high quality setups
                     if setup['final_quality'] >= min_quality:
                         high_quality_setups.append(setup)
-                        self.performance_stats['setups_found'] += 1
-                        
-                        # Send alert (implement your notification method)
-                        alert_text = self.format_alert(setup)
-                        logger.info(alert_text)
-                        self.send_alert(alert_text)
                         
                 self.last_scan_time[symbol] = datetime.now()
                 
             except Exception as e:
                 logger.error(f"Error scanning {symbol}: {e}")
                 continue
+        
+        # Sort by multiple criteria for best setups first
+        high_quality_setups.sort(
+            key=lambda x: (
+                x['final_quality'],              # Highest quality first
+                x['risk_reward'],                # Best R/R first
+                -abs(x['distance_to_entry']),    # Closest to entry first
+                -x['fvg_age'],                   # Freshest FVGs first
+                1 if x['volume_surge'] else 0    # Volume surge preferred
+            ), 
+            reverse=True
+        )
+        
+        # Limit to top setups if too many
+        total_found = len(high_quality_setups)
+        if total_found > max_alerts:
+            logger.info(f"Found {total_found} setups, showing top {max_alerts}")
+            high_quality_setups = high_quality_setups[:max_alerts]
+        
+        # Update stats
+        self.performance_stats['setups_found'] = total_found
+        
+        # Send alerts for selected setups
+        for setup in high_quality_setups:
+            alert_text = self.format_alert(setup)
+            logger.info(alert_text)
+            self.send_alert(alert_text)
+            self.performance_stats['alerts_sent'] += 1
                 
+        # Print summary at the end
+        if high_quality_setups:
+            print(f"\n{'='*60}")
+            print(f"SCAN SUMMARY: Found {total_found} setups, showing top {len(high_quality_setups)}")
+            print(f"{'='*60}")
+            
+            # Show top 10 by different criteria
+            print(f"\n📊 TOP 10 BY QUALITY SCORE:")
+            for i, setup in enumerate(high_quality_setups[:10]):
+                action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+                print(f"{i+1:2d}. {action} {setup['symbol']:<12} | Score: {setup['final_quality']:3.0f} | R/R: {setup['risk_reward']:4.1f}:1 | Entry Distance: {abs(setup['distance_to_entry']):5.1f}%")
+            
+            # Best risk/reward setups
+            by_rr = sorted(high_quality_setups, key=lambda x: x['risk_reward'], reverse=True)[:5]
+            print(f"\n💰 TOP 5 BY RISK/REWARD:")
+            for i, setup in enumerate(by_rr):
+                action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+                print(f"{i+1}. {action} {setup['symbol']:<12} | R/R: {setup['risk_reward']:4.1f}:1 | Quality: {setup['final_quality']:3.0f}")
+            
+            # Immediately actionable (closest to entry)
+            actionable = [s for s in high_quality_setups if abs(s['distance_to_entry']) < 1.0]
+            if actionable:
+                print(f"\n⚡ IMMEDIATELY ACTIONABLE (within 1% of entry):")
+                for setup in actionable[:5]:
+                    action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+                    print(f"• {action} {setup['symbol']:<12} | Entry: ${setup['entry_price']:.4f} | Current: ${setup['current_price']:.4f}")
+        
         # Summary
-        logger.info(f"Scan complete. Found {len(high_quality_setups)} high-quality setups")
+        logger.info(f"Scan complete. Found {total_found} high-quality setups, displayed {len(high_quality_setups)}")
         return high_quality_setups
         
     def send_alert(self, message: str):
@@ -1091,14 +1140,14 @@ class ICTFVGScanner:
         # Example Discord webhook:
         # webhook.send(content=message)
         
-    def run_continuous(self, scan_interval=900):  # 15 minutes default
-        """Run scanner continuously"""
+    def run_continuous(self, scan_interval=900, max_alerts_per_scan=20):
+        """Run scanner continuously with alert limits"""
         logger.info(f"Starting continuous scanner (interval: {scan_interval}s)")
         
         while True:
             try:
-                # Run scan
-                setups = self.scan_all_symbols()
+                # Run scan with alert limit
+                setups = self.scan_all_symbols(max_alerts=max_alerts_per_scan)
                 
                 # Log performance
                 logger.info(f"Performance Stats: {self.performance_stats}")
@@ -1133,7 +1182,8 @@ def main():
     parser.add_argument('--test', action='store_true', help='Run in test mode')
     parser.add_argument('--once', action='store_true', help='Run once instead of continuous')
     parser.add_argument('--symbols', type=int, default=500, help='Number of symbols to scan')
-    parser.add_argument('--quality', type=int, default=75, help='Minimum quality threshold')
+    parser.add_argument('--quality', type=int, default=85, help='Minimum quality threshold (default: 85)')
+    parser.add_argument('--max-alerts', type=int, default=20, help='Maximum alerts per scan (default: 20)')
     
     args = parser.parse_args()
     
@@ -1142,22 +1192,17 @@ def main():
     
     if args.once:
         # Run single scan
-        setups = scanner.scan_all_symbols(top_n=args.symbols, min_quality=args.quality)
+        setups = scanner.scan_all_symbols(
+            top_n=args.symbols, 
+            min_quality=args.quality,
+            max_alerts=args.max_alerts
+        )
         
-        # Print summary
-        print(f"\n{'='*60}")
-        print(f"Found {len(setups)} high-quality FVG setups")
-        print(f"{'='*60}")
-        
-        for setup in setups[:10]:  # Show top 10
-            print(f"\n{setup['symbol']} - {setup['type'].upper()}")
-            print(f"Quality: {setup['final_quality']:.0f}/100")
-            print(f"Entry: ${setup['entry_price']:.4f}")
-            print(f"Risk/Reward: {setup['risk_reward']:.1f}:1")
+        # The summary is now printed within scan_all_symbols
             
     else:
         # Run continuous scanning
-        scanner.run_continuous()
+        scanner.run_continuous(max_alerts_per_scan=args.max_alerts)
 
 
 if __name__ == "__main__":
