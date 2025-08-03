@@ -1025,6 +1025,8 @@ class ICTEnhancedBacktester:
         # Apply commission
         pnl_pct -= (self.commission * 2 * 100)
         
+
+        
         # PHASE 7: More realistic win/loss logic
         # A trade is a win if it's profitable, regardless of target hits
         is_win = pnl_pct > 0
@@ -1613,7 +1615,7 @@ class ICTEnhancedBacktester:
             target_hits[f'T{i}'] = len([t for t in trades if t['hit_target'] == i])
         
         print("\n" + "=" * 70)
-        print("🔥 ICT R21 - SURGICAL CONFLUENCE FIXES")
+        print("🔥 ICT 1H R2 - TIGHTENED STOP LOSS")
         print("=" * 70)
         
         print(f"\n📊 OVERALL METRICS:")
@@ -2077,6 +2079,8 @@ class ICTEnhancedBacktester:
                 else:
                     stop_loss = entry_price * (1 + stop_loss_pct)
                 
+
+                
                 # Distance filtering
                 distance_pct = abs(current_price - entry_price) / current_price * 100
                 if distance_pct > self.config.get('max_distance_pct', 18.0):
@@ -2212,6 +2216,8 @@ class ICTEnhancedBacktester:
             else:
                 stop_loss = entry_price * (1 + stop_loss_pct)
             
+
+            
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
             if distance_pct > self.config.get('max_distance_pct', 18.0):
@@ -2319,7 +2325,7 @@ class ICTEnhancedBacktester:
                 'BAND/USDT', 'API3/USDT', 'GRT/USDT', 'LPT/USDT', 'STORJ/USDT', 'AR/USDT'
             ]
         
-        print("🔥 ICT PHASE 9 - DYNAMIC CATEGORY MANAGEMENT FOR 80% WIN RATE")
+        print("🔥 ICT 1H R2 - TIGHTENED STOP LOSS FOR 80% WIN RATE")
         print("=" * 70)
         print(f"📊 Testing {len(symbols)} symbols with PHASE 9 DYNAMIC CATEGORY MANAGEMENT")
         print(f"🎯 STRATEGY: Performance-based position sizing to reach 80% target")
@@ -2900,11 +2906,11 @@ class ICTEnhancedBacktester:
         }
 
 def main():
-    """Run 1H Surgical Confluence Fixes backtest"""
+    """Run 1H R2 - Tightened Stop Loss backtest"""
     
-    # 1H configuration with surgical fixes
+    # 1H R2 configuration with tightened stop loss
     config_1h = {
-        'name': '1H - Surgical Confluence Fixes',
+        'name': '1H R2 - Tightened Stop Loss',
         'config': {
             'future_window': 200,           # 33 days tracking
             'min_hold_bars': 6,             # 24 hours minimum
@@ -2938,7 +2944,7 @@ def main():
             'underperforming_categories': ['Gaming/NFTs', 'DeFi'],  # Categories to monitor
             'use_swing_targets': True,       # NEW
             'use_dynamic_stops': True,       # NEW
-            'stop_loss_pct': 0.006,         # 0.6% stop loss
+            'stop_loss_pct': 0.006,         # 0.6% stop loss - TIGHTENED
         }
     }
     
@@ -2953,7 +2959,7 @@ def main():
     
     if choice == "1":
         # Quick test with 36 tokens
-        print("\n🚀 TESTING R21 SURGICAL CONFLUENCE FIXES ON 36 TOKENS")
+        print("\n🚀 TESTING 1H R2 - TIGHTENED STOP LOSS ON 36 TOKENS")
         print("=" * 70)
         
         test_symbols = [
@@ -3006,7 +3012,7 @@ def main():
                 
     elif choice == "2":
         # Full 89-token test
-        print("\n🚀 TESTING PHASE 18 ENHANCED FIBONACCI TARGETS ON ALL 89 TOKENS")
+        print("\n🚀 TESTING 1H R2 - TIGHTENED STOP LOSS ON ALL 89 TOKENS")
         print("=" * 70)
         
         backtester = ICTEnhancedBacktester(config=config_1h['config'])

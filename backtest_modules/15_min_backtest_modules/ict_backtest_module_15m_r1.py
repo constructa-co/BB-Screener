@@ -82,7 +82,7 @@ class ICTEnhancedBacktester:
             'confluence_quality_boost': 30,  # Boost for OB+FVG overlap
             'use_fvg_logic_for_confluence': True,  # Use FVG logic for confluence
             'min_fvg_age': 3,              # Ensure fresh FVGs
-            'stop_loss_pct': 0.006,        # 0.6% stop loss
+            'stop_loss_pct': 0.005,        # 0.5% stop loss
         }
         
         # Dynamic category weighting based on historical performance
@@ -1025,6 +1025,10 @@ class ICTEnhancedBacktester:
         # Apply commission
         pnl_pct -= (self.commission * 2 * 100)
         
+
+        
+
+        
         # PHASE 7: More realistic win/loss logic
         # A trade is a win if it's profitable, regardless of target hits
         is_win = pnl_pct > 0
@@ -1057,7 +1061,7 @@ class ICTEnhancedBacktester:
         try:
             lookback_months = self.config.get('lookback_months', 3)
             since = self.exchange.milliseconds() - (lookback_months * 30 * 24 * 60 * 60 * 1000)
-            ohlcv = self.exchange.fetch_ohlcv(symbol, '1h', since=since, limit=1000)
+            ohlcv = self.exchange.fetch_ohlcv(symbol, '15m', since=since, limit=1000)
             
             if len(ohlcv) < 300:
                 print("Insufficient data")
@@ -1613,7 +1617,7 @@ class ICTEnhancedBacktester:
             target_hits[f'T{i}'] = len([t for t in trades if t['hit_target'] == i])
         
         print("\n" + "=" * 70)
-        print("🔥 ICT R21 - SURGICAL CONFLUENCE FIXES")
+        print("🔥 ICT 15M R2 - COMMISSION-ADJUSTED STOP LOSS")
         print("=" * 70)
         
         print(f"\n📊 OVERALL METRICS:")
@@ -1919,12 +1923,12 @@ class ICTEnhancedBacktester:
                 # Calculate entry using FVG logic
                 entry_price = (fvg['gap_high'] + fvg['gap_low']) / 2  # FVG midpoint
                 
-                # Calculate stop using FVG logic
-                atr = df.iloc[-1]['atr']
+                # Calculate stop using fixed percentage
+                stop_loss_pct = self.config.get('stop_loss_pct', 0.005)  # 0.5% default
                 if fvg['type'] == 'bullish':
-                    stop_loss = fvg['gap_low'] - (atr * 0.5)
+                    stop_loss = entry_price * (1 - stop_loss_pct)
                 else:
-                    stop_loss = fvg['gap_high'] + (atr * 0.5)
+                    stop_loss = entry_price * (1 + stop_loss_pct)
                 
                 # Boost quality score significantly
                 quality_score = 70 + fvg_boost  # Base FVG score + confluence boost
@@ -1989,12 +1993,12 @@ class ICTEnhancedBacktester:
             
             # Calculate basic R/R for standalone FVG
             entry_price = (fvg['gap_high'] + fvg['gap_low']) / 2
-            atr = df.iloc[-1]['atr']
+            stop_loss_pct = self.config.get('stop_loss_pct', 0.005)  # 0.5% default
             
             if fvg['type'] == 'bullish':
-                stop_loss = fvg['gap_low'] - (atr * 0.5)
+                stop_loss = entry_price * (1 - stop_loss_pct)
             else:
-                stop_loss = fvg['gap_high'] + (atr * 0.5)
+                stop_loss = entry_price * (1 + stop_loss_pct)
             
             targets, target_reasons = self.calculate_ict_targets(df, entry_price, 
                                                                'BULLISH' if fvg['type'] == 'bullish' else 'BEARISH', 
@@ -2071,11 +2075,13 @@ class ICTEnhancedBacktester:
                         entry_price = ob.get('high', ob.get('gap_high', 0))
                 
                 # Calculate stop loss
-                stop_loss_pct = self.config.get('stop_loss_pct', 0.006)  # 0.6% default
+                stop_loss_pct = self.config.get('stop_loss_pct', 0.005)  # 0.5% default
                 if ob['type'] == 'bullish':
                     stop_loss = entry_price * (1 - stop_loss_pct)
                 else:
                     stop_loss = entry_price * (1 + stop_loss_pct)
+                
+
                 
                 # Distance filtering
                 distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -2206,11 +2212,13 @@ class ICTEnhancedBacktester:
             entry_price = self.calculate_retracement_entry(fvg, 'BULLISH' if fvg['type'] == 'bullish' else 'BEARISH', 'fvg')
             
             # Calculate stop loss (beyond the gap)
-            stop_loss_pct = self.config.get('stop_loss_pct', 0.006)  # 0.6% default
+            stop_loss_pct = self.config.get('stop_loss_pct', 0.005)  # 0.5% default
             if fvg['type'] == 'bullish':
                 stop_loss = entry_price * (1 - stop_loss_pct)
             else:
                 stop_loss = entry_price * (1 + stop_loss_pct)
+            
+
             
             # Distance filtering
             distance_pct = abs(current_price - entry_price) / current_price * 100
@@ -2319,7 +2327,7 @@ class ICTEnhancedBacktester:
                 'BAND/USDT', 'API3/USDT', 'GRT/USDT', 'LPT/USDT', 'STORJ/USDT', 'AR/USDT'
             ]
         
-        print("🔥 ICT PHASE 9 - DYNAMIC CATEGORY MANAGEMENT FOR 80% WIN RATE")
+        print("🔥 ICT 1H R2 - TIGHTENED STOP LOSS FOR 80% WIN RATE")
         print("=" * 70)
         print(f"📊 Testing {len(symbols)} symbols with PHASE 9 DYNAMIC CATEGORY MANAGEMENT")
         print(f"🎯 STRATEGY: Performance-based position sizing to reach 80% target")
@@ -2900,23 +2908,23 @@ class ICTEnhancedBacktester:
         }
 
 def main():
-    """Run 1H Surgical Confluence Fixes backtest"""
+    """Run 15M R2 - Commission-Adjusted Stop Loss backtest"""
     
-    # 1H configuration with surgical fixes
+    # 15M R2 configuration with commission-adjusted stop loss
     config_1h = {
-        'name': '1H - Surgical Confluence Fixes',
+        'name': '15M R2 - Commission-Adjusted Stop Loss',
         'config': {
             'future_window': 200,           # 33 days tracking
             'min_hold_bars': 6,             # 24 hours minimum
             'stop_multiplier': 0.75,        # Stop distance
             'target_method': 'ict',         # ICT method
-            'lookback_months': 3,           # Extended lookback
-            'min_order_block_size': 1.0,    # 1H value
-            'min_volume_ratio': 1.5,        # 1H value
-            'min_quality_score': 70,        # 1H value
-            'max_distance_pct': 18.0,       # Keep proven baseline
-            'min_confluence_factors': 3,    # Keep proven baseline
-            'max_ob_age': 72,               # 1H value
+            'lookback_months': 2,           # 2 weeks for faster tests
+            'min_order_block_size': 0.5,    # 15M value (from 1.0)
+            'min_volume_ratio': 1.2,        # 15M value (from 1.5)
+            'min_quality_score': 65,        # 15M value (from 70)
+            'max_distance_pct': 10.0,       # 15M value (from 18.0)
+            'min_confluence_factors': 2,    # 15M value (from 3)
+            'max_ob_age': 40,               # 15M value (from 72)
             # SURGICAL FIXES:
             'use_optimized_targets': True,  # 0.8%, 1.2%, 2.0%
             'use_retracement_entry': True,  # 25% into OB
@@ -2927,8 +2935,8 @@ def main():
             'current_baseline': 64.0,      # Known baseline
             # PHASE 6 ADDITIONS:
             'use_fvg_detection': True,     # Enable FVG detection
-            'min_fvg_size': 0.4,           # 1H value
-            'max_fvg_age': 72,             # 1H value
+            'min_fvg_size': 0.2,           # 15M value (from 0.4)
+            'max_fvg_age': 40,             # 15M value (from 72)
             'use_breaker_blocks': True,   # Enable breaker blocks
             'fvg_weight': 1.5,            # FVG quality multiplier
             # PHASE 9 ADDITIONS:
@@ -2938,7 +2946,7 @@ def main():
             'underperforming_categories': ['Gaming/NFTs', 'DeFi'],  # Categories to monitor
             'use_swing_targets': True,       # NEW
             'use_dynamic_stops': True,       # NEW
-            'stop_loss_pct': 0.006,         # 0.6% stop loss
+            'stop_loss_pct': 0.003,         # 0.3% stop loss - ACCOUNTING FOR COMMISSION
         }
     }
     
@@ -2946,14 +2954,14 @@ def main():
     phase9_config = config_1h
     
     print("Select test mode:")
-    print("1. Test R21 on 36 tokens (quick)")
-    print("2. Test R21 on all 89 tokens")
+    print("1. Test 15M R2 on 36 tokens (quick)")
+    print("2. Test 15M R2 on all 89 tokens")
     
     choice = input("\nEnter choice (1-3): ").strip()
     
     if choice == "1":
         # Quick test with 36 tokens
-        print("\n🚀 TESTING R21 SURGICAL CONFLUENCE FIXES ON 36 TOKENS")
+        print("\n🚀 TESTING 15M R2 - COMMISSION-ADJUSTED STOP LOSS ON 36 TOKENS")
         print("=" * 70)
         
         test_symbols = [
@@ -3006,7 +3014,7 @@ def main():
                 
     elif choice == "2":
         # Full 89-token test
-        print("\n🚀 TESTING PHASE 18 ENHANCED FIBONACCI TARGETS ON ALL 89 TOKENS")
+        print("\n🚀 TESTING 15M R2 - COMMISSION-ADJUSTED STOP LOSS ON ALL 89 TOKENS")
         print("=" * 70)
         
         backtester = ICTEnhancedBacktester(config=config_1h['config'])
