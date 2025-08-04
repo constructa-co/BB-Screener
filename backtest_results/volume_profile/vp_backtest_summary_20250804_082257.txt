@@ -1,0 +1,70 @@
+VOLUME PROFILE BACKTEST SUMMARY
+==================================================
+
+Symbols Tested: 5
+Total Trades: 246
+Date Range: 90 days
+Profile Period: 72 candles (3 days)
+
+STRATEGY PERFORMANCE
+--------------------------------------------------
+
+MEAN_REVERSION:
+  Overall Win Rate: 25.29%
+  Average P&L: -0.26%
+  Total Trades: 87
+  By Category:
+    major: 26.47% win rate, 34 trades
+    large_cap: 24.53% win rate, 53 trades
+
+BREAKOUT:
+  Overall Win Rate: 0.00%
+  Average P&L: -3.84%
+  Total Trades: 1
+  By Category:
+    large_cap: 0.00% win rate, 1 trades
+
+POC_MAGNET:
+  Overall Win Rate: 26.28%
+  Average P&L: -0.27%
+  Total Trades: 156
+  By Category:
+    major: 22.73% win rate, 66 trades
+    large_cap: 28.89% win rate, 90 trades
+
+VIRGIN_POC:
+  Overall Win Rate: 0.00%
+  Average P&L: -2.16%
+  Total Trades: 2
+  By Category:
+    major: 0.00% win rate, 1 trades
+    large_cap: 0.00% win rate, 1 trades
+
+COMPOSITE:
+  Overall Win Rate: 0.00%
+  Average P&L: 0.00%
+  Total Trades: 0
+  By Category:
+
+BEST INDICATORS
+--------------------------------------------------
+1. MARKET_STRUCTURE
+   Win Contribution: 17.02%
+   Includes: pivot_points, support_resistance, fibonacci
+
+2. MOMENTUM
+   Win Contribution: 9.38%
+   Includes: rsi, macd, stochastic, williams_r
+
+3. VOLATILITY
+   Win Contribution: 9.38%
+   Includes: bollinger_bands, keltner_channels, atr_bands
+
+4. VOLUME_BASED
+   Win Contribution: 0.00%
+   Includes: volume_ma, obv, vwap, volume_rsi
+
+5. TREND
+   Win Contribution: 0.00%
+   Includes: ema_cross, adx, supertrend, psar
+
