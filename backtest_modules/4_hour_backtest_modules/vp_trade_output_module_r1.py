@@ -39,8 +39,8 @@ class VolumeProfileTradeReporter:
                     
                     # Entry Details
                     'entry_time': trade.get('entry_time', ''),
-                    'entry_price': trade['entry'],
-                    'stop_loss': trade['stop'],
+                    'entry_price': trade['entry_price'],
+                    'stop_loss': trade['stop_loss'],
                     'target': trade['target'],
                     'risk_reward': trade.get('risk_reward', 0),
                     'entry_score': trade.get('score', 0),
@@ -63,9 +63,9 @@ class VolumeProfileTradeReporter:
                     'poc_cluster_count': trade.get('poc_cluster', 0),
                     
                     # Risk Metrics
-                    'risk_pct': abs(trade['entry'] - trade['stop']) / trade['entry'] * 100,
-                    'reward_pct': abs(trade['target'] - trade['entry']) / trade['entry'] * 100,
-                    'actual_rr': abs(trade.get('pnl_pct', 0)) / (abs(trade['entry'] - trade['stop']) / trade['entry'] * 100) if trade.get('result') == 'target' else 0
+                    'risk_pct': abs(trade['entry_price'] - trade['stop_loss']) / trade['entry_price'] * 100,
+                    'reward_pct': abs(trade['target'] - trade['entry_price']) / trade['entry_price'] * 100,
+                    'actual_rr': abs(trade.get('pnl_pct', 0)) / (abs(trade['entry_price'] - trade['stop_loss']) / trade['entry_price'] * 100) if trade.get('win') else 0
                 }
                 all_trades_data.append(trade_data)
         
