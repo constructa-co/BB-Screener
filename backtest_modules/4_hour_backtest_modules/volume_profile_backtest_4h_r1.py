@@ -65,7 +65,7 @@ class VolumeProfileBacktest:
             'volume_surge': 1.0,       # 100% volume confirmation (LOOSENED)
             'score_threshold': 70,     # Minimum score for entry (LOOSENED)
             'atr_period': 14,          # ATR calculation period
-            'lookback_days': 365       # 1 year of data for backtesting
+            'lookback_days': 30        # 1 month of data for faster testing
         }
         
         # Crypto categories for separate analysis
@@ -373,10 +373,9 @@ class VolumeProfileBacktest:
         
         score += 30 * min(confluence_count / 3, 1)
         
-        # DEBUG: Log scores above 50 for analysis
-        if score >= 50:
-            print(f"🔍 DEBUG: {strategy} score={score:.1f}, close={current['close']:.4f}, POC={vp['poc']:.4f}, VAH={vp['vah']:.4f}, VAL={vp['val']:.4f}")
-            print(f"    Volume ratio: {current['volume_ratio']:.2f}, RSI: {current['rsi']:.1f}, ADX: {current['adx']:.1f}")
+        # DEBUG: Log only high scores for analysis (reduced output)
+        if score >= 75:  # Only log very high scores
+            print(f"🔍 HIGH SCORE: {strategy} score={score:.1f}, close={current['close']:.4f}")
         
         return score
     
@@ -470,10 +469,9 @@ class VolumeProfileBacktest:
         if not (breakout_up or breakout_down):
             return None
         
-        # DEBUG: Log breakout attempts
-        print(f"🔍 DEBUG: Breakout detected - Up: {breakout_up}, Down: {breakout_down}")
-        print(f"    Prev close: {prev['close']:.4f}, Current: {current['close']:.4f}")
-        print(f"    VAH: {vp['vah']:.4f}, VAL: {vp['val']:.4f}, Volume ratio: {current['volume_ratio']:.2f}")
+        # DEBUG: Log only significant breakouts
+        if current['volume_ratio'] > 2.0:  # Only log high volume breakouts
+            print(f"🔍 HIGH VOLUME BREAKOUT: Up: {breakout_up}, Down: {breakout_down}, Volume: {current['volume_ratio']:.2f}x")
         
         # Volume confirmation
         if current['volume_ratio'] < self.config['volume_surge']:
@@ -609,8 +607,9 @@ class VolumeProfileBacktest:
         if not virgin_pocs:
             return None
         
-        # DEBUG: Log virgin POCs found
-        print(f"🔍 DEBUG: Found {len(virgin_pocs)} virgin POCs: {[f'{v:.4f}' for v in virgin_pocs[:3]]}")
+        # DEBUG: Log only when multiple virgin POCs found
+        if len(virgin_pocs) > 1:
+            print(f"🔍 MULTIPLE VIRGIN POCs: {len(virgin_pocs)} found")
         
         # Check if price is near any virgin POC
         for vpoc in virgin_pocs:
@@ -838,6 +837,17 @@ class VolumeProfileBacktest:
         """Run backtest for a single symbol"""
         print(f"Backtesting {symbol}...")
         
+        # Validate data quality
+        if df.empty or df['close'].max() < 0.01 or len(df) < 100:  # Reduced minimum
+            print(f"⚠️  WARNING: {symbol} has insufficient data (length: {len(df)}, max close: {df['close'].max():.6f})")
+            return {
+                'symbol': symbol,
+                'category': 'other',
+                'strategy_stats': {},
+                'indicator_performance': {},
+                'all_trades': []
+            }
+        
         # Calculate indicators
         df = self.calculate_indicators(df)
         
@@ -883,10 +893,10 @@ class VolumeProfileBacktest:
                     
                     strategy_results[strategy_name].append(full_trade)
                 else:
-                    # DEBUG: Track rejected trades for analysis
+                    # DEBUG: Track only high-scoring rejections
                     current = df.iloc[i]
-                    if current['volume_ratio'] > 0.8:  # Only log if volume is decent
-                        print(f"⛔ Rejected: {strategy_name} at {current['timestamp']}, close={current['close']:.4f}, volume_ratio={current['volume_ratio']:.2f}")
+                    if current['volume_ratio'] > 2.0:  # Only log high volume rejections
+                        print(f"⛔ HIGH VOLUME REJECTED: {strategy_name}, volume_ratio={current['volume_ratio']:.2f}x")
         
         print(f"  Found {total_signals} total signals across all strategies")
         
@@ -1022,8 +1032,8 @@ class VolumeProfileBacktest:
                             ex = self.data_fetcher.exchanges[exchange]
                             market = f"{symbol_clean}/USDT"
                             
-                            # Fetch 1000 candles (about 166 days of 4H data)
-                            candles = ex.fetch_ohlcv(market, '4h', limit=1000)
+                            # Fetch 2000 candles (about 333 days of 4H data)
+                            candles = ex.fetch_ohlcv(market, '4h', limit=2000)
                             
                             if candles and len(candles) > 200:
                                 df = pd.DataFrame(candles, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
@@ -1036,7 +1046,16 @@ class VolumeProfileBacktest:
                         
                         if df is not None and len(df) > 0:
                             print(f"✅ Got {len(df)} candles from {exchange}")
-                            break
+                            # Debug: Check data range
+                            if len(df) > 0:
+                                print(f"   Data range: {df['timestamp'].min()} to {df['timestamp'].max()}")
+                                print(f"   Price range: {df['close'].min():.2f} to {df['close'].max():.2f}")
+                            # Ensure we have enough data for volume profile
+                            if len(df) >= 200:  # Minimum for proper backtesting
+                                break
+                            else:
+                                print(f"Insufficient data after filtering for {symbol}: only {len(df)} candles")
+                                df = None
                     except Exception as ex:
                         continue
                 
@@ -1065,12 +1084,12 @@ class VolumeProfileBacktest:
                     print(f"Available columns: {list(df.columns)}")
                     continue
                 
-                # Filter to last year (skip if we don't have enough data)
-                if len(df) > self.config['lookback_days']:
-                    cutoff_date = datetime.now() - timedelta(days=self.config['lookback_days'])
+                # Filter to last 90 days for faster testing (instead of 30)
+                if len(df) > 90:
+                    cutoff_date = datetime.now() - timedelta(days=90)
                     df = df[df['timestamp'] >= cutoff_date].reset_index(drop=True)
                 
-                if len(df) < 200:
+                if len(df) < 100:  # Reduced minimum for faster testing
                     print(f"Insufficient data after filtering for {symbol}: only {len(df)} candles")
                     continue
                 
@@ -1231,14 +1250,9 @@ class VolumeProfileBacktest:
 
 # Example usage
 if __name__ == "__main__":
-    # Define top 30 Binance cryptos
-    top_30_symbols = [
-        'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT',
-        'ADAUSDT', 'AVAXUSDT', 'DOGEUSDT', 'DOTUSDT', 'MATICUSDT',
-        'SHIBUSDT', 'LINKUSDT', 'UNIUSDT', 'ATOMUSDT', 'LTCUSDT',
-        'FTMUSDT', 'NEARUSDT', 'ALGOUSDT', 'ICPUSDT', 'FILUSDT',
-        'AAVEUSDT', 'CAKEUSDT', 'SUSHIUSDT', 'CRVUSDT', 'LDOUSDT',
-        'SANDUSDT', 'MANAUSDT', 'AXSUSDT', 'ENJUSDT', 'PEPEUSDT'
+        # Define top 5 Binance cryptos for faster testing
+    top_5_symbols = [
+        'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT'
     ]
     
     # Create output directory
@@ -1252,10 +1266,10 @@ if __name__ == "__main__":
     )
     
     print(f"Output directory: {output_path}")
-    print(f"Starting backtest for {len(top_30_symbols)} symbols...")
+    print(f"Starting backtest for {len(top_5_symbols)} symbols...")
     
     # Run backtest
-    results = backtester.run_backtest(top_30_symbols)
+    results = backtester.run_backtest(top_5_symbols)
     
     # Print summary if we got results
     if results and 'strategy_performance' in results:
