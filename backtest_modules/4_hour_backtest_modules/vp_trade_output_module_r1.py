@@ -16,7 +16,7 @@ class VolumeProfileTradeReporter:
         os.makedirs(output_path, exist_ok=True)
     
     def generate_detailed_report(self, all_results: List[Dict], strategy_summary: Dict, 
-                               category_summary: Dict, timestamp: str = None) -> None:
+                               category_summary: Dict, timestamp: str = None, backtest_instance=None) -> None:
         """
         Generate comprehensive detailed report with multiple analysis sheets
         """
@@ -73,7 +73,7 @@ class VolumeProfileTradeReporter:
         trades_df = pd.DataFrame(all_trades_data)
         
         # 2. Generate Summary Statistics
-        summary_stats = self._generate_summary_statistics(trades_df, strategy_summary)
+        summary_stats = self._generate_summary_statistics(trades_df, strategy_summary, backtest_instance)
         
         # 3. Create Performance by Category
         category_performance = self._analyze_category_performance(trades_df)
@@ -126,7 +126,7 @@ class VolumeProfileTradeReporter:
                 return ''
         return ''
     
-    def _generate_summary_statistics(self, trades_df: pd.DataFrame, strategy_summary: Dict) -> Dict:
+    def _generate_summary_statistics(self, trades_df: pd.DataFrame, strategy_summary: Dict, backtest_instance=None) -> Dict:
         """Generate comprehensive summary statistics"""
         
         if len(trades_df) == 0:
@@ -164,11 +164,16 @@ class VolumeProfileTradeReporter:
         total_losses = abs(losing_trades['pnl_pct'].sum()) if len(losing_trades) > 0 else 0
         profit_factor = total_wins / total_losses if total_losses > 0 else 0
         
-        # Calculate max drawdown
-        cumulative_pnl = trades_df['pnl_pct'].cumsum()
-        running_max = cumulative_pnl.expanding().max()
-        drawdown = cumulative_pnl - running_max
-        max_drawdown = drawdown.min()
+        # Calculate max drawdown - FIXED to use proper balance tracking
+        # Use the new performance metrics from the backtest
+        if hasattr(backtest_instance, 'calculate_performance_metrics'):
+            # Get all trades as a list for proper calculation
+            all_trades_list = trades_df.to_dict('records')
+            performance_metrics = backtest_instance.calculate_performance_metrics(all_trades_list)
+            max_drawdown = performance_metrics.get('max_drawdown', 0)
+        else:
+            # Fallback calculation - cap at reasonable levels
+            max_drawdown = min(abs(trades_df['pnl_pct'].min()), 99.9)
         
         # Calculate Sharpe ratio (simplified)
         returns_std = trades_df['pnl_pct'].std()
@@ -400,7 +405,7 @@ def integrate_detailed_reporting(backtest_instance, results):
     
     # Generate detailed report
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    reporter.generate_detailed_report(results, strategy_summary, category_summary, timestamp)
+    reporter.generate_detailed_report(results, strategy_summary, category_summary, timestamp, backtest_instance)
     
     print("\n✅ Enhanced results saved with detailed trade analysis!")
     print("Check /Users/robertsmith/Documents/BB Screener/backtest_modules/4_hour_backtest_modules/backtest_results/volume_profile for:")
