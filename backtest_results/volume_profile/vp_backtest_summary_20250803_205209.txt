@@ -1,0 +1,63 @@
+VOLUME PROFILE BACKTEST SUMMARY
+==================================================
+
+Symbols Tested: 30
+Total Trades: 0
+Date Range: 365 days
+Profile Period: 72 candles (3 days)
+
+STRATEGY PERFORMANCE
+--------------------------------------------------
+
+MEAN_REVERSION:
+  Overall Win Rate: 0.00%
+  Average P&L: 0.00%
+  Total Trades: 0
+  By Category:
+
+BREAKOUT:
+  Overall Win Rate: 0.00%
+  Average P&L: 0.00%
+  Total Trades: 0
+  By Category:
+
+POC_MAGNET:
+  Overall Win Rate: 0.00%
+  Average P&L: 0.00%
+  Total Trades: 0
+  By Category:
+
+VIRGIN_POC:
+  Overall Win Rate: 0.00%
+  Average P&L: 0.00%
+  Total Trades: 0
+  By Category:
+
+COMPOSITE:
+  Overall Win Rate: 0.00%
+  Average P&L: 0.00%
+  Total Trades: 0
+  By Category:
+
+BEST INDICATORS
+--------------------------------------------------
+1. VOLUME_BASED
+   Win Contribution: 0.00%
+   Includes: volume_ma, obv, vwap, volume_rsi
+
+2. MOMENTUM
+   Win Contribution: 0.00%
+   Includes: rsi, macd, stochastic, williams_r
+
+3. TREND
+   Win Contribution: 0.00%
+   Includes: ema_cross, adx, supertrend, psar
+
+4. VOLATILITY
+   Win Contribution: 0.00%
+   Includes: bollinger_bands, keltner_channels, atr_bands
+
+5. MARKET_STRUCTURE
+   Win Contribution: 0.00%
+   Includes: pivot_points, support_resistance, fibonacci
+
