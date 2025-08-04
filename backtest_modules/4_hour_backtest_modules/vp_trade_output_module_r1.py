@@ -52,6 +52,9 @@ class VolumeProfileTradeReporter:
                     'pnl_pct': trade.get('pnl_pct', 0),
                     'duration_hours': trade.get('duration_candles', 0) * 4,  # 4H candles
                     
+                    # Win/Loss Status - ADD THIS
+                    'win': trade.get('win', False),
+                    
                     # Volume Profile Specifics
                     'poc_level': trade.get('poc_level', 0),
                     'vah_level': trade.get('vah_level', 0),
@@ -143,8 +146,8 @@ class VolumeProfileTradeReporter:
         
         # Basic stats
         total_trades = len(trades_df)
-        winning_trades = trades_df[trades_df['result'] == 'target']
-        losing_trades = trades_df[trades_df['result'] == 'stop_loss']
+        winning_trades = trades_df[trades_df['win'] == True]
+        losing_trades = trades_df[trades_df['win'] == False]
         
         win_rate = len(winning_trades) / total_trades if total_trades > 0 else 0
         avg_pnl = trades_df['pnl_pct'].mean()
@@ -197,8 +200,8 @@ class VolumeProfileTradeReporter:
             if len(cat_trades) == 0:
                 continue
                 
-            wins = cat_trades[cat_trades['result'] == 'target']
-            losses = cat_trades[cat_trades['result'] == 'stop_loss']
+            wins = cat_trades[cat_trades['win'] == True]
+            losses = cat_trades[cat_trades['win'] == False]
             
             stats = {
                 'category': category,
@@ -310,9 +313,8 @@ class VolumeProfileTradeReporter:
         for strategy, stats in strategy_summary.items():
             if isinstance(stats, dict):
                 total_trades = stats.get('total_trades', 0)
-                wins = stats.get('wins', 0)
+                win_rate = stats.get('win_rate', 0)  # Use pre-calculated win rate
                 if total_trades > 0:
-                    win_rate = wins / total_trades
                     print(f"   {strategy}: {total_trades} trades, {win_rate:.1%} win rate")
         
         # Category Performance
@@ -324,12 +326,12 @@ class VolumeProfileTradeReporter:
         # Top Trades
         if len(trades_df) > 0:
             print(f"\n🏆 TOP PERFORMERS:")
-            top_winners = trades_df[trades_df['result'] == 'target'].nlargest(3, 'pnl_pct')
+            top_winners = trades_df[trades_df['win'] == True].nlargest(3, 'pnl_pct')
             for _, trade in top_winners.iterrows():
                 print(f"   {trade['symbol']} ({trade['strategy']}): {trade['pnl_pct']:.2f}%")
             
             print(f"\n💥 BIGGEST LOSERS:")
-            top_losers = trades_df[trades_df['result'] == 'stop_loss'].nsmallest(3, 'pnl_pct')
+            top_losers = trades_df[trades_df['win'] == False].nsmallest(3, 'pnl_pct')
             for _, trade in top_losers.iterrows():
                 print(f"   {trade['symbol']} ({trade['strategy']}): {trade['pnl_pct']:.2f}%")
     
@@ -348,40 +350,53 @@ def integrate_detailed_reporting(backtest_instance, results):
     """Integrate detailed reporting into backtest instance"""
     reporter = VolumeProfileTradeReporter(backtest_instance.output_path)
     
-    # Extract strategy summary from results
+    # FIX: Calculate strategy summary from actual trade data
     strategy_summary = {}
     category_summary = {}
     
+    # Collect all trades
+    all_trades = []
     for result in results:
-        for strategy, stats in result.get('strategy_stats', {}).items():
-            if strategy not in strategy_summary:
-                strategy_summary[strategy] = {
-                    'total_trades': 0,
-                    'wins': 0,
-                    'losses': 0,
-                    'win_rate': 0,
-                    'avg_pnl': 0,
-                    'avg_win': 0,
-                    'avg_loss': 0,
-                    'profit_factor': 0,
-                    'max_drawdown': 0,
-                    'sharpe_ratio': 0
-                }
-            
-            # Aggregate stats
-            strategy_summary[strategy]['total_trades'] += stats.get('total_trades', 0)
-            strategy_summary[strategy]['wins'] += stats.get('wins', 0)
-            strategy_summary[strategy]['losses'] += stats.get('losses', 0)
+        all_trades.extend(result.get('all_trades', []))
     
-    # Calculate aggregated metrics
-    for strategy in strategy_summary:
-        stats = strategy_summary[strategy]
-        if stats['total_trades'] > 0:
-            stats['win_rate'] = stats['wins'] / stats['total_trades']
-            stats['avg_pnl'] = stats.get('avg_pnl', 0) / stats['total_trades']
-            stats['avg_win'] = stats.get('avg_win', 0) / max(stats['wins'], 1)
-            stats['avg_loss'] = stats.get('avg_loss', 0) / max(stats['losses'], 1)
-            stats['profit_factor'] = abs(stats['avg_win'] * stats['wins']) / abs(stats['avg_loss'] * stats['losses']) if stats['avg_loss'] != 0 else 0
+    # Calculate strategy stats from actual trade data
+    if all_trades:
+        trades_df = pd.DataFrame(all_trades)
+        
+        for strategy in trades_df['strategy'].unique():
+            strategy_trades = trades_df[trades_df['strategy'] == strategy]
+            
+            if not strategy_trades.empty:
+                total_trades = len(strategy_trades)
+                # Use the new 'win' key instead of 'result'
+                winning_trades = strategy_trades[strategy_trades['win'] == True]
+                losing_trades = strategy_trades[strategy_trades['win'] == False]
+                
+                wins = len(winning_trades)
+                losses = len(losing_trades)
+                win_rate = wins / total_trades if total_trades > 0 else 0
+                
+                avg_pnl = strategy_trades['pnl_pct'].mean() if 'pnl_pct' in strategy_trades.columns else 0
+                avg_win = winning_trades['pnl_pct'].mean() if len(winning_trades) > 0 and 'pnl_pct' in winning_trades.columns else 0
+                avg_loss = losing_trades['pnl_pct'].mean() if len(losing_trades) > 0 and 'pnl_pct' in losing_trades.columns else 0
+                
+                # Calculate profit factor
+                total_wins = winning_trades['pnl_pct'].sum() if len(winning_trades) > 0 and 'pnl_pct' in winning_trades.columns else 0
+                total_losses = abs(losing_trades['pnl_pct'].sum()) if len(losing_trades) > 0 and 'pnl_pct' in losing_trades.columns else 0
+                profit_factor = total_wins / total_losses if total_losses > 0 else 0
+                
+                strategy_summary[strategy] = {
+                    'total_trades': total_trades,
+                    'wins': wins,
+                    'losses': losses,
+                    'win_rate': win_rate,
+                    'avg_pnl': avg_pnl,
+                    'avg_win': avg_win,
+                    'avg_loss': avg_loss,
+                    'profit_factor': profit_factor,
+                    'max_drawdown': 0,  # Would need to calculate from equity curve
+                    'sharpe_ratio': 0   # Would need to calculate from returns
+                }
     
     # Generate detailed report
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
