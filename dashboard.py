@@ -166,7 +166,17 @@ def get_best_opportunities(hours=24, min_prob=70):
                     WHEN s.scan_type LIKE '%15m%' OR s.scan_type LIKE '%1h%' THEN 'Day Trading'
                     WHEN s.scan_type LIKE '%4h%' OR s.scan_type LIKE '%daily%' THEN 'Swing Trading'
                     ELSE 'Position Trading'
-                END as trading_style
+                END as trading_style,
+                CASE 
+                    WHEN s.scan_type LIKE '%1m%' THEN '1M'
+                    WHEN s.scan_type LIKE '%5m%' THEN '5M'
+                    WHEN s.scan_type LIKE '%15m%' THEN '15M'
+                    WHEN s.scan_type LIKE '%1h%' THEN '1H'
+                    WHEN s.scan_type LIKE '%4h%' THEN '4H'
+                    WHEN s.scan_type LIKE '%daily%' THEN 'Daily'
+                    WHEN s.scan_type LIKE '%weekly%' THEN 'Weekly'
+                    ELSE 'Unknown'
+                END as timeframe
             FROM trade_opportunities t
             JOIN scan_results s ON t.scan_id = s.id
             WHERE t.probability >= %s
@@ -692,17 +702,17 @@ elif page == "💹 All Opportunities":
                                     # Mini chart for quick overview
                                     tv.show_mini_chart(symbol, width=300, height=150)
                                     
-                                    # Trade metrics
-                                    st.metric("Probability", f"{row['Probability']:.0f}%")
-                                    st.metric("Risk/Reward", f"{row['R:R']:.1f}:1")
-                                    st.metric("Entry", f"${row['Entry']:.6f}")
-                                    st.metric("Target", f"${row['Target 1']:.6f}")
-                                    st.metric("Stop", f"${row['Stop']:.6f}")
+                                    # Trade metrics with safe access
+                                    st.metric("Probability", f"{row.get('Probability', 0):.0f}%")
+                                    st.metric("Risk/Reward", f"{row.get('R:R', 0):.1f}:1")
+                                    st.metric("Entry", f"${row.get('Entry', 0):.6f}")
+                                    st.metric("Target", f"${row.get('Target 1', 0):.6f}")
+                                    st.metric("Stop", f"${row.get('Stop', 0):.6f}")
                                     
-                                    # Technical indicators
+                                    # Technical indicators with safe access
                                     st.write("**Technical Indicators**")
-                                    st.write(f"RSI: {row['RSI']:.0f}")
-                                    st.write(f"MFI: {row['MFI']:.0f}")
+                                    st.write(f"RSI: {row.get('RSI', 0):.0f}")
+                                    st.write(f"MFI: {row.get('MFI', 0):.0f}")
                                 
                                 # Technical analysis widget
                                 st.subheader("Technical Analysis")
