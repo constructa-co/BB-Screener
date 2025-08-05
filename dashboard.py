@@ -180,11 +180,11 @@ def get_best_opportunities(hours=24, min_prob=70):
             FROM trade_opportunities t
             JOIN scan_results s ON t.scan_id = s.id
             WHERE t.probability >= %s
-            AND t.timestamp > NOW() - INTERVAL '%s hours'
+            AND t.timestamp > NOW() - INTERVAL '1 day'
             AND t.trade_taken = FALSE
             ORDER BY t.probability DESC, t.risk_reward_ratio DESC
             LIMIT 50
-        """, (min_prob, hours))
+        """, (min_prob,))
         
         opportunities = logger.cursor.fetchall()
     
