@@ -180,7 +180,6 @@ def get_best_opportunities(hours=24, min_prob=70):
             FROM trade_opportunities t
             JOIN scan_results s ON t.scan_id = s.id
             WHERE t.probability >= %s
-            AND t.timestamp > NOW() - INTERVAL '1 day'
             AND t.trade_taken = FALSE
             ORDER BY t.probability DESC, t.risk_reward_ratio DESC
             LIMIT 50
@@ -281,8 +280,7 @@ if page == "🏠 Overview":
                 COUNT(*) as total_scans,
                 SUM(premium_trades_found) as total_opportunities
             FROM scan_results
-            WHERE scan_timestamp > NOW() - INTERVAL '%s hours'
-        """, (time_hours,))
+        """, ())
         
         stats = logger.cursor.fetchone()
         
@@ -301,8 +299,7 @@ if page == "🏠 Overview":
                 SELECT COUNT(*) as high_prob
                 FROM trade_opportunities
                 WHERE probability >= 85
-                AND timestamp > NOW() - INTERVAL '%s hours'
-            """, (time_hours,))
+            """, ())
             high_prob = logger.cursor.fetchone()['high_prob']
             st.metric("High Probability", high_prob or 0, "≥85%")
         
@@ -455,10 +452,9 @@ if page == "🏠 Overview":
                     SUM(premium_trades_found) as opportunities,
                     AVG(execution_time_seconds) as avg_time
                 FROM scan_results
-                WHERE scan_timestamp > NOW() - INTERVAL '%s hours'
                 GROUP BY scanner
                 ORDER BY opportunities DESC
-            """, (time_hours,))
+            """, ())
             
             perf_data = pd.DataFrame(logger.cursor.fetchall())
             
@@ -554,10 +550,10 @@ elif page == "🎯 Scanner Dashboard":
                     FROM trade_opportunities t
                     JOIN scan_results s ON t.scan_id = s.id
                     WHERE s.scan_type = %s
-                    AND t.timestamp > NOW() - INTERVAL '%s hours'
+
                     AND t.probability >= %s
                     ORDER BY t.probability DESC
-                """, (scanner_type, time_hours, min_probability))
+                """, (scanner_type, min_probability))
                 
                 scanner_opps = logger.cursor.fetchall()
                 
