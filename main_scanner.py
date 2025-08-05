@@ -18,9 +18,7 @@ if hasattr(np, '__all__') and 'NaN' not in np.__all__:
     np.__all__.append('NaN')
 
 print("✅ NumPy 2.x compatibility patch applied at startup")
-
-# GLOBAL NUMPY 2.x COMPATIBILITY PATCH - MUST BE FIRST
-import numpy_patch
+from trade_logger import TradeLogger
 
 import argparse
 import os
