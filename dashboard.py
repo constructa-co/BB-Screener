@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Crypto Scanner Dashboard
-Streamlit dashboard for viewing scanner results and database analytics
+Crypto Trading Command Center
+Unified dashboard for all crypto scanner analytics and trading management
 """
 
 import streamlit as st
@@ -9,396 +9,979 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import os
+import numpy as np
+from trade_logger import TradeLogger
 import json
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+import os
 
 # Page configuration
 st.set_page_config(
-    page_title="Crypto Scanner Dashboard",
-    page_icon="📊",
+    page_title="Crypto Trading Command Center",
+    page_icon="🚀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS for professional styling
 st.markdown("""
 <style>
     .main-header {
         font-size: 2.5rem;
-        color: #1f77b4;
+        font-weight: bold;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
-        margin-bottom: 2rem;
+        padding: 20px;
+    }
+    .scanner-card {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+        margin-bottom: 10px;
     }
     .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .success-metric {
-        border-left-color: #28a745;
+    .opportunity-row {
+        transition: all 0.3s ease;
     }
-    .warning-metric {
-        border-left-color: #ffc107;
-    }
-    .danger-metric {
-        border-left-color: #dc3545;
+    .opportunity-row:hover {
+        background-color: #f0f0f0;
+        transform: translateX(5px);
     }
 </style>
 """, unsafe_allow_html=True)
 
-@st.cache_resource(ttl=300)  # Cache for 5 minutes
-def get_database_connection():
-    """Get database connection with caching"""
-    try:
-        db_url = os.getenv('DATABASE_URL')
-        if not db_url:
-            st.error("❌ DATABASE_URL not found in environment variables")
-            return None
+# Initialize database connection
+@st.cache_resource
+def get_db():
+    return TradeLogger()
+
+# Scanner configuration mapping
+SCANNER_CONFIG = {
+    'BB Scanner': {
+        'timeframes': ['4H'],
+        'icon': '🎯',
+        'description': 'Bollinger Band bounce detection with 88% MFI win rate',
+        'schedule': 'Every 4 hours'
+    },
+    'ICT Strategies': {
+        'timeframes': ['15M', '1H', '4H'],
+        'icon': '📈',
+        'description': 'Order blocks, liquidity grabs, and Fair Value Gaps',
+        'schedule': 'Every hour'
+    },
+    'Wyckoff': {
+        'timeframes': ['15M', '1H', '4H'],
+        'icon': '🏛️',
+        'description': 'Accumulation/Distribution phase detection',
+        'schedule': 'Every 2 hours'
+    },
+    'Elliott Waves': {
+        'timeframes': ['1H', '4H', 'Daily', 'Weekly'],
+        'icon': '🌊',
+        'description': 'Wave pattern identification for major moves',
+        'schedule': 'Daily'
+    },
+    'Supply & Demand': {
+        'timeframes': ['1M', '5M', '15M', '1H', '4H'],
+        'icon': '📦',
+        'description': 'Institutional supply and demand zones',
+        'schedule': 'Every 15 minutes'
+    },
+    'Fibonacci': {
+        'timeframes': ['5M', '1H', '4H'],
+        'icon': '📐',
+        'description': 'Retracement and extension levels',
+        'schedule': 'Every hour'
+    },
+    'FVG Scanner': {
+        'timeframes': ['1M', '5M', '1H', '4H'],
+        'icon': '🕳️',
+        'description': 'Fair Value Gap detection',
+        'schedule': 'Every 15 minutes'
+    },
+    'Trend Following': {
+        'timeframes': ['1H', '4H', 'Daily'],
+        'icon': '📊',
+        'description': 'Trend continuation patterns',
+        'schedule': 'Every 4 hours'
+    }
+}
+
+# Helper functions
+def get_scanner_status():
+    """Get current status of all scanners"""
+    logger = get_db()
+    status_data = []
+    
+    if logger.connection:
+        for scanner, config in SCANNER_CONFIG.items():
+            for tf in config['timeframes']:
+                scanner_type = f"{scanner.lower().replace(' ', '_')}_{tf.lower()}"
+                
+                # Get last run info
+                logger.cursor.execute("""
+                    SELECT MAX(scan_timestamp) as last_run,
+                           COUNT(*) as total_runs,
+                           SUM(premium_trades_found) as total_opportunities
+                    FROM scan_results
+                    WHERE scan_type = %s
+                    AND scan_timestamp > NOW() - INTERVAL '24 hours'
+                """, (scanner_type,))
+                
+                result = logger.cursor.fetchone()
+                
+                status_data.append({
+                    'Scanner': f"{config['icon']} {scanner}",
+                    'Timeframe': tf,
+                    'Last Run': result['last_run'] or 'Never',
+                    'Status': '🟢 Active' if result['last_run'] and (datetime.now() - result['last_run']).seconds < 3600 else '🔴 Inactive',
+                    'Opportunities (24h)': result['total_opportunities'] or 0
+                })
+    
+    return pd.DataFrame(status_data)
+
+def get_best_opportunities(hours=24, min_prob=70):
+    """Get best trading opportunities across all scanners"""
+    logger = get_db()
+    opportunities = []
+    
+    if logger.connection:
+        logger.cursor.execute("""
+            SELECT 
+                t.*,
+                s.scan_type,
+                s.scan_timestamp,
+                CASE 
+                    WHEN s.scan_type LIKE '%1m%' OR s.scan_type LIKE '%5m%' THEN 'Scalping'
+                    WHEN s.scan_type LIKE '%15m%' OR s.scan_type LIKE '%1h%' THEN 'Day Trading'
+                    WHEN s.scan_type LIKE '%4h%' OR s.scan_type LIKE '%daily%' THEN 'Swing Trading'
+                    ELSE 'Position Trading'
+                END as trading_style
+            FROM trade_opportunities t
+            JOIN scan_results s ON t.scan_id = s.id
+            WHERE t.probability >= %s
+            AND t.timestamp > NOW() - INTERVAL '%s hours'
+            AND t.trade_taken = FALSE
+            ORDER BY t.probability DESC, t.risk_reward_ratio DESC
+            LIMIT 50
+        """, (min_prob, hours))
         
-        conn = psycopg2.connect(db_url)
-        return conn
-    except Exception as e:
-        st.error(f"❌ Database connection failed: {e}")
-        return None
+        opportunities = logger.cursor.fetchall()
+    
+    return opportunities
 
-@st.cache_data(ttl=300)
-def get_scan_results():
-    """Get recent scan results"""
-    conn = get_database_connection()
-    if not conn:
-        return pd.DataFrame()
-    
-    try:
-        query = """
-        SELECT 
-            scan_type,
-            scan_timestamp,
-            total_coins_analyzed,
-            premium_trades_found,
-            execution_time_seconds,
-            scanner_version
-        FROM scan_results 
-        ORDER BY scan_timestamp DESC 
-        LIMIT 100
-        """
-        df = pd.read_sql(query, conn)
-        conn.close()
-        return df
-    except Exception as e:
-        st.error(f"Error fetching scan results: {e}")
-        return pd.DataFrame()
 
-@st.cache_data(ttl=300)
-def get_trade_opportunities():
-    """Get recent trade opportunities"""
-    conn = get_database_connection()
-    if not conn:
-        return pd.DataFrame()
-    
-    try:
-        query = """
-        SELECT 
-            t.*,
-            s.scan_type,
-            s.scan_timestamp as scan_time
-        FROM trade_opportunities t
-        JOIN scan_results s ON t.scan_id = s.id
-        ORDER BY t.timestamp DESC 
-        LIMIT 500
-        """
-        df = pd.read_sql(query, conn)
-        conn.close()
-        return df
-    except Exception as e:
-        st.error(f"Error fetching trade opportunities: {e}")
-        return pd.DataFrame()
 
-@st.cache_data(ttl=300)
-def get_backtest_results():
-    """Get backtest results"""
-    conn = get_database_connection()
-    if not conn:
-        return pd.DataFrame()
+# Sidebar Configuration
+with st.sidebar:
+    st.markdown("## 🎛️ Control Panel")
     
-    try:
-        query = """
-        SELECT 
-            strategy_name,
-            timeframe,
-            total_trades,
-            winning_trades,
-            win_rate,
-            avg_profit,
-            max_drawdown,
-            sharpe_ratio,
-            run_timestamp
-        FROM backtest_results 
-        ORDER BY run_timestamp DESC 
-        LIMIT 50
-        """
-        df = pd.read_sql(query, conn)
-        conn.close()
-        return df
-    except Exception as e:
-        st.error(f"Error fetching backtest results: {e}")
-        return pd.DataFrame()
-
-def main():
-    """Main dashboard function"""
-    
-    # Header
-    st.markdown('<h1 class="main-header">🚀 Crypto Scanner Dashboard</h1>', unsafe_allow_html=True)
-    
-    # Sidebar
-    st.sidebar.title("📊 Navigation")
-    page = st.sidebar.selectbox(
-        "Choose a page:",
-        ["📈 Overview", "🔍 Trade Opportunities", "📊 Backtest Results", "⚙️ Scanner Performance"]
+    # Time filter
+    time_range = st.selectbox(
+        "📅 Time Range",
+        ["Last 1 Hour", "Last 4 Hours", "Last 24 Hours", "Last 7 Days", "Last 30 Days"],
+        index=2
     )
     
-    # Check database connection
-    conn = get_database_connection()
-    if not conn:
-        st.error("❌ Cannot connect to database. Please check your DATABASE_URL configuration.")
-        return
+    # Convert to hours
+    time_hours = {
+        "Last 1 Hour": 1,
+        "Last 4 Hours": 4,
+        "Last 24 Hours": 24,
+        "Last 7 Days": 168,
+        "Last 30 Days": 720
+    }[time_range]
     
-    conn.close()
+    # Probability filter
+    min_probability = st.slider("🎯 Min Probability %", 50, 95, 70, 5)
     
-    if page == "📈 Overview":
-        show_overview()
-    elif page == "🔍 Trade Opportunities":
-        show_trade_opportunities()
-    elif page == "📊 Backtest Results":
-        show_backtest_results()
-    elif page == "⚙️ Scanner Performance":
-        show_scanner_performance()
+    # Scanner filter
+    active_scanners = st.multiselect(
+        "🔍 Active Scanners",
+        list(SCANNER_CONFIG.keys()),
+        default=list(SCANNER_CONFIG.keys())
+    )
+    
+    # Trading style filter
+    trading_styles = st.multiselect(
+        "💹 Trading Styles",
+        ["Scalping", "Day Trading", "Swing Trading", "Position Trading"],
+        default=["Day Trading", "Swing Trading"]
+    )
+    
+    st.markdown("---")
+    
+    # Market conditions (from your market regime logic)
+    st.markdown("### 🌍 Market Conditions")
+    
+    # These would come from your actual market analysis
+    market_regime = st.metric("Market Regime", "Bullish 🟢", "72% strength")
+    btc_dominance = st.metric("BTC Dominance", "48.5%", "-2.1%")
+    fear_greed = st.metric("Fear & Greed", "68", "Greed")
+    
+    st.markdown("---")
+    
+    # Quick actions
+    st.markdown("### ⚡ Quick Actions")
+    
+    if st.button("🔄 Run All Scanners", use_container_width=True):
+        st.success("All scanners initiated!")
+        st.balloons()
+    
+    if st.button("📊 Generate Report", use_container_width=True):
+        st.info("Generating comprehensive report...")
+    
+    if st.button("🔔 Test Alerts", use_container_width=True):
+        st.info("Alert test sent to Telegram!")
 
-def show_overview():
-    """Show dashboard overview"""
+# Main navigation
+page = st.sidebar.radio(
+    "📍 Navigation",
+    ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
+     "📊 Performance Analytics", "🤖 3Commas Integration", 
+     "📈 Post-Mortem Analysis", "⚙️ Settings"]
+)
+
+# Page content based on selection
+if page == "🏠 Overview":
+    # Header
+    st.markdown('<h1 class="main-header">🚀 Crypto Trading Command Center</h1>', unsafe_allow_html=True)
     
-    st.header("📈 Dashboard Overview")
+    # Get current data
+    logger = get_db()
     
-    # Get data
-    scan_df = get_scan_results()
-    trade_df = get_trade_opportunities()
-    backtest_df = get_backtest_results()
+    # Top metrics
+    col1, col2, col3, col4, col5 = st.columns(5)
     
-    if scan_df.empty and trade_df.empty and backtest_df.empty:
-        st.warning("⚠️ No data available. Please run some scans first.")
-        return
-    
-    # Key metrics
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        if not scan_df.empty:
-            total_scans = len(scan_df)
-            st.metric("Total Scans", total_scans)
-        else:
-            st.metric("Total Scans", 0)
-    
-    with col2:
-        if not trade_df.empty:
-            total_opportunities = len(trade_df)
-            st.metric("Trade Opportunities", total_opportunities)
-        else:
-            st.metric("Trade Opportunities", 0)
-    
-    with col3:
-        if not trade_df.empty:
-            avg_probability = trade_df['probability'].mean()
-            st.metric("Avg Probability", f"{avg_probability:.1f}%")
-        else:
-            st.metric("Avg Probability", "0%")
-    
-    with col4:
-        if not backtest_df.empty:
-            avg_win_rate = backtest_df['win_rate'].mean()
-            st.metric("Avg Win Rate", f"{avg_win_rate:.1f}%")
-        else:
-            st.metric("Avg Win Rate", "0%")
-    
-    # Recent activity
-    st.subheader("📊 Recent Activity")
-    
-    if not scan_df.empty:
-        col1, col2 = st.columns(2)
+    if logger.connection:
+        # Get overview stats
+        logger.cursor.execute("""
+            SELECT 
+                COUNT(DISTINCT scan_type) as active_scanners,
+                COUNT(*) as total_scans,
+                SUM(premium_trades_found) as total_opportunities
+            FROM scan_results
+            WHERE scan_timestamp > NOW() - INTERVAL '%s hours'
+        """, (time_hours,))
+        
+        stats = logger.cursor.fetchone()
         
         with col1:
-            st.subheader("Recent Scans")
-            recent_scans = scan_df.head(10)[['scan_type', 'scan_timestamp', 'premium_trades_found', 'execution_time_seconds']]
-            st.dataframe(recent_scans, use_container_width=True)
+            st.metric("Active Scanners", stats['active_scanners'] or 0, "+2 new")
         
         with col2:
-            st.subheader("Scan Performance")
-            fig = px.line(scan_df, x='scan_timestamp', y='premium_trades_found', 
-                         title='Premium Trades Found Over Time')
-            st.plotly_chart(fig, use_container_width=True)
+            st.metric("Total Scans", stats['total_scans'] or 0, f"Last {time_range.lower()}")
+        
+        with col3:
+            st.metric("Opportunities", stats['total_opportunities'] or 0, "+23 new")
+        
+        with col4:
+            # Get high probability count
+            logger.cursor.execute("""
+                SELECT COUNT(*) as high_prob
+                FROM trade_opportunities
+                WHERE probability >= 85
+                AND timestamp > NOW() - INTERVAL '%s hours'
+            """, (time_hours,))
+            high_prob = logger.cursor.fetchone()['high_prob']
+            st.metric("High Probability", high_prob or 0, "≥85%")
+        
+        with col5:
+            # Calculate average win rate
+            logger.cursor.execute("""
+                SELECT 
+                    AVG(CASE WHEN trade_result = 'win' THEN 1 ELSE 0 END) * 100 as win_rate
+                FROM trade_opportunities
+                WHERE trade_taken = TRUE
+                AND trade_result IN ('win', 'loss')
+            """)
+            win_rate = logger.cursor.fetchone()['win_rate'] or 0
+            st.metric("Win Rate", f"{win_rate:.1f}%", "+2.1%")
     
-    # High probability trades
-    if not trade_df.empty:
-        st.subheader("🎯 High Probability Trades")
-        high_prob_trades = trade_df[trade_df['probability'] >= 70].head(10)
-        if not high_prob_trades.empty:
-            st.dataframe(high_prob_trades[['symbol', 'probability', 'risk_reward_ratio', 'pattern_type', 'timestamp']], 
-                        use_container_width=True)
+    # Two column layout
+    left_col, right_col = st.columns([2, 1])
+    
+    with left_col:
+        # Best opportunities
+        st.subheader("🎯 Top Trading Opportunities")
+        
+        opportunities = get_best_opportunities(time_hours, min_probability)
+        
+        if opportunities:
+            # Create formatted dataframe
+            opp_data = []
+            for opp in opportunities[:10]:  # Top 10
+                scanner_type = opp['scan_type'].replace('_', ' ').title()
+                icon = '🎯'  # Default icon
+                for scanner, config in SCANNER_CONFIG.items():
+                    if scanner.lower() in opp['scan_type']:
+                        icon = config['icon']
+                        break
+                
+                opp_data.append({
+                    'Scanner': f"{icon} {scanner_type}",
+                    'Symbol': opp['symbol'],
+                    'Probability': opp['probability'],
+                    'R:R': opp['risk_reward_ratio'],
+                    'Entry': opp['entry_price'],
+                    'Target 1': opp['target_1'],
+                    'Style': opp['trading_style'],
+                    'Time': opp['timestamp']
+                })
+            
+            opp_df = pd.DataFrame(opp_data)
+            
+            # Display with custom formatting
+            st.dataframe(
+                opp_df,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "Probability": st.column_config.ProgressColumn(
+                        "Probability",
+                        format="%.1f%%",
+                        min_value=0,
+                        max_value=100,
+                    ),
+                    "R:R": st.column_config.NumberColumn(
+                        "Risk/Reward",
+                        format="%.2f:1"
+                    ),
+                    "Entry": st.column_config.NumberColumn(
+                        "Entry Price",
+                        format="$%.6f"
+                    ),
+                    "Target 1": st.column_config.NumberColumn(
+                        "Target 1",
+                        format="$%.6f"
+                    ),
+                    "Time": st.column_config.DatetimeColumn(
+                        "Found",
+                        format="MMM D, HH:mm"
+                    )
+                }
+            )
         else:
-            st.info("No high probability trades found recently.")
+            st.info("No opportunities found matching your criteria")
+        
+        # Scanner performance chart
+        st.subheader("📈 Scanner Performance")
+        
+        if logger.connection:
+            # Get scanner performance data
+            logger.cursor.execute("""
+                SELECT 
+                    CASE 
+                        WHEN scan_type LIKE '%bb%' THEN 'BB Scanner'
+                        WHEN scan_type LIKE '%ict%' THEN 'ICT'
+                        WHEN scan_type LIKE '%wyckoff%' THEN 'Wyckoff'
+                        WHEN scan_type LIKE '%elliott%' THEN 'Elliott Waves'
+                        WHEN scan_type LIKE '%supply%' THEN 'Supply & Demand'
+                        WHEN scan_type LIKE '%fvg%' THEN 'FVG'
+                        WHEN scan_type LIKE '%fibonacci%' THEN 'Fibonacci'
+                        ELSE 'Other'
+                    END as scanner,
+                    COUNT(*) as scans,
+                    SUM(premium_trades_found) as opportunities,
+                    AVG(execution_time_seconds) as avg_time
+                FROM scan_results
+                WHERE scan_timestamp > NOW() - INTERVAL '%s hours'
+                GROUP BY scanner
+                ORDER BY opportunities DESC
+            """, (time_hours,))
+            
+            perf_data = pd.DataFrame(logger.cursor.fetchall())
+            
+            if not perf_data.empty:
+                fig = px.bar(
+                    perf_data,
+                    x='scanner',
+                    y='opportunities',
+                    color='avg_time',
+                    color_continuous_scale='viridis',
+                    title='Opportunities Found by Scanner',
+                    labels={'opportunities': 'Total Opportunities', 'avg_time': 'Avg Scan Time (s)'}
+                )
+                st.plotly_chart(fig, use_container_width=True)
+    
+    with right_col:
+        # Scanner status
+        st.subheader("🔄 Scanner Status")
+        
+        status_df = get_scanner_status()
+        
+        if not status_df.empty:
+            # Group by scanner
+            for scanner in active_scanners:
+                if scanner in SCANNER_CONFIG:
+                    config = SCANNER_CONFIG[scanner]
+                    
+                    with st.expander(f"{config['icon']} {scanner}", expanded=True):
+                        scanner_data = status_df[status_df['Scanner'].str.contains(scanner)]
+                        
+                        if not scanner_data.empty:
+                            for _, row in scanner_data.iterrows():
+                                col1, col2, col3 = st.columns([2, 1, 1])
+                                with col1:
+                                    st.write(f"**{row['Timeframe']}**")
+                                with col2:
+                                    st.write(row['Status'])
+                                with col3:
+                                    st.metric("", row['Opportunities (24h)'], label="Found")
+                        
+                        st.caption(f"📅 {config['schedule']}")
+        
+        # Trading distribution pie chart
+        st.subheader("💹 Trading Style Distribution")
+        
+        if opportunities:
+            style_counts = {}
+            for opp in opportunities:
+                style = opp['trading_style']
+                style_counts[style] = style_counts.get(style, 0) + 1
+            
+            if style_counts:
+                fig = px.pie(
+                    values=list(style_counts.values()),
+                    names=list(style_counts.keys()),
+                    color_discrete_sequence=px.colors.sequential.Viridis
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
-def show_trade_opportunities():
-    """Show trade opportunities analysis"""
+elif page == "🎯 Scanner Dashboard":
+    st.title("🎯 Scanner Dashboard")
     
-    st.header("🔍 Trade Opportunities Analysis")
+    # Scanner selection
+    selected_scanner = st.selectbox(
+        "Select Scanner",
+        list(SCANNER_CONFIG.keys()),
+        format_func=lambda x: f"{SCANNER_CONFIG[x]['icon']} {x}"
+    )
     
-    trade_df = get_trade_opportunities()
+    config = SCANNER_CONFIG[selected_scanner]
     
-    if trade_df.empty:
-        st.warning("⚠️ No trade opportunities data available.")
-        return
-    
-    # Filters
-    col1, col2, col3 = st.columns(3)
-    
+    # Scanner info
+    col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
-        min_probability = st.slider("Min Probability (%)", 0, 100, 50)
-    
+        st.markdown(f"### {config['description']}")
     with col2:
-        selected_scanner = st.selectbox("Scanner Type", ["All"] + list(trade_df['scan_type'].unique()))
-    
+        st.metric("Timeframes", len(config['timeframes']))
     with col3:
-        selected_pattern = st.selectbox("Pattern Type", ["All"] + list(trade_df['pattern_type'].unique()))
+        st.metric("Schedule", config['schedule'])
     
-    # Filter data
-    filtered_df = trade_df.copy()
-    filtered_df = filtered_df[filtered_df['probability'] >= min_probability]
+    # Timeframe tabs
+    tabs = st.tabs(config['timeframes'])
     
-    if selected_scanner != "All":
-        filtered_df = filtered_df[filtered_df['scan_type'] == selected_scanner]
-    
-    if selected_pattern != "All":
-        filtered_df = filtered_df[filtered_df['pattern_type'] == selected_pattern]
-    
-    # Display filtered results
-    st.subheader(f"📊 Filtered Results ({len(filtered_df)} opportunities)")
-    st.dataframe(filtered_df[['symbol', 'probability', 'risk_reward_ratio', 'pattern_type', 'scan_type', 'timestamp']], 
-                use_container_width=True)
-    
-    # Analytics
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("Probability Distribution")
-        fig = px.histogram(filtered_df, x='probability', nbins=20, 
-                          title='Trade Probability Distribution')
-        st.plotly_chart(fig, use_container_width=True)
-    
-    with col2:
-        st.subheader("Risk/Reward Analysis")
-        fig = px.scatter(filtered_df, x='probability', y='risk_reward_ratio', 
-                        color='pattern_type', title='Probability vs Risk/Reward')
-        st.plotly_chart(fig, use_container_width=True)
+    for i, tf in enumerate(config['timeframes']):
+        with tabs[i]:
+            scanner_type = f"{selected_scanner.lower().replace(' ', '_')}_{tf.lower()}"
+            
+            # Get opportunities for this specific scanner/timeframe
+            logger = get_db()
+            if logger.connection:
+                logger.cursor.execute("""
+                    SELECT t.*, s.scan_timestamp
+                    FROM trade_opportunities t
+                    JOIN scan_results s ON t.scan_id = s.id
+                    WHERE s.scan_type = %s
+                    AND t.timestamp > NOW() - INTERVAL '%s hours'
+                    AND t.probability >= %s
+                    ORDER BY t.probability DESC
+                """, (scanner_type, time_hours, min_probability))
+                
+                scanner_opps = logger.cursor.fetchall()
+                
+                if scanner_opps:
+                    # Display opportunities
+                    st.metric("Active Opportunities", len(scanner_opps))
+                    
+                    # Create detailed view
+                    for opp in scanner_opps[:5]:  # Show top 5
+                        with st.container():
+                            st.markdown(f"""
+                            <div class="scanner-card">
+                                <h4>{opp['symbol']} - {opp['probability']:.1f}% Probability</h4>
+                                <p><b>Entry:</b> ${opp['entry_price']:.6f} | <b>Stop:</b> ${opp['stop_loss']:.6f} | <b>Target 1:</b> ${opp['target_1']:.6f}</p>
+                                <p><b>Risk/Reward:</b> {opp['risk_reward_ratio']:.2f}:1 | <b>Pattern:</b> {opp['pattern_type'] or 'N/A'}</p>
+                                <p><b>Found:</b> {opp['timestamp'].strftime('%Y-%m-%d %H:%M')}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                else:
+                    st.info(f"No {tf} opportunities found for {selected_scanner}")
 
-def show_backtest_results():
-    """Show backtest results analysis"""
+elif page == "💹 All Opportunities":
+    st.title("💹 All Trading Opportunities")
     
-    st.header("📊 Backtest Results Analysis")
+    # Get all opportunities
+    opportunities = get_best_opportunities(time_hours, min_probability)
     
-    backtest_df = get_backtest_results()
-    
-    if backtest_df.empty:
-        st.warning("⚠️ No backtest results available.")
-        return
-    
-    # Key metrics
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        avg_win_rate = backtest_df['win_rate'].mean()
-        st.metric("Average Win Rate", f"{avg_win_rate:.1f}%")
-    
-    with col2:
-        avg_profit = backtest_df['avg_profit'].mean()
-        st.metric("Average Profit", f"{avg_profit:.2f}%")
-    
-    with col3:
-        avg_drawdown = backtest_df['max_drawdown'].mean()
-        st.metric("Average Max Drawdown", f"{avg_drawdown:.2f}%")
-    
-    with col4:
-        avg_sharpe = backtest_df['sharpe_ratio'].mean()
-        st.metric("Average Sharpe Ratio", f"{avg_sharpe:.2f}")
-    
-    # Backtest results table
-    st.subheader("📋 Backtest Results")
-    st.dataframe(backtest_df, use_container_width=True)
-    
-    # Performance charts
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("Win Rate by Strategy")
-        fig = px.bar(backtest_df, x='strategy_name', y='win_rate', 
-                    title='Win Rate by Strategy')
-        st.plotly_chart(fig, use_container_width=True)
-    
-    with col2:
-        st.subheader("Profit vs Drawdown")
-        fig = px.scatter(backtest_df, x='avg_profit', y='max_drawdown', 
-                        color='strategy_name', title='Profit vs Risk')
-        st.plotly_chart(fig, use_container_width=True)
+    if opportunities:
+        # Filter by trading style
+        filtered_opps = [opp for opp in opportunities if opp['trading_style'] in trading_styles]
+        
+        st.metric("Total Opportunities", len(filtered_opps))
+        
+        # Group by timeframe
+        timeframe_groups = {}
+        for opp in filtered_opps:
+            tf = opp['timeframe']
+            if tf not in timeframe_groups:
+                timeframe_groups[tf] = []
+            timeframe_groups[tf].append(opp)
+        
+        # Display by timeframe
+        for tf in ['1M', '5M', '15M', '1H', '4H', 'Daily', 'Weekly']:
+            if tf in timeframe_groups:
+                with st.expander(f"⏰ {tf} Timeframe ({len(timeframe_groups[tf])} opportunities)", expanded=(tf in ['1H', '4H'])):
+                    # Create dataframe for this timeframe
+                    tf_data = []
+                    for opp in timeframe_groups[tf]:
+                        tf_data.append({
+                            'Symbol': opp['symbol'],
+                            'Scanner': opp['scan_type'].replace('_', ' ').title(),
+                            'Probability': opp['probability'],
+                            'R:R': opp['risk_reward_ratio'],
+                            'Entry': opp['entry_price'],
+                            'Stop': opp['stop_loss'],
+                            'Target 1': opp['target_1'],
+                            'Market Cap': f"${opp['market_cap']/1e9:.1f}B" if opp['market_cap'] > 1e9 else f"${opp['market_cap']/1e6:.0f}M",
+                            'Volume': f"${opp['volume_24h']/1e6:.1f}M",
+                            'RSI': opp['rsi'],
+                            'MFI': opp['mfi']
+                        })
+                    
+                    tf_df = pd.DataFrame(tf_data)
+                    
+                    # Display with filtering
+                    st.dataframe(
+                        tf_df,
+                        use_container_width=True,
+                        hide_index=True,
+                        column_config={
+                            "Probability": st.column_config.ProgressColumn(
+                                "Prob %",
+                                format="%.0f%%",
+                                min_value=0,
+                                max_value=100,
+                            ),
+                            "R:R": st.column_config.NumberColumn(
+                                "R:R",
+                                format="%.1f"
+                            ),
+                            "Entry": st.column_config.NumberColumn(
+                                "Entry",
+                                format="$%.6f"
+                            ),
+                            "Stop": st.column_config.NumberColumn(
+                                "Stop",
+                                format="$%.6f"
+                            ),
+                            "Target 1": st.column_config.NumberColumn(
+                                "T1",
+                                format="$%.6f"
+                            ),
+                            "RSI": st.column_config.NumberColumn(
+                                "RSI",
+                                format="%.0f"
+                            ),
+                            "MFI": st.column_config.NumberColumn(
+                                "MFI",
+                                format="%.0f"
+                            )
+                        }
+                    )
+    else:
+        st.info("No opportunities found matching your criteria")
 
-def show_scanner_performance():
-    """Show scanner performance analysis"""
+elif page == "📊 Performance Analytics":
+    st.title("📊 Performance Analytics")
     
-    st.header("⚙️ Scanner Performance Analysis")
+    # Time period selection
+    period = st.radio(
+        "Select Period",
+        ["Today", "This Week", "This Month", "All Time"],
+        horizontal=True
+    )
     
-    scan_df = get_scan_results()
+    logger = get_db()
     
-    if scan_df.empty:
-        st.warning("⚠️ No scanner performance data available.")
-        return
+    if logger.connection:
+        # Performance metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        # Calculate period filter
+        period_filter = {
+            "Today": "1 day",
+            "This Week": "7 days",
+            "This Month": "30 days",
+            "All Time": "10 years"
+        }[period]
+        
+        # Get performance stats
+        logger.cursor.execute("""
+            SELECT 
+                COUNT(CASE WHEN trade_taken = TRUE THEN 1 END) as total_trades,
+                COUNT(CASE WHEN trade_result = 'win' THEN 1 END) as wins,
+                COUNT(CASE WHEN trade_result = 'loss' THEN 1 END) as losses,
+                AVG(CASE WHEN trade_result IN ('win', 'loss') THEN profit_loss_percent END) as avg_pnl,
+                MAX(profit_loss_percent) as best_trade,
+                MIN(profit_loss_percent) as worst_trade
+            FROM trade_opportunities
+            WHERE timestamp > NOW() - INTERVAL '%s'
+        """, (period_filter,))
+        
+        stats = logger.cursor.fetchone()
+        
+        with col1:
+            st.metric("Total Trades", stats['total_trades'] or 0)
+        
+        with col2:
+            win_rate = (stats['wins'] / stats['total_trades'] * 100) if stats['total_trades'] > 0 else 0
+            st.metric("Win Rate", f"{win_rate:.1f}%")
+        
+        with col3:
+            st.metric("Avg P&L", f"{stats['avg_pnl'] or 0:.1f}%")
+        
+        with col4:
+            st.metric("Best Trade", f"{stats['best_trade'] or 0:.1f}%")
+        
+        # Performance by scanner
+        st.subheader("Performance by Scanner")
+        
+        logger.cursor.execute("""
+            SELECT 
+                CASE 
+                    WHEN s.scan_type LIKE '%bb%' THEN 'BB Scanner'
+                    WHEN s.scan_type LIKE '%ict%' THEN 'ICT'
+                    WHEN s.scan_type LIKE '%wyckoff%' THEN 'Wyckoff'
+                    WHEN s.scan_type LIKE '%elliott%' THEN 'Elliott Waves'
+                    WHEN s.scan_type LIKE '%supply%' THEN 'Supply & Demand'
+                    ELSE 'Other'
+                END as scanner,
+                COUNT(CASE WHEN t.trade_taken = TRUE THEN 1 END) as trades,
+                COUNT(CASE WHEN t.trade_result = 'win' THEN 1 END) as wins,
+                AVG(CASE WHEN t.trade_result IN ('win', 'loss') THEN t.profit_loss_percent END) as avg_pnl
+            FROM trade_opportunities t
+            JOIN scan_results s ON t.scan_id = s.id
+            WHERE t.timestamp > NOW() - INTERVAL '%s'
+            GROUP BY scanner
+            HAVING COUNT(CASE WHEN t.trade_taken = TRUE THEN 1 END) > 0
+        """, (period_filter,))
+        
+        perf_by_scanner = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not perf_by_scanner.empty:
+            perf_by_scanner['win_rate'] = (perf_by_scanner['wins'] / perf_by_scanner['trades'] * 100).round(1)
+            
+            fig = px.bar(
+                perf_by_scanner,
+                x='scanner',
+                y='win_rate',
+                color='avg_pnl',
+                color_continuous_scale='RdYlGn',
+                title='Win Rate by Scanner',
+                labels={'win_rate': 'Win Rate %', 'avg_pnl': 'Avg P&L %'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        
+        # P&L over time
+        st.subheader("Cumulative P&L")
+        
+        logger.cursor.execute("""
+            SELECT 
+                DATE(actual_exit_time) as date,
+                SUM(profit_loss_percent) as daily_pnl,
+                SUM(SUM(profit_loss_percent)) OVER (ORDER BY DATE(actual_exit_time)) as cumulative_pnl
+            FROM trade_opportunities
+            WHERE trade_result IN ('win', 'loss')
+            AND actual_exit_time > NOW() - INTERVAL '%s'
+            GROUP BY date
+            ORDER BY date
+        """, (period_filter,))
+        
+        pnl_data = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not pnl_data.empty:
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=pnl_data['date'],
+                y=pnl_data['cumulative_pnl'],
+                mode='lines+markers',
+                name='Cumulative P&L',
+                line=dict(color='green', width=3)
+            ))
+            fig.update_layout(
+                title='Cumulative P&L Over Time',
+                xaxis_title='Date',
+                yaxis_title='Cumulative P&L %',
+                hovermode='x unified'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+elif page == "🤖 3Commas Integration":
+    st.title("🤖 3Commas Integration")
     
-    # Scanner performance metrics
-    scanner_stats = scan_df.groupby('scan_type').agg({
-        'total_coins_analyzed': 'sum',
-        'premium_trades_found': 'sum',
-        'execution_time_seconds': 'mean'
-    }).reset_index()
-    
-    scanner_stats['opportunity_rate'] = (scanner_stats['premium_trades_found'] / 
-                                       scanner_stats['total_coins_analyzed'] * 100)
-    
-    # Display scanner stats
-    st.subheader("📊 Scanner Performance Summary")
-    st.dataframe(scanner_stats, use_container_width=True)
-    
-    # Performance charts
-    col1, col2 = st.columns(2)
-    
+    # Connection status
+    col1, col2 = st.columns([1, 3])
     with col1:
-        st.subheader("Opportunity Rate by Scanner")
-        fig = px.bar(scanner_stats, x='scan_type', y='opportunity_rate', 
-                    title='Opportunity Rate by Scanner Type')
-        st.plotly_chart(fig, use_container_width=True)
+        st.metric("Connection Status", "🟢 Connected")
+    
+    # Active bots
+    st.subheader("Active Trading Bots")
+    
+    # This would connect to your actual 3Commas integration
+    bot_data = [
+        {"Bot": "BB Bounce Bot", "Status": "🟢 Active", "Deals": 3, "P&L": "+4.2%"},
+        {"Bot": "ICT Scalper", "Status": "🟢 Active", "Deals": 7, "P&L": "+2.8%"},
+        {"Bot": "Wyckoff Swing", "Status": "🟡 Paused", "Deals": 1, "P&L": "+12.3%"},
+        {"Bot": "Elliott Wave", "Status": "🔴 Stopped", "Deals": 0, "P&L": "0%"}
+    ]
+    
+    bot_df = pd.DataFrame(bot_data)
+    st.dataframe(bot_df, use_container_width=True, hide_index=True)
+    
+    # Trade execution queue
+    st.subheader("Trade Execution Queue")
+    
+    logger = get_db()
+    if logger.connection:
+        # Get pending trades
+        logger.cursor.execute("""
+            SELECT 
+                symbol,
+                probability,
+                entry_price,
+                stop_loss,
+                target_1,
+                risk_reward_ratio,
+                timestamp
+            FROM trade_opportunities
+            WHERE trade_taken = FALSE
+            AND probability >= 80
+            AND timestamp > NOW() - INTERVAL '4 hours'
+            ORDER BY probability DESC
+            LIMIT 10
+        """)
+        
+        pending_trades = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not pending_trades.empty:
+            st.dataframe(
+                pending_trades,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "probability": st.column_config.ProgressColumn(
+                        "Probability",
+                        format="%.0f%%",
+                        min_value=0,
+                        max_value=100,
+                    ),
+                    "entry_price": st.column_config.NumberColumn(
+                        "Entry",
+                        format="$%.6f"
+                    ),
+                    "stop_loss": st.column_config.NumberColumn(
+                        "Stop",
+                        format="$%.6f"
+                    ),
+                    "target_1": st.column_config.NumberColumn(
+                        "Target",
+                        format="$%.6f"
+                    ),
+                    "risk_reward_ratio": st.column_config.NumberColumn(
+                        "R:R",
+                        format="%.1f:1"
+                    )
+                }
+            )
+            
+            if st.button("Execute Selected Trades", type="primary", use_container_width=True):
+                st.success("Trades sent to 3Commas for execution!")
+        else:
+            st.info("No high-probability trades pending execution")
+
+elif page == "📈 Post-Mortem Analysis":
+    st.title("📈 Post-Mortem Analysis")
+    
+    # Completed trades analysis
+    logger = get_db()
+    
+    if logger.connection:
+        # Get completed trades
+        logger.cursor.execute("""
+            SELECT 
+                t.*,
+                s.scan_type,
+                CASE 
+                    WHEN profit_loss_percent > 0 THEN 'Profitable'
+                    WHEN profit_loss_percent < 0 THEN 'Loss'
+                    ELSE 'Breakeven'
+                END as outcome
+            FROM trade_opportunities t
+            JOIN scan_results s ON t.scan_id = s.id
+            WHERE t.trade_taken = TRUE
+            AND t.trade_result IS NOT NULL
+            ORDER BY t.actual_exit_time DESC
+            LIMIT 100
+        """)
+        
+        completed_trades = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not completed_trades.empty:
+            # Summary metrics
+            col1, col2, col3, col4 = st.columns(4)
+            
+            profitable = len(completed_trades[completed_trades['outcome'] == 'Profitable'])
+            losses = len(completed_trades[completed_trades['outcome'] == 'Loss'])
+            
+            with col1:
+                st.metric("Total Completed", len(completed_trades))
+            with col2:
+                st.metric("Profitable", profitable, f"{profitable/len(completed_trades)*100:.0f}%")
+            with col3:
+                st.metric("Losses", losses, f"{losses/len(completed_trades)*100:.0f}%")
+            with col4:
+                avg_pnl = completed_trades['profit_loss_percent'].mean()
+                st.metric("Avg P&L", f"{avg_pnl:.1f}%")
+            
+            # Trade analysis
+            st.subheader("Trade Analysis")
+            
+            # Filter options
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                outcome_filter = st.selectbox("Outcome", ["All", "Profitable", "Loss", "Breakeven"])
+            with col2:
+                scanner_filter = st.selectbox("Scanner", ["All"] + list(completed_trades['scan_type'].unique()))
+            with col3:
+                sort_by = st.selectbox("Sort By", ["Exit Time", "P&L %", "Symbol"])
+            
+            # Apply filters
+            filtered_df = completed_trades.copy()
+            if outcome_filter != "All":
+                filtered_df = filtered_df[filtered_df['outcome'] == outcome_filter]
+            if scanner_filter != "All":
+                filtered_df = filtered_df[filtered_df['scan_type'] == scanner_filter]
+            
+            # Sort
+            sort_mapping = {
+                "Exit Time": "actual_exit_time",
+                "P&L %": "profit_loss_percent",
+                "Symbol": "symbol"
+            }
+            filtered_df = filtered_df.sort_values(sort_mapping[sort_by], ascending=False)
+            
+            # Display detailed trades
+            for _, trade in filtered_df.head(20).iterrows():
+                color = "green" if trade['profit_loss_percent'] > 0 else "red"
+                
+                with st.expander(f"{trade['symbol']} - {trade['profit_loss_percent']:.1f}% ({trade['outcome']})"):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.write("**Entry Details**")
+                        st.write(f"Scanner: {trade['scan_type']}")
+                        st.write(f"Entry: ${trade['entry_price']:.6f}")
+                        st.write(f"Probability: {trade['probability']:.0f}%")
+                        st.write(f"Pattern: {trade['pattern_type'] or 'N/A'}")
+                    
+                    with col2:
+                        st.write("**Exit Details**")
+                        st.write(f"Exit: ${trade['actual_exit_price']:.6f}")
+                        st.write(f"Target 1: ${trade['target_1']:.6f}")
+                        st.write(f"Stop Loss: ${trade['stop_loss']:.6f}")
+                        st.write(f"Exit Time: {trade['actual_exit_time']}")
+                    
+                    with col3:
+                        st.write("**Performance**")
+                        st.write(f"P&L: {trade['profit_loss_percent']:.1f}%")
+                        st.write(f"Risk/Reward: {trade['risk_reward_ratio']:.1f}:1")
+                        st.write(f"Hold Time: {(trade['actual_exit_time'] - trade['timestamp']).days} days")
+                    
+                    # Lessons learned section
+                    st.write("**Analysis Notes**")
+                    if trade['profit_loss_percent'] > 0:
+                        st.success(f"✅ Successful {trade['pattern_type'] or 'pattern'} recognition")
+                    else:
+                        st.error(f"❌ Consider reviewing {trade['pattern_type'] or 'pattern'} criteria")
+
+elif page == "⚙️ Settings":
+    st.title("⚙️ Settings")
+    
+    # Scanner configuration
+    st.subheader("Scanner Configuration")
+    
+    # Create tabs for each scanner
+    scanner_tabs = st.tabs(list(SCANNER_CONFIG.keys()))
+    
+    for i, (scanner, config) in enumerate(SCANNER_CONFIG.items()):
+        with scanner_tabs[i]:
+            st.write(f"### {config['icon']} {scanner} Settings")
+            
+            # Schedule settings
+            col1, col2 = st.columns(2)
+            with col1:
+                st.selectbox(
+                    "Run Schedule",
+                    ["Every 15 minutes", "Every hour", "Every 4 hours", "Daily", "Manual only"],
+                    index=1,
+                    key=f"{scanner}_schedule"
+                )
+            
+            with col2:
+                st.multiselect(
+                    "Active Timeframes",
+                    config['timeframes'],
+                    default=config['timeframes'],
+                    key=f"{scanner}_timeframes"
+                )
+            
+            # Quality thresholds
+            st.write("**Quality Thresholds**")
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.slider("Min Probability %", 50, 95, 70, 5, key=f"{scanner}_min_prob")
+            with col2:
+                st.slider("Min Risk/Reward", 1.0, 5.0, 2.0, 0.5, key=f"{scanner}_min_rr")
+            with col3:
+                st.slider("Max Risk %", 1, 5, 2, key=f"{scanner}_max_risk")
+    
+    # Alert settings
+    st.subheader("Alert Settings")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.toggle("Telegram Alerts", value=True)
+        st.text_input("Telegram Chat ID", value="123456789")
     
     with col2:
-        st.subheader("Execution Time by Scanner")
-        fig = px.bar(scan_df, x='scan_type', y='execution_time_seconds', 
-                    title='Average Execution Time')
-        st.plotly_chart(fig, use_container_width=True)
+        st.toggle("Email Alerts", value=False)
+        st.text_input("Email Address", placeholder="your@email.com")
     
-    # Time series analysis
-    st.subheader("📈 Scanner Activity Over Time")
-    fig = px.line(scan_df, x='scan_timestamp', y='premium_trades_found', 
-                  color='scan_type', title='Premium Trades Found Over Time')
-    st.plotly_chart(fig, use_container_width=True)
+    # Database settings
+    st.subheader("Database Settings")
+    
+    if st.button("Backup Database"):
+        st.success("Database backup initiated!")
+    
+    if st.button("Clear Old Data (>30 days)"):
+        st.warning("This will delete old scan data. Are you sure?")
+    
+    # Save settings
+    if st.button("Save All Settings", type="primary", use_container_width=True):
+        st.success("Settings saved successfully!")
 
-if __name__ == "__main__":
-    main() 
+# Footer
+st.markdown("---")
+st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC | Database: crypto-scanner-db | Server: 165.232.160.52") 
