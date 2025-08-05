@@ -11,6 +11,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import numpy as np
 from trade_logger import TradeLogger
+import tradingview_charts as tv
 import json
 import os
 
@@ -370,6 +371,56 @@ if page == "🏠 Overview":
                     )
                 }
             )
+            
+            # Add chart buttons for top opportunities
+            st.subheader("📊 Chart Analysis")
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                if st.button("Show BTC/USDT Chart", key="btc_chart"):
+                    st.session_state.show_btc_chart = True
+            
+            with col2:
+                if st.button("Show ETH/USDT Chart", key="eth_chart"):
+                    st.session_state.show_eth_chart = True
+            
+            with col3:
+                if st.button("Show SOL/USDT Chart", key="sol_chart"):
+                    st.session_state.show_sol_chart = True
+            
+            # Display charts if requested
+            if st.session_state.get('show_btc_chart', False):
+                with st.expander("📈 BTC/USDT Chart", expanded=True):
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=500)
+                    with col2:
+                        tv.show_technical_analysis_widget("BTC/USDT")
+                        st.metric("Current Price", "$45,234.56")
+                        st.metric("24h Change", "+2.34%")
+                st.session_state.show_btc_chart = False
+            
+            if st.session_state.get('show_eth_chart', False):
+                with st.expander("📈 ETH/USDT Chart", expanded=True):
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=500)
+                    with col2:
+                        tv.show_technical_analysis_widget("ETH/USDT")
+                        st.metric("Current Price", "$2,456.78")
+                        st.metric("24h Change", "+1.87%")
+                st.session_state.show_eth_chart = False
+            
+            if st.session_state.get('show_sol_chart', False):
+                with st.expander("📈 SOL/USDT Chart", expanded=True):
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=500)
+                    with col2:
+                        tv.show_technical_analysis_widget("SOL/USDT")
+                        st.metric("Current Price", "$98.45")
+                        st.metric("24h Change", "+3.21%")
+                st.session_state.show_sol_chart = False
         else:
             st.info("No opportunities found matching your criteria")
         
@@ -505,16 +556,35 @@ elif page == "🎯 Scanner Dashboard":
                     st.metric("Active Opportunities", len(scanner_opps))
                     
                     # Create detailed view
-                    for opp in scanner_opps[:5]:  # Show top 5
-                        with st.container():
-                            st.markdown(f"""
-                            <div class="scanner-card">
-                                <h4>{opp['symbol']} - {opp['probability']:.1f}% Probability</h4>
-                                <p><b>Entry:</b> ${opp['entry_price']:.6f} | <b>Stop:</b> ${opp['stop_loss']:.6f} | <b>Target 1:</b> ${opp['target_1']:.6f}</p>
-                                <p><b>Risk/Reward:</b> {opp['risk_reward_ratio']:.2f}:1 | <b>Pattern:</b> {opp['pattern_type'] or 'N/A'}</p>
-                                <p><b>Found:</b> {opp['timestamp'].strftime('%Y-%m-%d %H:%M')}</p>
-                            </div>
-                            """, unsafe_allow_html=True)
+                    for i, opp in enumerate(scanner_opps[:5]):  # Show top 5
+                        with st.expander(f"📊 {opp['symbol']} - {opp['probability']:.1f}% Probability", expanded=(i==0)):
+                            col1, col2 = st.columns([2, 1])
+                            
+                            with col1:
+                                # Show TradingView chart
+                                tv.show_tradingview_chart(
+                                    opp['symbol'],
+                    timeframe='240',
+                    height=400,
+                    studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
+                )
+                            
+                            with col2:
+                                # Trade details
+                                st.markdown(f"""
+                                <div class="scanner-card">
+                                    <h4>Trade Details</h4>
+                                    <p><b>Entry:</b> ${opp['entry_price']:.6f}</p>
+                                    <p><b>Stop:</b> ${opp['stop_loss']:.6f}</p>
+                                    <p><b>Target 1:</b> ${opp['target_1']:.6f}</p>
+                                    <p><b>Risk/Reward:</b> {opp['risk_reward_ratio']:.2f}:1</p>
+                                    <p><b>Pattern:</b> {opp['pattern_type'] or 'N/A'}</p>
+                                    <p><b>Found:</b> {opp['timestamp'].strftime('%Y-%m-%d %H:%M')}</p>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                # Technical analysis widget
+                                tv.show_technical_analysis_widget(opp['symbol'])
                 else:
                     st.info(f"No {tf} opportunities found for {selected_scanner}")
 
@@ -599,6 +669,44 @@ elif page == "💹 All Opportunities":
                             )
                         }
                     )
+                    
+                    # Add chart analysis for top opportunities
+                    if not tf_df.empty:
+                        st.subheader("📊 Chart Analysis")
+                        
+                        # Show charts for top 3 opportunities
+                        for i, (_, row) in enumerate(tf_df.head(3).iterrows()):
+                            symbol = row['Symbol']
+                            with st.expander(f"📈 {symbol} Chart Analysis", expanded=(i==0)):
+                                col1, col2 = st.columns([2, 1])
+                                
+                                with col1:
+                                    tv.show_tradingview_chart(
+                                        symbol,
+                                        timeframe='240',
+                                        height=400,
+                                        studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
+                                    )
+                                
+                                with col2:
+                                    # Mini chart for quick overview
+                                    tv.show_mini_chart(symbol, width=300, height=150)
+                                    
+                                    # Trade metrics
+                                    st.metric("Probability", f"{row['Probability']:.0f}%")
+                                    st.metric("Risk/Reward", f"{row['R:R']:.1f}:1")
+                                    st.metric("Entry", f"${row['Entry']:.6f}")
+                                    st.metric("Target", f"${row['Target 1']:.6f}")
+                                    st.metric("Stop", f"${row['Stop']:.6f}")
+                                    
+                                    # Technical indicators
+                                    st.write("**Technical Indicators**")
+                                    st.write(f"RSI: {row['RSI']:.0f}")
+                                    st.write(f"MFI: {row['MFI']:.0f}")
+                                
+                                # Technical analysis widget
+                                st.subheader("Technical Analysis")
+                                tv.show_technical_analysis_widget(symbol)
     else:
         st.info("No opportunities found matching your criteria")
 
