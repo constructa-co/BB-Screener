@@ -279,6 +279,11 @@ class ICTFVGScanner:
                                     rsi_signal, rsi_desc = self.check_rsi_confluence(df, fvg_index, fvg_type)
                                     mfi_signal, mfi_desc = self.check_mfi_confluence(df, fvg_index, fvg_type)
                                     
+                                    # Debug logging for confluence detection
+                                    if logger.level <= logging.DEBUG:
+                                        logger.debug(f"Bullish FVG at index {fvg_index}: RSI={df['rsi'].iloc[fvg_index]:.1f}, MFI={df['mfi'].iloc[fvg_index]:.1f}")
+                                        logger.debug(f"RSI Signal: {rsi_signal} ({rsi_desc}), MFI Signal: {mfi_signal} ({mfi_desc})")
+                                    
                                     # Check elite mode filtering
                                     if self.elite_mode:
                                         # Only show FVGs with RSI/MFI confluence
@@ -1141,6 +1146,9 @@ class ICTFVGScanner:
 - Gap Size: {setup['gap_size_pct']:.1f}%
 - FVG Age: {setup['fvg_age']} bars
 - Volume Surge: {'Yes ✅' if setup['volume_surge'] else 'No ❌'}
+- Elite Confluence: {'Yes ✅' if setup.get('has_elite_confluence') else 'No ❌'}
+- Confluence Factors: {', '.join(setup.get('confluence_factors', [])) if setup.get('confluence_factors') else 'None'}
+- Expected Win Rate: {setup.get('expected_win_rate', '85% (standard)')}
 - Category: {setup['category']}
 
 💡 Strategy: R21 FVG + Smart Fibonacci
@@ -1171,6 +1179,10 @@ class ICTFVGScanner:
                 df = self.fetch_candles(symbol)
                 if df.empty or len(df) < 50:
                     continue
+                
+                # Debug indicators if debug mode is enabled
+                if logger.level <= logging.DEBUG:
+                    self.debug_indicators(df, symbol)
                     
                 # Detect FVGs
                 fvgs = self.detect_fvg(df)
@@ -1239,6 +1251,18 @@ class ICTFVGScanner:
             for i, setup in enumerate(by_rr):
                 action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
                 print(f"{i+1}. {action} {setup['symbol']:<12} | R/R: {setup['risk_reward']:4.1f}:1 | Quality: {setup['final_quality']:3.0f}")
+            
+            # Elite setups summary
+            if self.elite_mode:
+                elite_setups = [s for s in high_quality_setups if s.get('has_elite_confluence', False)]
+                if elite_setups:
+                    print(f"\n🏆 ELITE SETUPS (97%+ WIN RATE):")
+                    for i, setup in enumerate(elite_setups[:5], 1):
+                        confluence = ', '.join(setup.get('confluence_factors', []))
+                        action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+                        print(f"{i}. {action} {setup['symbol']:<12} | Win Rate: {setup.get('expected_win_rate', 'N/A')} | {confluence}")
+                else:
+                    print(f"\n⚠️ No elite setups found (97%+ win rate)")
             
             # Immediately actionable (closest to entry)
             actionable = [s for s in high_quality_setups if abs(s['distance_to_entry']) < 1.0]
@@ -1459,6 +1483,16 @@ class ICTFVGScanner:
                 
         return False
 
+    def debug_indicators(self, df, symbol):
+        """Debug method to check if indicators are calculated"""
+        if 'rsi' in df.columns and 'mfi' in df.columns:
+            last_5_rsi = df['rsi'].tail(5).values
+            last_5_mfi = df['mfi'].tail(5).values
+            logger.debug(f"{symbol} - Last 5 RSI: {last_5_rsi}")
+            logger.debug(f"{symbol} - Last 5 MFI: {last_5_mfi}")
+        else:
+            logger.error(f"{symbol} - Missing indicators! Columns: {df.columns.tolist()}")
+
     def backtest_setup(self, setup: Dict) -> Dict:
         """Quick backtest of setup (optional)"""
         # This would check historical performance of similar setups
@@ -1482,8 +1516,14 @@ def main():
     parser.add_argument('--max-alerts', type=int, default=20, help='Maximum alerts per scan (default: 20)')
     parser.add_argument('--elite-mode', action='store_true', default=True, help='Only show 97%+ elite setups (default: True)')
     parser.add_argument('--all-fvgs', action='store_true', help='Show all FVGs, not just elite ones')
+    parser.add_argument('--debug', action='store_true', help='Enable debug logging')
     
     args = parser.parse_args()
+    
+    # Set debug logging if requested
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
     
     # Determine elite mode based on arguments
     elite_mode = args.elite_mode and not args.all_fvgs
