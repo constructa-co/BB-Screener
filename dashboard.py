@@ -384,33 +384,33 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
-                    col1, col2 = st.columns([2, 1])
+                    tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
+                    col1, col2 = st.columns([1, 1])
                     with col1:
-                        tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=500)
-                    with col2:
                         tv.show_technical_analysis_widget("BTC/USDT")
+                    with col2:
                         st.metric("Current Price", "$45,234.56")
                         st.metric("24h Change", "+2.34%")
                 st.session_state.show_btc_chart = False
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
-                    col1, col2 = st.columns([2, 1])
+                    tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
+                    col1, col2 = st.columns([1, 1])
                     with col1:
-                        tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=500)
-                    with col2:
                         tv.show_technical_analysis_widget("ETH/USDT")
+                    with col2:
                         st.metric("Current Price", "$2,456.78")
                         st.metric("24h Change", "+1.87%")
                 st.session_state.show_eth_chart = False
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
-                    col1, col2 = st.columns([2, 1])
+                    tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
+                    col1, col2 = st.columns([1, 1])
                     with col1:
-                        tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=500)
-                    with col2:
                         tv.show_technical_analysis_widget("SOL/USDT")
+                    with col2:
                         st.metric("Current Price", "$98.45")
                         st.metric("24h Change", "+3.21%")
                 st.session_state.show_sol_chart = False
@@ -424,21 +424,12 @@ if page == "🏠 Overview":
             # Get scanner performance data
             logger.cursor.execute("""
                 SELECT 
-                    CASE 
-                        WHEN scan_type LIKE '%bb%' THEN 'BB Scanner'
-                        WHEN scan_type LIKE '%ict%' THEN 'ICT'
-                        WHEN scan_type LIKE '%wyckoff%' THEN 'Wyckoff'
-                        WHEN scan_type LIKE '%elliott%' THEN 'Elliott Waves'
-                        WHEN scan_type LIKE '%supply%' THEN 'Supply & Demand'
-                        WHEN scan_type LIKE '%fvg%' THEN 'FVG'
-                        WHEN scan_type LIKE '%fibonacci%' THEN 'Fibonacci'
-                        ELSE 'Other'
-                    END as scanner,
+                    scan_type as scanner,
                     COUNT(*) as scans,
                     SUM(premium_trades_found) as opportunities,
                     AVG(execution_time_seconds) as avg_time
                 FROM scan_results
-                GROUP BY scanner
+                GROUP BY scan_type
                 ORDER BY opportunities DESC
             """, ())
             
