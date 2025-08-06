@@ -384,33 +384,33 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
-                    tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
-                    col1, col2 = st.columns([1, 1])
+                    col1, col2 = st.columns([3, 1])
                     with col1:
-                        tv.show_technical_analysis_widget("BTC/USDT")
+                        tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
                     with col2:
+                        tv.show_technical_analysis_widget("BTC/USDT")
                         st.metric("Current Price", "$45,234.56")
                         st.metric("24h Change", "+2.34%")
                 st.session_state.show_btc_chart = False
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
-                    tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
-                    col1, col2 = st.columns([1, 1])
+                    col1, col2 = st.columns([3, 1])
                     with col1:
-                        tv.show_technical_analysis_widget("ETH/USDT")
+                        tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
                     with col2:
+                        tv.show_technical_analysis_widget("ETH/USDT")
                         st.metric("Current Price", "$2,456.78")
                         st.metric("24h Change", "+1.87%")
                 st.session_state.show_eth_chart = False
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
-                    tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
-                    col1, col2 = st.columns([1, 1])
+                    col1, col2 = st.columns([3, 1])
                     with col1:
-                        tv.show_technical_analysis_widget("SOL/USDT")
+                        tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
                     with col2:
+                        tv.show_technical_analysis_widget("SOL/USDT")
                         st.metric("Current Price", "$98.45")
                         st.metric("24h Change", "+3.21%")
                 st.session_state.show_sol_chart = False
@@ -470,7 +470,7 @@ if page == "🏠 Overview":
                                 with col2:
                                     st.write(row['Status'])
                                 with col3:
-                                    st.metric("", row['Opportunities (24h)'], label="Found")
+                                    st.metric("Found", row['Opportunities (24h)'])
                         
                         st.caption(f"📅 {config['schedule']}")
         
