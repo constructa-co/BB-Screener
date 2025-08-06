@@ -322,7 +322,7 @@ if page == "🏠 Overview":
         # Best opportunities
         st.subheader("🎯 Top Trading Opportunities")
         
-        opportunities = get_best_opportunities(time_hours, min_probability)
+        opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
         
         if opportunities:
             # Create formatted dataframe
@@ -598,7 +598,7 @@ elif page == "💹 All Opportunities":
     st.title("💹 All Trading Opportunities")
     
     # Get all opportunities
-    opportunities = get_best_opportunities(time_hours, min_probability)
+    opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
     
     if opportunities:
         # Filter by trading style
