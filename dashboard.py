@@ -53,7 +53,7 @@ except ImportError:
 # Import live price updater
 try:
     from live_price_updater import update_opportunities_with_live_prices, get_live_price_for_symbol
-    LIVE_PRICES_AVAILABLE = False
+    LIVE_PRICES_AVAILABLE = True
 except ImportError:
     print("⚠️ Live price updater not available - live_price_updater.py not found")
     LIVE_PRICES_AVAILABLE = False
