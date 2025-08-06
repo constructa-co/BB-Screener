@@ -20,6 +20,14 @@ if hasattr(np, '__all__') and 'NaN' not in np.__all__:
 print("✅ NumPy 2.x compatibility patch applied at startup")
 from trade_logger import TradeLogger
 
+# Telegram notifications
+try:
+    from telegram_alerts import TelegramNotifier
+    TELEGRAM_AVAILABLE = True
+except ImportError:
+    print("⚠️ Telegram alerts not available - telegram_alerts.py not found")
+    TELEGRAM_AVAILABLE = False
+
 import argparse
 import os
 import sys
@@ -88,6 +96,17 @@ class ModularBBScanner:
 
         # NEW: Confidence Module
         self.confidence_module = MinimalConfidenceModule()
+        
+        # NEW: Telegram Notifier
+        if TELEGRAM_AVAILABLE:
+            try:
+                self.telegram = TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
+                print("✅ Telegram notifications enabled")
+            except Exception as e:
+                print(f"⚠️ Telegram setup failed: {e}")
+                self.telegram = None
+        else:
+            self.telegram = None
         
         # Setup logging (EXISTING - UNCHANGED)
         self._setup_logging()
@@ -478,6 +497,39 @@ class ModularBBScanner:
                                 'scoring_details': bb_analysis['scoring_details']
                             })
                             print(scoring_breakdown)
+                        
+                        # NEW: Send Telegram alert for high-probability trades
+                        if self.telegram and probability >= 75:  # High probability threshold
+                            try:
+                                # Get technical indicators for the alert
+                                rsi_value = last_candle.get('rsi', 0)
+                                mfi_value = last_candle.get('mfi', 0)
+                                
+                                # Prepare trade data for Telegram
+                                trade_data = {
+                                    'symbol': symbol,
+                                    'scanner_type': 'bb_scanner',
+                                    'timeframe': '4H',
+                                    'probability': probability,
+                                    'risk_reward_ratio': bb_analysis.get('risk_reward', 0),
+                                    'entry_price': bb_analysis.get('entry', 0),
+                                    'stop_loss': bb_analysis.get('stop', 0),
+                                    'target_1': bb_analysis.get('target1', 0),
+                                    'target_2': bb_analysis.get('target2', 0) if 'target2' in bb_analysis else bb_analysis.get('target1', 0),
+                                    'rsi': rsi_value,
+                                    'mfi': mfi_value,
+                                    'pattern_type': f"{bb_analysis['setup_type']} Setup - {bb_analysis.get('patterns_detected', 'BB Bounce')}"
+                                }
+                                
+                                # Send the alert
+                                success = self.telegram.send_trade_alert(trade_data)
+                                if success:
+                                    self.logger.info(f"✅ Telegram alert sent for {symbol}")
+                                else:
+                                    self.logger.warning(f"❌ Failed to send Telegram alert for {symbol}")
+                                    
+                            except Exception as e:
+                                self.logger.warning(f"Telegram alert failed for {symbol}: {e}")
                 else:
                     # NO BB SETUP - add default values for trading fields
                     result.update({
@@ -748,6 +800,41 @@ class ModularBBScanner:
                 # Display sentiment analysis summary (EXISTING - UNCHANGED)
                 self.output_generator.display_sentiment_summary(df_enhanced)
                 
+                # NEW: Send Telegram summary report
+                if self.telegram:
+                    try:
+                        # Count high-probability trades
+                        high_prob_trades = [r for r in enhanced_trades if r.get('probability', 0) >= 75]
+                        
+                        # Prepare summary data
+                        summary_data = {
+                            'period': 'Last 4 Hours',
+                            'total_scans': len(all_results),
+                            'opportunities': len(quality_results),
+                            'high_prob': len(high_prob_trades),
+                            'by_scanner': {
+                                'BB Scanner': {'opportunities': len(quality_results)}
+                            },
+                            'top_opportunities': [
+                                {
+                                    'symbol': r.get('symbol', 'Unknown'),
+                                    'probability': r.get('probability', 0),
+                                    'risk_reward_ratio': r.get('risk_reward', 0)
+                                }
+                                for r in high_prob_trades[:5]  # Top 5
+                            ]
+                        }
+                        
+                        # Send summary report
+                        success = self.telegram.send_summary_report(summary_data)
+                        if success:
+                            self.logger.info("✅ Telegram summary report sent")
+                        else:
+                            self.logger.warning("❌ Failed to send Telegram summary report")
+                            
+                    except Exception as e:
+                        self.logger.warning(f"Telegram summary report failed: {e}")
+                
                 print("✅ Analysis complete!")
                 
                 # Generate Excel output (ENHANCED with market regime) - ALL data for ML training
@@ -762,6 +849,13 @@ class ModularBBScanner:
                 print(f"Error: {e}")
 
         except Exception as e:
+            # NEW: Send error alert to Telegram
+            if self.telegram:
+                try:
+                    self.telegram.send_error_alert(str(e), "BB Scanner 4H")
+                except:
+                    pass  # Don't let Telegram errors break the main error handling
+            
             self.logger.error(f"Critical error in scanner: {e}")
             print(f"Error: {e}")
 
