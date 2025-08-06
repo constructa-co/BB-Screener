@@ -1316,7 +1316,7 @@ elif page == "🧠 Advanced Analytics":
             with tab5:
                 create_ml_backtesting_simulator(historical_trades)
         else:
-            st.info("""
+            st.info(f"""
             **📊 Insufficient Data for Advanced Analytics**
             
             We need at least 50 completed trades to provide meaningful insights.
@@ -1325,7 +1325,7 @@ elif page == "🧠 Advanced Analytics":
             **Current Status:**
             - Historical trades: {len(historical_trades)}
             - Minimum required: 50
-            """.format(len(historical_trades)))
+            """)
     else:
         st.error("""
         **❌ Advanced Analytics Module Not Available**
