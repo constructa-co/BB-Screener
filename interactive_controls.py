@@ -82,30 +82,13 @@ def parameter_optimization_interface(data):
     
     with col2:
         st.write("**Technical Filters**")
-        rsi_oversold = st.slider(
-            "RSI Oversold Level",
-            min_value=10,
-            max_value=40,
-            value=30,
-            help="RSI level to consider oversold"
-        )
+        st.info("📊 RSI and Volume filters require additional data columns")
+        st.write("These filters will be available when RSI and volume data are added to the database.")
         
-        rsi_overbought = st.slider(
-            "RSI Overbought Level",
-            min_value=60,
-            max_value=90,
-            value=70,
-            help="RSI level to consider overbought"
-        )
-        
-        volume_surge = st.slider(
-            "Min Volume Surge",
-            min_value=1.0,
-            max_value=5.0,
-            value=1.5,
-            step=0.1,
-            help="Minimum volume compared to average"
-        )
+        # Placeholder for future RSI filters
+        # rsi_oversold = st.slider("RSI Oversold Level", min_value=10, max_value=40, value=30)
+        # rsi_overbought = st.slider("RSI Overbought Level", min_value=60, max_value=90, value=70)
+        # volume_surge = st.slider("Min Volume Surge", min_value=1.0, max_value=5.0, value=1.5, step=0.1)
     
     with col3:
         st.write("**Exit Rules**")
@@ -137,10 +120,11 @@ def parameter_optimization_interface(data):
     filtered_data = apply_strategy_filters(
         data,
         min_prob=min_prob,
-        min_rr=min_rr,
-        rsi_oversold=rsi_oversold,
-        rsi_overbought=rsi_overbought,
-        volume_surge=volume_surge
+        min_rr=min_rr
+        # RSI filters commented out until data is available
+        # rsi_oversold=rsi_oversold,
+        # rsi_overbought=rsi_overbought,
+        # volume_surge=volume_surge
     )
     
     # Display instant results
@@ -156,12 +140,13 @@ def parameter_optimization_interface(data):
             'min_probability': min_prob,
             'min_risk_reward': min_rr,
             'max_risk_percent': max_risk,
-            'rsi_oversold': rsi_oversold,
-            'rsi_overbought': rsi_overbought,
-            'volume_surge': volume_surge,
             'take_profit_1': take_profit_1,
             'take_profit_2': take_profit_2,
             'trailing_stop': trailing_stop
+            # RSI settings commented out until data is available
+            # 'rsi_oversold': rsi_oversold,
+            # 'rsi_overbought': rsi_overbought,
+            # 'volume_surge': volume_surge,
         })
         st.success("Strategy settings saved!")
 
@@ -392,16 +377,17 @@ def apply_strategy_filters(data, **kwargs):
     if 'min_rr' in kwargs:
         filtered = filtered[filtered['risk_reward_ratio'] >= kwargs['min_rr']]
     
-    if 'rsi_oversold' in kwargs and 'rsi' in filtered.columns:
-        # For long trades
-        long_trades = filtered[filtered['direction'] == 'LONG']
-        long_trades = long_trades[long_trades['rsi'] <= kwargs['rsi_oversold']]
-        
-        # For short trades
-        short_trades = filtered[filtered['direction'] == 'SHORT']
-        short_trades = short_trades[short_trades['rsi'] >= kwargs.get('rsi_overbought', 70)]
-        
-        filtered = pd.concat([long_trades, short_trades])
+    # Note: RSI filtering is commented out since 'rsi' and 'direction' columns don't exist in current schema
+    # if 'rsi_oversold' in kwargs and 'rsi' in filtered.columns:
+    #     # For long trades
+    #     long_trades = filtered[filtered['direction'] == 'LONG']
+    #     long_trades = long_trades[long_trades['rsi'] <= kwargs['rsi_oversold']]
+    #     
+    #     # For short trades
+    #     short_trades = filtered[filtered['direction'] == 'SHORT']
+    #     short_trades = short_trades[short_trades['rsi'] >= kwargs.get('rsi_overbought', 70)]
+    #     
+    #     filtered = pd.concat([long_trades, short_trades])
     
     return filtered
 
