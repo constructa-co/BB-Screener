@@ -43,12 +43,13 @@ def show_tradingview_chart(symbol, timeframe='240', height=600, studies=None):
     tv_interval = timeframe_map.get(timeframe, timeframe)
     
     tradingview_widget = f"""
-    <div class="tradingview-widget-container">
-        <div id="tradingview_{tv_symbol}"></div>
+    <div class="tradingview-widget-container" style="width: 100%; height: {height}px;">
+        <div id="tradingview_{tv_symbol}" style="width: 100%; height: 100%;"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         <script type="text/javascript">
         new TradingView.widget({{
-            "autosize": true,
+            "width": "100%",
+            "height": "100%",
             "symbol": "{exchange}:{tv_symbol}",
             "interval": "{tv_interval}",
             "timezone": "Etc/UTC",

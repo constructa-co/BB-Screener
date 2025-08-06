@@ -384,6 +384,18 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
+                    # Full-width chart container
+                    st.markdown("""
+                    <style>
+                    .chart-container {
+                        width: 100%;
+                        height: 800px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
                     # Full-width chart with better height
                     tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=800)
                     
@@ -399,6 +411,18 @@ if page == "🏠 Overview":
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
+                    # Full-width chart container
+                    st.markdown("""
+                    <style>
+                    .chart-container {
+                        width: 100%;
+                        height: 800px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
                     # Full-width chart with better height
                     tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=800)
                     
@@ -414,6 +438,18 @@ if page == "🏠 Overview":
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
+                    # Full-width chart container
+                    st.markdown("""
+                    <style>
+                    .chart-container {
+                        width: 100%;
+                        height: 800px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
                     # Full-width chart with better height
                     tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=800)
                     
@@ -673,24 +709,41 @@ elif page == "💹 All Opportunities":
                         for i, (_, row) in enumerate(tf_df.head(3).iterrows()):
                             symbol = row['Symbol']
                             with st.expander(f"📈 {symbol} Chart Analysis", expanded=(i==0)):
-                                col1, col2 = st.columns([2, 1])
+                                # Full-width chart container
+                                st.markdown("""
+                                <style>
+                                .chart-container {
+                                    width: 100%;
+                                    height: 600px;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                </style>
+                                """, unsafe_allow_html=True)
+                                
+                                # Full-width chart
+                                tv.show_tradingview_chart(
+                                    symbol,
+                                    timeframe='240',
+                                    height=600,
+                                    studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
+                                )
+                                
+                                # Trade details and technical analysis below
+                                st.markdown("---")
+                                col1, col2, col3 = st.columns([2, 1, 1])
                                 
                                 with col1:
-                                    tv.show_tradingview_chart(
-                                        symbol,
-                                        timeframe='240',
-                                        height=400,
-                                        studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
-                                    )
+                                    # Technical analysis widget
+                                    tv.show_technical_analysis_widget(symbol)
                                 
                                 with col2:
-                                    # Mini chart for quick overview
-                                    tv.show_mini_chart(symbol, width=300, height=150)
-                                    
                                     # Trade metrics with safe access
                                     st.metric("Probability", f"{row.get('Probability', 0):.0f}%")
                                     st.metric("Risk/Reward", f"{row.get('R:R', 0):.1f}:1")
                                     st.metric("Entry", f"${row.get('Entry', 0):.6f}")
+                                
+                                with col3:
                                     st.metric("Target", f"${row.get('Target 1', 0):.6f}")
                                     st.metric("Stop", f"${row.get('Stop', 0):.6f}")
                                     
@@ -698,10 +751,6 @@ elif page == "💹 All Opportunities":
                                     st.write("**Technical Indicators**")
                                     st.write(f"RSI: {row.get('RSI', 0):.0f}")
                                     st.write(f"MFI: {row.get('MFI', 0):.0f}")
-                                
-                                # Technical analysis widget
-                                st.subheader("Technical Analysis")
-                                tv.show_technical_analysis_widget(symbol)
     else:
         st.info("No opportunities found matching your criteria")
 
