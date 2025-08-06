@@ -34,6 +34,14 @@ except ImportError:
     print("⚠️ Advanced analytics not available - advanced_analytics.py not found")
     ADVANCED_ANALYTICS_AVAILABLE = False
 
+# Import file management
+try:
+    from file_management import create_import_export_page
+    FILE_MANAGEMENT_AVAILABLE = True
+except ImportError:
+    print("⚠️ File management not available - file_management.py not found")
+    FILE_MANAGEMENT_AVAILABLE = False
+
 # Page configuration
 st.set_page_config(
     page_title="Crypto Trading Command Center",
@@ -594,7 +602,7 @@ with st.sidebar:
 page = st.sidebar.radio(
     "📍 Navigation",
     ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
-     "📊 Performance Analytics", "🧠 Advanced Analytics", "🤖 3Commas Integration", 
+     "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🤖 3Commas Integration", 
      "📈 Post-Mortem Analysis", "⚙️ Settings"]
 )
 
@@ -1331,6 +1339,17 @@ elif page == "🧠 Advanced Analytics":
         **❌ Advanced Analytics Module Not Available**
         
         The advanced analytics module (`advanced_analytics.py`) is not installed.
+        Please ensure the module is available in your project directory.
+        """)
+
+elif page == "📁 File Management":
+    if FILE_MANAGEMENT_AVAILABLE:
+        create_import_export_page()
+    else:
+        st.error("""
+        **❌ File Management Module Not Available**
+        
+        The file management module (`file_management.py`) is not installed.
         Please ensure the module is available in your project directory.
         """)
 
