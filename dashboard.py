@@ -53,7 +53,7 @@ except ImportError:
 # Import live price updater
 try:
     from live_price_updater import update_opportunities_with_live_prices, get_live_price_for_symbol
-    LIVE_PRICES_AVAILABLE = True
+    LIVE_PRICES_AVAILABLE = False
 except ImportError:
     print("⚠️ Live price updater not available - live_price_updater.py not found")
     LIVE_PRICES_AVAILABLE = False
@@ -219,8 +219,8 @@ def get_best_opportunities(hours=24, min_prob=70):
             
             # Convert to list of dictionaries for easier manipulation
             if opportunities:
-                columns = [desc[0] for desc in logger.cursor.description]
-                opportunities = [dict(zip(columns, row)) for row in opportunities]
+                # Handle RealDictRow objects from PostgreSQL
+                opportunities = [dict(row) for row in opportunities]
                 
                 # Update with live prices if available (but don't break if it fails)
                 if LIVE_PRICES_AVAILABLE:
@@ -231,6 +231,8 @@ def get_best_opportunities(hours=24, min_prob=70):
                         print(f"⚠️ Error updating live prices: {e}")
                         # Continue with original data if live price update fails
                         pass
+                else:
+                    print(f"✅ Using {len(opportunities)} opportunities without live price updates")
         except Exception as e:
             print(f"❌ Error fetching opportunities: {e}")
             # Return empty list if query fails
@@ -585,8 +587,8 @@ def get_latest_opportunities(limit=10):
             
             # Convert to list of dictionaries
             if opportunities:
-                columns = [desc[0] for desc in logger.cursor.description]
-                opportunities = [dict(zip(columns, row)) for row in opportunities]
+                # Handle RealDictRow objects from PostgreSQL
+                opportunities = [dict(row) for row in opportunities]
                 
         except Exception as e:
             print(f"❌ Error getting latest opportunities: {e}")
