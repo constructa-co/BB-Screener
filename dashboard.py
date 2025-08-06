@@ -384,49 +384,46 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
-                    # Full-width chart
-                    tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
+                    # Full-width chart with better height
+                    tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=800)
                     
-                    # Technical analysis and metrics below
+                    # Technical analysis and metrics in a better layout
                     st.markdown("---")
-                    col1, col2, col3 = st.columns([2, 1, 1])
+                    col1, col2 = st.columns([3, 1])
                     with col1:
                         tv.show_technical_analysis_widget("BTC/USDT")
                     with col2:
                         st.metric("Current Price", "$45,234.56")
-                    with col3:
                         st.metric("24h Change", "+2.34%")
                 st.session_state.show_btc_chart = False
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
-                    # Full-width chart
-                    tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
+                    # Full-width chart with better height
+                    tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=800)
                     
-                    # Technical analysis and metrics below
+                    # Technical analysis and metrics in a better layout
                     st.markdown("---")
-                    col1, col2, col3 = st.columns([2, 1, 1])
+                    col1, col2 = st.columns([3, 1])
                     with col1:
                         tv.show_technical_analysis_widget("ETH/USDT")
                     with col2:
                         st.metric("Current Price", "$2,456.78")
-                    with col3:
                         st.metric("24h Change", "+1.87%")
                 st.session_state.show_eth_chart = False
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
-                    # Full-width chart
-                    tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
+                    # Full-width chart with better height
+                    tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=800)
                     
-                    # Technical analysis and metrics below
+                    # Technical analysis and metrics in a better layout
                     st.markdown("---")
-                    col1, col2, col3 = st.columns([2, 1, 1])
+                    col1, col2 = st.columns([3, 1])
                     with col1:
                         tv.show_technical_analysis_widget("SOL/USDT")
                     with col2:
                         st.metric("Current Price", "$98.45")
-                    with col3:
                         st.metric("24h Change", "+3.21%")
                 st.session_state.show_sol_chart = False
         else:
@@ -743,7 +740,7 @@ elif page == "📊 Performance Analytics":
                 MIN(profit_loss_percent) as worst_trade
             FROM trade_opportunities
             WHERE timestamp > NOW() - INTERVAL '1 day'
-        """, (period_filter,))
+        """)
         
         stats = logger.cursor.fetchone()
         
@@ -781,7 +778,7 @@ elif page == "📊 Performance Analytics":
             WHERE t.timestamp > NOW() - INTERVAL '1 day'
             GROUP BY scanner
             HAVING COUNT(CASE WHEN t.trade_taken = TRUE THEN 1 END) > 0
-        """, (period_filter,))
+        """)
         
         perf_by_scanner = pd.DataFrame(logger.cursor.fetchall())
         
@@ -812,7 +809,7 @@ elif page == "📊 Performance Analytics":
             AND actual_exit_time > NOW() - INTERVAL '1 day'
             GROUP BY date
             ORDER BY date
-        """, (period_filter,))
+        """)
         
         pnl_data = pd.DataFrame(logger.cursor.fetchall())
         
