@@ -384,33 +384,36 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
-                    col1, col2 = st.columns([3, 1])
+                    tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
+                    st.markdown("---")
+                    col1, col2 = st.columns([1, 1])
                     with col1:
-                        tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
-                    with col2:
                         tv.show_technical_analysis_widget("BTC/USDT")
+                    with col2:
                         st.metric("Current Price", "$45,234.56")
                         st.metric("24h Change", "+2.34%")
                 st.session_state.show_btc_chart = False
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
-                    col1, col2 = st.columns([3, 1])
+                    tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
+                    st.markdown("---")
+                    col1, col2 = st.columns([1, 1])
                     with col1:
-                        tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
-                    with col2:
                         tv.show_technical_analysis_widget("ETH/USDT")
+                    with col2:
                         st.metric("Current Price", "$2,456.78")
                         st.metric("24h Change", "+1.87%")
                 st.session_state.show_eth_chart = False
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
-                    col1, col2 = st.columns([3, 1])
+                    tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
+                    st.markdown("---")
+                    col1, col2 = st.columns([1, 1])
                     with col1:
-                        tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
-                    with col2:
                         tv.show_technical_analysis_widget("SOL/USDT")
+                    with col2:
                         st.metric("Current Price", "$98.45")
                         st.metric("24h Change", "+3.21%")
                 st.session_state.show_sol_chart = False
@@ -606,7 +609,7 @@ elif page == "💹 All Opportunities":
                             'Entry': opp['entry_price'],
                             'Stop': opp['stop_loss'],
                             'Target 1': opp['target_1'],
-                            'Market Cap': f"${opp['market_cap']/1e9:.1f}B" if opp['market_cap'] > 1e9 else f"${opp['market_cap']/1e6:.0f}M",
+                            'Market Cap': f"${float(opp['market_cap'])/1e9:.1f}B" if float(opp['market_cap']) > 1e9 else f"${float(opp['market_cap'])/1e6:.0f}M",
                             'Volume': f"${opp['volume_24h']/1e6:.1f}M",
                             'RSI': opp['rsi'],
                             'MFI': opp['mfi']
@@ -727,7 +730,7 @@ elif page == "📊 Performance Analytics":
                 MAX(profit_loss_percent) as best_trade,
                 MIN(profit_loss_percent) as worst_trade
             FROM trade_opportunities
-            WHERE timestamp > NOW() - INTERVAL '%s'
+            WHERE timestamp > NOW() - INTERVAL '1 day'
         """, (period_filter,))
         
         stats = logger.cursor.fetchone()
@@ -763,7 +766,7 @@ elif page == "📊 Performance Analytics":
                 AVG(CASE WHEN t.trade_result IN ('win', 'loss') THEN t.profit_loss_percent END) as avg_pnl
             FROM trade_opportunities t
             JOIN scan_results s ON t.scan_id = s.id
-            WHERE t.timestamp > NOW() - INTERVAL '%s'
+            WHERE t.timestamp > NOW() - INTERVAL '1 day'
             GROUP BY scanner
             HAVING COUNT(CASE WHEN t.trade_taken = TRUE THEN 1 END) > 0
         """, (period_filter,))
@@ -794,7 +797,7 @@ elif page == "📊 Performance Analytics":
                 SUM(SUM(profit_loss_percent)) OVER (ORDER BY DATE(actual_exit_time)) as cumulative_pnl
             FROM trade_opportunities
             WHERE trade_result IN ('win', 'loss')
-            AND actual_exit_time > NOW() - INTERVAL '%s'
+            AND actual_exit_time > NOW() - INTERVAL '1 day'
             GROUP BY date
             ORDER BY date
         """, (period_filter,))
