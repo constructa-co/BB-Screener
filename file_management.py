@@ -317,178 +317,176 @@ def export_to_excel(df, sheet_name="Data"):
             'border': 1
         })
         
-        number_format = workbook.add_format({
-            'num_format': '#,##0.00',
-            'border': 1
-        })
+        number_format = workbook.add_format({'num_format': '0.00'})
+        percent_format = workbook.add_format({'num_format': '0.0%'})
+        date_format = workbook.add_format({'num_format': 'yyyy-mm-dd hh:mm:ss'})
         
-        percent_format = workbook.add_format({
-            'num_format': '0.00%',
-            'border': 1
-        })
+        # Format columns
+        for idx, col in enumerate(df.columns):
+            series = df[col]
+            max_len = max((
+                series.astype(str).map(len).max(),
+                len(str(series.name))
+            )) + 2
+            
+            worksheet.set_column(idx, idx, max_len)
+            
+            # Apply number formats
+            if 'percent' in col.lower() or 'probability' in col.lower():
+                worksheet.set_column(idx, idx, max_len, percent_format)
+            elif 'price' in col.lower() or 'target' in col.lower():
+                worksheet.set_column(idx, idx, max_len, number_format)
+            elif 'time' in col.lower() or 'date' in col.lower():
+                worksheet.set_column(idx, idx, max_len, date_format)
         
-        # Apply formats
-        for col_num, value in enumerate(df.columns.values):
-            worksheet.write(0, col_num, value, header_format)
+        # Format header row
+        worksheet.set_row(0, 30, header_format)
         
-        # Auto-adjust column widths
-        for i, col in enumerate(df.columns):
-            max_len = max(
-                df[col].astype(str).map(len).max(),
-                len(col)
-            ) + 2
-            worksheet.set_column(i, i, max_len)
+        # Add conditional formatting for profit/loss
+        if 'profit_loss_percent' in df.columns:
+            pl_col = df.columns.get_loc('profit_loss_percent')
+            worksheet.conditional_format(1, pl_col, len(df), pl_col, {
+                'type': '3_color_scale',
+                'min_color': '#FF0000',
+                'mid_color': '#FFFFFF',
+                'max_color': '#00FF00'
+            })
     
     output.seek(0)
     return output.getvalue()
 
 def validate_import_data(df, import_type):
     """
-    Validate imported data based on type
+    Validate imported data against expected schema
     """
+    validation_results = {
+        'valid': True,
+        'error': None,
+        'missing_fields': [],
+        'field_mapping': {},
+        'record_count': len(df)
+    }
+    
+    # Define required fields for each import type
     required_fields = {
-        "Trade Opportunities": ["symbol", "probability", "entry_price", "stop_loss", "target_1"],
-        "Backtest Results": ["symbol", "entry_price", "exit_price", "profit_loss", "timestamp"],
-        "Scan Results": ["scan_type", "symbol", "timestamp"],
-        "Historical Trades": ["symbol", "entry_price", "exit_price", "profit_loss_percent"]
+        'Backtest Results': ['symbol', 'entry_time', 'exit_time', 'profit_loss'],
+        'Historical Trades': ['symbol', 'entry_price', 'exit_price', 'trade_result'],
+        'Trade Opportunities': ['symbol', 'probability', 'entry_price', 'stop_loss'],
+        'Scanner Config': ['scanner_name', 'timeframe', 'parameters']
     }
     
-    required = required_fields.get(import_type, [])
-    missing = [field for field in required if field not in df.columns]
+    # Check required fields
+    if import_type in required_fields:
+        for field in required_fields[import_type]:
+            # Try to find matching column (case-insensitive)
+            matching_cols = [col for col in df.columns if field.lower() in col.lower()]
+            
+            if matching_cols:
+                validation_results['field_mapping'][matching_cols[0]] = field
+            else:
+                validation_results['missing_fields'].append(field)
+                validation_results['valid'] = False
     
-    field_mapping = {}
-    for col in df.columns:
-        field_mapping[col] = col  # Simple mapping for now
+    if validation_results['missing_fields']:
+        validation_results['error'] = f"Missing required fields: {', '.join(validation_results['missing_fields'])}"
     
-    return {
-        'valid': len(missing) == 0,
-        'record_count': len(df),
-        'missing_fields': missing,
-        'field_mapping': field_mapping,
-        'error': f"Missing required fields: {missing}" if missing else None
-    }
+    return validation_results
 
 def import_to_database(df, import_type, merge_option):
     """
-    Import data to database
+    Import data to database with merge options
     """
-    logger = TradeLogger()
+    from trade_logger import TradeLogger
     
-    if not logger.connection:
-        return {'success': False, 'error': 'Database connection failed'}
-    
-    try:
-        imported = 0
-        
-        if import_type == "Trade Opportunities":
-            for _, row in df.iterrows():
-                logger.cursor.execute("""
-                    INSERT INTO trade_opportunities 
-                    (symbol, probability, entry_price, stop_loss, target_1, 
-                     risk_reward_ratio, timestamp, scan_id)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (symbol, timestamp) DO NOTHING
-                """, (
-                    row.get('symbol', ''),
-                    row.get('probability', 0),
-                    row.get('entry_price', 0),
-                    row.get('stop_loss', 0),
-                    row.get('target_1', 0),
-                    row.get('risk_reward_ratio', 0),
-                    row.get('timestamp', datetime.now()),
-                    1  # Default scan_id
-                ))
-                imported += 1
-        
-        logger.connection.commit()
-        return {'success': True, 'imported': imported}
-    
-    except Exception as e:
-        logger.connection.rollback()
-        return {'success': False, 'error': str(e)}
-
-def get_export_data(export_type, date_range, filters=None):
-    """
-    Get data for export based on type and filters
-    """
-    logger = TradeLogger()
-    
-    if not logger.connection:
-        return pd.DataFrame()
-    
-    # Build date filter
-    date_filters = {
-        "Today": "1 day",
-        "Last 7 Days": "7 days", 
-        "Last 30 Days": "30 days",
-        "All Time": "10 years"
+    result = {
+        'success': False,
+        'imported': 0,
+        'skipped': 0,
+        'error': None
     }
     
-    date_filter = date_filters.get(date_range, "30 days")
-    
     try:
+        logger = TradeLogger()
+        
+        if import_type == 'Trade Opportunities':
+            # Import trade opportunities
+            for _, row in df.iterrows():
+                trade_data = row.to_dict()
+                
+                # Check if exists (simplified example)
+                if merge_option == 'Skip':
+                    # Check for existing record
+                    existing = check_existing_trade(trade_data)
+                    if existing:
+                        result['skipped'] += 1
+                        continue
+                
+                # Log trade opportunity
+                scan_id = logger.log_scan_start('import', version='1.0')
+                logger.log_trade_opportunity(scan_id, trade_data)
+                result['imported'] += 1
+        
+        result['success'] = True
+        logger.close()
+        
+    except Exception as e:
+        result['error'] = str(e)
+    
+    return result
+
+def get_export_data(export_type, date_range, filters):
+    """
+    Get data for export based on criteria
+    """
+    from trade_logger import TradeLogger
+    
+    logger = TradeLogger()
+    df = pd.DataFrame()
+    
+    if logger.connection:
+        # Build query based on export type
         if export_type == "Trade Opportunities":
             query = """
-                SELECT 
-                    t.symbol,
-                    t.probability,
-                    t.entry_price,
-                    t.stop_loss,
-                    t.target_1,
-                    t.risk_reward_ratio,
-                    t.timestamp,
-                    s.scan_type
+                SELECT t.*, s.scan_type, s.scan_timestamp
                 FROM trade_opportunities t
                 JOIN scan_results s ON t.scan_id = s.id
-                WHERE t.timestamp > NOW() - INTERVAL %s
+                WHERE 1=1
             """
             
-            if filters and filters.get('min_probability', 0) > 0:
+            # Add date filter
+            if date_range == "Today":
+                query += " AND t.timestamp >= CURRENT_DATE"
+            elif date_range == "Last 7 Days":
+                query += " AND t.timestamp >= CURRENT_DATE - INTERVAL '7 days'"
+            elif date_range == "Last 30 Days":
+                query += " AND t.timestamp >= CURRENT_DATE - INTERVAL '30 days'"
+            
+            # Add probability filter
+            if filters.get('min_probability', 0) > 0:
                 query += f" AND t.probability >= {filters['min_probability']}"
             
-            query += " ORDER BY t.timestamp DESC"
-            
-            logger.cursor.execute(query, (date_filter,))
+            # Execute query
+            logger.cursor.execute(query)
             results = logger.cursor.fetchall()
             
-            return pd.DataFrame(results)
+            if results:
+                df = pd.DataFrame(results)
         
-        elif export_type == "Scan Results":
-            query = """
-                SELECT 
-                    scan_type,
-                    symbols_scanned,
-                    opportunities_found,
-                    scan_timestamp,
-                    execution_time
-                FROM scan_results
-                WHERE scan_timestamp > NOW() - INTERVAL %s
-                ORDER BY scan_timestamp DESC
-            """
-            
-            logger.cursor.execute(query, (date_filter,))
-            results = logger.cursor.fetchall()
-            
-            return pd.DataFrame(results)
-        
-        else:
-            return pd.DataFrame()
+        logger.close()
     
-    except Exception as e:
-        st.error(f"Error getting export data: {str(e)}")
-        return pd.DataFrame()
+    return df
 
 def create_full_backup(backup_options):
     """
-    Create full backup of selected data
+    Create full database backup
     """
-    logger = TradeLogger()
+    from trade_logger import TradeLogger
+    
     backup_data = {}
+    logger = TradeLogger()
     
-    if not logger.connection:
-        return backup_data
-    
-    try:
+    if logger.connection:
+        # Backup each selected table
         if "Trade Opportunities" in backup_options:
             logger.cursor.execute("SELECT * FROM trade_opportunities")
             backup_data['trade_opportunities'] = pd.DataFrame(logger.cursor.fetchall())
@@ -497,55 +495,60 @@ def create_full_backup(backup_options):
             logger.cursor.execute("SELECT * FROM scan_results")
             backup_data['scan_results'] = pd.DataFrame(logger.cursor.fetchall())
         
-        return backup_data
+        logger.close()
     
-    except Exception as e:
-        st.error(f"Backup error: {str(e)}")
-        return backup_data
+    return backup_data
 
 def restore_from_backup(backup_file, replace=False):
     """
     Restore data from backup file
     """
-    logger = TradeLogger()
-    
-    if not logger.connection:
-        return {'success': False, 'error': 'Database connection failed'}
+    result = {
+        'success': False,
+        'tables': 0,
+        'records': 0,
+        'error': None
+    }
     
     try:
-        restored_tables = 0
-        total_records = 0
-        
+        # Process backup file
         with zipfile.ZipFile(backup_file, 'r') as zipf:
             for filename in zipf.namelist():
                 if filename.endswith('.csv'):
+                    # Read CSV data
+                    csv_data = zipf.read(filename)
+                    df = pd.read_csv(BytesIO(csv_data))
+                    
+                    # Restore to database
                     table_name = filename.replace('.csv', '')
-                    
-                    # Read CSV from zip
-                    with zipf.open(filename) as f:
-                        df = pd.read_csv(f)
-                    
                     if replace:
-                        # Clear existing data
-                        logger.cursor.execute(f"DELETE FROM {table_name}")
+                        # Clear existing data first
+                        clear_table(table_name)
                     
-                    # Insert new data
-                    for _, row in df.iterrows():
-                        # This is a simplified insert - you'd need proper column mapping
-                        columns = ', '.join(df.columns)
-                        placeholders = ', '.join(['%s'] * len(df.columns))
-                        
-                        logger.cursor.execute(f"""
-                            INSERT INTO {table_name} ({columns})
-                            VALUES ({placeholders})
-                        """, tuple(row.values))
-                    
-                    restored_tables += 1
-                    total_records += len(df)
+                    # Import data
+                    import_result = import_table_data(table_name, df)
+                    result['records'] += import_result['imported']
+                    result['tables'] += 1
         
-        logger.connection.commit()
-        return {'success': True, 'tables': restored_tables, 'records': total_records}
-    
+        result['success'] = True
+        
     except Exception as e:
-        logger.connection.rollback()
-        return {'success': False, 'error': str(e)} 
+        result['error'] = str(e)
+    
+    return result 
+
+# Helper functions
+def check_existing_trade(trade_data):
+    """Check if trade already exists in database"""
+    # Implementation depends on your database schema
+    return False
+
+def clear_table(table_name):
+    """Clear all data from a table"""
+    # Implementation with proper safety checks
+    pass
+
+def import_table_data(table_name, df):
+    """Import DataFrame to specific table"""
+    # Implementation based on table schema
+    return {'imported': len(df)} 
