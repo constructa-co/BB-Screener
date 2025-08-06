@@ -550,18 +550,84 @@ def get_historical_trades():
     df = pd.DataFrame()
     
     if logger.connection:
-        logger.cursor.execute("""
-            SELECT * FROM trade_opportunities
-            WHERE trade_taken = TRUE
-            AND trade_result IS NOT NULL
-            ORDER BY timestamp DESC
-        """)
-        
-        results = logger.cursor.fetchall()
-        if results:
-            df = pd.DataFrame(results)
+        try:
+            # Get all completed trades with their results
+            logger.cursor.execute("""
+                SELECT 
+                    symbol,
+                    probability,
+                    risk_reward_ratio,
+                    profit_loss_percent,
+                    entry_price,
+                    stop_loss,
+                    target_1,
+                    timestamp,
+                    scanner_specific_data
+                FROM trade_opportunities
+                WHERE trade_taken = TRUE
+                AND trade_result IS NOT NULL
+                ORDER BY timestamp DESC
+            """)
+            
+            results = logger.cursor.fetchall()
+            if results:
+                df = pd.DataFrame(results, columns=[
+                    'symbol', 'probability', 'risk_reward_ratio', 
+                    'profit_loss_percent', 'entry_price', 'stop_loss',
+                    'target_price', 'timestamp', 'scanner_specific_data'
+                ])
+                
+                # Convert timestamp to datetime
+                df['timestamp'] = pd.to_datetime(df['timestamp'])
+                
+                # Convert numeric columns to float
+                df['probability'] = pd.to_numeric(df['probability'], errors='coerce')
+                df['risk_reward_ratio'] = pd.to_numeric(df['risk_reward_ratio'], errors='coerce')
+                df['profit_loss_percent'] = pd.to_numeric(df['profit_loss_percent'], errors='coerce')
+                df['entry_price'] = pd.to_numeric(df['entry_price'], errors='coerce')
+                df['stop_loss'] = pd.to_numeric(df['stop_loss'], errors='coerce')
+                df['target_price'] = pd.to_numeric(df['target_price'], errors='coerce')
+                
+                # Add some derived columns for analysis
+                df['abs_profit_loss'] = abs(df['profit_loss_percent'])
+                df['win'] = df['profit_loss_percent'] > 0
+                df['win_rate'] = df['win'].mean()
+                
+                print(f"✅ Loaded {len(df)} historical trades from database")
+            else:
+                print("⚠️ No completed trades found in database")
+                
+        except Exception as e:
+            print(f"❌ Error loading historical trades: {e}")
+            # Fallback to dummy data for testing
+            df = create_dummy_data()
     
     logger.close()
+    return df
+
+def create_dummy_data():
+    """Create dummy data for testing when database is not available"""
+    np.random.seed(42)
+    n_trades = 100
+    
+    data = {
+        'symbol': np.random.choice(['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'ADA/USDT'], n_trades),
+        'probability': np.random.uniform(60, 95, n_trades),
+        'risk_reward_ratio': np.random.uniform(1.2, 4.0, n_trades),
+        'profit_loss_percent': np.random.normal(2, 8, n_trades),
+        'entry_price': np.random.uniform(100, 50000, n_trades),
+        'stop_loss': np.random.uniform(90, 45000, n_trades),
+        'target_price': np.random.uniform(110, 55000, n_trades),
+        'timestamp': pd.date_range(start='2024-01-01', periods=n_trades, freq='4H'),
+        'scanner_type': ['BB Scanner'] * n_trades
+    }
+    
+    df = pd.DataFrame(data)
+    df['abs_profit_loss'] = abs(df['profit_loss_percent'])
+    df['win'] = df['profit_loss_percent'] > 0
+    df['win_rate'] = df['win'].mean()
+    
+    print("📊 Using dummy data for testing")
     return df
 
 def save_strategy_settings(settings):
