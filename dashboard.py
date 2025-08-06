@@ -384,83 +384,95 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
-                    # Full-width chart container
+                    # Chart container with better sizing
                     st.markdown("""
                     <style>
-                    .chart-container {
-                        width: 100%;
-                        height: 800px;
-                        margin: 0;
-                        padding: 0;
+                    .tradingview-widget-container {
+                        width: 100% !important;
+                        height: 800px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
                     
-                    # Full-width chart with better height
+                    # Full-width chart with no column wrapper
                     tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=800)
                     
-                    # Technical analysis and metrics in a better layout
+                    # Technical analysis and metrics below (not in columns)
                     st.markdown("---")
-                    col1, col2 = st.columns([3, 1])
+                    tv.show_technical_analysis_widget("BTC/USDT")
+                    
+                    # Metrics in a simple row
+                    col1, col2, col3 = st.columns(3)
                     with col1:
-                        tv.show_technical_analysis_widget("BTC/USDT")
-                    with col2:
                         st.metric("Current Price", "$45,234.56")
+                    with col2:
                         st.metric("24h Change", "+2.34%")
+                    with col3:
+                        st.metric("Volume", "$2.1B")
                 st.session_state.show_btc_chart = False
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
-                    # Full-width chart container
+                    # Chart container with better sizing
                     st.markdown("""
                     <style>
-                    .chart-container {
-                        width: 100%;
-                        height: 800px;
-                        margin: 0;
-                        padding: 0;
+                    .tradingview-widget-container {
+                        width: 100% !important;
+                        height: 800px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
                     
-                    # Full-width chart with better height
+                    # Full-width chart with no column wrapper
                     tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=800)
                     
-                    # Technical analysis and metrics in a better layout
+                    # Technical analysis and metrics below (not in columns)
                     st.markdown("---")
-                    col1, col2 = st.columns([3, 1])
+                    tv.show_technical_analysis_widget("ETH/USDT")
+                    
+                    # Metrics in a simple row
+                    col1, col2, col3 = st.columns(3)
                     with col1:
-                        tv.show_technical_analysis_widget("ETH/USDT")
-                    with col2:
                         st.metric("Current Price", "$2,456.78")
+                    with col2:
                         st.metric("24h Change", "+1.87%")
+                    with col3:
+                        st.metric("Volume", "$1.8B")
                 st.session_state.show_eth_chart = False
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
-                    # Full-width chart container
+                    # Chart container with better sizing
                     st.markdown("""
                     <style>
-                    .chart-container {
-                        width: 100%;
-                        height: 800px;
-                        margin: 0;
-                        padding: 0;
+                    .tradingview-widget-container {
+                        width: 100% !important;
+                        height: 800px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
                     
-                    # Full-width chart with better height
+                    # Full-width chart with no column wrapper
                     tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=800)
                     
-                    # Technical analysis and metrics in a better layout
+                    # Technical analysis and metrics below (not in columns)
                     st.markdown("---")
-                    col1, col2 = st.columns([3, 1])
+                    tv.show_technical_analysis_widget("SOL/USDT")
+                    
+                    # Metrics in a simple row
+                    col1, col2, col3 = st.columns(3)
                     with col1:
-                        tv.show_technical_analysis_widget("SOL/USDT")
-                    with col2:
                         st.metric("Current Price", "$98.45")
+                    with col2:
                         st.metric("24h Change", "+3.21%")
+                    with col3:
+                        st.metric("Volume", "$450M")
                 st.session_state.show_sol_chart = False
         else:
             st.info("No opportunities found matching your criteria")
@@ -709,19 +721,19 @@ elif page == "💹 All Opportunities":
                         for i, (_, row) in enumerate(tf_df.head(3).iterrows()):
                             symbol = row['Symbol']
                             with st.expander(f"📈 {symbol} Chart Analysis", expanded=(i==0)):
-                                # Full-width chart container
+                                # Chart container with better sizing
                                 st.markdown("""
                                 <style>
-                                .chart-container {
-                                    width: 100%;
-                                    height: 600px;
-                                    margin: 0;
-                                    padding: 0;
+                                .tradingview-widget-container {
+                                    width: 100% !important;
+                                    height: 600px !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
                                 }
                                 </style>
                                 """, unsafe_allow_html=True)
                                 
-                                # Full-width chart
+                                # Full-width chart with no column wrapper
                                 tv.show_tradingview_chart(
                                     symbol,
                                     timeframe='240',
@@ -729,28 +741,30 @@ elif page == "💹 All Opportunities":
                                     studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
                                 )
                                 
-                                # Trade details and technical analysis below
+                                # Trade details and technical analysis below (not in columns)
                                 st.markdown("---")
-                                col1, col2, col3 = st.columns([2, 1, 1])
+                                tv.show_technical_analysis_widget(symbol)
+                                
+                                # Trade metrics in a simple row
+                                col1, col2, col3, col4 = st.columns(4)
                                 
                                 with col1:
-                                    # Technical analysis widget
-                                    tv.show_technical_analysis_widget(symbol)
-                                
-                                with col2:
-                                    # Trade metrics with safe access
                                     st.metric("Probability", f"{row.get('Probability', 0):.0f}%")
+                                with col2:
                                     st.metric("Risk/Reward", f"{row.get('R:R', 0):.1f}:1")
-                                    st.metric("Entry", f"${row.get('Entry', 0):.6f}")
-                                
                                 with col3:
+                                    st.metric("Entry", f"${row.get('Entry', 0):.6f}")
+                                with col4:
                                     st.metric("Target", f"${row.get('Target 1', 0):.6f}")
-                                    st.metric("Stop", f"${row.get('Stop', 0):.6f}")
-                                    
-                                    # Technical indicators with safe access
+                                
+                                # Technical indicators in a separate row
+                                col1, col2 = st.columns(2)
+                                with col1:
                                     st.write("**Technical Indicators**")
                                     st.write(f"RSI: {row.get('RSI', 0):.0f}")
-                                    st.write(f"MFI: {row.get('MFI', 0):.0f}")
+                                with col2:
+                                    st.write("**Stop Loss**")
+                                    st.write(f"${row.get('Stop', 0):.6f}")
     else:
         st.info("No opportunities found matching your criteria")
 
