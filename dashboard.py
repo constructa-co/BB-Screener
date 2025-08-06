@@ -267,7 +267,7 @@ def create_live_metrics_display():
         )
         if len(history['opportunities']) > 1:
             fig = create_sparkline(history['opportunities'], "Opportunities")
-            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key="sparkline_opportunities")
     
     with col2:
         # Scans with sparkline
@@ -279,7 +279,7 @@ def create_live_metrics_display():
         )
         if len(history['scans']) > 1:
             fig = create_sparkline(history['scans'], "Scans")
-            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key="sparkline_scans")
     
     with col3:
         # High probability trades
@@ -291,7 +291,7 @@ def create_live_metrics_display():
         )
         if len(history['high_prob']) > 1:
             fig = create_sparkline(history['high_prob'], "High Prob")
-            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key="sparkline_high_prob")
     
     with col4:
         # Win rate
@@ -430,7 +430,7 @@ def create_live_price_monitor(symbols):
                 if len(history) > 1:
                     prices = [h['price'] for h in history]
                     fig = create_sparkline(prices, symbol)
-                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key=f"price_sparkline_{symbol}")
 
 def get_time_ago(timestamp):
     """Convert timestamp to human-readable time ago"""
@@ -982,14 +982,14 @@ elif page == "🎯 Scanner Dashboard":
 elif page == "💹 All Opportunities":
     st.title("💹 All Trading Opportunities")
     
+    # Get all opportunities first
+    opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
+    
     # NEW: Live price monitor for top opportunities
     if opportunities:
         top_symbols = [opp['symbol'] for opp in opportunities[:5]]  # Top 5 symbols
         create_live_price_monitor(top_symbols)
         st.markdown("---")
-    
-    # Get all opportunities
-    opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
     
     if opportunities:
         # Filter by trading style
