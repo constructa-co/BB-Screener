@@ -165,11 +165,11 @@ def get_best_opportunities(hours=24, min_prob=70):
                 '4H' as timeframe
             FROM trade_opportunities t
             JOIN scan_results s ON t.scan_id = s.id
-            WHERE t.probability >= %s
+            WHERE t.probability >= 70
             AND t.trade_taken = FALSE
             ORDER BY t.probability DESC, t.risk_reward_ratio DESC
             LIMIT 50
-        """, (min_prob,))
+        """)
         
         opportunities = logger.cursor.fetchall()
     
@@ -384,37 +384,49 @@ if page == "🏠 Overview":
             # Display charts if requested
             if st.session_state.get('show_btc_chart', False):
                 with st.expander("📈 BTC/USDT Chart", expanded=True):
+                    # Full-width chart
                     tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=600)
+                    
+                    # Technical analysis and metrics below
                     st.markdown("---")
-                    col1, col2 = st.columns([1, 1])
+                    col1, col2, col3 = st.columns([2, 1, 1])
                     with col1:
                         tv.show_technical_analysis_widget("BTC/USDT")
                     with col2:
                         st.metric("Current Price", "$45,234.56")
+                    with col3:
                         st.metric("24h Change", "+2.34%")
                 st.session_state.show_btc_chart = False
             
             if st.session_state.get('show_eth_chart', False):
                 with st.expander("📈 ETH/USDT Chart", expanded=True):
+                    # Full-width chart
                     tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=600)
+                    
+                    # Technical analysis and metrics below
                     st.markdown("---")
-                    col1, col2 = st.columns([1, 1])
+                    col1, col2, col3 = st.columns([2, 1, 1])
                     with col1:
                         tv.show_technical_analysis_widget("ETH/USDT")
                     with col2:
                         st.metric("Current Price", "$2,456.78")
+                    with col3:
                         st.metric("24h Change", "+1.87%")
                 st.session_state.show_eth_chart = False
             
             if st.session_state.get('show_sol_chart', False):
                 with st.expander("📈 SOL/USDT Chart", expanded=True):
+                    # Full-width chart
                     tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=600)
+                    
+                    # Technical analysis and metrics below
                     st.markdown("---")
-                    col1, col2 = st.columns([1, 1])
+                    col1, col2, col3 = st.columns([2, 1, 1])
                     with col1:
                         tv.show_technical_analysis_widget("SOL/USDT")
                     with col2:
                         st.metric("Current Price", "$98.45")
+                    with col3:
                         st.metric("24h Change", "+3.21%")
                 st.session_state.show_sol_chart = False
         else:
@@ -610,7 +622,7 @@ elif page == "💹 All Opportunities":
                             'Stop': opp['stop_loss'],
                             'Target 1': opp['target_1'],
                             'Market Cap': f"${float(opp['market_cap'])/1e9:.1f}B" if float(opp['market_cap']) > 1e9 else f"${float(opp['market_cap'])/1e6:.0f}M",
-                            'Volume': f"${opp['volume_24h']/1e6:.1f}M",
+                            'Volume': f"${float(opp['volume_24h'])/1e6:.1f}M",
                             'RSI': opp['rsi'],
                             'MFI': opp['mfi']
                         })
