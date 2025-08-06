@@ -50,6 +50,14 @@ except ImportError:
     print("⚠️ Interactive controls not available - interactive_controls.py not found")
     INTERACTIVE_CONTROLS_AVAILABLE = False
 
+# Import live price updater
+try:
+    from live_price_updater import update_opportunities_with_live_prices, get_live_price_for_symbol
+    LIVE_PRICES_AVAILABLE = True
+except ImportError:
+    print("⚠️ Live price updater not available - live_price_updater.py not found")
+    LIVE_PRICES_AVAILABLE = False
+
 # Page configuration
 st.set_page_config(
     page_title="Crypto Trading Command Center",
@@ -207,6 +215,19 @@ def get_best_opportunities(hours=24, min_prob=70):
         """)
         
         opportunities = logger.cursor.fetchall()
+        
+        # Convert to list of dictionaries for easier manipulation
+        if opportunities:
+            columns = [desc[0] for desc in logger.cursor.description]
+            opportunities = [dict(zip(columns, row)) for row in opportunities]
+            
+            # Update with live prices if available
+            if LIVE_PRICES_AVAILABLE:
+                try:
+                    opportunities = update_opportunities_with_live_prices(opportunities)
+                    print(f"✅ Updated {len(opportunities)} opportunities with live prices")
+                except Exception as e:
+                    print(f"⚠️ Error updating live prices: {e}")
     
     return opportunities
 

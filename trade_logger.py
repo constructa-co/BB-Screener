@@ -207,7 +207,7 @@ class TradeLogger:
     def log_trade_opportunity(self, scan_id, trade_data):
         """Log a single trade opportunity"""
         if not self.connection or not scan_id:
-            return
+            return False
             
         try:
             # Handle scanner-specific data
@@ -222,6 +222,12 @@ class TradeLogger:
                 scanner_specific = {
                     'phase': trade_data.get('wyckoff_phase'),
                     'volume_analysis': trade_data.get('volume_analysis')
+                }
+            else:
+                # Default scanner-specific data
+                scanner_specific = {
+                    'backtest_version': trade_data.get('scanner_type', 'Unknown'),
+                    'strategy': 'Volume Profile'
                 }
             
             self.cursor.execute("""
@@ -273,11 +279,13 @@ class TradeLogger:
             ))
             
             self.connection.commit()
+            return True
             
         except Exception as e:
             logging.error(f"Error logging trade {trade_data.get('symbol')}: {e}")
             if self.connection:
                 self.connection.rollback()
+            return False
     
     def complete_scan(self, scan_id, total_coins, premium_trades, execution_time):
         """Update scan results with completion data"""
