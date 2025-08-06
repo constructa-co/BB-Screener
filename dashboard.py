@@ -14,6 +14,10 @@ from trade_logger import TradeLogger
 import tradingview_charts as tv
 import json
 import os
+import time
+import asyncio
+import threading
+from plotly.subplots import make_subplots
 
 # Page configuration
 st.set_page_config(
@@ -176,10 +180,342 @@ def get_best_opportunities(hours=24, min_prob=70):
     return opportunities
 
 
+# Real-time Update System Functions
+def add_auto_refresh_controls():
+    """
+    Add auto-refresh controls to sidebar
+    """
+    st.sidebar.markdown("### 🔄 Auto Refresh")
+    
+    # Auto-refresh toggle
+    auto_refresh = st.sidebar.checkbox("Enable Auto-Refresh", value=False)
+    
+    # Refresh interval
+    if auto_refresh:
+        refresh_interval = st.sidebar.select_slider(
+            "Refresh Interval",
+            options=[10, 30, 60, 120, 300],
+            format_func=lambda x: f"{x} seconds" if x < 60 else f"{x//60} minutes",
+            value=30
+        )
+        
+        # Show countdown
+        if 'last_refresh' not in st.session_state:
+            st.session_state.last_refresh = time.time()
+        
+        time_since_refresh = int(time.time() - st.session_state.last_refresh)
+        time_until_refresh = refresh_interval - time_since_refresh
+        
+        if time_until_refresh > 0:
+            st.sidebar.progress(
+                time_since_refresh / refresh_interval,
+                text=f"Next refresh in {time_until_refresh}s"
+            )
+        
+        # Trigger refresh
+        if time_until_refresh <= 0:
+            st.session_state.last_refresh = time.time()
+            st.experimental_rerun()
+    
+    # Manual refresh button
+    if st.sidebar.button("🔄 Refresh Now"):
+        st.session_state.last_refresh = time.time()
+        st.experimental_rerun()
+    
+    # Last update time
+    st.sidebar.caption(f"Last update: {datetime.now().strftime('%H:%M:%S')}")
+
+def create_live_metrics_display():
+    """
+    Create live updating metrics with sparklines
+    """
+    # Initialize session state for metrics history
+    if 'metrics_history' not in st.session_state:
+        st.session_state.metrics_history = {
+            'opportunities': [],
+            'scans': [],
+            'high_prob': [],
+            'timestamps': []
+        }
+    
+    # Get current metrics
+    current_metrics = get_current_metrics()
+    
+    # Update history (keep last 20 points)
+    history = st.session_state.metrics_history
+    history['opportunities'].append(current_metrics['opportunities'])
+    history['scans'].append(current_metrics['scans'])
+    history['high_prob'].append(current_metrics['high_prob'])
+    history['timestamps'].append(datetime.now())
+    
+    # Limit history size
+    max_points = 20
+    for key in history:
+        if len(history[key]) > max_points:
+            history[key] = history[key][-max_points:]
+    
+    # Create columns for metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        # Opportunities with sparkline
+        st.metric(
+            "Opportunities",
+            current_metrics['opportunities'],
+            delta=calculate_delta(history['opportunities']),
+            delta_color="normal"
+        )
+        if len(history['opportunities']) > 1:
+            fig = create_sparkline(history['opportunities'], "Opportunities")
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    
+    with col2:
+        # Scans with sparkline
+        st.metric(
+            "Active Scans",
+            current_metrics['scans'],
+            delta=calculate_delta(history['scans']),
+            delta_color="normal"
+        )
+        if len(history['scans']) > 1:
+            fig = create_sparkline(history['scans'], "Scans")
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    
+    with col3:
+        # High probability trades
+        st.metric(
+            "High Probability",
+            current_metrics['high_prob'],
+            delta=calculate_delta(history['high_prob']),
+            delta_color="normal"
+        )
+        if len(history['high_prob']) > 1:
+            fig = create_sparkline(history['high_prob'], "High Prob")
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    
+    with col4:
+        # Win rate
+        st.metric(
+            "Win Rate",
+            f"{current_metrics['win_rate']:.1f}%",
+            delta=f"{calculate_delta([current_metrics['win_rate']])}%",
+            delta_color="normal"
+        )
+
+def create_sparkline(data, title):
+    """
+    Create a small sparkline chart
+    """
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        y=data,
+        mode='lines',
+        line=dict(color='#667eea', width=2),
+        fill='tozeroy',
+        fillcolor='rgba(102, 126, 234, 0.2)',
+        fillpattern=dict(fillmode="overlay"),
+        showlegend=False
+    ))
+    
+    fig.update_layout(
+        height=50,
+        margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis=dict(showgrid=False, zeroline=False, visible=False),
+        yaxis=dict(showgrid=False, zeroline=False, visible=False),
+        hovermode=False
+    )
+    
+    return fig
+
+def calculate_delta(data_list):
+    """Calculate delta for metric display"""
+    if len(data_list) >= 2:
+        return data_list[-1] - data_list[-2]
+    return 0
+
+def create_live_opportunity_feed():
+    """
+    Create a live-updating opportunity feed
+    """
+    st.subheader("🔴 Live Opportunity Feed")
+    
+    # Create placeholder for live updates
+    feed_placeholder = st.empty()
+    
+    # Get latest opportunities
+    opportunities = get_latest_opportunities(limit=10)
+    
+    with feed_placeholder.container():
+        for opp in opportunities:
+            # Time since found
+            time_ago = get_time_ago(opp['timestamp'])
+            
+            # Color based on age
+            if (datetime.now() - opp['timestamp']).seconds < 300:  # Less than 5 minutes
+                badge_color = "🟢"  # Green for fresh
+            elif (datetime.now() - opp['timestamp']).seconds < 900:  # Less than 15 minutes
+                badge_color = "🟡"  # Yellow for recent
+            else:
+                badge_color = "⚪"  # White for older
+            
+            # Display opportunity
+            with st.container():
+                col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 1, 1])
+                
+                with col1:
+                    st.write(f"{badge_color} {time_ago}")
+                
+                with col2:
+                    st.write(f"**{opp['symbol']}** ({opp['scanner_type']})")
+                
+                with col3:
+                    st.write(f"{opp['probability']:.0f}%")
+                
+                with col4:
+                    st.write(f"R:R {opp['risk_reward_ratio']:.1f}")
+                
+                with col5:
+                    if st.button("Chart", key=f"chart_{opp['id']}"):
+                        st.session_state.selected_chart = opp['symbol']
+                
+                st.markdown("---")
+
+def create_live_price_monitor(symbols):
+    """
+    Create live price monitoring for tracked symbols
+    """
+    st.subheader("📈 Live Price Monitor")
+    
+    # Create price tracking in session state
+    if 'price_history' not in st.session_state:
+        st.session_state.price_history = {}
+    
+    # Update prices
+    for symbol in symbols:
+        current_price = get_current_price(symbol)
+        
+        if symbol not in st.session_state.price_history:
+            st.session_state.price_history[symbol] = []
+        
+        st.session_state.price_history[symbol].append({
+            'price': current_price,
+            'time': datetime.now()
+        })
+        
+        # Keep only last 50 points
+        if len(st.session_state.price_history[symbol]) > 50:
+            st.session_state.price_history[symbol] = st.session_state.price_history[symbol][-50:]
+    
+    # Display price charts
+    cols = st.columns(min(len(symbols), 3))
+    
+    for i, symbol in enumerate(symbols[:3]):
+        with cols[i % 3]:
+            history = st.session_state.price_history.get(symbol, [])
+            if history:
+                current = history[-1]['price']
+                previous = history[-2]['price'] if len(history) > 1 else current
+                change = ((current - previous) / previous * 100) if previous > 0 else 0
+                
+                st.metric(
+                    symbol,
+                    f"${current:.4f}",
+                    f"{change:+.2f}%",
+                    delta_color="normal"
+                )
+                
+                # Mini price chart
+                if len(history) > 1:
+                    prices = [h['price'] for h in history]
+                    fig = create_sparkline(prices, symbol)
+                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+def get_time_ago(timestamp):
+    """Convert timestamp to human-readable time ago"""
+    delta = datetime.now() - timestamp
+    
+    if delta.seconds < 60:
+        return f"{delta.seconds}s ago"
+    elif delta.seconds < 3600:
+        return f"{delta.seconds // 60}m ago"
+    elif delta.seconds < 86400:
+        return f"{delta.seconds // 3600}h ago"
+    else:
+        return f"{delta.days}d ago"
+
+def get_current_metrics():
+    """Get current metrics from database"""
+    logger = get_db()
+    metrics = {
+        'opportunities': 0,
+        'scans': 0,
+        'high_prob': 0,
+        'win_rate': 0
+    }
+    
+    if logger.connection:
+        # Get metrics from last hour
+        logger.cursor.execute("""
+            SELECT 
+                COUNT(DISTINCT s.id) as scans,
+                COUNT(t.id) as opportunities,
+                COUNT(CASE WHEN t.probability >= 80 THEN 1 END) as high_prob
+            FROM scan_results s
+            LEFT JOIN trade_opportunities t ON s.id = t.scan_id
+            WHERE s.scan_timestamp > NOW() - INTERVAL '1 hour'
+        """)
+        
+        result = logger.cursor.fetchone()
+        if result:
+            metrics.update(result)
+    
+    return metrics
+
+def get_latest_opportunities(limit=10):
+    """Get latest opportunities from database"""
+    logger = get_db()
+    opportunities = []
+    
+    if logger.connection:
+        logger.cursor.execute("""
+            SELECT 
+                t.*,
+                s.scan_type as scanner_type
+            FROM trade_opportunities t
+            JOIN scan_results s ON t.scan_id = s.id
+            WHERE t.timestamp > NOW() - INTERVAL '1 hour'
+            ORDER BY t.timestamp DESC
+            LIMIT %s
+        """, (limit,))
+        
+        opportunities = logger.cursor.fetchall()
+    
+    return opportunities
+
+def get_current_price(symbol):
+    """Get current price for a symbol"""
+    # This would connect to your price feed
+    # For now, return a mock price
+    import random
+    base_prices = {
+        'BTC/USDT': 43000,
+        'ETH/USDT': 2300,
+        'SOL/USDT': 100
+    }
+    base = base_prices.get(symbol, 100)
+    return base * (1 + random.uniform(-0.01, 0.01))
+
 
 # Sidebar Configuration
 with st.sidebar:
     st.markdown("## 🎛️ Control Panel")
+    
+    # NEW: Add auto-refresh controls at the top
+    add_auto_refresh_controls()
+    
+    st.markdown("---")
     
     # Time filter
     time_range = st.selectbox(
@@ -300,6 +636,12 @@ if page == "🏠 Overview":
             """)
             win_rate = logger.cursor.fetchone()['win_rate'] or 0
             st.metric("Win Rate", f"{win_rate:.1f}%", "+2.1%")
+    
+    # NEW: Live metrics display
+    st.subheader("📊 Live Metrics")
+    create_live_metrics_display()
+    
+    st.markdown("---")
     
     # Two column layout
     left_col, right_col = st.columns([2, 1])
@@ -508,6 +850,12 @@ if page == "🏠 Overview":
                 st.plotly_chart(fig, use_container_width=True)
     
     with right_col:
+        # NEW: Live opportunity feed
+        st.subheader("🔴 Live Opportunity Feed")
+        create_live_opportunity_feed()
+        
+        st.markdown("---")
+        
         # Scanner status
         st.subheader("🔄 Scanner Status")
         
@@ -633,6 +981,12 @@ elif page == "🎯 Scanner Dashboard":
 
 elif page == "💹 All Opportunities":
     st.title("💹 All Trading Opportunities")
+    
+    # NEW: Live price monitor for top opportunities
+    if opportunities:
+        top_symbols = [opp['symbol'] for opp in opportunities[:5]]  # Top 5 symbols
+        create_live_price_monitor(top_symbols)
+        st.markdown("---")
     
     # Get all opportunities
     opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
