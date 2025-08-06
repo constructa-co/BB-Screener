@@ -42,6 +42,14 @@ except ImportError:
     print("⚠️ File management not available - file_management.py not found")
     FILE_MANAGEMENT_AVAILABLE = False
 
+# Import interactive controls
+try:
+    from interactive_controls import create_strategy_tuning_page
+    INTERACTIVE_CONTROLS_AVAILABLE = True
+except ImportError:
+    print("⚠️ Interactive controls not available - interactive_controls.py not found")
+    INTERACTIVE_CONTROLS_AVAILABLE = False
+
 # Page configuration
 st.set_page_config(
     page_title="Crypto Trading Command Center",
@@ -602,7 +610,7 @@ with st.sidebar:
 page = st.sidebar.radio(
     "📍 Navigation",
     ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
-     "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🤖 3Commas Integration", 
+     "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
      "📈 Post-Mortem Analysis", "⚙️ Settings"]
 )
 
@@ -1350,6 +1358,17 @@ elif page == "📁 File Management":
         **❌ File Management Module Not Available**
         
         The file management module (`file_management.py`) is not installed.
+        Please ensure the module is available in your project directory.
+        """)
+
+elif page == "🎛️ Strategy Tuning":
+    if INTERACTIVE_CONTROLS_AVAILABLE:
+        create_strategy_tuning_page()
+    else:
+        st.error("""
+        **❌ Interactive Controls Module Not Available**
+        
+        The interactive controls module (`interactive_controls.py`) is not installed.
         Please ensure the module is available in your project directory.
         """)
 
