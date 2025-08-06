@@ -161,22 +161,8 @@ def get_best_opportunities(hours=24, min_prob=70):
                 t.*,
                 s.scan_type,
                 s.scan_timestamp,
-                CASE 
-                    WHEN s.scan_type LIKE '%1m%' OR s.scan_type LIKE '%5m%' THEN 'Scalping'
-                    WHEN s.scan_type LIKE '%15m%' OR s.scan_type LIKE '%1h%' THEN 'Day Trading'
-                    WHEN s.scan_type LIKE '%4h%' OR s.scan_type LIKE '%daily%' THEN 'Swing Trading'
-                    ELSE 'Position Trading'
-                END as trading_style,
-                CASE 
-                    WHEN s.scan_type LIKE '%1m%' THEN '1M'
-                    WHEN s.scan_type LIKE '%5m%' THEN '5M'
-                    WHEN s.scan_type LIKE '%15m%' THEN '15M'
-                    WHEN s.scan_type LIKE '%1h%' THEN '1H'
-                    WHEN s.scan_type LIKE '%4h%' THEN '4H'
-                    WHEN s.scan_type LIKE '%daily%' THEN 'Daily'
-                    WHEN s.scan_type LIKE '%weekly%' THEN 'Weekly'
-                    ELSE 'Unknown'
-                END as timeframe
+                'Day Trading' as trading_style,
+                '4H' as timeframe
             FROM trade_opportunities t
             JOIN scan_results s ON t.scan_id = s.id
             WHERE t.probability >= %s
