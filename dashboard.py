@@ -19,6 +19,21 @@ import asyncio
 import threading
 from plotly.subplots import make_subplots
 
+# Import advanced analytics
+try:
+    from advanced_analytics import (
+        create_correlation_heatmap,
+        predict_trade_success,
+        create_pattern_success_analysis,
+        create_timeframe_analysis,
+        create_ml_backtesting_simulator,
+        get_historical_trades
+    )
+    ADVANCED_ANALYTICS_AVAILABLE = True
+except ImportError:
+    print("⚠️ Advanced analytics not available - advanced_analytics.py not found")
+    ADVANCED_ANALYTICS_AVAILABLE = False
+
 # Page configuration
 st.set_page_config(
     page_title="Crypto Trading Command Center",
@@ -579,7 +594,7 @@ with st.sidebar:
 page = st.sidebar.radio(
     "📍 Navigation",
     ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
-     "📊 Performance Analytics", "🤖 3Commas Integration", 
+     "📊 Performance Analytics", "🧠 Advanced Analytics", "🤖 3Commas Integration", 
      "📈 Post-Mortem Analysis", "⚙️ Settings"]
 )
 
@@ -1246,6 +1261,78 @@ elif page == "📊 Performance Analytics":
                 hovermode='x unified'
             )
             st.plotly_chart(fig, use_container_width=True)
+
+elif page == "🧠 Advanced Analytics":
+    st.title("🧠 Advanced Analytics & ML Predictions")
+    
+    if ADVANCED_ANALYTICS_AVAILABLE:
+        # Get historical data
+        historical_trades = get_historical_trades()
+        
+        if not historical_trades.empty and len(historical_trades) >= 50:
+            # Create tabs for different analyses
+            tab1, tab2, tab3, tab4, tab5 = st.tabs([
+                "🔥 Correlation Analysis", 
+                "🤖 ML Predictions", 
+                "📊 Pattern Success", 
+                "⏰ Timeframe Analysis",
+                "🧪 Strategy Backtesting"
+            ])
+            
+            with tab1:
+                create_correlation_heatmap(historical_trades)
+            
+            with tab2:
+                # Trade selection for prediction
+                st.subheader("Select Trade for AI Prediction")
+                
+                # Get current opportunities
+                current_opportunities = get_best_opportunities(hours=24, min_prob=70)
+                
+                if current_opportunities:
+                    selected_symbol = st.selectbox(
+                        "Choose a trade to predict:",
+                        [opp['symbol'] for opp in current_opportunities[:10]]
+                    )
+                    
+                    # Find the selected trade data
+                    selected_trade = None
+                    for opp in current_opportunities:
+                        if opp['symbol'] == selected_symbol:
+                            selected_trade = opp
+                            break
+                    
+                    if selected_trade:
+                        predict_trade_success(selected_trade, historical_trades)
+                else:
+                    st.info("No current opportunities available for prediction.")
+            
+            with tab3:
+                create_pattern_success_analysis(historical_trades)
+            
+            with tab4:
+                create_timeframe_analysis(historical_trades)
+            
+            with tab5:
+                create_ml_backtesting_simulator(historical_trades)
+        else:
+            st.info("""
+            **📊 Insufficient Data for Advanced Analytics**
+            
+            We need at least 50 completed trades to provide meaningful insights.
+            Keep trading to build your dataset!
+            
+            **Current Status:**
+            - Historical trades: {len(historical_trades)}
+            - Minimum required: 50
+            """.format(len(historical_trades)))
+    else:
+        st.error("""
+        **❌ Advanced Analytics Module Not Available**
+        
+        The advanced analytics module (`advanced_analytics.py`) is not installed.
+        Please ensure the module is available in your project directory.
+        """)
 
 elif page == "🤖 3Commas Integration":
     st.title("🤖 3Commas Integration")

@@ -49684,3 +49684,37 @@
 2025-08-06 20:57:59,750 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
 2025-08-06 20:57:59,750 - INFO - Performance Stats: {'total_scans': 11, 'setups_found': 0, 'alerts_sent': 92}
 2025-08-06 20:57:59,750 - INFO - Next scan in 300 seconds...
+2025-08-06 21:02:59,749 - INFO - Starting scan of top 500 symbols...
+2025-08-06 21:03:00,339 - INFO - Scanning 282 symbols
+2025-08-06 21:03:00,341 - INFO - Progress: 0/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 10/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 20/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 30/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 40/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 50/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 60/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 70/282 symbols scanned
+2025-08-06 21:03:00,341 - INFO - Progress: 80/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 90/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 100/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 110/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 120/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 130/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 140/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 150/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 160/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 170/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 180/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 190/282 symbols scanned
+2025-08-06 21:03:00,553 - INFO - Progress: 200/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 210/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 220/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 230/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 240/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 250/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 260/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 270/282 symbols scanned
+2025-08-06 21:03:00,554 - INFO - Progress: 280/282 symbols scanned
+2025-08-06 21:03:00,765 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-08-06 21:03:00,765 - INFO - Performance Stats: {'total_scans': 12, 'setups_found': 0, 'alerts_sent': 92}
+2025-08-06 21:03:00,765 - INFO - Next scan in 300 seconds...
