@@ -969,9 +969,13 @@ class ICTFVGScanner:
         
         # Enrich with universal data
         logger.info(f"🔧 Enriching data for {symbol}")
-        enriched_output = self.enricher.enrich_scanner_output('ict', setup)
-        
-        return enriched_output
+        try:
+            enriched_output = self.enricher.enrich_scanner_output('ict', setup)
+            return enriched_output
+        except Exception as e:
+            logger.error(f"❌ Enrichment failed for {symbol}: {e}")
+            # Return original setup if enrichment fails
+            return setup
         
     def format_alert(self, setup: Dict) -> str:
         """Format setup for alerts"""
@@ -1093,15 +1097,22 @@ class ICTFVGScanner:
                 fvgs = self.detect_fvg(df)
                 
                 for fvg in fvgs:
-                    setup = self.calculate_setup_details(
-                        symbol, 
-                        fvg, 
-                        df.iloc[-1]['close']
-                    )
-                    
-                    # Only add high quality setups
-                    if setup['final_quality'] >= min_quality:
-                        high_quality_setups.append(setup)
+                    try:
+                        setup = self.calculate_setup_details(
+                            symbol, 
+                            fvg, 
+                            df.iloc[-1]['close']
+                        )
+                        
+                        # Only add high quality setups
+                        if setup['final_quality'] >= min_quality:
+                            high_quality_setups.append(setup)
+                            logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
+                        else:
+                            logger.debug(f"⏭️ Skipping {symbol}: Quality={setup['final_quality']} < {min_quality}")
+                    except Exception as e:
+                        logger.error(f"❌ Error calculating setup for {symbol}: {e}")
+                        continue
                         
                         # Log to database
                         if self.db_logger and scan_id:
