@@ -681,6 +681,13 @@ class ModularBBScanner:
             asyncio.set_event_loop(loop)
             market_regime = loop.run_until_complete(self.run_market_regime_analysis())
             
+            # DEBUG: Check if market regime analysis succeeded
+            if market_regime is None:
+                print("❌ WARNING: Market regime analysis failed - no market regime data available")
+                print("   This will cause the Market Regime Analysis sheet to be missing from Excel output")
+            else:
+                print("✅ Market regime analysis completed successfully")
+            
             print(f"\nStep 2: Analyzing broader crypto market conditions...")
             market_sentiment = self.market_sentiment_analyzer.get_complete_market_sentiment()
             
