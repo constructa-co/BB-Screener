@@ -1152,6 +1152,15 @@ class ICTFVGScanner:
                 logger.error(f"Error scanning {symbol}: {e}")
                 continue
         
+        # Start scan logging if database is available (do this early)
+        scan_id = None
+        if self.db_logger:
+            try:
+                scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
+                logger.info(f"✅ Scan started with ID: {scan_id}")
+            except Exception as e:
+                logger.warning(f"❌ Failed to start scan logging: {e}")
+        
         # Sort by multiple criteria for best setups first
         high_quality_setups.sort(
             key=lambda x: (
@@ -1169,15 +1178,6 @@ class ICTFVGScanner:
         if total_found > max_alerts:
             logger.info(f"Found {total_found} setups, showing top {max_alerts}")
             high_quality_setups = high_quality_setups[:max_alerts]
-        
-        # Start scan logging if database is available
-        scan_id = None
-        if self.db_logger:
-            try:
-                scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
-                logger.info(f"✅ Scan started with ID: {scan_id}")
-            except Exception as e:
-                logger.warning(f"❌ Failed to start scan logging: {e}")
         
         # Update stats
         self.performance_stats['setups_found'] = total_found
