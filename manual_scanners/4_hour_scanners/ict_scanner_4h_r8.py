@@ -24,6 +24,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import the universal enrichment module
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from universal_enrichment import UniversalEnrichment
 
 # Configure logging
@@ -115,6 +118,14 @@ class ICTFVGScanner:
             logger.info("✅ Database logger initialized")
         except Exception as e:
             logger.warning(f"❌ Database logger not available: {e}")
+            # Try alternative import path
+            try:
+                sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+                from trade_logger import TradeLogger
+                self.db_logger = TradeLogger()
+                logger.info("✅ Database logger initialized (alternative path)")
+            except Exception as e2:
+                logger.warning(f"❌ Database logger not available (alternative path): {e2}")
     
     def setup_exchange(self):
         """Initialize exchange connection"""
