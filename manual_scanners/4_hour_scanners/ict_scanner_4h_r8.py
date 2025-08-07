@@ -457,6 +457,7 @@ class ICTFVGScanner:
             }
             
             # Enrich with universal data
+            logger.info(f"🔧 Enriching data for {symbol}")
             enriched_output = self.enricher.enrich_scanner_output('ict', base_output)
             
             return enriched_output
@@ -510,8 +511,12 @@ class ICTFVGScanner:
             except Exception as e:
                 logger.error(f"❌ Failed to start database scan: {e}")
         
-        for symbol in symbols:
+        for i, symbol in enumerate(symbols):
             try:
+                # Progress logging
+                if i % 10 == 0:
+                    logger.info(f"📊 Progress: {i}/{len(symbols)} symbols scanned")
+                
                 # Fetch data
                 df = self.fetch_candles(symbol, '4h', 100)
                 if df.empty:
@@ -660,9 +665,10 @@ def main():
     """Main execution function"""
     scanner = ICTFVGScanner()
     
-    # Run single scan
-    setups_found = scanner.scan_all_symbols(top_n=500, min_quality=75, max_alerts=10)
-    print(f"Found {setups_found} ICT FVG setups")
+    # Run single scan with reduced symbols for testing
+    print("🚀 Starting ICT FVG Scanner (R8) - Testing Mode")
+    setups_found = scanner.scan_all_symbols(top_n=50, min_quality=70, max_alerts=5)
+    print(f"✅ Scan complete: Found {setups_found} ICT FVG setups")
 
 
 if __name__ == "__main__":
