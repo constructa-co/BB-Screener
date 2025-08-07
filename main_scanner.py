@@ -824,6 +824,9 @@ class ModularBBScanner:
                                 target_1 = result.get('target1', 0)
                                 current_price = result.get('current_price', 0)
                                 
+                                # DEBUG: Print the actual values being extracted
+                                print(f"DEBUG: {symbol} - Entry: {entry_price}, Stop: {stop_loss}, Target: {target_1}, Current: {current_price}")
+                                
                                 # Prepare trade data for database
                                 trade_data = {
                                     'symbol': formatted_symbol,
