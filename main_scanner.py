@@ -813,18 +813,30 @@ class ModularBBScanner:
                         trades_logged = 0
                         for symbol, result in quality_results.items():
                             try:
+                                # FIX: Ensure symbol has USDT suffix for proper formatting
+                                formatted_symbol = symbol
+                                if not symbol.endswith('USDT') and not symbol.endswith('USD'):
+                                    formatted_symbol = f"{symbol}USDT"
+                                
+                                # FIX: Extract cost data from BB analysis
+                                bb_analysis = result.get('bb_analysis', {})
+                                entry_price = bb_analysis.get('entry', result.get('entry_price', 0))
+                                stop_loss = bb_analysis.get('stop', result.get('stop_loss', 0))
+                                target_1 = bb_analysis.get('target1', result.get('target_1', 0))
+                                current_price = result.get('current_price', 0)
+                                
                                 # Prepare trade data for database
                                 trade_data = {
-                                    'symbol': result.get('symbol', symbol),
+                                    'symbol': formatted_symbol,
                                     'exchange': 'Binance',  # Default exchange
                                     'timeframe': '4H',
                                     'bb_score': result.get('bb_score', 0),
                                     'probability': result.get('probability', 0),
                                     'risk_reward_ratio': result.get('risk_reward', 0),
-                                    'current_price': result.get('current_price', 0),
-                                    'entry_price': result.get('entry_price', 0),
-                                    'stop_loss': result.get('stop_loss', 0),
-                                    'target_1': result.get('target_1', 0),
+                                    'current_price': current_price,
+                                    'entry_price': entry_price,
+                                    'stop_loss': stop_loss,
+                                    'target_1': target_1,
                                     'target_2': result.get('target_2', 0),
                                     'target_3': result.get('target_3', 0),
                                     'rsi': result.get('rsi', 0),
