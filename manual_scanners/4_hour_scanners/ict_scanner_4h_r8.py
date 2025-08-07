@@ -1061,6 +1061,15 @@ class ICTFVGScanner:
         logger.info(f"Starting scan of top {top_n} symbols...")
         self.performance_stats['total_scans'] += 1
         
+        # Start scan logging if database is available (do this early)
+        scan_id = None
+        if self.db_logger:
+            try:
+                scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
+                logger.info(f"✅ Scan started with ID: {scan_id}")
+            except Exception as e:
+                logger.warning(f"❌ Failed to start scan logging: {e}")
+        
         symbols = self.get_top_symbols(limit=top_n)
         high_quality_setups = []
         
@@ -1151,15 +1160,6 @@ class ICTFVGScanner:
             except Exception as e:
                 logger.error(f"Error scanning {symbol}: {e}")
                 continue
-        
-        # Start scan logging if database is available (do this early)
-        scan_id = None
-        if self.db_logger:
-            try:
-                scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
-                logger.info(f"✅ Scan started with ID: {scan_id}")
-            except Exception as e:
-                logger.warning(f"❌ Failed to start scan logging: {e}")
         
         # Sort by multiple criteria for best setups first
         high_quality_setups.sort(
