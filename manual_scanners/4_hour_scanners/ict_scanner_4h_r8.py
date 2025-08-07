@@ -106,11 +106,15 @@ class ICTFVGScanner:
         
         # Database integration
         self.db_logger = None
-        try:
-            self.db_logger = TradeLogger()
-            logger.info("✅ Database logger initialized")
-        except Exception as e:
-            logger.warning(f"❌ Database logger not available: {e}")
+        if not self.test_mode:  # Only try database connection if not in test mode
+            try:
+                self.db_logger = TradeLogger()
+                logger.info("✅ Database logger initialized")
+            except Exception as e:
+                logger.warning(f"❌ Database logger not available: {e}")
+                logger.info("🔄 Running in offline mode - database logging disabled")
+        else:
+            logger.info("🔄 Test mode - database logging disabled")
         
         # Tracking
         self.last_scan_time = {}
