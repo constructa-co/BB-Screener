@@ -1097,34 +1097,40 @@ class ICTFVGScanner:
                         # Log to database
                         if self.db_logger:
                             try:
-                                # Prepare trade data for database
+                                # Prepare trade data for database - convert numpy types to Python types
+                                def convert_to_python_type(value):
+                                    """Convert numpy types to Python types for database compatibility"""
+                                    if hasattr(value, 'item'):  # numpy type
+                                        return value.item()
+                                    return value
+                                
                                 trade_data = {
                                     'symbol': setup['symbol'],
                                     'exchange': 'Binance',
                                     'timeframe': '4H',
-                                    'bb_score': setup.get('final_quality', 0),
-                                    'probability': setup.get('probability', setup.get('final_quality', 0)),
-                                    'risk_reward_ratio': setup.get('risk_reward', 0),
-                                    'current_price': setup.get('current_price', 0),
-                                    'entry_price': setup.get('entry_price', 0),
-                                    'stop_loss': setup.get('stop_loss', 0),
-                                    'target_1': setup.get('targets', {}).get('T1', 0),
-                                    'target_2': setup.get('targets', {}).get('T2', 0),
-                                    'target_3': setup.get('targets', {}).get('T3', 0),
-                                    'rsi': setup.get('rsi', 0),
-                                    'mfi': setup.get('mfi', 0),
-                                    'stochastic_k': setup.get('stochastic_k', 0),
-                                    'volume_surge': setup.get('volume_surge', 0),
+                                    'bb_score': convert_to_python_type(setup.get('final_quality', 0)),
+                                    'probability': convert_to_python_type(setup.get('probability', setup.get('final_quality', 0))),
+                                    'risk_reward_ratio': convert_to_python_type(setup.get('risk_reward', 0)),
+                                    'current_price': convert_to_python_type(setup.get('current_price', 0)),
+                                    'entry_price': convert_to_python_type(setup.get('entry_price', 0)),
+                                    'stop_loss': convert_to_python_type(setup.get('stop_loss', 0)),
+                                    'target_1': convert_to_python_type(setup.get('targets', {}).get('T1', 0)),
+                                    'target_2': convert_to_python_type(setup.get('targets', {}).get('T2', 0)),
+                                    'target_3': convert_to_python_type(setup.get('targets', {}).get('T3', 0)),
+                                    'rsi': convert_to_python_type(setup.get('rsi', 0)),
+                                    'mfi': convert_to_python_type(setup.get('mfi', 0)),
+                                    'stochastic_k': convert_to_python_type(setup.get('stochastic_k', 0)),
+                                    'volume_surge': convert_to_python_type(setup.get('volume_surge', 0)),
                                     'macd_signal': setup.get('macd_signal', 'neutral'),
                                     'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
                                     'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
-                                    'confluence_score': setup.get('final_quality', 0),
-                                    'historical_win_rate': setup.get('historical_win_rate', 0),
-                                    'category_win_rate': setup.get('category_win_rate', 0),
-                                    'similar_setups_count': setup.get('similar_setups_count', 0),
-                                    'market_cap': setup.get('market_cap', 0),
-                                    'volume_24h': setup.get('volume_24h', 0),
-                                    'price_change_24h': setup.get('price_change_24h', 0),
+                                    'confluence_score': convert_to_python_type(setup.get('final_quality', 0)),
+                                    'historical_win_rate': convert_to_python_type(setup.get('historical_win_rate', 0)),
+                                    'category_win_rate': convert_to_python_type(setup.get('category_win_rate', 0)),
+                                    'similar_setups_count': convert_to_python_type(setup.get('similar_setups_count', 0)),
+                                    'market_cap': convert_to_python_type(setup.get('market_cap', 0)),
+                                    'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
+                                    'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
                                     'scanner_type': 'ict_scanner_4h'
                                 }
                                 
