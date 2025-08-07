@@ -163,8 +163,14 @@ class ICTFVGScanner:
         """Fetch OHLCV data with error handling"""
         try:
             ohlcv = self.exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
+            if not ohlcv or len(ohlcv) == 0:
+                logger.warning(f"No OHLCV data received for {symbol}")
+                return pd.DataFrame()
+            
             df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+            
+            logger.debug(f"Fetched {len(df)} candles for {symbol}")
             return df
         except Exception as e:
             logger.error(f"❌ Error fetching candles for {symbol}: {e}")
@@ -209,11 +215,24 @@ class ICTFVGScanner:
         if len(df) < 3:
             return fvgs
         
+        # Check if dataframe has required columns
+        required_columns = ['open', 'high', 'low', 'close']
+        if not all(col in df.columns for col in required_columns):
+            logger.warning(f"Dataframe missing required columns. Available: {list(df.columns)}")
+            return fvgs
+        
         try:
+            # Add debugging
+            logger.debug(f"Detecting FVG in dataframe with {len(df)} rows")
+            
             for i in range(1, len(df) - 1):
-                current = df.iloc[i]
-                previous = df.iloc[i-1]
-                next_candle = df.iloc[i+1]
+                try:
+                    current = df.iloc[i]
+                    previous = df.iloc[i-1]
+                    next_candle = df.iloc[i+1]
+                except IndexError as e:
+                    logger.warning(f"Index error in FVG detection at index {i}: {e}")
+                    continue
                 
                 # Bullish FVG (gap up)
                 if (previous['high'] < next_candle['low'] and 
