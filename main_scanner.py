@@ -831,7 +831,7 @@ class ModularBBScanner:
                         for symbol, result in quality_results.items():
                             try:
                                 # Only log trades that have actual BB setups (not NONE)
-                                if result.get('setup_type') == 'NONE':
+                                if result.get('setup_type') == 'NONE' or result.get('pattern_type') == 'NONE':
                                     print(f"SKIP: {symbol} - No BB setup")
                                     continue
                                 
