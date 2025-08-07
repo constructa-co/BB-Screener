@@ -849,6 +849,9 @@ class ModularBBScanner:
                                 # DEBUG: Print the actual values being extracted
                                 print(f"DEBUG: {symbol} - Entry: {entry_price}, Stop: {stop_loss}, Target: {target_1}, Current: {current_price}")
                                 
+                                # DEBUG: Print the data being sent to TradeLogger
+                                print(f"DEBUG: {symbol} - Trade data being sent: entry_price={entry_price}, stop_loss={stop_loss}, target_1={target_1}")
+                                
                                 # Prepare trade data for database
                                 trade_data = {
                                     'symbol': formatted_symbol,
