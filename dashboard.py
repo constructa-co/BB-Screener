@@ -834,17 +834,12 @@ if page == "🏠 Overview":
                     st.markdown("""
                     <style>
                     .tradingview-widget-container {
-                        width: 100vw !important;
+                        width: 100% !important;
                         height: 800px !important;
                         margin: 0 !important;
                         padding: 0 !important;
                         max-width: none !important;
-                        min-width: 100vw !important;
-                        position: relative !important;
-                        left: 50% !important;
-                        right: 50% !important;
-                        margin-left: -50vw !important;
-                        margin-right: -50vw !important;
+                        min-width: 100% !important;
                     }
                     .tradingview-widget-container > div {
                         width: 100% !important;
@@ -852,16 +847,7 @@ if page == "🏠 Overview":
                         max-width: none !important;
                     }
                     .stExpander {
-                        width: 100vw !important;
-                        max-width: none !important;
-                        margin-left: -50vw !important;
-                        margin-right: -50vw !important;
-                        left: 50% !important;
-                        right: 50% !important;
-                        position: relative !important;
-                    }
-                    .stExpander > div {
-                        width: 100vw !important;
+                        width: 100% !important;
                         max-width: none !important;
                     }
                     </style>
@@ -890,17 +876,12 @@ if page == "🏠 Overview":
                     st.markdown("""
                     <style>
                     .tradingview-widget-container {
-                        width: 100vw !important;
+                        width: 100% !important;
                         height: 800px !important;
                         margin: 0 !important;
                         padding: 0 !important;
                         max-width: none !important;
-                        min-width: 100vw !important;
-                        position: relative !important;
-                        left: 50% !important;
-                        right: 50% !important;
-                        margin-left: -50vw !important;
-                        margin-right: -50vw !important;
+                        min-width: 100% !important;
                     }
                     .tradingview-widget-container > div {
                         width: 100% !important;
@@ -908,16 +889,7 @@ if page == "🏠 Overview":
                         max-width: none !important;
                     }
                     .stExpander {
-                        width: 100vw !important;
-                        max-width: none !important;
-                        margin-left: -50vw !important;
-                        margin-right: -50vw !important;
-                        left: 50% !important;
-                        right: 50% !important;
-                        position: relative !important;
-                    }
-                    .stExpander > div {
-                        width: 100vw !important;
+                        width: 100% !important;
                         max-width: none !important;
                     }
                     </style>
@@ -946,17 +918,12 @@ if page == "🏠 Overview":
                     st.markdown("""
                     <style>
                     .tradingview-widget-container {
-                        width: 100vw !important;
+                        width: 100% !important;
                         height: 800px !important;
                         margin: 0 !important;
                         padding: 0 !important;
                         max-width: none !important;
-                        min-width: 100vw !important;
-                        position: relative !important;
-                        left: 50% !important;
-                        right: 50% !important;
-                        margin-left: -50vw !important;
-                        margin-right: -50vw !important;
+                        min-width: 100% !important;
                     }
                     .tradingview-widget-container > div {
                         width: 100% !important;
@@ -964,16 +931,7 @@ if page == "🏠 Overview":
                         max-width: none !important;
                     }
                     .stExpander {
-                        width: 100vw !important;
-                        max-width: none !important;
-                        margin-left: -50vw !important;
-                        margin-right: -50vw !important;
-                        left: 50% !important;
-                        right: 50% !important;
-                        position: relative !important;
-                    }
-                    .stExpander > div {
-                        width: 100vw !important;
+                        width: 100% !important;
                         max-width: none !important;
                     }
                     </style>
@@ -1258,17 +1216,12 @@ elif page == "💹 All Opportunities":
                                 st.markdown("""
                                 <style>
                                 .tradingview-widget-container {
-                                    width: 100vw !important;
+                                    width: 100% !important;
                                     height: 600px !important;
                                     margin: 0 !important;
                                     padding: 0 !important;
                                     max-width: none !important;
-                                    min-width: 100vw !important;
-                                    position: relative !important;
-                                    left: 50% !important;
-                                    right: 50% !important;
-                                    margin-left: -50vw !important;
-                                    margin-right: -50vw !important;
+                                    min-width: 100% !important;
                                 }
                                 .tradingview-widget-container > div {
                                     width: 100% !important;
@@ -1276,16 +1229,7 @@ elif page == "💹 All Opportunities":
                                     max-width: none !important;
                                 }
                                 .stExpander {
-                                    width: 100vw !important;
-                                    max-width: none !important;
-                                    margin-left: -50vw !important;
-                                    margin-right: -50vw !important;
-                                    left: 50% !important;
-                                    right: 50% !important;
-                                    position: relative !important;
-                                }
-                                .stExpander > div {
-                                    width: 100vw !important;
+                                    width: 100% !important;
                                     max-width: none !important;
                                 }
                                 </style>
