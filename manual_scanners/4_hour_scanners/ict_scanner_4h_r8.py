@@ -1128,6 +1128,9 @@ class ICTFVGScanner:
                                     'scanner_type': 'ict_scanner_4h'
                                 }
                                 
+                                # Debug: Print the trade data being sent
+                                logger.info(f"🔍 Debug: Logging {symbol} with data: {trade_data}")
+                                
                                 success = self.db_logger.log_trade_opportunity(None, trade_data)
                                 if success:
                                     logger.info(f"✅ Logged ICT setup: {symbol} -> {setup.get('final_quality', 0):.1f}%")
