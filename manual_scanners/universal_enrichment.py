@@ -52,8 +52,13 @@ class UniversalEnrichment:
             
             # Calculate risk metrics
             risk_percent = abs((entry_price - stop_loss) / entry_price * 100)
-            # Safely get first target
-            first_target = targets[0] if targets and len(targets) > 0 else entry_price
+            # Safely get first target - handle both list and dict formats
+            if isinstance(targets, dict):
+                first_target = targets.get('T1', entry_price)
+            elif isinstance(targets, list) and len(targets) > 0:
+                first_target = targets[0]
+            else:
+                first_target = entry_price
             reward_percent = abs((first_target - entry_price) / entry_price * 100)
             risk_reward_ratio = reward_percent / risk_percent if risk_percent > 0 else 0
             
