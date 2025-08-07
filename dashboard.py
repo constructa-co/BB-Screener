@@ -211,6 +211,7 @@ def get_best_opportunities(hours=24, min_prob=70):
                 JOIN scan_results s ON t.scan_id = s.id
                 WHERE t.probability >= %s
                 AND t.trade_taken = FALSE
+                AND s.scan_type != 'BB_Backtest_R10'
                 ORDER BY t.probability DESC, t.risk_reward_ratio DESC
                 LIMIT 50
             """, (min_prob,))
@@ -527,6 +528,7 @@ def get_current_metrics():
                 FROM scan_results s
                 LEFT JOIN trade_opportunities t ON s.id = t.scan_id
                 WHERE s.scan_timestamp > NOW() - INTERVAL '24 hours'
+                AND s.scan_type != 'BB_Backtest_R10'
             """)
             
             result = logger.cursor.fetchone()
@@ -579,6 +581,7 @@ def get_latest_opportunities(limit=10):
                 FROM trade_opportunities t
                 JOIN scan_results s ON t.scan_id = s.id
                 WHERE t.timestamp > NOW() - INTERVAL '24 hours'
+                AND s.scan_type != 'BB_Backtest_R10'
                 ORDER BY t.timestamp DESC
                 LIMIT %s
             """, (limit,))
