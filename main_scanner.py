@@ -840,7 +840,7 @@ class ModularBBScanner:
                                 if not symbol.endswith('USDT') and not symbol.endswith('USD'):
                                     formatted_symbol = f"{symbol}USDT"
                                 
-                                # FIX: Extract cost data from result object
+                                # FIX: Extract cost data from result object (match Excel field names exactly)
                                 entry_price = result.get('entry', 0)
                                 stop_loss = result.get('stop', 0)
                                 target_1 = result.get('target1', 0)
