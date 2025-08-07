@@ -140,7 +140,17 @@ class ModularBBScanner:
             
             # Get ETH data as market proxy (ETH represents alt market best)
             print("📡 Fetching ETH data for market analysis...")
-            eth_df = self.data_fetcher.fetch_ohlcv('binance', 'ETH', '4h')
+            # Try different exchanges if Binance fails
+            eth_df = None
+            for exchange in ['bybit', 'kucoin', 'okx']:
+                try:
+                    eth_df = self.data_fetcher.fetch_ohlcv(exchange, 'ETH', '4h')
+                    if eth_df is not None and len(eth_df) >= 50:
+                        print(f"✅ Successfully fetched ETH data from {exchange}")
+                        break
+                except Exception as e:
+                    print(f"⚠️  Failed to fetch ETH data from {exchange}: {e}")
+                    continue
             
             if eth_df is None or len(eth_df) < 50:
                 print("⚠️  Could not fetch ETH data for market analysis - using defaults")
