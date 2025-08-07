@@ -813,6 +813,11 @@ class ModularBBScanner:
                         trades_logged = 0
                         for symbol, result in quality_results.items():
                             try:
+                                # Only log trades that have actual BB setups (not NONE)
+                                if result.get('setup_type') == 'NONE':
+                                    print(f"SKIP: {symbol} - No BB setup")
+                                    continue
+                                
                                 # FIX: Ensure symbol has USDT suffix for proper formatting
                                 formatted_symbol = symbol
                                 if not symbol.endswith('USDT') and not symbol.endswith('USD'):
