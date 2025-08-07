@@ -838,6 +838,17 @@ if page == "🏠 Overview":
                         height: 800px !important;
                         margin: 0 !important;
                         padding: 0 !important;
+                        max-width: none !important;
+                        min-width: 100% !important;
+                    }
+                    .tradingview-widget-container > div {
+                        width: 100% !important;
+                        height: 100% !important;
+                        max-width: none !important;
+                    }
+                    .stExpander {
+                        width: 100% !important;
+                        max-width: none !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
@@ -869,6 +880,17 @@ if page == "🏠 Overview":
                         height: 800px !important;
                         margin: 0 !important;
                         padding: 0 !important;
+                        max-width: none !important;
+                        min-width: 100% !important;
+                    }
+                    .tradingview-widget-container > div {
+                        width: 100% !important;
+                        height: 100% !important;
+                        max-width: none !important;
+                    }
+                    .stExpander {
+                        width: 100% !important;
+                        max-width: none !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
@@ -900,6 +922,17 @@ if page == "🏠 Overview":
                         height: 800px !important;
                         margin: 0 !important;
                         padding: 0 !important;
+                        max-width: none !important;
+                        min-width: 100% !important;
+                    }
+                    .tradingview-widget-container > div {
+                        width: 100% !important;
+                        height: 100% !important;
+                        max-width: none !important;
+                    }
+                    .stExpander {
+                        width: 100% !important;
+                        max-width: none !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
@@ -1187,6 +1220,17 @@ elif page == "💹 All Opportunities":
                                     height: 600px !important;
                                     margin: 0 !important;
                                     padding: 0 !important;
+                                    max-width: none !important;
+                                    min-width: 100% !important;
+                                }
+                                .tradingview-widget-container > div {
+                                    width: 100% !important;
+                                    height: 100% !important;
+                                    max-width: none !important;
+                                }
+                                .stExpander {
+                                    width: 100% !important;
+                                    max-width: none !important;
                                 }
                                 </style>
                                 """, unsafe_allow_html=True)

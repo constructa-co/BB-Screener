@@ -43,8 +43,8 @@ def show_tradingview_chart(symbol, timeframe='240', height=600, studies=None):
     tv_interval = timeframe_map.get(timeframe, timeframe)
     
     tradingview_widget = f"""
-    <div class="tradingview-widget-container" style="width: 100%; height: {height}px; margin: 0; padding: 0;">
-        <div id="tradingview_{tv_symbol}" style="width: 100%; height: 100%;"></div>
+    <div class="tradingview-widget-container" style="width: 100% !important; height: {height}px !important; margin: 0 !important; padding: 0 !important; max-width: none !important;">
+        <div id="tradingview_{tv_symbol}" style="width: 100% !important; height: 100% !important;"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         <script type="text/javascript">
         new TradingView.widget({{
@@ -63,7 +63,9 @@ def show_tradingview_chart(symbol, timeframe='240', height=600, studies=None):
             "studies": {studies},
             "show_popup_button": true,
             "popup_width": "1000",
-            "popup_height": "650"
+            "popup_height": "650",
+            "width": "100%",
+            "height": "{height}"
         }});
         </script>
     </div>
