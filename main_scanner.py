@@ -429,9 +429,9 @@ class ModularBBScanner:
                     # Add trading-specific fields to the result
                     result.update({
                         'probability': probability,  # From existing calculation
-                        'entry': round(bb_analysis['entry'], 6) if bb_analysis['entry'] != 0 else 0,
-                        'stop': round(bb_analysis['stop'], 6) if bb_analysis['stop'] != 0 else 0,
-                        'target1': round(bb_analysis['target1'], 6) if bb_analysis['target1'] != 0 else 0,
+                        'entry': round(bb_analysis.get('entry', 0), 6) if bb_analysis.get('entry', 0) != 0 else 0,
+                        'stop': round(bb_analysis.get('stop', 0), 6) if bb_analysis.get('stop', 0) != 0 else 0,
+                        'target1': round(bb_analysis.get('target1', 0), 6) if bb_analysis.get('target1', 0) != 0 else 0,
                         'risk_reward': bb_analysis['risk_reward'],
                         'risk_pct': round(risk_pct, 2),
                         'gain_pct': round(gain_pct, 2),
@@ -877,8 +877,8 @@ class ModularBBScanner:
                                     'historical_win_rate': result.get('historical_win_rate', 0),
                                     'category_win_rate': result.get('category_win_rate', 0),
                                     'similar_setups_count': result.get('similar_setups_count', 0),
-                                    'market_cap': result.get('market_cap', 0),
-                                    'volume_24h': result.get('volume_24h', 0),
+                                    'market_cap': result.get('market_cap_rank', 0),  # Use market_cap_rank as proxy
+                                    'volume_24h': result.get('volume_24h_usd', 0),  # Use volume_24h_usd
                                     'price_change_24h': result.get('price_change_24h', 0),
                                     'scanner_type': 'bb_scanner_4h'
                                 }
