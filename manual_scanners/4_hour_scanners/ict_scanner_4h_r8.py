@@ -936,7 +936,7 @@ class ICTFVGScanner:
         final_quality = (fvg['quality_score'] + fib_result['fib_quality']) * category_weight
         final_quality = min(final_quality, 100)  # Cap at 100
         
-        return {
+        setup = {
             'symbol': symbol,
             'type': fvg['type'],
             'entry_price': entry_price,
