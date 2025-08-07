@@ -818,11 +818,10 @@ class ModularBBScanner:
                                 if not symbol.endswith('USDT') and not symbol.endswith('USD'):
                                     formatted_symbol = f"{symbol}USDT"
                                 
-                                # FIX: Extract cost data from BB analysis
-                                bb_analysis = result.get('bb_analysis', {})
-                                entry_price = bb_analysis.get('entry', result.get('entry_price', 0))
-                                stop_loss = bb_analysis.get('stop', result.get('stop_loss', 0))
-                                target_1 = bb_analysis.get('target1', result.get('target_1', 0))
+                                # FIX: Extract cost data from result object
+                                entry_price = result.get('entry', 0)
+                                stop_loss = result.get('stop', 0)
+                                target_1 = result.get('target1', 0)
                                 current_price = result.get('current_price', 0)
                                 
                                 # Prepare trade data for database
