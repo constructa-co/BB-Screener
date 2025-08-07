@@ -486,7 +486,7 @@ class ICTFVGScanner:
         scan_id = None
         if self.db_logger:
             try:
-                scan_id = self.db_logger.start_scan('ict_scanner_4h')
+                scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'r8')
                 logger.info(f"✅ Database scan started: {scan_id}")
             except Exception as e:
                 logger.error(f"❌ Failed to start database scan: {e}")
