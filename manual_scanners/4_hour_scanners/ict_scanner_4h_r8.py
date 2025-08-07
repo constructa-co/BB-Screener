@@ -1095,7 +1095,7 @@ class ICTFVGScanner:
                         high_quality_setups.append(setup)
                         
                         # Log to database
-                        if self.db_logger:
+                        if self.db_logger and scan_id:
                             try:
                                 # Prepare trade data for database - convert numpy types to Python types
                                 def convert_to_python_type(value):
@@ -1137,7 +1137,7 @@ class ICTFVGScanner:
                                 # Debug: Print the trade data being sent
                                 logger.info(f"🔍 Debug: Logging {symbol} with data: {trade_data}")
                                 
-                                success = self.db_logger.log_trade_opportunity(None, trade_data)
+                                success = self.db_logger.log_trade_opportunity(scan_id, trade_data)
                                 if success:
                                     logger.info(f"✅ Logged ICT setup: {symbol} -> {setup.get('final_quality', 0):.1f}%")
                                 else:
@@ -1169,6 +1169,15 @@ class ICTFVGScanner:
         if total_found > max_alerts:
             logger.info(f"Found {total_found} setups, showing top {max_alerts}")
             high_quality_setups = high_quality_setups[:max_alerts]
+        
+        # Start scan logging if database is available
+        scan_id = None
+        if self.db_logger:
+            try:
+                scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
+                logger.info(f"✅ Scan started with ID: {scan_id}")
+            except Exception as e:
+                logger.warning(f"❌ Failed to start scan logging: {e}")
         
         # Update stats
         self.performance_stats['setups_found'] = total_found
