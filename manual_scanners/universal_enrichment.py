@@ -58,6 +58,11 @@ class UniversalEnrichment:
             # Price change
             price_change_24h = ticker.get('percentage', 0)
             
+            # Calculate spread safely
+            bid = ticker.get('bid', 0)
+            ask = ticker.get('ask', 0)
+            spread_percent = abs((ask - bid) / bid * 100) if bid > 0 else 0
+            
             return {
                 'current_price': ticker['last'],
                 'rsi': round(current_rsi, 2),
@@ -67,9 +72,9 @@ class UniversalEnrichment:
                 'price_change_24h': price_change_24h,
                 'risk_percent': round(risk_percent, 2),
                 'risk_reward_ratio': round(risk_reward_ratio, 2),
-                'bid': ticker.get('bid', 0),
-                'ask': ticker.get('ask', 0),
-                'spread_percent': abs((ticker.get('ask', 0) - ticker.get('bid', 0)) / ticker.get('bid', 1) * 100)
+                'bid': bid,
+                'ask': ask,
+                'spread_percent': spread_percent
             }
             
         except Exception as e:
