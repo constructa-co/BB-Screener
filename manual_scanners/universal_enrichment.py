@@ -258,43 +258,47 @@ class UniversalEnrichment:
         }
         
         return unified_data
-    
+
     def enrich_scanner_output(self, scanner_type: str, base_output: Dict) -> Dict:
         """
         Main enrichment function called by any scanner
-        
+
         Args:
             scanner_type: 'ict', 'wyckoff', 'elliott', etc.
             base_output: Dictionary with symbol, entry, stop, targets, and scanner-specific data
-        
+
         Returns:
             Fully enriched data ready for database
         """
         symbol = base_output['symbol']
         timeframe = base_output.get('timeframe', '4h')
-        
+
         # Get basic enrichment
         basic_enrichment = self.enrich_basic_data(
-            symbol, 
+            symbol,
             timeframe,
             base_output['entry_price'],
             base_output['stop_loss'],
             base_output.get('targets', [base_output.get('target_1')])
         )
-        
-        # Add market regime
-        market_data = self.add_market_regime(symbol)
-        
+
+        # Add market regime (optional - don't block if it fails)
+        market_data = {}
+        try:
+            market_data = self.add_market_regime(symbol)
+        except Exception as e:
+            self.logger.warning(f"Market regime analysis failed for {symbol}: {e}")
+
         # Get OHLCV for pattern analysis
         ohlcv = self.exchange.fetch_ohlcv(symbol, timeframe, limit=100)
         df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-        
+
         # Add patterns
         patterns = self.add_pattern_recognition(df)
-        
+
         # Add support/resistance
         sr_levels = self.add_support_resistance(df, basic_enrichment.get('current_price', 0))
-        
+
         # Combine all enrichment
         all_enrichment = {
             **basic_enrichment,
@@ -302,17 +306,17 @@ class UniversalEnrichment:
             **patterns,
             **sr_levels
         }
-        
+
         # Calculate enhanced probability
         base_score = base_output.get('quality_score', 70)
         enhanced_probability = self.calculate_probability_score(
-            scanner_type, 
+            scanner_type,
             base_score,
             all_enrichment
         )
-        
+
         all_enrichment['probability'] = enhanced_probability
-        
+
         # Create unified output
         return self.create_unified_output(
             base_output,
