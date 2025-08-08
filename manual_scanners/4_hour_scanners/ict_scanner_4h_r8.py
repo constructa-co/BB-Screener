@@ -977,6 +977,8 @@ class ICTFVGScanner:
             # Return original setup if enrichment fails
             return setup
         
+
+        
     def format_alert(self, setup: Dict) -> str:
         """Format setup for alerts"""
         direction = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
