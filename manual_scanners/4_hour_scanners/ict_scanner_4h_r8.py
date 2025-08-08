@@ -1091,10 +1091,12 @@ class ICTFVGScanner:
                 # Fetch and analyze
                 df = self.fetch_candles(symbol)
                 if df.empty or len(df) < 50:
+                    logger.debug(f"⏭️ Skipping {symbol}: No data or insufficient data")
                     continue
                     
                 # Detect FVGs
                 fvgs = self.detect_fvg(df)
+                logger.debug(f"🔍 Found {len(fvgs)} FVGs for {symbol}")
                 
                 for fvg in fvgs:
                     try:
@@ -1108,63 +1110,63 @@ class ICTFVGScanner:
                         if setup['final_quality'] >= min_quality:
                             high_quality_setups.append(setup)
                             logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
+                            
+                            # Log to database
+                            if self.db_logger and scan_id:
+                                try:
+                                    # Prepare trade data for database - convert numpy types to Python types
+                                    def convert_to_python_type(value):
+                                        """Convert numpy types to Python types for database compatibility"""
+                                        if hasattr(value, 'item'):  # numpy type
+                                            return value.item()
+                                        return value
+                                    
+                                    trade_data = {
+                                        'symbol': setup['symbol'],
+                                        'exchange': 'Binance',
+                                        'timeframe': '4H',
+                                        'bb_score': convert_to_python_type(setup.get('final_quality', 0)),
+                                        'probability': convert_to_python_type(setup.get('probability', setup.get('final_quality', 0))),
+                                        'risk_reward_ratio': convert_to_python_type(setup.get('risk_reward', 0)),
+                                        'current_price': convert_to_python_type(setup.get('current_price', 0)),
+                                        'entry_price': convert_to_python_type(setup.get('entry_price', 0)),
+                                        'stop_loss': convert_to_python_type(setup.get('stop_loss', 0)),
+                                        'target_1': convert_to_python_type(setup.get('targets', {}).get('T1', 0)),
+                                        'target_2': convert_to_python_type(setup.get('targets', {}).get('T2', 0)),
+                                        'target_3': convert_to_python_type(setup.get('targets', {}).get('T3', 0)),
+                                        'rsi': convert_to_python_type(setup.get('rsi', 0)),
+                                        'mfi': convert_to_python_type(setup.get('mfi', 0)),
+                                        'stochastic_k': convert_to_python_type(setup.get('stochastic_k', 0)),
+                                        'volume_surge': convert_to_python_type(setup.get('volume_surge', 0)),
+                                        'macd_signal': setup.get('macd_signal', 'neutral'),
+                                        'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
+                                        'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
+                                        'confluence_score': convert_to_python_type(setup.get('final_quality', 0)),
+                                        'historical_win_rate': convert_to_python_type(setup.get('historical_win_rate', 0)),
+                                        'category_win_rate': convert_to_python_type(setup.get('category_win_rate', 0)),
+                                        'similar_setups_count': convert_to_python_type(setup.get('similar_setups_count', 0)),
+                                        'market_cap': convert_to_python_type(setup.get('market_cap', 0)),
+                                        'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
+                                        'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
+                                        'scanner_type': 'ict_scanner_4h'
+                                    }
+                                    
+                                    # Debug: Print the trade data being sent
+                                    logger.info(f"🔍 Debug: Logging {symbol} with data: {trade_data}")
+                                    
+                                    success = self.db_logger.log_trade_opportunity(scan_id, trade_data)
+                                    if success:
+                                        logger.info(f"✅ Logged ICT setup: {symbol} -> {setup.get('final_quality', 0):.1f}%")
+                                    else:
+                                        logger.warning(f"❌ Failed to log ICT setup: {symbol}")
+                                        
+                                except Exception as e:
+                                    logger.error(f"❌ Database logging error for {symbol}: {e}")
                         else:
                             logger.debug(f"⏭️ Skipping {symbol}: Quality={setup['final_quality']} < {min_quality}")
                     except Exception as e:
                         logger.error(f"❌ Error calculating setup for {symbol}: {e}")
                         continue
-                        
-                        # Log to database
-                        if self.db_logger and scan_id:
-                            try:
-                                # Prepare trade data for database - convert numpy types to Python types
-                                def convert_to_python_type(value):
-                                    """Convert numpy types to Python types for database compatibility"""
-                                    if hasattr(value, 'item'):  # numpy type
-                                        return value.item()
-                                    return value
-                                
-                                trade_data = {
-                                    'symbol': setup['symbol'],
-                                    'exchange': 'Binance',
-                                    'timeframe': '4H',
-                                    'bb_score': convert_to_python_type(setup.get('final_quality', 0)),
-                                    'probability': convert_to_python_type(setup.get('probability', setup.get('final_quality', 0))),
-                                    'risk_reward_ratio': convert_to_python_type(setup.get('risk_reward', 0)),
-                                    'current_price': convert_to_python_type(setup.get('current_price', 0)),
-                                    'entry_price': convert_to_python_type(setup.get('entry_price', 0)),
-                                    'stop_loss': convert_to_python_type(setup.get('stop_loss', 0)),
-                                    'target_1': convert_to_python_type(setup.get('targets', {}).get('T1', 0)),
-                                    'target_2': convert_to_python_type(setup.get('targets', {}).get('T2', 0)),
-                                    'target_3': convert_to_python_type(setup.get('targets', {}).get('T3', 0)),
-                                    'rsi': convert_to_python_type(setup.get('rsi', 0)),
-                                    'mfi': convert_to_python_type(setup.get('mfi', 0)),
-                                    'stochastic_k': convert_to_python_type(setup.get('stochastic_k', 0)),
-                                    'volume_surge': convert_to_python_type(setup.get('volume_surge', 0)),
-                                    'macd_signal': setup.get('macd_signal', 'neutral'),
-                                    'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
-                                    'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
-                                    'confluence_score': convert_to_python_type(setup.get('final_quality', 0)),
-                                    'historical_win_rate': convert_to_python_type(setup.get('historical_win_rate', 0)),
-                                    'category_win_rate': convert_to_python_type(setup.get('category_win_rate', 0)),
-                                    'similar_setups_count': convert_to_python_type(setup.get('similar_setups_count', 0)),
-                                    'market_cap': convert_to_python_type(setup.get('market_cap', 0)),
-                                    'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
-                                    'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
-                                    'scanner_type': 'ict_scanner_4h'
-                                }
-                                
-                                # Debug: Print the trade data being sent
-                                logger.info(f"🔍 Debug: Logging {symbol} with data: {trade_data}")
-                                
-                                success = self.db_logger.log_trade_opportunity(scan_id, trade_data)
-                                if success:
-                                    logger.info(f"✅ Logged ICT setup: {symbol} -> {setup.get('final_quality', 0):.1f}%")
-                                else:
-                                    logger.warning(f"❌ Failed to log ICT setup: {symbol}")
-                                    
-                            except Exception as e:
-                                logger.error(f"❌ Database logging error for {symbol}: {e}")
                         
                 self.last_scan_time[symbol] = datetime.now()
                 
