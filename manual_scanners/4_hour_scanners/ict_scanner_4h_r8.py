@@ -1067,12 +1067,15 @@ class ICTFVGScanner:
         
         # Start scan logging if database is available (do this early)
         scan_id = None
-        if self.db_logger:
-            try:
+        try:
+            if self.db_logger:
                 scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
                 logger.info(f"✅ Scan started with ID: {scan_id}")
-            except Exception as e:
-                logger.warning(f"❌ Failed to start scan logging: {e}")
+            else:
+                logger.warning("❌ No database logger available")
+        except Exception as e:
+            logger.warning(f"❌ Failed to start scan logging: {e}")
+            scan_id = None
         
         symbols = self.get_top_symbols(limit=top_n)
         high_quality_setups = []
@@ -1112,7 +1115,7 @@ class ICTFVGScanner:
                             logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
                             
                             # Log to database
-                            if self.db_logger and scan_id:
+                            if self.db_logger and scan_id is not None:
                                 try:
                                     # Prepare trade data for database - convert numpy types to Python types
                                     def convert_to_python_type(value):
