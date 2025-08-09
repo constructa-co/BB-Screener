@@ -827,18 +827,23 @@ class ModularBBScanner:
                         scan_id = db_logger.log_scan_start('bb_scanner', version='1.0')
                         print(f"✅ Created scan_id: {scan_id}")
                         
-                        # Log ALL trades from all_analysis_data (complete Excel data)
+                        # Log quality results (actual BB scanner trades) with comprehensive data
                         trades_logged = 0
-                        for trade in all_analysis_data:
+                        for symbol, trade in quality_results.items():
                             try:
+                                # Only log trades that have actual BB setups (not NONE)
+                                if trade.get('setup_type') == 'NONE' or trade.get('pattern_type') == 'NONE':
+                                    print(f"SKIP: {symbol} - No BB setup")
+                                    continue
+                                
                                 # Ensure symbol has proper formatting
-                                symbol = trade.get('symbol', '')
-                                if symbol and not symbol.endswith('USDT') and not symbol.endswith('USD'):
-                                    symbol = f"{symbol}USDT"
+                                formatted_symbol = symbol
+                                if not symbol.endswith('USDT') and not symbol.endswith('USD'):
+                                    formatted_symbol = f"{symbol}USDT"
                                 
                                 # Basic fields for standard database columns
                                 basic_fields = {
-                                    'symbol': symbol,
+                                    'symbol': formatted_symbol,
                                     'exchange': 'Binance',
                                     'timeframe': '4H',
                                     'bb_score': trade.get('bb_score', 0),
@@ -914,12 +919,13 @@ class ModularBBScanner:
                         
                         # Complete the scan
                         execution_time = 120  # Default execution time
-                        high_quality_count = len([t for t in all_analysis_data if t.get('probability', 0) > 70])
-                        db_logger.complete_scan(scan_id, len(all_analysis_data), trades_logged, execution_time)
+                        high_quality_count = len([t for t in quality_results.values() if t.get('probability', 0) > 70])
+                        db_logger.complete_scan(scan_id, len(quality_results), trades_logged, execution_time)
                         print(f"✅ COMPREHENSIVE DATABASE LOGGING COMPLETE:")
                         print(f"   • Total trades logged: {trades_logged}")
                         print(f"   • All Excel fields captured in scanner_specific_data JSON")
                         print(f"   • High quality trades (>70%): {high_quality_count}")
+                        print(f"   • Quality results processed: {len(quality_results)}")
                         
                     else:
                         print("❌ Database connection failed - continuing with Excel generation")
