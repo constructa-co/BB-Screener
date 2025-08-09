@@ -34,6 +34,7 @@ import sys
 import logging
 import warnings
 import pandas as pd
+import json
 from datetime import datetime
 
 # Suppress pandas_ta deprecation warnings for cleaner output
@@ -817,93 +818,109 @@ class ModularBBScanner:
                 # Display sentiment analysis summary (EXISTING - UNCHANGED)
                 self.output_generator.display_sentiment_summary(df_enhanced)
                 
-                # DATABASE LOGGING - Log all quality results to database
-                print("💾 Logging results to database...")
+                # COMPREHENSIVE DATABASE LOGGING - Log ALL trades with ALL fields
+                print("💾 Logging ALL trades to database with comprehensive data...")
                 try:
-                    logger = TradeLogger()
-                    if logger.connection:
+                    db_logger = TradeLogger()
+                    if db_logger and db_logger.connection:
                         # Create scan record
-                        scan_id = logger.log_scan_start('bb_scanner_4h', 'BB Scanner 4H')
+                        scan_id = db_logger.log_scan_start('bb_scanner', version='1.0')
                         print(f"✅ Created scan_id: {scan_id}")
                         
-                        # Log each quality result
+                        # Log ALL trades from all_analysis_data (complete Excel data)
                         trades_logged = 0
-                        for symbol, result in quality_results.items():
+                        for trade in all_analysis_data:
                             try:
-                                # Only log trades that have actual BB setups (not NONE)
-                                if result.get('setup_type') == 'NONE' or result.get('pattern_type') == 'NONE':
-                                    print(f"SKIP: {symbol} - No BB setup")
-                                    continue
+                                # Ensure symbol has proper formatting
+                                symbol = trade.get('symbol', '')
+                                if symbol and not symbol.endswith('USDT') and not symbol.endswith('USD'):
+                                    symbol = f"{symbol}USDT"
                                 
-                                # FIX: Ensure symbol has USDT suffix for proper formatting
-                                formatted_symbol = symbol
-                                if not symbol.endswith('USDT') and not symbol.endswith('USD'):
-                                    formatted_symbol = f"{symbol}USDT"
-                                
-                                # FIX: Extract cost data from result object (match Excel field names exactly)
-                                entry_price = result.get('entry', 0)
-                                stop_loss = result.get('stop', 0)
-                                target_1 = result.get('target1', 0)
-                                current_price = result.get('current_price', 0)
-                                
-                                # DEBUG: Print the actual values being extracted
-                                print(f"DEBUG: {symbol} - Entry: {entry_price}, Stop: {stop_loss}, Target: {target_1}, Current: {current_price}")
-                                
-                                # DEBUG: Print the data being sent to TradeLogger
-                                print(f"DEBUG: {symbol} - Trade data being sent: entry_price={entry_price}, stop_loss={stop_loss}, target_1={target_1}")
-                                
-                                # Prepare trade data for database
-                                trade_data = {
-                                    'symbol': formatted_symbol,
-                                    'exchange': 'Binance',  # Default exchange
+                                # Basic fields for standard database columns
+                                basic_fields = {
+                                    'symbol': symbol,
+                                    'exchange': 'Binance',
                                     'timeframe': '4H',
-                                    'bb_score': result.get('bb_score', 0),
-                                    'probability': result.get('probability', 0),
-                                    'risk_reward_ratio': result.get('risk_reward', 0),
-                                    'current_price': current_price,
-                                    'entry_price': entry_price,
-                                    'stop_loss': stop_loss,
-                                    'target_1': target_1,
-                                    'target_2': result.get('target_2', 0),
-                                    'target_3': result.get('target_3', 0),
-                                    'rsi': result.get('rsi', 0),
-                                    'mfi': result.get('mfi', 0),
-                                    'stochastic_k': result.get('stochastic_k', 0),
-                                    'volume_surge': result.get('volume_surge', 0),
-                                    'macd_signal': result.get('macd_signal', 'neutral'),
-                                    'pattern_type': result.get('setup_type', 'BB Bounce'),
-                                    'pattern_quality': result.get('tier', 'GOOD'),
-                                    'confluence_score': result.get('confluence_score', 0),
-                                    'historical_win_rate': result.get('historical_win_rate', 0),
-                                    'category_win_rate': result.get('category_win_rate', 0),
-                                    'similar_setups_count': result.get('similar_setups_count', 0),
-                                    'market_cap': result.get('market_cap_rank', 0),  # Use market_cap_rank as proxy
-                                    'volume_24h': result.get('volume_24h_usd', 0),  # Use volume_24h_usd
-                                    'price_change_24h': result.get('price_change_24h', 0),
-                                    'scanner_type': 'bb_scanner_4h'
+                                    'bb_score': trade.get('bb_score', 0),
+                                    'probability': trade.get('probability', 0),
+                                    'risk_reward_ratio': trade.get('risk_reward', 0),
+                                    'current_price': trade.get('current_price', 0),
+                                    'entry_price': trade.get('entry', 0),
+                                    'stop_loss': trade.get('stop', 0),
+                                    'target_1': trade.get('target1', 0),
+                                    'target_2': trade.get('target_2', 0),
+                                    'target_3': trade.get('target_3', 0),
+                                    'rsi': trade.get('rsi', 0),
+                                    'mfi': trade.get('mfi', 0),
+                                    'stochastic_k': trade.get('stochastic_k', 0),
+                                    'volume_surge': trade.get('volume_surge', 0),
+                                    'macd_signal': trade.get('macd_signal', 'neutral'),
+                                    'pattern_type': trade.get('setup_type', 'BB Bounce'),
+                                    'pattern_quality': trade.get('tier', 'GOOD'),
+                                    'confluence_score': trade.get('confluence_score', 0),
+                                    'historical_win_rate': trade.get('historical_win_rate', 0),
+                                    'category_win_rate': trade.get('category_win_rate', 0),
+                                    'similar_setups_count': trade.get('similar_setups_count', 0),
+                                    'market_cap': trade.get('market_cap_rank', 0),
+                                    'volume_24h': trade.get('volume_24h_usd', 0),
+                                    'price_change_24h': trade.get('price_change_24h', 0),
+                                    'scanner_type': 'bb_scanner'
+                                }
+                                
+                                # CAPTURE EVERYTHING in scanner_specific_data JSON field
+                                scanner_specific = {}
+                                for key, value in trade.items():
+                                    # Skip basic fields already captured in standard columns
+                                    if key not in ['symbol', 'bb_score', 'probability', 'risk_reward', 'current_price', 
+                                                  'entry', 'stop', 'target1', 'target_2', 'target_3', 'rsi', 'mfi', 
+                                                  'stochastic_k', 'volume_surge', 'macd_signal', 'setup_type', 'tier',
+                                                  'confluence_score', 'historical_win_rate', 'category_win_rate', 
+                                                  'similar_setups_count', 'market_cap_rank', 'volume_24h_usd', 'price_change_24h']:
+                                        
+                                        # Serialize any non-JSON compatible types
+                                        if hasattr(value, 'tolist'):  # numpy arrays
+                                            value = value.tolist()
+                                        elif hasattr(value, '__dict__'):  # objects
+                                            value = str(value)
+                                        elif pd.isna(value):  # pandas NaN values
+                                            value = None
+                                        
+                                        scanner_specific[key] = value
+                                
+                                # Combine basic fields with comprehensive data
+                                trade_record = {
+                                    **basic_fields,
+                                    'scanner_specific_data': json.dumps(scanner_specific)
                                 }
                                 
                                 # Log to database
-                                success = logger.log_trade_opportunity(scan_id, trade_data)
+                                success = db_logger.log_trade_opportunity(scan_id, trade_record)
                                 if success:
                                     trades_logged += 1
-                                    print(f"✅ Logged trade: {symbol} -> {result.get('probability', 0)}%")
+                                    if trades_logged <= 5:  # Show first 5 for verification
+                                        print(f"✅ Logged trade: {symbol} -> {trade.get('probability', 0)}% (Setup: {trade.get('setup_type', 'Unknown')})")
                                 else:
                                     print(f"❌ Failed to log trade: {symbol}")
                                     
                             except Exception as e:
-                                print(f"❌ Error logging trade {symbol}: {e}")
+                                print(f"❌ Error logging trade {trade.get('symbol', 'Unknown')}: {e}")
                                 continue
                         
                         # Complete the scan
-                        logger.complete_scan(scan_id, len(quality_results), trades_logged, 120)
-                        print(f"✅ Database logging complete: {trades_logged} trades logged")
+                        execution_time = 120  # Default execution time
+                        high_quality_count = len([t for t in all_analysis_data if t.get('probability', 0) > 70])
+                        db_logger.complete_scan(scan_id, len(all_analysis_data), trades_logged, execution_time)
+                        print(f"✅ COMPREHENSIVE DATABASE LOGGING COMPLETE:")
+                        print(f"   • Total trades logged: {trades_logged}")
+                        print(f"   • All Excel fields captured in scanner_specific_data JSON")
+                        print(f"   • High quality trades (>70%): {high_quality_count}")
                         
                     else:
-                        print("❌ Database connection failed")
+                        print("❌ Database connection failed - continuing with Excel generation")
                         
                 except Exception as e:
-                    print(f"❌ Database logging error: {e}")
+                    print(f"❌ Database logging error (non-critical): {e}")
+                    print("   Continuing with Excel generation...")
                 
                 # NEW: Send Telegram summary report
                 if self.telegram:
