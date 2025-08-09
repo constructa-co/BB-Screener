@@ -884,6 +884,12 @@ class ModularBBScanner:
                                             value = str(value)
                                         elif pd.isna(value):  # pandas NaN values
                                             value = None
+                                        elif hasattr(value, 'isoformat'):  # datetime objects
+                                            value = value.isoformat()
+                                        elif hasattr(value, 'timestamp'):  # pandas timestamps
+                                            value = value.isoformat()
+                                        elif str(type(value)).startswith('<class \'pandas'):  # other pandas types
+                                            value = str(value)
                                         
                                         scanner_specific[key] = value
                                 
