@@ -827,10 +827,13 @@ class ModularBBScanner:
                         scan_id = db_logger.log_scan_start('bb_scanner', version='1.0')
                         print(f"✅ Created scan_id: {scan_id}")
                         
-                        # Log quality results (actual BB scanner trades) with comprehensive data
+                        # Log all comprehensive analysis data (like Excel output) but filter for actual setups
                         trades_logged = 0
-                        for symbol, trade in quality_results.items():
+                        for trade in all_analysis_data:
                             try:
+                                # Get symbol from trade data
+                                symbol = trade.get('symbol', 'Unknown')
+                                
                                 # Only log trades that have actual BB setups (not NONE)
                                 if trade.get('setup_type') == 'NONE' or trade.get('pattern_type') == 'NONE':
                                     print(f"SKIP: {symbol} - No BB setup")
@@ -919,13 +922,15 @@ class ModularBBScanner:
                         
                         # Complete the scan
                         execution_time = 120  # Default execution time
-                        high_quality_count = len([t for t in quality_results.values() if t.get('probability', 0) > 70])
-                        db_logger.complete_scan(scan_id, len(quality_results), trades_logged, execution_time)
+                        high_quality_count = len([t for t in all_analysis_data if t.get('probability', 0) > 70 and t.get('setup_type') != 'NONE'])
+                        total_analyzed = len(all_analysis_data)
+                        db_logger.complete_scan(scan_id, total_analyzed, trades_logged, execution_time)
                         print(f"✅ COMPREHENSIVE DATABASE LOGGING COMPLETE:")
-                        print(f"   • Total trades logged: {trades_logged}")
-                        print(f"   • All Excel fields captured in scanner_specific_data JSON")
+                        print(f"   • Total coins analyzed: {total_analyzed}")
+                        print(f"   • BB setups logged: {trades_logged}")
+                        print(f"   • All {len(all_analysis_data[0].keys()) if all_analysis_data else 0}+ Excel fields captured in scanner_specific_data JSON")
                         print(f"   • High quality trades (>70%): {high_quality_count}")
-                        print(f"   • Quality results processed: {len(quality_results)}")
+                        print(f"   • 🎉 NOW CAPTURING SAME COMPREHENSIVE DATA AS EXCEL!")
                         
                     else:
                         print("❌ Database connection failed - continuing with Excel generation")
