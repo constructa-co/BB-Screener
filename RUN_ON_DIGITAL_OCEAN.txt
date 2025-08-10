@@ -1,0 +1,40 @@
+🚀 BB SCANNER - DIGITAL OCEAN RUN COMMANDS
+==================================================
+
+🔗 SSH TO SERVER:
+ssh root@165.232.160.52
+
+📁 NAVIGATE AND RUN:
+cd /opt/bb-screener
+source venv/bin/activate
+python main_scanner.py
+
+🎯 WHAT HAPPENS:
+1. ✅ BB Scanner runs (all existing logic)
+2. ✅ Excel generated (all existing logic)  
+3. ✅ Database sync happens automatically (new automatic step)
+
+📊 EXPECTED OUTPUT:
+You'll see normal scanner output, then at the end:
+============================================================
+EXCEL TO DATABASE SYNC
+============================================================
+Found latest Excel: outputs/excel_reports/bb_analysis_YYYYMMDD_HHMMSS.xlsx
+Excel sheets found: ['All_Analysis', 'Premium_High_Only', ...]
+Found X trades in Excel
+Found Y valid trades to sync
+Started database sync with scan_id: XXX
+First trade logged: SYMBOL
+Number of extra fields in scanner_specific_data: 121
+Sample fields: ['setup_type', 'bb_score', 'setup_quality', ...]
+✅ Successfully synced Y/Y trades to database
+   High probability trades: Z
+✅ Database sync completed successfully!
+
+🎯 THIS WILL:
+- Run the full BB scanner with all existing logic
+- Generate the Excel file as usual
+- Automatically sync ALL Excel data to database (121+ fields per trade)
+- Show you exactly what was synced
+
+🚀 The database logging is now fully automated!
