@@ -205,79 +205,61 @@ class TradeLogger:
             return None
     
     def log_trade_opportunity(self, scan_id, trade_data):
-        """Log a single trade opportunity"""
+        """Enhanced to handle all scanner-specific fields"""
         if not self.connection or not scan_id:
             return False
             
         try:
-            # Handle scanner-specific data
-            scanner_specific = {}
-            if trade_data.get('scanner_type') == 'ict':
-                scanner_specific = {
-                    'order_block_strength': trade_data.get('order_block_strength'),
-                    'liquidity_grab': trade_data.get('liquidity_grab'),
-                    'market_structure': trade_data.get('market_structure')
-                }
-            elif trade_data.get('scanner_type') == 'wyckoff':
-                scanner_specific = {
-                    'phase': trade_data.get('wyckoff_phase'),
-                    'volume_analysis': trade_data.get('volume_analysis')
-                }
-            else:
-                # Default scanner-specific data
-                scanner_specific = {
-                    'backtest_version': trade_data.get('scanner_type', 'Unknown'),
-                    'strategy': 'Volume Profile'
-                }
+            # Define scanner-specific fields that get their own columns
+            scanner_specific_columns = {
+                # ICT fields
+                'gap_high', 'gap_low', 'gap_size_pct', 'gap_type',
+                'swing_high', 'swing_low', 'order_block_high', 'order_block_low',
+                'breaker_block_high', 'breaker_block_low',
+                'fvg_high', 'fvg_low', 'liquidity_sweep_level',
+                'fib_236', 'fib_382', 'fib_500', 'fib_618', 'fib_786',
+                'equilibrium_level',
+                # Volume fields
+                'volume_surge_multiplier', 'relative_volume', 'vwap', 'vwap_deviation',
+                'volume_profile_poc',
+                # Pattern fields
+                'pattern_type', 'pattern_target', 'pattern_reliability',
+                # S/R fields
+                'major_resistance_1', 'major_support_1', 'pivot_point'
+            }
             
-            self.cursor.execute("""
-                INSERT INTO trade_opportunities (
-                    scan_id, symbol, exchange, timeframe,
-                    bb_score, probability, risk_reward_ratio,
-                    current_price, entry_price, stop_loss,
-                    target_1, target_2, target_3,
-                    rsi, mfi, stochastic_k, volume_surge, macd_signal,
-                    pattern_type, pattern_quality, confluence_score,
-                    historical_win_rate, category_win_rate, similar_setups_count,
-                    market_cap, volume_24h, price_change_24h,
-                    scanner_specific_data
-                ) VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s, %s, %s,
-                    %s
-                )
-            """, (
-                scan_id,
-                trade_data.get('symbol'),
-                trade_data.get('exchange', 'Binance'),
-                trade_data.get('timeframe', '4h'),
-                trade_data.get('bb_score'),
-                trade_data.get('probability', trade_data.get('Success_Probability')),
-                trade_data.get('risk_reward_ratio', trade_data.get('Risk_Reward_Ratio')),
-                float(trade_data.get('current_price', 0)),
-                float(trade_data.get('entry_price', trade_data.get('Entry_Price', 0))),
-                float(trade_data.get('stop_loss', trade_data.get('Stop_Loss', 0))),
-                float(trade_data.get('target_1', trade_data.get('Target_1', 0))),
-                float(trade_data.get('target_2', trade_data.get('Target_2', 0))),
-                float(trade_data.get('target_3', trade_data.get('Target_3', 0))),
-                trade_data.get('rsi', trade_data.get('RSI')),
-                trade_data.get('mfi', trade_data.get('MFI')),
-                trade_data.get('stochastic_k', trade_data.get('Stochastic_K')),
-                trade_data.get('volume_surge', trade_data.get('Volume_Surge')),
-                trade_data.get('macd_signal', trade_data.get('MACD_Signal')),
-                trade_data.get('pattern_type', trade_data.get('Pattern')),
-                trade_data.get('pattern_quality', trade_data.get('Pattern_Quality')),
-                trade_data.get('confluence_score'),
-                trade_data.get('historical_win_rate', trade_data.get('Historical_Win_Rate')),
-                trade_data.get('category_win_rate', trade_data.get('Category_Win_Rate')),
-                trade_data.get('similar_setups_count'),
-                float(trade_data.get('market_cap', trade_data.get('Market_Cap', 0))),
-                float(trade_data.get('volume_24h', trade_data.get('Volume_24h', 0))),
-                trade_data.get('price_change_24h', trade_data.get('Price_Change_24h')),
-                json.dumps(scanner_specific) if scanner_specific else None
-            ))
+            # Separate scanner-specific fields from general data
+            column_values = {}
+            json_data = {}
             
+            for key, value in trade_data.items():
+                if key in scanner_specific_columns and value is not None:
+                    column_values[key] = value
+                elif key not in ['symbol', 'exchange', 'probability', 'entry_price', 
+                                 'stop_loss', 'target_1', 'target_2', 'target_3']:
+                    json_data[key] = value
+            
+            # Build dynamic INSERT query
+            columns = ['scan_id', 'symbol', 'exchange', 'probability', 
+                      'entry_price', 'stop_loss', 'target_1']
+            values = [scan_id, trade_data.get('symbol'), trade_data.get('exchange'),
+                     trade_data.get('probability', 0), trade_data.get('entry_price'),
+                     trade_data.get('stop_loss'), trade_data.get('target_1')]
+            
+            # Add scanner-specific columns
+            for col, val in column_values.items():
+                columns.append(col)
+                values.append(val)
+            
+            # Add JSON data
+            columns.append('scanner_specific_data')
+            values.append(json.dumps(json_data, default=str))
+            
+            # Execute INSERT
+            placeholders = ','.join(['%s'] * len(values))
+            query = f"INSERT INTO trade_opportunities ({','.join(columns)}) VALUES ({placeholders})"
+            
+            self.cursor.execute(query, values)
             self.connection.commit()
             return True
             

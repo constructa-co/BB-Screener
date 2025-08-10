@@ -48,7 +48,7 @@ class EnhancedDatabaseExport:
             
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 # Main trade data
-                trades_df.to_excel(writer, sheet_name='All_BB_Trades', index=False)
+                trades_df.to_excel(writer, sheet_name='All_Trades', index=False)
                 
                 # Market context sheets
                 if len(regime_df) > 0:
@@ -65,7 +65,7 @@ class EnhancedDatabaseExport:
             
             print(f"✅ Enhanced export saved to: {filename}")
             print(f"📊 Export contains:")
-            print(f"   • {len(trades_df)} trades in All_BB_Trades")
+            print(f"   • {len(trades_df)} trades in All_Trades")
             print(f"   • {len(regime_df)} records in Market_Regime_Analysis")
             print(f"   • {len(overview_df)} records in Market_Overview")
             print(f"   • {len(metadata_df)} records in Market_Metadata")
@@ -81,12 +81,11 @@ class EnhancedDatabaseExport:
     def _export_trades(self):
         """Export trade opportunities with parsed scanner_specific_data"""
         try:
-            # Get all BB scanner trades
+            # Get all trades with scanner type
             self.logger.cursor.execute("""
                 SELECT t.*, s.scan_type
                 FROM trade_opportunities t
                 JOIN scan_results s ON t.scan_id = s.id
-                WHERE s.scan_type = 'bb_scanner'
                 ORDER BY t.id DESC
             """)
             
@@ -277,9 +276,19 @@ class EnhancedDatabaseExport:
     
     def _create_summary_sheet(self, writer, trades_df, regime_df, overview_df, metadata_df):
         """Create a summary sheet with key statistics"""
+        
+        # Group trades by scanner type
+        scanner_stats = trades_df.groupby('scan_type').agg({
+            'id': 'count',
+            'probability': ['mean', 'count']
+        }).round(2)
+        
         summary_data = {
             'Metric': [
-                'Total BB Scanner Trades',
+                'Total Trades (All Scanners)',
+                'BB Scanner Trades',
+                'ICT Scanner Trades',
+                'Other Scanner Trades',
                 'High Probability Trades (>70%)',
                 'Market Regime Records',
                 'Market Overview Records',
@@ -287,11 +296,14 @@ class EnhancedDatabaseExport:
                 'Latest Market Regime',
                 'Latest Fear & Greed Index',
                 'Latest BTC Dominance',
-                'Latest Success Rate',
                 'Export Timestamp'
             ],
             'Value': [
                 len(trades_df),
+                len(trades_df[trades_df['scan_type'] == 'bb_scanner']),
+                len(trades_df[trades_df['scan_type'].str.contains('ict', na=False)]),
+                len(trades_df[~trades_df['scan_type'].isin(['bb_scanner']) & 
+                             ~trades_df['scan_type'].str.contains('ict', na=False)]),
                 len(trades_df[trades_df['probability'] > 70]) if len(trades_df) > 0 else 0,
                 len(regime_df),
                 len(overview_df),
@@ -299,7 +311,6 @@ class EnhancedDatabaseExport:
                 regime_df['regime_type'].iloc[0] if len(regime_df) > 0 else 'N/A',
                 regime_df['fear_greed_index'].iloc[0] if len(regime_df) > 0 else 'N/A',
                 f"{regime_df['btc_dominance'].iloc[0]}%" if len(regime_df) > 0 else 'N/A',
-                f"{overview_df['overall_success_rate'].iloc[0]}%" if len(overview_df) > 0 else 'N/A',
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             ]
         }
