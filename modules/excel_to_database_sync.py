@@ -54,9 +54,15 @@ class ExcelToDatabaseSync:
             df = pd.read_excel(excel_path, sheet_name=0)
             print(f"Found {len(df)} trades in Excel")
             
-            # Filter for actual trades (probability > 0)
-            trades_df = df[df['probability'] > 0].copy() if 'probability' in df.columns else df
-            print(f"Found {len(trades_df)} valid trades to sync")
+            # Capture ALL trades (including 0% probability)
+            trades_df = df.copy()
+            print(f"Found {len(trades_df)} total trades in Excel")
+            print(f"Excel has {len(df.columns)} columns")
+            
+            # Show probability distribution
+            if 'probability' in df.columns:
+                prob_dist = df['probability'].value_counts().sort_index()
+                print(f"Probability distribution: {dict(prob_dist)}")
             
             if len(trades_df) == 0:
                 print("No valid trades to sync")
@@ -82,10 +88,10 @@ class ExcelToDatabaseSync:
                         if pd.isna(value):
                             trade_data[key] = None
                     
-                    # Define main database columns
+                    # Define main database columns (Excel column names)
                     main_columns = [
                         'symbol', 'exchange', 'probability', 
-                        'entry_price', 'stop_loss', 'target_1'
+                        'entry', 'stop', 'target1'
                     ]
                     
                     # Everything else goes in scanner_specific_data
@@ -99,14 +105,21 @@ class ExcelToDatabaseSync:
                                 else:
                                     scanner_specific[key] = str(value)
                     
+                    # Debug: Show field count
+                    if success_count == 0:  # First trade
+                        print(f"🔍 DEBUG: Trade data has {len(trade_data)} total fields")
+                        print(f"🔍 DEBUG: Main columns: {len(main_columns)} fields")
+                        print(f"🔍 DEBUG: Scanner specific: {len(scanner_specific)} fields")
+                        print(f"🔍 DEBUG: Sample scanner fields: {list(scanner_specific.keys())[:15]}")
+                    
                     # Create database record
                     record = {
                         'symbol': str(trade_data.get('symbol', '')),
                         'exchange': str(trade_data.get('exchange', '')),
                         'probability': float(trade_data.get('probability', 0)),
-                        'entry_price': float(trade_data.get('entry_price', 0)) if trade_data.get('entry_price') else 0,
-                        'stop_loss': float(trade_data.get('stop_loss', 0)) if trade_data.get('stop_loss') else 0,
-                        'target_1': float(trade_data.get('target_1', 0)) if trade_data.get('target_1') else 0,
+                        'entry_price': float(trade_data.get('entry', 0)) if trade_data.get('entry') else 0,
+                        'stop_loss': float(trade_data.get('stop', 0)) if trade_data.get('stop') else 0,
+                        'target_1': float(trade_data.get('target1', 0)) if trade_data.get('target1') else 0,
                         'scanner_specific_data': json.dumps(scanner_specific)
                     }
                     
@@ -133,7 +146,7 @@ class ExcelToDatabaseSync:
             
             # Also sync other sheets if they contain data
             if 'Market_Regime_Analysis' in excel_file.sheet_names:
-                self._sync_market_regime(excel_path)
+                self._sync_market_regime(excel_path, scan_id)
                 
             self.logger.close()
             return True
@@ -144,14 +157,40 @@ class ExcelToDatabaseSync:
             traceback.print_exc()
             return False
     
-    def _sync_market_regime(self, excel_path):
-        """Optionally sync market regime data"""
+    def _sync_market_regime(self, excel_path, scan_id):
+        """Sync market regime and other secondary sheet data to database"""
         try:
-            regime_df = pd.read_excel(excel_path, sheet_name='Market_Regime_Analysis')
-            print(f"Also found Market Regime data to sync")
-            # Add logic here if you want to store market regime data
-        except:
-            pass
+            from market_data_logger import MarketDataLogger
+            market_logger = MarketDataLogger()
+            
+            # Create market data table if needed
+            market_logger.create_market_data_table()
+            
+            # Sync Market Regime Analysis
+            if 'Market_Regime_Analysis' in pd.ExcelFile(excel_path).sheet_names:
+                regime_df = pd.read_excel(excel_path, sheet_name='Market_Regime_Analysis')
+                print(f"📊 Market Regime Analysis: {len(regime_df)} rows")
+                market_logger.log_market_regime(scan_id, regime_df)
+                
+            # Sync Market Overview
+            if 'Market_Overview' in pd.ExcelFile(excel_path).sheet_names:
+                overview_df = pd.read_excel(excel_path, sheet_name='Market_Overview')
+                print(f"📊 Market Overview: {len(overview_df)} rows")
+                market_logger.log_market_overview(scan_id, overview_df)
+                
+            # Sync Market Metadata
+            if 'Market_Metadata' in pd.ExcelFile(excel_path).sheet_names:
+                metadata_df = pd.read_excel(excel_path, sheet_name='Market_Metadata')
+                print(f"📊 Market Metadata: {len(metadata_df)} rows")
+                market_logger.log_market_metadata(scan_id, metadata_df)
+                
+            print("✅ Secondary sheets logged to market_data table")
+            market_logger.close()
+            
+        except Exception as e:
+            print(f"⚠️ Error syncing secondary sheets: {e}")
+            import traceback
+            traceback.print_exc()
 
     def run_after_scan(self):
         """Run this after BB scanner completes"""
