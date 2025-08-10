@@ -57,7 +57,7 @@ try:
     # Add this import
     from modules.improved_bb_backtest import ComprehensiveBBBacktest
     # In imports section
-    from historical_intelligence import HistoricalIntelligence, EnhancedOutputGenerator
+    from modules.historical_intelligence import HistoricalIntelligence, EnhancedOutputGenerator
     # Minimal Confidence Module import
     from modules.minimal_confidence_module import MinimalConfidenceModule, enhance_all_trades_with_confidence
     from modules.market_metadata_enricher import MarketMetadataEnricher
