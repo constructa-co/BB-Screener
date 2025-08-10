@@ -33,8 +33,19 @@ class HistoricalIntelligence:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=180)
             
-            # Fetch historical data (same as your backtest)
-            df = self.data_fetcher.fetch_ohlcv('binance', symbol, '4h')
+            # Try multiple exchanges like the main scanner does
+            df = None
+            successful_exchange = None
+            
+            for exchange_name in self.data_fetcher.get_available_exchanges():
+                try:
+                    df = self.data_fetcher.fetch_ohlcv(exchange_name, symbol, '4h')
+                    if df is not None and len(df) >= 100:
+                        successful_exchange = exchange_name
+                        break
+                except Exception as e:
+                    continue
+            
             if df is None or len(df) < 100:
                 return {'insufficient_data': True}
             
@@ -61,6 +72,7 @@ class HistoricalIntelligence:
                 'historical_data_available': True,
                 'total_similar_setups': len(historical_bounces),
                 'analysis_period': '6 months',
+                'exchange_used': successful_exchange,
                 'trade_quality_analysis': trade_quality,
                 'timing_intelligence': timing_intelligence,
                 'risk_assessment': risk_assessment,
