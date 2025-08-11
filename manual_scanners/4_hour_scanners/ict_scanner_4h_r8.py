@@ -25,7 +25,7 @@ warnings.filterwarnings('ignore')
 # Import the universal enrichment module
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append('modules')
 from universal_enrichment import UniversalEnrichment
 
 # Import database logger
@@ -1158,7 +1158,24 @@ class ICTFVGScanner:
                                         'market_cap': convert_to_python_type(setup.get('market_cap', 0)),
                                         'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
                                         'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
-                                        'scanner_type': 'ict_scanner_4h'
+                                        'scanner_type': 'ict_scanner_4h',
+                                        
+                                        # ICT-SPECIFIC FIELDS - Now captured in dedicated columns
+                                        'gap_high': convert_to_python_type(setup.get('fvg', {}).get('high', 0)),
+                                        'gap_low': convert_to_python_type(setup.get('fvg', {}).get('low', 0)),
+                                        'gap_size_pct': convert_to_python_type(setup.get('gap_size', 0)),
+                                        'swing_high': convert_to_python_type(setup.get('swing_high', 0)),
+                                        'swing_low': convert_to_python_type(setup.get('swing_low', 0)),
+                                        'order_block_high': convert_to_python_type(setup.get('order_block_high', 0)),
+                                        'order_block_low': convert_to_python_type(setup.get('order_block_low', 0)),
+                                        'fib_236': convert_to_python_type(setup.get('targets', {}).get('fib_236', 0)),
+                                        'fib_382': convert_to_python_type(setup.get('targets', {}).get('fib_382', 0)),
+                                        'fib_500': convert_to_python_type(setup.get('targets', {}).get('fib_500', 0)),
+                                        'fib_618': convert_to_python_type(setup.get('targets', {}).get('fib_618', 0)),
+                                        'fib_786': convert_to_python_type(setup.get('targets', {}).get('fib_786', 0)),
+                                        'liquidity_sweep_level': convert_to_python_type(setup.get('liquidity_sweep_level', 0)),
+                                        'imbalance_high': convert_to_python_type(setup.get('imbalance_high', 0)),
+                                        'imbalance_low': convert_to_python_type(setup.get('imbalance_low', 0))
                                     }
                                     
                                     # Debug: Print the trade data being sent

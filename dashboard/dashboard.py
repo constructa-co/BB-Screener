@@ -200,21 +200,44 @@ def get_best_opportunities(hours=24, min_prob=70):
     
     if logger.connection:
         try:
+            # Get balanced mix of scanner types
             logger.cursor.execute("""
-                SELECT 
-                    t.*,
-                    s.scan_type,
-                    s.scan_timestamp,
-                    'Day Trading' as trading_style,
-                    '4H' as timeframe
-                FROM trade_opportunities t
-                JOIN scan_results s ON t.scan_id = s.id
-                WHERE t.probability >= %s
-                AND t.trade_taken = FALSE
-                AND s.scan_type != 'BB_Backtest_R10'
-                ORDER BY t.probability DESC, t.risk_reward_ratio DESC
+                (
+                    -- Get top BB scanner trades
+                    SELECT 
+                        t.*,
+                        s.scan_type,
+                        s.scan_timestamp,
+                        'Day Trading' as trading_style,
+                        '4H' as timeframe
+                    FROM trade_opportunities t
+                    JOIN scan_results s ON t.scan_id = s.id
+                    WHERE t.probability >= %s
+                    AND t.trade_taken = FALSE
+                    AND s.scan_type IN ('bb_scanner', 'bb_scanner_4h')
+                    ORDER BY t.probability DESC, s.scan_timestamp DESC
+                    LIMIT 25
+                )
+                UNION ALL
+                (
+                    -- Get top ICT scanner trades
+                    SELECT 
+                        t.*,
+                        s.scan_type,
+                        s.scan_timestamp,
+                        'Day Trading' as trading_style,
+                        '4H' as timeframe
+                    FROM trade_opportunities t
+                    JOIN scan_results s ON t.scan_id = s.id
+                    WHERE t.probability >= %s
+                    AND t.trade_taken = FALSE
+                    AND s.scan_type LIKE '%%ict%%'
+                    ORDER BY t.probability DESC, s.scan_timestamp DESC
+                    LIMIT 25
+                )
+                ORDER BY probability DESC, scan_timestamp DESC
                 LIMIT 50
-            """, (min_prob,))
+            """, (min_prob, min_prob))
             
             opportunities = logger.cursor.fetchall()
             
@@ -436,7 +459,10 @@ def create_live_opportunity_feed():
                     st.write(f"{opp['probability']:.0f}%")
                 
                 with col4:
-                    st.write(f"R:R {opp['risk_reward_ratio']:.1f}")
+                    if opp['risk_reward_ratio'] is not None:
+                        st.write(f"R:R {opp['risk_reward_ratio']:.1f}")
+                    else:
+                        st.write("R:R N/A")
                 
                 with col5:
                     if st.button("Chart", key=f"chart_{opp['id']}"):
@@ -1085,7 +1111,7 @@ elif page == "🎯 Scanner Dashboard":
                     
                     # Create detailed view
                     for i, opp in enumerate(scanner_opps[:5]):  # Show top 5
-                        with st.expander(f"📊 {opp['symbol']} - {opp['probability']:.1f}% Probability", expanded=(i==0)):
+                        with st.expander(f"📊 {opp['symbol']} - {opp['probability'] or 0:.1f}% Probability", expanded=(i==0)):
                             col1, col2 = st.columns([2, 1])
                             
                             with col1:
@@ -1102,10 +1128,10 @@ elif page == "🎯 Scanner Dashboard":
                                 st.markdown(f"""
                                 <div class="scanner-card">
                                     <h4>Trade Details</h4>
-                                    <p><b>Entry:</b> ${opp['entry_price']:.6f}</p>
-                                    <p><b>Stop:</b> ${opp['stop_loss']:.6f}</p>
-                                    <p><b>Target 1:</b> ${opp['target_1']:.6f}</p>
-                                    <p><b>Risk/Reward:</b> {opp['risk_reward_ratio']:.2f}:1</p>
+                                    <p><b>Entry:</b> ${opp['entry_price'] or 0:.6f}</p>
+                                    <p><b>Stop:</b> ${opp['stop_loss'] or 0:.6f}</p>
+                                    <p><b>Target 1:</b> ${opp['target_1'] or 0:.6f}</p>
+                                    <p><b>Risk/Reward:</b> {opp['risk_reward_ratio'] or 0:.2f}:1</p>
                                     <p><b>Pattern:</b> {opp['pattern_type'] or 'N/A'}</p>
                                     <p><b>Found:</b> {opp['timestamp'].strftime('%Y-%m-%d %H:%M')}</p>
                                 </div>
@@ -1157,10 +1183,10 @@ elif page == "💹 All Opportunities":
                             'Entry': opp['entry_price'],
                             'Stop': opp['stop_loss'],
                             'Target 1': opp['target_1'],
-                            'Market Cap': f"${float(opp['market_cap'])/1e9:.1f}B" if float(opp['market_cap']) > 1e9 else f"${float(opp['market_cap'])/1e6:.0f}M",
-                            'Volume': f"${float(opp['volume_24h'])/1e6:.1f}M",
-                            'RSI': opp['rsi'],
-                            'MFI': opp['mfi']
+                            'Market Cap': f"${float(opp['market_cap'] or 0)/1e9:.1f}B" if float(opp['market_cap'] or 0) > 1e9 else f"${float(opp['market_cap'] or 0)/1e6:.0f}M",
+                            'Volume': f"${float(opp['volume_24h'] or 0)/1e6:.1f}M",
+                            'RSI': opp['rsi'] or 0,
+                            'MFI': opp['mfi'] or 0
                         })
                     
                     tf_df = pd.DataFrame(tf_data)
