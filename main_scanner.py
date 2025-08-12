@@ -216,11 +216,38 @@ class ModularBBScanner:
                 # Only calculate these if there is a BB setup
                 if bb_analysis['setup_type'] != 'NONE':
                     # Step 2.5: Pattern Recognition Analysis (SUPPLEMENTARY DATA)
-                    # Pattern analysis temporarily disabled due to hangs
-                    bb_analysis['pattern_analysis'] = None
-                    bb_analysis['pattern_boost'] = 0
-                    bb_analysis['patterns_detected'] = 'Disabled'
-                    bb_analysis['pattern_confidence'] = 0
+                    try:
+                        from modules.pattern_analyzer import PatternAnalyzer
+                        pattern_analyzer = PatternAnalyzer()
+                        # Get 1H data for multi-timeframe analysis
+                        df_1h = self.data_fetcher.fetch_ohlcv(exchange_name, symbol, '1h')
+                        if df_1h is not None and len(df_1h) >= 50:
+                            # Calculate ATR for pattern significance
+                            atr_value = self._calculate_atr(df, period=14)
+                            # Comprehensive multi-timeframe pattern analysis
+                            pattern_data = pattern_analyzer.analyze_comprehensive_patterns(
+                                symbol, df, df_1h, atr_value, bb_analysis
+                            )
+                            # Enhance BB result with pattern data
+                            bb_analysis['pattern_analysis'] = pattern_data
+                            bb_analysis['pattern_boost'] = pattern_data.get('excel_summary', {}).get('total_pattern_boost', 0)
+                            bb_analysis['patterns_detected'] = pattern_data.get('excel_summary', {}).get('all_patterns_detected', 'None')
+                            bb_analysis['pattern_confidence'] = pattern_data.get('excel_summary', {}).get('final_pattern_confidence', 0)
+                            self.logger.info(f"Pattern analysis for {symbol}: {pattern_data.get('excel_summary', {}).get('all_patterns_detected', 'None')} "
+                                           f"(Boost: {pattern_data.get('excel_summary', {}).get('total_pattern_boost', 0)}%)")
+                        else:
+                            # No 1H data available
+                            bb_analysis['pattern_analysis'] = None
+                            bb_analysis['pattern_boost'] = 0
+                            bb_analysis['patterns_detected'] = 'No 1H data'
+                            bb_analysis['pattern_confidence'] = 0
+                    except Exception as e:
+                        # Graceful fallback - BB analysis continues unaffected
+                        self.logger.warning(f"Pattern analysis failed for {symbol}: {str(e)}")
+                        bb_analysis['pattern_analysis'] = None
+                        bb_analysis['pattern_boost'] = 0
+                        bb_analysis['patterns_detected'] = 'Analysis failed'
+                        bb_analysis['pattern_confidence'] = 0
 
                     # Step 3: Technical Analysis (EXISTING - UNCHANGED)
                     has_1h_confirmation = self.technical_analyzer.get_1h_confirmation(
@@ -874,7 +901,7 @@ class ModularBBScanner:
                                 # Combine basic fields with comprehensive data
                                 trade_record = {
                                     **basic_fields,
-                                    'scanner_specific_data': json.dumps(scanner_specific, default=str)
+                                    'scanner_specific_data': json.dumps(scanner_specific)
                                 }
                                 
                                 # Log to database
