@@ -1038,4 +1038,4 @@ if __name__ == "__main__":
     
     # Automatically sync Excel output to database
     import os
-    os.system("python modules/excel_to_database_sync.py")
+    os.system("python3 modules/excel_to_database_sync.py")
