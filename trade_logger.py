@@ -2,6 +2,8 @@ import os
 from datetime import datetime
 import json
 import logging
+import numpy as np
+import pandas as pd
 
 # Try to import dotenv for environment variables
 try:
@@ -20,6 +22,20 @@ try:
 except ImportError:
     print("⚠️  psycopg2 not available - database logging will be disabled")
     PSYCOPG2_AVAILABLE = False
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default"""
+    if isinstance(obj, (bool, np.bool_)):
+        return bool(obj)
+    if isinstance(obj, (np.integer, np.floating)):
+        return float(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, (pd.Timestamp, datetime)):
+        return obj.isoformat()
+    if pd.isna(obj):
+        return None
+    raise TypeError(f"Type {type(obj)} not serializable")
 
 class TradeLogger:
     """Handles all database operations for crypto scanner results"""
@@ -253,7 +269,7 @@ class TradeLogger:
             
             # Add JSON data
             columns.append('scanner_specific_data')
-            values.append(json.dumps(json_data, default=str))
+            values.append(json.dumps(json_data, default=json_serial))
             
             # Execute INSERT
             placeholders = ','.join(['%s'] * len(values))

@@ -136,7 +136,7 @@ class EnhancedExcelSync:
                         'entry_price': float(trade_data.get('entry', 0)) if trade_data.get('entry') else 0,
                         'stop_loss': float(trade_data.get('stop', 0)) if trade_data.get('stop') else 0,
                         'target_1': float(trade_data.get('target1', 0)) if trade_data.get('target1') else 0,
-                        'scanner_specific_data': json.dumps(scanner_specific)
+                        'scanner_specific_data': json.dumps(scanner_specific, default=str)
                     }
                     
                     self.logger.log_trade_opportunity(scan_id, record)
@@ -246,7 +246,7 @@ class EnhancedExcelSync:
                 RETURNING id
             """, (scan_id, btc_dominance, fear_greed_index, alt_season_indicator,
                   market_health_score, regime_type, regime_confidence,
-                  position_multiplier, json.dumps(regime_data.get('regime_data', {}))))
+                  position_multiplier, json.dumps(regime_data.get('regime_data', {}), default=str)))
             
             regime_id = self.logger.cursor.fetchone()['id']
             self.logger.connection.commit()
@@ -333,7 +333,7 @@ class EnhancedExcelSync:
                 RETURNING id
             """, (scan_id, total_bounces, coins_analyzed, overall_success_rate,
                   bb_squeeze_effectiveness, bb_expansion_effectiveness,
-                  json.dumps(overview_data.get('overview_data', {}))))
+                  json.dumps(overview_data.get('overview_data', {}), default=str)))
             
             overview_id = self.logger.cursor.fetchone()['id']
             self.logger.connection.commit()
@@ -444,10 +444,10 @@ class EnhancedExcelSync:
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id
             """, (scan_id, large_cap_count, mid_cap_count, small_cap_count, micro_cap_count,
-                  json.dumps(metadata.get('sector_performance', {})),
-                  json.dumps(metadata.get('tier_performance', {})),
-                  json.dumps(metadata.get('liquidity_analysis', {})),
-                  json.dumps(metadata)))
+                  json.dumps(metadata.get('sector_performance', {}), default=str),
+                  json.dumps(metadata.get('tier_performance', {}), default=str),
+                  json.dumps(metadata.get('liquidity_analysis', {}), default=str),
+                  json.dumps(metadata, default=str)))
             
             metadata_id = self.logger.cursor.fetchone()['id']
             self.logger.connection.commit()
