@@ -101,3 +101,4 @@ print("   - OutputGenerator can be initialized")
 print("   - DataFrame creation and serialization works")
 print("   - Market regime data serialization works")
 print("\n💡 Next step: Test on Digital Ocean server where database is accessible")
+

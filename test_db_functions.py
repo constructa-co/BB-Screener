@@ -70,3 +70,4 @@ if logger.connection:
     logger.close()
 else:
     print("❌ No database connection")
+
