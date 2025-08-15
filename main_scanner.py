@@ -18,7 +18,7 @@ if hasattr(np, '__all__') and 'NaN' not in np.__all__:
     np.__all__.append('NaN')
 
 print("✅ NumPy 2.x compatibility patch applied at startup")
-from trade_logger import TradeLogger
+from database_and_logging.trade_logger import TradeLogger
 
 # Telegram notifications
 try:
