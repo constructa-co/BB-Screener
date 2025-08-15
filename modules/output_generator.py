@@ -7,8 +7,38 @@ from typing import List, Dict, Any
 from config import *
 from modules.market_regime_enhanced import format_enhanced_regime_output
 from openpyxl.styles import Font
+from trade_logger import TradeLogger
+import json
 
 logger = logging.getLogger(__name__)
+
+def make_json_safe(obj):
+    """Convert NumPy/pandas types to JSON-serializable Python types"""
+    import numpy as np
+    import pandas as pd
+    from decimal import Decimal
+    from datetime import datetime
+    
+    if isinstance(obj, dict):
+        return {k: make_json_safe(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [make_json_safe(v) for v in obj]
+    elif isinstance(obj, (np.bool_, np.bool8)):
+        return bool(obj)
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, Decimal):
+        return float(obj)
+    elif pd.isna(obj):
+        return None
+    elif isinstance(obj, (pd.Timestamp, datetime)):
+        return obj.isoformat() if hasattr(obj, 'isoformat') else str(obj)
+    else:
+        return obj
 
 class OutputGenerator:
     def __init__(self):
@@ -163,10 +193,38 @@ class OutputGenerator:
                     print("[DEBUG] No 'action' column in DataFrame")
 
             market_data = self._run_market_overview_analysis()
+            
+            # Initialize database logger
+            db_logger = TradeLogger()
+            scan_id = None
+            
+            if db_logger.connection:
+                # Create scan entry
+                scan_id = db_logger.log_scan_start('bb_scanner', version='1.0')
+            
             with pd.ExcelWriter(filepath, engine='openpyxl', mode='w') as writer:
                 # Sheet 1: All results
                 if not df.empty:
                     df.to_excel(writer, sheet_name='All_Analysis', index=False)
+                    
+                    # 🎯 LOG TO DATABASE RIGHT HERE!
+                    if db_logger.connection and scan_id:
+                        for _, row in df.iterrows():
+                            # Convert row to dict
+                            trade_data = row.to_dict()
+                            
+                            # Prepare for database
+                            trade_record = {
+                                'symbol': trade_data.get('symbol'),
+                                'exchange': trade_data.get('exchange'),
+                                'probability': trade_data.get('probability', 0),
+                                'entry_price': trade_data.get('entry', 0),
+                                'stop_loss': trade_data.get('stop', 0),
+                                'target_1': trade_data.get('target1', 0),
+                                'scanner_specific_data': json.dumps(make_json_safe(trade_data))
+                            }
+                            
+                            db_logger.log_trade_opportunity(scan_id, trade_record)
                 # Sheet 2: Premium and High probability only
                 premium_high = df[df['tier'].isin(['PREMIUM', 'HIGH'])] if not df.empty and 'tier' in df.columns else pd.DataFrame()
                 if not premium_high.empty:
@@ -192,6 +250,10 @@ class OutputGenerator:
                 # Sheet 7: Market Regime Analysis Dashboard
                 if market_regime:
                     self._create_market_regime_sheet(writer, market_regime)
+                    
+                    # 🎯 LOG MARKET REGIME TO DATABASE!
+                    if db_logger.connection and scan_id:
+                        db_logger.log_market_regime(scan_id, market_regime)
                 
                 # NEW: Add confidence summary sheet (ONLY ADDITION)
                 if not df.empty and 'composite_confidence' in df.columns:
@@ -202,6 +264,10 @@ class OutputGenerator:
 
                 # ADDITIONAL SHEET: Market Overview (improved BB backtest output)
                 self._create_market_overview_sheet(writer, market_data)
+                
+                # 🎯 LOG MARKET OVERVIEW TO DATABASE!
+                if db_logger.connection and scan_id and market_data:
+                    db_logger.log_market_overview(scan_id, market_data)
                 
                 # ADD ENHANCED SCORING COLUMNS TO MAIN ANALYSIS SHEET
                 if not df.empty and 'scoring_details' in df.columns:
@@ -218,6 +284,14 @@ class OutputGenerator:
                 if not df.empty and any(col in df.columns for col in ['market_cap_tier', 'primary_sector']):
                     self._create_market_metadata_sheet(writer, df)
                 
+            # Complete database logging
+            if db_logger.connection and scan_id:
+                db_logger.complete_scan(scan_id, len(df), 
+                                       len(df[df['probability'] > 70]), 
+                                       execution_time=120.0)
+                db_logger.close()
+                logger.info(f"✅ Logged {len(df)} trades to database")
+            
             logger.info(f"Excel output with Market Overview saved to {filepath}")
             return filepath
         except Exception as e:

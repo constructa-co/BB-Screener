@@ -1,0 +1,11 @@
+📊 Found 2226 BB scanner trades in database
+🔍 Parsing scanner_specific_data...
+✅ Database export saved to: bb_database_export_20250813_181114.xlsx
+📊 Export contains 2226 trades with 184 columns
+
+🎯 Sample High Probability Trades:
+   • LUNC: 73.0% probability
+   • TRX: 73.0% probability
+   • ICP: 73.0% probability
+   • TON: 75.0% probability
+   • CELO: 75.0% probability

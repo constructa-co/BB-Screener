@@ -67,6 +67,34 @@ except ImportError as e:
     print("Make sure all module files are in the 'modules' folder")
     sys.exit(1)
 
+def make_json_safe(obj):
+    """Convert NumPy/pandas types to JSON-serializable Python types"""
+    import numpy as np
+    import pandas as pd
+    from decimal import Decimal
+    from datetime import datetime
+    
+    if isinstance(obj, dict):
+        return {k: make_json_safe(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [make_json_safe(v) for v in obj]
+    elif isinstance(obj, (np.bool_, np.bool8)):
+        return bool(obj)
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, Decimal):
+        return float(obj)
+    elif pd.isna(obj):
+        return None
+    elif isinstance(obj, (pd.Timestamp, datetime)):
+        return obj.isoformat() if hasattr(obj, 'isoformat') else str(obj)
+    else:
+        return obj
+
 class ModularBBScanner:
     """Main orchestrator for the modular BB bounce scanner"""
     
@@ -897,6 +925,9 @@ class ModularBBScanner:
                                             value = str(value)
                                         
                                         scanner_specific[key] = value
+                                
+                                # Convert NumPy types before JSON serialization
+                                scanner_specific = make_json_safe(scanner_specific)
                                 
                                 # Combine basic fields with comprehensive data
                                 trade_record = {

@@ -15,6 +15,34 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from trade_logger import TradeLogger
 
+def make_json_safe(obj):
+    """Convert NumPy/pandas types to JSON-serializable Python types"""
+    import numpy as np
+    import pandas as pd
+    from decimal import Decimal
+    from datetime import datetime
+    
+    if isinstance(obj, dict):
+        return {k: make_json_safe(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [make_json_safe(v) for v in obj]
+    elif isinstance(obj, (np.bool_, np.bool8)):
+        return bool(obj)
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, Decimal):
+        return float(obj)
+    elif pd.isna(obj):
+        return None
+    elif isinstance(obj, (pd.Timestamp, datetime)):
+        return obj.isoformat() if hasattr(obj, 'isoformat') else str(obj)
+    else:
+        return obj
+
 class ExcelToDatabaseSync:
     def __init__(self):
         self.logger = TradeLogger()
@@ -120,7 +148,7 @@ class ExcelToDatabaseSync:
                         'entry_price': float(trade_data.get('entry', 0)) if trade_data.get('entry') else 0,
                         'stop_loss': float(trade_data.get('stop', 0)) if trade_data.get('stop') else 0,
                         'target_1': float(trade_data.get('target1', 0)) if trade_data.get('target1') else 0,
-                        'scanner_specific_data': json.dumps(scanner_specific)
+                        'scanner_specific_data': json.dumps(make_json_safe(scanner_specific))
                     }
                     
                     # Log to database
