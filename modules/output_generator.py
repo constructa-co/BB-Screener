@@ -195,12 +195,17 @@ class OutputGenerator:
             market_data = self._run_market_overview_analysis()
             
             # Initialize database logger
-            db_logger = TradeLogger()
+            db_logger = None
             scan_id = None
             
-            if db_logger.connection:
-                # Create scan entry
-                scan_id = db_logger.log_scan_start('bb_scanner', version='1.0')
+            try:
+                db_logger = TradeLogger()
+                if db_logger.connection:
+                    # Create scan entry
+                    scan_id = db_logger.log_scan_start('bb_scanner', version='1.0')
+            except Exception as e:
+                logger.warning(f"Database logging failed, continuing without DB: {e}")
+                db_logger = None
             
             with pd.ExcelWriter(filepath, engine='openpyxl', mode='w') as writer:
                 # Sheet 1: All results
@@ -208,23 +213,26 @@ class OutputGenerator:
                     df.to_excel(writer, sheet_name='All_Analysis', index=False)
                     
                     # 🎯 LOG TO DATABASE RIGHT HERE!
-                    if db_logger.connection and scan_id:
-                        for _, row in df.iterrows():
-                            # Convert row to dict
-                            trade_data = row.to_dict()
-                            
-                            # Prepare for database
-                            trade_record = {
-                                'symbol': trade_data.get('symbol'),
-                                'exchange': trade_data.get('exchange'),
-                                'probability': trade_data.get('probability', 0),
-                                'entry_price': trade_data.get('entry', 0),
-                                'stop_loss': trade_data.get('stop', 0),
-                                'target_1': trade_data.get('target1', 0),
-                                'scanner_specific_data': json.dumps(make_json_safe(trade_data))
-                            }
-                            
-                            db_logger.log_trade_opportunity(scan_id, trade_record)
+                    if db_logger and scan_id:
+                        try:
+                            for _, row in df.iterrows():
+                                # Convert row to dict
+                                trade_data = row.to_dict()
+                                
+                                # Prepare for database
+                                trade_record = {
+                                    'symbol': trade_data.get('symbol'),
+                                    'exchange': trade_data.get('exchange'),
+                                    'probability': trade_data.get('probability', 0),
+                                    'entry_price': trade_data.get('entry', 0),
+                                    'stop_loss': trade_data.get('stop', 0),
+                                    'target_1': trade_data.get('target1', 0),
+                                    'scanner_specific_data': json.dumps(make_json_safe(trade_data))
+                                }
+                                
+                                db_logger.log_trade_opportunity(scan_id, trade_record)
+                        except Exception as e:
+                            logger.warning(f"Database trade logging failed: {e}")
                 # Sheet 2: Premium and High probability only
                 premium_high = df[df['tier'].isin(['PREMIUM', 'HIGH'])] if not df.empty and 'tier' in df.columns else pd.DataFrame()
                 if not premium_high.empty:
@@ -252,7 +260,7 @@ class OutputGenerator:
                     self._create_market_regime_sheet(writer, market_regime)
                     
                     # 🎯 LOG MARKET REGIME TO DATABASE!
-                    if db_logger.connection and scan_id:
+                    if db_logger and scan_id:
                         db_logger.log_market_regime(scan_id, market_regime)
                 
                 # NEW: Add confidence summary sheet (ONLY ADDITION)
@@ -266,7 +274,7 @@ class OutputGenerator:
                 self._create_market_overview_sheet(writer, market_data)
                 
                 # 🎯 LOG MARKET OVERVIEW TO DATABASE!
-                if db_logger.connection and scan_id and market_data:
+                if db_logger and scan_id and market_data:
                     db_logger.log_market_overview(scan_id, market_data)
                 
                 # ADD ENHANCED SCORING COLUMNS TO MAIN ANALYSIS SHEET
@@ -285,7 +293,7 @@ class OutputGenerator:
                     self._create_market_metadata_sheet(writer, df)
                 
             # Complete database logging
-            if db_logger.connection and scan_id:
+            if db_logger and scan_id:
                 db_logger.complete_scan(scan_id, len(df), 
                                        len(df[df['probability'] > 70]), 
                                        execution_time=120.0)
