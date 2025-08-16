@@ -1007,6 +1007,6 @@ if __name__ == "__main__":
     
     main()
     
-    # Automatically sync Excel output to database
-    import os
-    os.system("python3 modules/excel_to_database_sync.py")
+    # DISABLED: Automatic Excel sync - enhanced database logging now handles this
+    # import os
+    # os.system("python3 modules/excel_to_database_sync.py")

@@ -223,8 +223,8 @@ class OutputGenerator:
                                 trade_data['scanner_type'] = 'bb_scanner'
                                 trade_data['timeframe'] = '4H'
                                 
-                                # DISABLED: Database logging already handled by main_scanner.py enhanced logger
-                                # db_logger.log_trade_opportunity(scan_id, trade_data)
+                                # Log the COMPLETE trade dict to database (enhanced logger handles field separation)
+                                db_logger.log_trade_opportunity(scan_id, trade_data)
                         except Exception as e:
                             logger.warning(f"Database trade logging failed: {e}")
                 # Sheet 2: Premium and High probability only
