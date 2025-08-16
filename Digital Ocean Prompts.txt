@@ -1,1 +1,0 @@
-ssh root@165.232.160.52 "cd /opt/bb-screener && grep -n 'from.*trade_logger' main_scanner.py"
