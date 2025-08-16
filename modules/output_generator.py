@@ -216,21 +216,15 @@ class OutputGenerator:
                     if db_logger and scan_id:
                         try:
                             for _, row in df.iterrows():
-                                # Convert row to dict
+                                # Convert row to dict - use the COMPLETE trade data
                                 trade_data = row.to_dict()
                                 
-                                # Prepare for database
-                                trade_record = {
-                                    'symbol': trade_data.get('symbol'),
-                                    'exchange': trade_data.get('exchange'),
-                                    'probability': trade_data.get('probability', 0),
-                                    'entry_price': trade_data.get('entry', 0),
-                                    'stop_loss': trade_data.get('stop', 0),
-                                    'target_1': trade_data.get('target1', 0),
-                                    'scanner_specific_data': json.dumps(make_json_safe(trade_data))
-                                }
+                                # Add scan metadata to the complete trade dict
+                                trade_data['scanner_type'] = 'bb_scanner'
+                                trade_data['timeframe'] = '4H'
                                 
-                                db_logger.log_trade_opportunity(scan_id, trade_record)
+                                # DISABLED: Database logging already handled by main_scanner.py enhanced logger
+                                # db_logger.log_trade_opportunity(scan_id, trade_data)
                         except Exception as e:
                             logger.warning(f"Database trade logging failed: {e}")
                 # Sheet 2: Premium and High probability only

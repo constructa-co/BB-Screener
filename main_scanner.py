@@ -869,78 +869,18 @@ class ModularBBScanner:
                                 if not symbol.endswith('USDT') and not symbol.endswith('USD'):
                                     formatted_symbol = f"{symbol}USDT"
                                 
-                                # Basic fields for standard database columns
-                                basic_fields = {
-                                    'symbol': formatted_symbol,
-                                    'exchange': 'Binance',
-                                    'timeframe': '4H',
-                                    'bb_score': trade.get('bb_score', 0),
-                                    'probability': trade.get('probability', 0),
-                                    'risk_reward_ratio': trade.get('risk_reward', 0),
-                                    'current_price': trade.get('current_price', 0),
-                                    'entry_price': trade.get('entry', 0),
-                                    'stop_loss': trade.get('stop', 0),
-                                    'target_1': trade.get('target1', 0),
-                                    'target_2': trade.get('target_2', 0),
-                                    'target_3': trade.get('target_3', 0),
-                                    'rsi': trade.get('rsi', 0),
-                                    'mfi': trade.get('mfi', 0),
-                                    'stochastic_k': trade.get('stochastic_k', 0),
-                                    'volume_surge': trade.get('volume_surge', 0),
-                                    'macd_signal': trade.get('macd_signal', 'neutral'),
-                                    'pattern_type': trade.get('setup_type', 'BB Bounce'),
-                                    'pattern_quality': trade.get('tier', 'GOOD'),
-                                    'confluence_score': trade.get('confluence_score', 0),
-                                    'historical_win_rate': trade.get('historical_win_rate', 0),
-                                    'category_win_rate': trade.get('category_win_rate', 0),
-                                    'similar_setups_count': trade.get('similar_setups_count', 0),
-                                    'market_cap': trade.get('market_cap_rank', 0),
-                                    'volume_24h': trade.get('volume_24h_usd', 0),
-                                    'price_change_24h': trade.get('price_change_24h', 0),
-                                    'scanner_type': 'bb_scanner'
-                                }
+                                # Add scan metadata to the complete trade dict
+                                trade['symbol'] = formatted_symbol
+                                trade['exchange'] = 'Binance'
+                                trade['timeframe'] = '4H'
+                                trade['scanner_type'] = 'bb_scanner'
                                 
-                                # CAPTURE EVERYTHING in scanner_specific_data JSON field
-                                scanner_specific = {}
-                                for key, value in trade.items():
-                                    # Skip basic fields already captured in standard columns
-                                    if key not in ['symbol', 'bb_score', 'probability', 'risk_reward', 'current_price', 
-                                                  'entry', 'stop', 'target1', 'target_2', 'target_3', 'rsi', 'mfi', 
-                                                  'stochastic_k', 'volume_surge', 'macd_signal', 'setup_type', 'tier',
-                                                  'confluence_score', 'historical_win_rate', 'category_win_rate', 
-                                                  'similar_setups_count', 'market_cap_rank', 'volume_24h_usd', 'price_change_24h']:
-                                        
-                                        # Serialize any non-JSON compatible types
-                                        if hasattr(value, 'tolist'):  # numpy arrays
-                                            value = value.tolist()
-                                        elif hasattr(value, '__dict__'):  # objects
-                                            value = str(value)
-                                        elif pd.isna(value):  # pandas NaN values
-                                            value = None
-                                        elif hasattr(value, 'isoformat'):  # datetime objects
-                                            value = value.isoformat()
-                                        elif hasattr(value, 'timestamp'):  # pandas timestamps
-                                            value = value.isoformat()
-                                        elif str(type(value)).startswith('<class \'pandas'):  # other pandas types
-                                            value = str(value)
-                                        
-                                        scanner_specific[key] = value
-                                
-                                # Convert NumPy types before JSON serialization
-                                scanner_specific = make_json_safe(scanner_specific)
-                                
-                                # Combine basic fields with comprehensive data
-                                trade_record = {
-                                    **basic_fields,
-                                    'scanner_specific_data': json.dumps(scanner_specific)
-                                }
-                                
-                                # Log to database
-                                success = db_logger.log_trade_opportunity(scan_id, trade_record)
+                                # Log the COMPLETE trade dict to database (enhanced logger handles field separation)
+                                success = db_logger.log_trade_opportunity(scan_id, trade)
                                 if success:
                                     trades_logged += 1
                                     if trades_logged <= 5:  # Show first 5 for verification
-                                        print(f"✅ Logged trade: {symbol} -> {trade.get('probability', 0)}% (Setup: {trade.get('setup_type', 'Unknown')})")
+                                        print(f"✅ Logged trade: {symbol} -> {trade.get('probability', 0)}% (Setup: {trade.get('setup_type', 'Unknown')}) - {len(trade)} fields")
                                 else:
                                     print(f"❌ Failed to log trade: {symbol}")
                                     

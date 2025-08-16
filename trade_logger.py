@@ -238,50 +238,30 @@ class TradeLogger:
             return False
             
         try:
-            # Define scanner-specific fields that get their own columns
-            scanner_specific_columns = {
-                # ICT fields
-                'gap_high', 'gap_low', 'gap_size_pct', 'gap_type',
-                'swing_high', 'swing_low', 'order_block_high', 'order_block_low',
-                'breaker_block_high', 'breaker_block_low',
-                'fvg_high', 'fvg_low', 'liquidity_sweep_level',
-                'fib_236', 'fib_382', 'fib_500', 'fib_618', 'fib_786',
-                'equilibrium_level',
-                # Volume fields
-                'volume_surge_multiplier', 'relative_volume', 'vwap', 'vwap_deviation',
-                'volume_profile_poc',
-                # Pattern fields
-                'pattern_type', 'pattern_target', 'pattern_reliability',
-                # S/R fields
-                'major_resistance_1', 'major_support_1', 'pivot_point'
-            }
+            # Define core fields that go in regular columns for fast querying
+            core_fields = [
+                'symbol', 'exchange', 'probability', 'entry_price', 
+                'stop_loss', 'target_1', 'target_2', 'target_3',
+                'bb_score', 'risk_reward_ratio', 'current_price',
+                'rsi', 'mfi', 'stochastic_k', 'volume_surge', 'macd_signal',
+                'pattern_type', 'pattern_quality', 'confluence_score',
+                'historical_win_rate', 'category_win_rate', 'similar_setups_count',
+                'market_cap', 'volume_24h', 'price_change_24h'
+            ]
             
-            # Separate scanner-specific fields from general data
+            # Extract core fields for regular columns
             column_values = {}
-            json_data = {}
+            for field in core_fields:
+                if field in trade_data and trade_data[field] is not None:
+                    column_values[field] = trade_data[field]
             
-            for key, value in trade_data.items():
-                if key in scanner_specific_columns and value is not None:
-                    column_values[key] = value
-                elif key not in ['symbol', 'exchange', 'probability', 'entry_price', 
-                                 'stop_loss', 'target_1', 'target_2', 'target_3']:
-                    json_data[key] = value
+            # Build dynamic INSERT query with core columns
+            columns = ['scan_id'] + list(column_values.keys())
+            values = [scan_id] + list(column_values.values())
             
-            # Build dynamic INSERT query
-            columns = ['scan_id', 'symbol', 'exchange', 'probability', 
-                      'entry_price', 'stop_loss', 'target_1']
-            values = [scan_id, trade_data.get('symbol'), trade_data.get('exchange'),
-                     trade_data.get('probability', 0), trade_data.get('entry_price'),
-                     trade_data.get('stop_loss'), trade_data.get('target_1')]
-            
-            # Add scanner-specific columns
-            for col, val in column_values.items():
-                columns.append(col)
-                values.append(val)
-            
-            # Add JSON data
+            # Add scanner_specific_data with the COMPLETE trade_data dict
             columns.append('scanner_specific_data')
-            values.append(json.dumps(make_json_safe(json_data)))
+            values.append(json.dumps(make_json_safe(trade_data)))
             
             # Execute INSERT
             placeholders = ','.join(['%s'] * len(values))
@@ -289,6 +269,11 @@ class TradeLogger:
             
             self.cursor.execute(query, values)
             self.connection.commit()
+            
+            # Debug: Log field count for verification
+            field_count = len(trade_data)
+            logging.info(f"✅ Logged trade {trade_data.get('symbol')} with {field_count} total fields ({len(column_values)} in columns, {field_count - len(column_values)} in JSONB)")
+            
             return True
             
         except Exception as e:

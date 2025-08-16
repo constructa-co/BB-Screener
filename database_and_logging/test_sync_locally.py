@@ -97,9 +97,8 @@ def test_sync_with_existing_excel():
     print(f"📡 Connecting to: {db_user}@{db_host}/{db_name}")
     
     try:
-        # Build database URL
-        db_url = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME')}"
-        engine = create_engine(db_url)
+        # Use the DATABASE_URL directly
+        engine = create_engine(database_url)
         
         # Test connection
         with engine.connect() as conn:
