@@ -3,34 +3,6 @@ from datetime import datetime
 import json
 import logging
 
-def make_json_safe(obj):
-    """Convert NumPy/pandas types to JSON-serializable Python types"""
-    import numpy as np
-    import pandas as pd
-    from decimal import Decimal
-    from datetime import datetime
-    
-    if isinstance(obj, dict):
-        return {k: make_json_safe(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [make_json_safe(v) for v in obj]
-    elif isinstance(obj, (np.bool_, np.bool8)):
-        return bool(obj)
-    elif isinstance(obj, np.integer):
-        return int(obj)
-    elif isinstance(obj, np.floating):
-        return float(obj)
-    elif isinstance(obj, np.ndarray):
-        return obj.tolist()
-    elif isinstance(obj, Decimal):
-        return float(obj)
-    elif pd.isna(obj):
-        return None
-    elif isinstance(obj, (pd.Timestamp, datetime)):
-        return obj.isoformat() if hasattr(obj, 'isoformat') else str(obj)
-    else:
-        return obj
-
 # Try to import dotenv for environment variables
 try:
     from dotenv import load_dotenv
@@ -239,7 +211,7 @@ class TradeLogger:
             
         try:
             # Define core fields that go in regular columns for fast querying
-            core_fields = [
+            core_fields = {
                 'symbol', 'exchange', 'probability', 'entry_price', 
                 'stop_loss', 'target_1', 'target_2', 'target_3',
                 'bb_score', 'risk_reward_ratio', 'current_price',
@@ -247,21 +219,42 @@ class TradeLogger:
                 'pattern_type', 'pattern_quality', 'confluence_score',
                 'historical_win_rate', 'category_win_rate', 'similar_setups_count',
                 'market_cap', 'volume_24h', 'price_change_24h'
-            ]
+            }
             
-            # Extract core fields for regular columns
+            # Extract core fields for regular columns, put everything else in JSONB
             column_values = {}
-            for field in core_fields:
-                if field in trade_data and trade_data[field] is not None:
-                    column_values[field] = trade_data[field]
+            json_data = {}
+            
+            for key, value in trade_data.items():
+                if key in core_fields and value is not None:
+                    column_values[key] = value
+                else:
+                    # Put everything else in JSONB (safe serialization)
+                    try:
+                        if hasattr(value, 'tolist'):  # numpy arrays
+                            json_data[key] = value.tolist()
+                        elif hasattr(value, '__dict__'):  # objects
+                            json_data[key] = str(value)
+                        elif pd.isna(value):  # pandas NaN values
+                            json_data[key] = None
+                        elif hasattr(value, 'isoformat'):  # datetime objects
+                            json_data[key] = value.isoformat()
+                        elif hasattr(value, 'timestamp'):  # pandas timestamps
+                            json_data[key] = value.isoformat()
+                        elif str(type(value)).startswith('<class \'pandas'):  # other pandas types
+                            json_data[key] = str(value)
+                        else:
+                            json_data[key] = value
+                    except:
+                        json_data[key] = str(value)
             
             # Build dynamic INSERT query with core columns
             columns = ['scan_id'] + list(column_values.keys())
             values = [scan_id] + list(column_values.values())
             
-            # Add scanner_specific_data with the COMPLETE trade_data dict
+            # Add JSON data with safe serialization
             columns.append('scanner_specific_data')
-            values.append(json.dumps(make_json_safe(trade_data)))
+            values.append(json.dumps(json_data))
             
             # Execute INSERT
             placeholders = ','.join(['%s'] * len(values))
@@ -272,8 +265,8 @@ class TradeLogger:
             
             # Debug: Log field count for verification
             field_count = len(trade_data)
-            logging.info(f"✅ Logged trade {trade_data.get('symbol')} with {field_count} total fields ({len(column_values)} in columns, {field_count - len(column_values)} in JSONB)")
-            
+            jsonb_count = len(json_data)
+            logging.info(f"✅ Logged trade {trade_data.get('symbol')} with {field_count} total fields ({len(column_values)} in columns, {jsonb_count} in JSONB)")
             return True
             
         except Exception as e:
@@ -354,68 +347,6 @@ class TradeLogger:
             logging.error(f"Error retrieving trades: {e}")
             return []
     
-    def log_market_regime(self, scan_id, regime_data):
-        """Log market regime data for a scan"""
-        try:
-            # Extract key fields
-            btc_dominance = regime_data.get('btc_dominance')
-            fear_greed = regime_data.get('fear_greed_index')
-            alt_season = regime_data.get('alt_season_indicator', False)
-            market_health = regime_data.get('market_health_score')
-            regime_type = regime_data.get('regime_type')
-            
-            # Store complete data as JSON
-            regime_json = json.dumps(make_json_safe(regime_data))
-            
-            self.cursor.execute("""
-                INSERT INTO market_regime 
-                (scan_id, btc_dominance, fear_greed_index, alt_season_indicator,
-                 market_health_score, regime_type, regime_data)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                RETURNING id
-            """, (scan_id, btc_dominance, fear_greed, alt_season,
-                  market_health, regime_type, regime_json))
-            
-            regime_id = self.cursor.fetchone()['id']
-            self.connection.commit()
-            logging.info(f"✅ Market regime logged with ID: {regime_id}")
-            return regime_id
-            
-        except Exception as e:
-            logging.error(f"Error logging market regime: {e}")
-            self.connection.rollback()
-            return None
-
-    def log_market_overview(self, scan_id, overview_data):
-        """Log market overview data for a scan"""
-        try:
-            # Extract key metrics
-            total_bounces = overview_data.get('total_bounces')
-            coins_analyzed = overview_data.get('coins_analyzed')
-            success_rate = overview_data.get('overall_success_rate')
-            
-            # Store complete data as JSON
-            overview_json = json.dumps(make_json_safe(overview_data))
-            
-            self.cursor.execute("""
-                INSERT INTO market_overview
-                (scan_id, total_bounces, coins_analyzed, overall_success_rate, 
-                 overview_data)
-                VALUES (%s, %s, %s, %s, %s)
-                RETURNING id
-            """, (scan_id, total_bounces, coins_analyzed, success_rate,
-                  overview_json))
-            
-            overview_id = self.cursor.fetchone()['id']
-            self.connection.commit()
-            logging.info(f"✅ Market overview logged with ID: {overview_id}")
-            return overview_id
-            
-        except Exception as e:
-            logging.error(f"Error logging market overview: {e}")
-            self.connection.rollback()
-            return None
-
     def close(self):
         """Close database connection"""
         if self.connection:
@@ -438,4 +369,4 @@ def initialize_database():
 
 if __name__ == "__main__":
     # If run directly, initialize the database
-    initialize_database() 
+    initialize_database()
