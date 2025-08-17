@@ -1,0 +1,20 @@
+2025-08-17 23:25:51,223 - INFO - Connected to binance
+2025-08-17 23:25:51,223 - INFO - Starting continuous scanner (interval: 900s)
+2025-08-17 23:25:51,223 - INFO - Starting scan of top 500 symbols...
+2025-08-17 23:25:53,097 - INFO - Scanning 299 symbols
+2025-08-17 23:25:53,099 - INFO - Progress: 0/299 symbols scanned
+2025-08-17 23:25:55,678 - INFO - Progress: 10/299 symbols scanned
+2025-08-17 23:25:58,081 - INFO - Progress: 20/299 symbols scanned
+2025-08-17 23:26:00,509 - INFO - Progress: 30/299 symbols scanned
+2025-08-17 23:26:02,734 - INFO - Progress: 40/299 symbols scanned
+2025-08-17 23:26:06,349 - INFO - Progress: 50/299 symbols scanned
+2025-08-17 23:26:08,925 - INFO - Progress: 60/299 symbols scanned
+2025-08-17 23:26:12,749 - INFO - Progress: 70/299 symbols scanned
+2025-08-17 23:26:15,766 - INFO - Progress: 80/299 symbols scanned
+2025-08-17 23:26:18,356 - INFO - Progress: 90/299 symbols scanned
+2025-08-17 23:26:20,756 - INFO - Progress: 100/299 symbols scanned
+2025-08-17 23:26:23,381 - INFO - Progress: 110/299 symbols scanned
+2025-08-17 23:26:25,586 - INFO - Progress: 120/299 symbols scanned
+2025-08-17 23:26:27,982 - INFO - Progress: 130/299 symbols scanned
+2025-08-17 23:26:31,278 - INFO - Progress: 140/299 symbols scanned
+2025-08-17 23:26:36,490 - INFO - Connected to binance

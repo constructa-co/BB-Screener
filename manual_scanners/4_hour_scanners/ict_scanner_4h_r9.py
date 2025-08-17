@@ -1069,15 +1069,20 @@ class ICTFVGScanner:
         
         # Start scan logging if database is available (do this early)
         scan_id = None
-        try:
-            if self.db_logger:
+        
+        # Check if database is connected
+        if not self.db_logger or not self.db_logger.connection:
+            logger.warning("⚠️ Database not connected - running in offline mode")
+            logger.warning("Results will not be saved to database")
+            logger.info("📝 Running without database logging (offline mode)")
+        else:
+            try:
                 scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
                 logger.info(f"✅ Scan started with ID: {scan_id}")
-            else:
-                logger.warning("❌ No database logger available")
-        except Exception as e:
-            logger.warning(f"❌ Failed to start scan logging: {e}")
-            scan_id = None
+            except Exception as e:
+                logger.warning(f"❌ Failed to start scan logging: {e}")
+                scan_id = None
+                logger.info("📝 Running without database logging (offline mode)")
         
         symbols = self.get_top_symbols(limit=top_n)
         high_quality_setups = []
@@ -1116,8 +1121,8 @@ class ICTFVGScanner:
                             high_quality_setups.append(setup)
                             logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
                             
-                            # Log to database
-                            if self.db_logger and scan_id is not None:
+                            # Log to database (only if connected and scan_id exists)
+                            if self.db_logger and self.db_logger.connection and scan_id is not None:
                                 try:
                                     # Prepare trade data for database - convert numpy types to Python types
                                     def convert_to_python_type(value):
@@ -1153,7 +1158,24 @@ class ICTFVGScanner:
                                         'market_cap': convert_to_python_type(setup.get('market_cap', 0)),
                                         'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
                                         'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
-                                        'scanner_type': 'ict_scanner_4h'
+                                        'scanner_type': 'ict_scanner_4h',
+                                        
+                                        # ICT-SPECIFIC FIELDS - Now captured in dedicated columns
+                                        'gap_high': convert_to_python_type(setup.get('fvg', {}).get('high', 0)),
+                                        'gap_low': convert_to_python_type(setup.get('fvg', {}).get('low', 0)),
+                                        'gap_size_pct': convert_to_python_type(setup.get('gap_size', 0)),
+                                        'swing_high': convert_to_python_type(setup.get('swing_high', 0)),
+                                        'swing_low': convert_to_python_type(setup.get('swing_low', 0)),
+                                        'order_block_high': convert_to_python_type(setup.get('order_block_high', 0)),
+                                        'order_block_low': convert_to_python_type(setup.get('order_block_low', 0)),
+                                        'fib_236': convert_to_python_type(setup.get('targets', {}).get('fib_236', 0)),
+                                        'fib_382': convert_to_python_type(setup.get('targets', {}).get('fib_382', 0)),
+                                        'fib_500': convert_to_python_type(setup.get('targets', {}).get('fib_500', 0)),
+                                        'fib_618': convert_to_python_type(setup.get('targets', {}).get('fib_618', 0)),
+                                        'fib_786': convert_to_python_type(setup.get('targets', {}).get('fib_786', 0)),
+                                        'liquidity_sweep_level': convert_to_python_type(setup.get('liquidity_sweep_level', 0)),
+                                        'imbalance_high': convert_to_python_type(setup.get('imbalance_high', 0)),
+                                        'imbalance_low': convert_to_python_type(setup.get('imbalance_low', 0))
                                     }
                                     
                                     # Debug: Print the trade data being sent
@@ -1236,6 +1258,10 @@ class ICTFVGScanner:
         
         # Summary
         logger.info(f"Scan complete. Found {total_found} high-quality setups, displayed {len(high_quality_setups)}")
+        
+        # Store high_quality_setups for universal logger access
+        self.last_scan_results = high_quality_setups
+        
         return high_quality_setups
         
     def send_alert(self, message: str):
@@ -1284,6 +1310,102 @@ class ICTFVGScanner:
         }
 
 
+
+
+
+def call_universal_logger(high_quality_setups):
+    """Call the universal logger to log trades to the other_scanners database"""
+    try:
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'database_and_logging'))
+        from universal_scanner_logger import UniversalScannerLogger
+        
+        # Initialize logger
+        logger = UniversalScannerLogger('ict_4h_scanner', 'r9')
+        
+        # Log all detected trades
+        if high_quality_setups:
+            for setup in high_quality_setups:
+                # Prepare trade data for universal logger
+                trade_data = {
+                    'symbol': setup.get('symbol', ''),
+                    'timeframe': '4h',  # Lowercase!
+                    'side': 'BUY' if setup.get('type') == 'bullish' else 'SELL',
+                    'entry_price': float(setup.get('entry_price', 0)),
+                    'quantity': 1.0,  # Default quantity
+                    'stop_loss': float(setup.get('stop_loss', 0)),
+                    'take_profit': float(setup.get('targets', {}).get('T1', 0)),
+                    
+                    # Technical indicators
+                    'technical_indicators': {
+                        'rsi': float(setup.get('rsi', 0)),
+                        'mfi': float(setup.get('mfi', 0)),
+                        'stochastic_k': float(setup.get('stochastic_k', 0)),
+                        'volume_surge': float(setup.get('volume_surge', 0)),
+                        'macd_signal': setup.get('macd_signal', 'neutral'),
+                        'final_quality': float(setup.get('final_quality', 0)),
+                        'risk_reward': float(setup.get('risk_reward', 0)),
+                        'probability': float(setup.get('probability', setup.get('final_quality', 0)))
+                    },
+                    
+                    # Scanner signals
+                    'scanner_signals': {
+                        'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
+                        'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
+                        'gap_size_pct': float(setup.get('gap_size', 0)),
+                        'fvg_age': int(setup.get('fvg_age', 0)),
+                        'distance_to_entry': float(setup.get('distance_to_entry', 0)),
+                        'swing_high': float(setup.get('swing_high', 0)),
+                        'swing_low': float(setup.get('swing_low', 0)),
+                        'order_block_high': float(setup.get('order_block_high', 0)),
+                        'order_block_low': float(setup.get('order_block_low', 0)),
+                        'liquidity_sweep_level': float(setup.get('liquidity_sweep_level', 0)),
+                        'imbalance_high': float(setup.get('imbalance_high', 0)),
+                        'imbalance_low': float(setup.get('imbalance_low', 0))
+                    },
+                    
+                    # Market conditions
+                    'market_conditions': {
+                        'market_cap': float(setup.get('market_cap', 0)),
+                        'volume_24h': float(setup.get('volume_24h', 0)),
+                        'price_change_24h': float(setup.get('price_change_24h', 0)),
+                        'historical_win_rate': float(setup.get('historical_win_rate', 0)),
+                        'category_win_rate': float(setup.get('category_win_rate', 0)),
+                        'similar_setups_count': int(setup.get('similar_setups_count', 0)),
+                        'current_price': float(setup.get('current_price', 0))
+                    },
+                    
+                    # Fibonacci targets
+                    'feature_vector': [
+                        float(setup.get('targets', {}).get('fib_236', 0)),
+                        float(setup.get('targets', {}).get('fib_382', 0)),
+                        float(setup.get('targets', {}).get('fib_500', 0)),
+                        float(setup.get('targets', {}).get('fib_618', 0)),
+                        float(setup.get('targets', {}).get('fib_786', 0))
+                    ]
+                }
+                
+                # Log the trade
+                trade_id = logger.log_trade(trade_data)
+                if trade_id:
+                    print(f"✅ Logged ICT trade {trade_id}: {setup.get('symbol')} (Quality: {setup.get('final_quality', 0):.1f})")
+                else:
+                    print(f"❌ Failed to log ICT trade: {setup.get('symbol')}")
+                    
+            # Close logger properly
+            if hasattr(logger, 'connection_pool'):
+                logger.connection_pool.closeall()
+            print(f"✅ Successfully logged {len(high_quality_setups)} ICT trades to database")
+        else:
+            print("ℹ️ No ICT trades found in this scan")
+            
+    except Exception as e:
+        print(f"⚠️ Database logging failed (non-critical): {e}")
+        # Don't crash the scanner if logging fails
+        pass
+
+
 def main():
     """Main entry point"""
     import argparse
@@ -1309,6 +1431,9 @@ def main():
         )
         
         # The summary is now printed within scan_all_symbols
+        
+        # Call universal logger integration
+        call_universal_logger(setups)
             
     else:
         # Run continuous scanning
