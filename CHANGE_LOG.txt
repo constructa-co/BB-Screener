@@ -732,3 +732,16 @@ CRITICAL FINDINGS:
    TESTED: ✅ Successfully loaded all market sheets locally
    STATUS: ✅ COMPLETED - Ready for production use
    NOTES: Script now captures complete market context for each trade
+
+[2025-08-17 13:45 UAE] PROMPT 5A COMPLETE - Fixed critical cron timing issue
+   FILE: setup_scheduled_sync.sh (UPDATED)
+   ISSUE: Original cron ran sync 5 minutes after scanner STARTED (before completion)
+   FIX: Changed to chain commands - sync runs AFTER scanner completes
+   CHANGES:
+     - Removed separate 5-minute delay cron entry
+     - Added && operator to chain scanner and sync
+     - Sync only runs if scanner succeeds
+     - Works regardless of scanner duration (20-30 minutes)
+   CRON: Single entry: scanner && sync (chained)
+   STATUS: ✅ COMPLETED - Critical timing issue resolved
+   NOTES: Prevents syncing old data - now syncs fresh scan results
