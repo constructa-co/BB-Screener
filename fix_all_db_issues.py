@@ -179,12 +179,11 @@ def fix_all_database_issues():
                 # Insert new trade with ALL fields
                 cursor.execute("""
                     INSERT INTO trade_opportunities 
-                    (scan_id, symbol, exchange, probability, 
+                    (symbol, exchange, probability, 
                      entry_price, stop_loss, target_1, timeframe,
                      scanner_specific_data)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
-                    scan_id,
                     trade_dict.get('symbol', ''),
                     trade_dict.get('exchange', ''),
                     trade_dict.get('probability', 0),
