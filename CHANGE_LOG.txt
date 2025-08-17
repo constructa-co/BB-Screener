@@ -717,3 +717,18 @@ CRITICAL FINDINGS:
      - Logs saved to /opt/bb-screener/logs/
    STATUS: ✅ COMPLETED - Cron jobs configured successfully
    NOTES: Completely independent approach - scanner and sync run separately, no conflicts
+
+[2025-08-17 13:40 UAE] PROMPT 5 COMPLETE - Enhanced database fix script with market data capture
+   FILE: fix_all_db_issues.py (ENHANCED)
+   BACKUP: backups/fix_all_db_issues_20250817_133651.py
+   ENHANCEMENTS:
+     - Auto-find most recent Excel file (no more hardcoded dates)
+     - Safe loading of all market sheets with try/except
+     - Enhanced market context with 5 sheet types:
+       * Market_Regime_Analysis, Market_Overview, Market_Metadata
+       * Confidence_Summary, Top_10_Sentiment
+     - Backward compatibility maintained
+     - Detailed success reporting
+   TESTED: ✅ Successfully loaded all market sheets locally
+   STATUS: ✅ COMPLETED - Ready for production use
+   NOTES: Script now captures complete market context for each trade

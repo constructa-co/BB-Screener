@@ -47,14 +47,40 @@ def make_json_safe(obj):
 def fix_all_database_issues():
     """Fix all database issues: missing trades, truncation, scanner metadata"""
     
-    # Load the scanner output
-    scanner_file = 'outputs/excel_reports/bb_analysis_20250816_192704.xlsx'
+    # Load the scanner output - find the most recent file
+    import glob
+    excel_files = glob.glob('outputs/excel_reports/bb_analysis_*.xlsx')
+    if not excel_files:
+        print("❌ No Excel files found in outputs/excel_reports/")
+        return
+    
+    scanner_file = max(excel_files, key=os.path.getctime)  # Most recent file
+    print(f"Using Excel file: {scanner_file}")
     
     print("Loading Excel data...")
     all_analysis = pd.read_excel(scanner_file, sheet_name='All_Analysis')
-    market_regime = pd.read_excel(scanner_file, sheet_name='Market_Regime_Analysis')
-    market_overview = pd.read_excel(scanner_file, sheet_name='Market_Overview')
-    market_metadata = pd.read_excel(scanner_file, sheet_name='Market_Metadata')
+    
+    # Safe loading of market sheets
+    market_sheets = {
+        'Market_Regime_Analysis': None,
+        'Market_Overview': None,
+        'Market_Metadata': None,
+        'Confidence_Summary': None,
+        'Top_10_Sentiment': None
+    }
+    
+    for sheet_name in market_sheets.keys():
+        try:
+            market_sheets[sheet_name] = pd.read_excel(scanner_file, sheet_name=sheet_name)
+            print(f"  ✓ Loaded {sheet_name}: {len(market_sheets[sheet_name])} rows")
+        except Exception as e:
+            print(f"  ⚠️ {sheet_name} not found or error: {e}")
+            market_sheets[sheet_name] = None
+    
+    # Keep backward compatibility with existing variable names
+    market_regime = market_sheets['Market_Regime_Analysis'] if market_sheets['Market_Regime_Analysis'] is not None else pd.DataFrame()
+    market_overview = market_sheets['Market_Overview'] if market_sheets['Market_Overview'] is not None else pd.DataFrame()
+    market_metadata = market_sheets['Market_Metadata'] if market_sheets['Market_Metadata'] is not None else pd.DataFrame()
     
     print(f"Found {len(all_analysis)} trades in Excel")
     
@@ -100,7 +126,16 @@ def fix_all_database_issues():
             if 'confidence_rationale' in trade_dict:
                 trade_dict['confidence_rationale_full'] = str(trade_dict['confidence_rationale'])
             
-            # Add market context
+            # Add comprehensive market context
+            trade_dict['market_context'] = {
+                'regime_data': market_sheets['Market_Regime_Analysis'].to_dict('records') if market_sheets['Market_Regime_Analysis'] is not None else [],
+                'overview_data': market_sheets['Market_Overview'].to_dict('records') if market_sheets['Market_Overview'] is not None else [],
+                'metadata': market_sheets['Market_Metadata'].to_dict('records') if market_sheets['Market_Metadata'] is not None else [],
+                'confidence_summary': market_sheets['Confidence_Summary'].to_dict('records') if market_sheets['Confidence_Summary'] is not None else [],
+                'sentiment_data': market_sheets['Top_10_Sentiment'].to_dict('records') if market_sheets['Top_10_Sentiment'] is not None else []
+            }
+            
+            # Keep backward compatibility
             trade_dict['market_regime_data'] = market_regime.to_dict('records') if len(market_regime) > 0 else {}
             trade_dict['market_overview_data'] = market_overview.to_dict('records') if len(market_overview) > 0 else {}
             trade_dict['market_metadata_data'] = market_metadata.to_dict('records') if len(market_metadata) > 0 else {}
@@ -169,7 +204,12 @@ def fix_all_database_issues():
         print(f"  - All {len(all_analysis)} trades now in database with complete data")
         print(f"  - Sentiment data preserved")
         print(f"  - Scanner metadata added")
-        print(f"  - Market context included")
+        print(f"  - Enhanced market context included:")
+        for sheet_name, data in market_sheets.items():
+            if data is not None:
+                print(f"    ✓ {sheet_name}: {len(data)} rows")
+            else:
+                print(f"    ⚠️ {sheet_name}: Not available")
         
         # Verify the fix
         cursor.execute("""
