@@ -34,10 +34,7 @@ class UniversalScannerLogger:
         self.scanner_version = scanner_version or self._extract_version()
         self.config = config or {}
         
-        # Initialize connection pool
-        self._init_connection_pool()
-        
-        # Setup logging
+        # Setup logging FIRST (before connection pool)
         self.logger = logging.getLogger(f"scanner.{scanner_name}")
         self.logger.setLevel(logging.INFO)
         
@@ -50,6 +47,9 @@ class UniversalScannerLogger:
         
         # UUID for this scanner instance
         self.scanner_uuid = str(uuid.uuid4())
+        
+        # Initialize connection pool AFTER logger is set up
+        self._init_connection_pool()
         
         self.logger.info(f"✅ {scanner_name} logger initialized (version: {self.scanner_version})")
         
