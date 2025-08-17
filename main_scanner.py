@@ -951,15 +951,6 @@ class ModularBBScanner:
                 print(f"📁 Organized in: outputs/excel_reports/")
                 print(f"💾 Excel contains ALL {len(all_analysis_data)} analyzed coins (for ML training)")
 
-                # Enhanced database sync - ensures all trades with complete data
-                try:
-                    print("Running enhanced database sync...")
-                    os.system("python fix_all_db_issues.py")
-                    print("✅ Enhanced database sync complete")
-                except Exception as e:
-                    print(f"Database sync failed (non-critical): {e}")
-                    pass  # Don't break scanner if sync fails
-
             except Exception as e:
                 self.logger.error(f"Critical error in scanner: {e}")
                 print(f"Error: {e}")
