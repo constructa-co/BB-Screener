@@ -820,3 +820,24 @@ FINAL SYSTEM CAPABILITIES:
 - Production-ready for continuous operation
 
 ===========================================================
+
+===========================================================
+CRON SCHEDULE UPDATE: Changed from 4-hour to hourly execution
+===========================================================
+Date: 2025-08-17 10:45:00 UAE
+Status: ✅ COMPLETED
+
+CHANGES MADE:
+- Modified setup_scheduled_sync.sh to run every hour instead of every 4 hours
+- Updated cron expression from "0 */4 * * *" to "0 * * * *"
+- Simplified log file paths for easier monitoring
+
+DETAILS:
+- Previous schedule: Every 4 hours (0:00, 4:00, 8:00, 12:00, 16:00, 20:00)
+- New schedule: Every hour at minute 0 (0:00, 1:00, 2:00, 3:00, etc.)
+- Scanner and sync remain chained - sync only runs if scanner succeeds
+- Log files: /opt/bb-screener/scanner.log and /opt/bb-screener/db_sync.log
+
+INTENT: Increase scanner frequency from 4-hour intervals to hourly intervals for more frequent trade detection and database updates.
+
+===========================================================

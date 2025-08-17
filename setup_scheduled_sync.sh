@@ -1,23 +1,20 @@
 #!/bin/bash
 # Setup scheduled sync for database - runs AFTER scanner completes
 
-echo "Setting up scheduled database sync..."
+echo "Setting up scheduled BB scanner and database sync..."
 
-# Remove any existing BB scanner cron entries
+# Remove existing bb-screener cron entries
 (crontab -l 2>/dev/null | grep -v "bb-screener") | crontab -
 
-# Create single cron entry that chains scanner and sync
-(crontab -l 2>/dev/null; echo "# BB Scanner and Database Sync - Chained") | crontab -
-(crontab -l 2>/dev/null; echo "0 */4 * * * cd /opt/bb-screener && /opt/bb-screener/venv/bin/python /opt/bb-screener/main_scanner.py >> /opt/bb-screener/logs/scanner.log 2>&1 && echo '---SYNC START---' >> /opt/bb-screener/logs/db_sync.log && /opt/bb-screener/venv/bin/python /opt/bb-screener/fix_all_db_issues.py >> /opt/bb-screener/logs/db_sync.log 2>&1") | crontab -
+# Add new cron entry to run every hour (at minute 0)
+# This chains the scanner and sync commands - sync only runs if scanner succeeds
+(crontab -l 2>/dev/null; echo "0 * * * * cd /opt/bb-screener && source venv/bin/activate && python main_scanner.py >> /opt/bb-screener/scanner.log 2>&1 && python fix_all_db_issues.py >> /opt/bb-screener/db_sync.log 2>&1") | crontab -
 
-echo "✅ Scheduled sync configured"
-echo "Scanner runs at: 0:00, 4:00, 8:00, 12:00, 16:00, 20:00"
-echo "DB sync runs: Immediately after scanner completes"
-
-# Create log directory if it doesn't exist
-mkdir -p /opt/bb-screener/logs
-
-# Show current crontab
+echo "✅ Cron job set up successfully!"
+echo "📅 Scanner and sync will run every hour at minute 0"
+echo "📝 Logs will be written to:"
+echo "   - /opt/bb-screener/scanner.log"
+echo "   - /opt/bb-screener/db_sync.log"
 echo ""
-echo "Current crontab:"
-crontab -l
+echo "To view current cron jobs: crontab -l"
+echo "To view logs: tail -f /opt/bb-screener/scanner.log"
