@@ -2,6 +2,7 @@
 Universal Scanner Logger for BB Screener
 Provides database logging for all non-BB scanners with minimal integration effort.
 Supports post-mortem analysis, ML training, and complete trade lifecycle tracking.
+USES SEPARATE SCHEMA FOR COMPLETE ISOLATION FROM MAIN SCANNER
 """
 
 import os
@@ -70,23 +71,32 @@ class UniversalScannerLogger:
         return "1.0.0"  # Default version
     
     def _init_connection_pool(self):
-        """Initialize PostgreSQL connection pool."""
+        """Initialize PostgreSQL connection pool with schema isolation."""
         try:
-            # Get database configuration from environment
-            DATABASE_URL = os.getenv('DATABASE_URL')
+            # Get database configuration from environment - USE SEPARATE ENV VAR FOR ISOLATION
+            DATABASE_URL = os.getenv('OTHER_SCANNERS_DATABASE_URL')
             
             if not DATABASE_URL:
-                # Fallback configuration for local development
-                db_config = {
-                    'host': os.getenv('DB_HOST', 'localhost'),
-                    'port': int(os.getenv('DB_PORT', 5432)),
-                    'database': os.getenv('DB_NAME', 'bb_scanners'),
-                    'user': os.getenv('DB_USER', 'bbscanner'),
-                    'password': os.getenv('DB_PASSWORD', ''),
-                }
-                
-                # Build connection string
-                DATABASE_URL = f"postgresql://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
+                # Fallback to main DATABASE_URL but with schema specification
+                main_db_url = os.getenv('DATABASE_URL')
+                if main_db_url:
+                    # Add schema parameter to main database URL
+                    if '?' in main_db_url:
+                        DATABASE_URL = main_db_url + '&options=-csearch_path=other_scanners'
+                    else:
+                        DATABASE_URL = main_db_url + '?options=-csearch_path=other_scanners'
+                else:
+                    # Fallback configuration for local development
+                    db_config = {
+                        'host': os.getenv('DB_HOST', 'localhost'),
+                        'port': int(os.getenv('DB_PORT', 5432)),
+                        'database': os.getenv('DB_NAME', 'bb_scanners'),
+                        'user': os.getenv('DB_USER', 'bbscanner'),
+                        'password': os.getenv('DB_PASSWORD', ''),
+                    }
+                    
+                    # Build connection string with schema
+                    DATABASE_URL = f"postgresql://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}?options=-csearch_path=other_scanners"
             
             # Create connection pool
             self.connection_pool = psycopg2.pool.SimpleConnectionPool(
@@ -96,6 +106,7 @@ class UniversalScannerLogger:
             )
             
             self.logger.info(f"✅ Database connection pool initialized (max connections: {os.getenv('DB_POOL_SIZE', 20)})")
+            self.logger.info(f"✅ Using schema: other_scanners (isolated from main scanner)")
             
         except Exception as e:
             self.logger.error(f"❌ Failed to initialize database connection pool: {e}")
@@ -103,10 +114,13 @@ class UniversalScannerLogger:
     
     @contextmanager
     def get_connection(self):
-        """Context manager for database connections."""
+        """Context manager for database connections with schema isolation."""
         conn = None
         try:
             conn = self.connection_pool.getconn()
+            # Set schema for this connection
+            with conn.cursor() as cursor:
+                cursor.execute("SET search_path TO other_scanners")
             yield conn
             conn.commit()
         except Exception as e:
@@ -143,6 +157,7 @@ class UniversalScannerLogger:
             execution_metadata['logged_at'] = datetime.now(timezone.utc).isoformat()
             execution_metadata['scanner_name'] = self.scanner_name
             execution_metadata['scanner_version'] = self.scanner_version
+            execution_metadata['schema'] = 'other_scanners'  # Track schema usage
             
             # Set default values for required fields
             trade_data.setdefault('timeframe', '4H')
@@ -181,7 +196,7 @@ class UniversalScannerLogger:
                         Json(execution_metadata)
                     ))
             
-            self.logger.info(f"✅ Trade logged: {trade_id} for {trade_data.get('symbol')}")
+            self.logger.info(f"✅ Trade logged: {trade_id} for {trade_data.get('symbol')} (schema: other_scanners)")
             return trade_id
             
         except Exception as e:
@@ -207,7 +222,7 @@ class UniversalScannerLogger:
             if self.log_trade(trade):
                 success_count += 1
         
-        self.logger.info(f"✅ Logged {success_count}/{len(trades_list)} trades to database")
+        self.logger.info(f"✅ Logged {success_count}/{len(trades_list)} trades to database (schema: other_scanners)")
         return success_count
     
     def update_trade_status(self, trade_id: str, new_status: str, metadata: Dict[str, Any] = None) -> bool:
@@ -242,7 +257,7 @@ class UniversalScannerLogger:
                             WHERE id = %s
                         """, (Json(metadata), trade_id))
             
-            self.logger.info(f"✅ Trade {trade_id} status updated to {new_status}")
+            self.logger.info(f"✅ Trade {trade_id} status updated to {new_status} (schema: other_scanners)")
             return True
             
         except Exception as e:
@@ -282,7 +297,7 @@ class UniversalScannerLogger:
                             WHERE id = %s
                         """, (Json(metadata), trade_id))
             
-            self.logger.info(f"✅ Trade {trade_id} closed at {exit_price}")
+            self.logger.info(f"✅ Trade {trade_id} closed at {exit_price} (schema: other_scanners)")
             return True
             
         except Exception as e:
@@ -324,7 +339,7 @@ class UniversalScannerLogger:
                 with conn.cursor() as cursor:
                     cursor.execute(query, (Json(analysis_data), trade_id))
             
-            self.logger.info(f"✅ Analysis logged for trade {trade_id}: {analysis_type}")
+            self.logger.info(f"✅ Analysis logged for trade {trade_id}: {analysis_type} (schema: other_scanners)")
             return True
             
         except Exception as e:
@@ -383,7 +398,8 @@ class UniversalScannerLogger:
                 'timestamp': datetime.now(timezone.utc).isoformat(),
                 'context': context or {},
                 'scanner_name': self.scanner_name,
-                'scanner_version': self.scanner_version
+                'scanner_version': self.scanner_version,
+                'schema': 'other_scanners'
             }
             
             if trade_id:
@@ -419,7 +435,7 @@ class UniversalScannerLogger:
                     cursor.execute(query, (days, self.scanner_name))
                     deleted = cursor.rowcount
             
-            self.logger.info(f"✅ Cleaned up {deleted} old trades")
+            self.logger.info(f"✅ Cleaned up {deleted} old trades (schema: other_scanners)")
             return deleted
             
         except Exception as e:
@@ -454,7 +470,8 @@ class UniversalScannerLogger:
         config = {
             'database_pool': True,
             'trade_logging': True,
-            'error_tracking': True
+            'error_tracking': True,
+            'schema_isolation': True  # Track schema isolation
         }
         
         return cls(scanner_name=scanner_name, config=config)

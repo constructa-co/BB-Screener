@@ -1,6 +1,11 @@
 -- BB Screener: Other Scanners Database Schema
 -- Creates the other_scanners_trades table for all non-BB scanners
 -- Supports post-mortem analysis, ML training, and complete trade lifecycle tracking
+-- USES SEPARATE SCHEMA FOR COMPLETE ISOLATION FROM MAIN SCANNER
+
+-- Create separate schema for other scanners
+CREATE SCHEMA IF NOT EXISTS other_scanners;
+SET search_path TO other_scanners;
 
 -- Create the main trades table with all required fields
 CREATE TABLE IF NOT EXISTS other_scanners_trades (
@@ -131,14 +136,14 @@ CREATE INDEX IF NOT EXISTS idx_backtest_timeframe ON scanner_backtest_results(ti
 CREATE INDEX IF NOT EXISTS idx_backtest_timestamp ON scanner_backtest_results(timestamp DESC);
 
 -- Grant permissions (adjust user as needed)
--- GRANT ALL PRIVILEGES ON TABLE other_scanners_trades TO bbscanner;
--- GRANT ALL PRIVILEGES ON TABLE scanner_backtest_results TO bbscanner;
--- GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO bbscanner;
+-- GRANT ALL PRIVILEGES ON SCHEMA other_scanners TO bbscanner;
+-- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA other_scanners TO bbscanner;
+-- GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA other_scanners TO bbscanner;
 
 -- Insert initial scan marker to verify table creation
 INSERT INTO other_scanners_trades (scanner_name, scanner_version, timeframe, symbol, status, execution_metadata)
 VALUES ('SYSTEM', '1.0.0', '1h', 'SCHEMA_CREATED', 'CLOSED', 
-        '{"action": "schema_creation", "timestamp": "' || CURRENT_TIMESTAMP || '", "version": "1.0.0"}')
+        '{"action": "schema_creation", "timestamp": "' || CURRENT_TIMESTAMP || '", "version": "1.0.0", "schema": "other_scanners"}')
 ON CONFLICT DO NOTHING;
 
 -- Display table information
@@ -153,3 +158,6 @@ SELECT
     COUNT(*) as total_records,
     MAX(timestamp) as latest_record
 FROM scanner_backtest_results;
+
+-- Reset search_path to default
+SET search_path TO public;

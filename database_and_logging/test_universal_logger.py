@@ -1,6 +1,7 @@
 """
 Test script for Universal Scanner Logger
 Tests all functionality including initialization, trade logging, UUID generation, and error handling.
+USES SEPARATE SCHEMA FOR COMPLETE ISOLATION FROM MAIN SCANNER
 """
 
 import os
@@ -359,11 +360,12 @@ def main():
         return False
 
 if __name__ == "__main__":
-    # Check if DATABASE_URL is set
-    if not os.getenv('DATABASE_URL'):
-        print("⚠️ DATABASE_URL environment variable not set.")
-        print("Please set it to your PostgreSQL connection string.")
-        print("Example: export DATABASE_URL='postgresql://user:pass@localhost/dbname'")
+    # Check if OTHER_SCANNERS_DATABASE_URL is set
+    if not os.getenv('OTHER_SCANNERS_DATABASE_URL'):
+        print("⚠️ OTHER_SCANNERS_DATABASE_URL environment variable not set.")
+        print("Please set it to your PostgreSQL connection string with schema isolation.")
+        print("Example: export OTHER_SCANNERS_DATABASE_URL='postgresql://user:pass@localhost/dbname?options=-csearch_path=other_scanners'")
+        print("Or load from other_scanners.env file: source database_and_logging/other_scanners.env")
         sys.exit(1)
     
     success = main()
