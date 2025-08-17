@@ -935,3 +935,47 @@ DETAILS:
 INTENT: Complete the database integration by ensuring all market analysis data from Excel sheets is properly captured in the JSONB field, providing comprehensive trade context for analysis.
 
 STATUS: ✅ SUCCESS - All 139+ fields now captured with complete market context
+
+===========================================================
+ENHANCED DATA EXPORT: Complete database export with JSONB sample
+===========================================================
+Date: 2025-08-17 15:10:00 UAE
+Status: ✅ COMPLETED SUCCESSFULLY
+
+CHANGES MADE:
+- Successfully exported enhanced database with 189 columns
+- Extracted comprehensive JSONB sample (148 fields, 245KB)
+- Verified all market analysis data is properly captured
+- Downloaded both Excel export and JSONB sample for user inspection
+
+DETAILS:
+1. Enhanced Database Export:
+   - File: FULL_database_export_20250817_134708.xlsx (485KB)
+   - Total trades: 624
+   - Total columns: 189 (expanded from JSONB)
+   - High-probability trades: 57 (>70% probability)
+   - All core fields visible: entry_price, stop_loss, target_1, etc.
+
+2. JSONB Sample Extraction:
+   - File: jsonb_sample_FORT_20250817_150708.json (245KB)
+   - Total fields: 148
+   - Market fields: 11 (including market_context, market_regime_data, etc.)
+   - Regime fields: 3 (regime_type, regime_confidence, market_regime_data)
+   - Sentiment fields: 6 (lunar_sentiment_score, sentiment_confidence, etc.)
+
+3. Comprehensive Data Verification:
+   - Market context: 5 items
+   - Market regime data: 68 items
+   - Market metadata: 22 items
+   - Market overview: 138 items
+   - All Excel sheet data properly integrated
+
+4. Field Evolution Confirmed:
+   - Early trades: 1 field (basic)
+   - Mid trades: 19 fields (enhanced)
+   - Recent trades: 93-122 fields (comprehensive)
+   - Latest trades: 148 fields (complete with market analysis)
+
+INTENT: Provide user with comprehensive database export and JSONB sample to verify that all market analysis data from Excel sheets is properly captured and accessible.
+
+STATUS: ✅ SUCCESS - Complete data export available with all 148 fields and market analysis
