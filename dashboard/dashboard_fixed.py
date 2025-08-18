@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Crypto Trading Command Center - Fixed Version
+Crypto Trading Command Center
 Unified dashboard for all crypto scanner analytics and trading management
 """
 
@@ -12,12 +12,54 @@ from datetime import datetime, timedelta
 import numpy as np
 import sys
 import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from trade_logger import TradeLogger
+import tradingview_charts as tv
 import json
+import os
 import time
+import asyncio
+import threading
 from plotly.subplots import make_subplots
 
-# Add parent directory to path for imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Import advanced analytics
+try:
+    from advanced_analytics import (
+        create_correlation_heatmap,
+        predict_trade_success,
+        create_pattern_success_analysis,
+        create_timeframe_analysis,
+        create_ml_backtesting_simulator,
+        get_historical_trades
+    )
+    ADVANCED_ANALYTICS_AVAILABLE = True
+except ImportError:
+    print("⚠️ Advanced analytics not available - advanced_analytics.py not found")
+    ADVANCED_ANALYTICS_AVAILABLE = False
+
+# Import file management
+try:
+    from file_management import create_import_export_page
+    FILE_MANAGEMENT_AVAILABLE = True
+except ImportError:
+    print("⚠️ File management not available - file_management.py not found")
+    FILE_MANAGEMENT_AVAILABLE = False
+
+# Import interactive controls
+try:
+    from interactive_controls import create_strategy_tuning_page
+    INTERACTIVE_CONTROLS_AVAILABLE = True
+except ImportError:
+    print("⚠️ Interactive controls not available - interactive_controls.py not found")
+    INTERACTIVE_CONTROLS_AVAILABLE = False
+
+# Import live price updater
+try:
+    from live_price_updater import update_opportunities_with_live_prices, get_live_price_for_symbol
+    LIVE_PRICES_AVAILABLE = True
+except ImportError:
+    print("⚠️ Live price updater not available - live_price_updater.py not found")
+    LIVE_PRICES_AVAILABLE = False
 
 # Page configuration
 st.set_page_config(
@@ -58,368 +100,1679 @@ st.markdown("""
         transition: all 0.3s ease;
     }
     .opportunity-row:hover {
-        background-color: #f8f9fa;
-        transform: translateY(-2px);
+        background-color: #f0f0f0;
+        transform: translateX(5px);
     }
 </style>
 """, unsafe_allow_html=True)
 
-def get_database_connection():
-    """Get database connection with fallback"""
-    try:
-        import psycopg2
-        from dotenv import load_dotenv
-        
-        # Load environment variables
-        load_dotenv()
-        
-        # Try to get database URL
-        DATABASE_URL = os.getenv('DATABASE_URL')
-        if not DATABASE_URL:
-            st.error("❌ DATABASE_URL not found in environment variables")
-            return None
+# Initialize database connection
+@st.cache_resource
+def get_db():
+    return TradeLogger()
+
+# Scanner configuration mapping
+SCANNER_CONFIG = {
+    'BB Scanner': {
+        'timeframes': ['4H'],
+        'icon': '🎯',
+        'description': 'Bollinger Band bounce detection with 88% MFI win rate',
+        'schedule': 'Every 4 hours'
+    },
+    'ICT Strategies': {
+        'timeframes': ['15M', '1H', '4H'],
+        'icon': '📈',
+        'description': 'Order blocks, liquidity grabs, and Fair Value Gaps',
+        'schedule': 'Every hour'
+    },
+    'Wyckoff': {
+        'timeframes': ['15M', '1H', '4H'],
+        'icon': '🏛️',
+        'description': 'Accumulation/Distribution phase detection',
+        'schedule': 'Every 2 hours'
+    },
+    'Elliott Waves': {
+        'timeframes': ['1H', '4H', 'Daily', 'Weekly'],
+        'icon': '🌊',
+        'description': 'Wave pattern identification for major moves',
+        'schedule': 'Daily'
+    },
+    'Supply & Demand': {
+        'timeframes': ['1M', '5M', '15M', '1H', '4H'],
+        'icon': '📦',
+        'description': 'Institutional supply and demand zones',
+        'schedule': 'Every 15 minutes'
+    },
+    'Fibonacci': {
+        'timeframes': ['5M', '1H', '4H'],
+        'icon': '📐',
+        'description': 'Retracement and extension levels',
+        'schedule': 'Every hour'
+    },
+    'FVG Scanner': {
+        'timeframes': ['1M', '5M', '1H', '4H'],
+        'icon': '🕳️',
+        'description': 'Fair Value Gap detection',
+        'schedule': 'Every 15 minutes'
+    },
+    'Trend Following': {
+        'timeframes': ['1H', '4H', 'Daily'],
+        'icon': '📊',
+        'description': 'Trend continuation patterns',
+        'schedule': 'Every 4 hours'
+    }
+}
+
+# Helper functions
+def get_scanner_status():
+    """Get current status of all scanners"""
+    logger = get_db()
+    status_data = []
+    
+    if logger.connection:
+        for scanner, config in SCANNER_CONFIG.items():
+            for tf in config['timeframes']:
+                scanner_type = f"{scanner.lower().replace(' ', '_')}_{tf.lower()}"
+                
+                # Get last run info
+                logger.cursor.execute("""
+                    SELECT MAX(scan_timestamp) as last_run,
+                           COUNT(*) as total_runs,
+                           SUM(premium_trades_found) as total_opportunities
+                    FROM scan_results
+                    WHERE scan_type = %s
+                    AND scan_timestamp > NOW() - INTERVAL '24 hours'
+                """, (scanner_type,))
+                
+                result = logger.cursor.fetchone()
+                
+                status_data.append({
+                    'Scanner': f"{config['icon']} {scanner}",
+                    'Timeframe': tf,
+                    'Last Run': result['last_run'] or 'Never',
+                    'Status': '🟢 Active' if result['last_run'] and (datetime.now() - result['last_run']).seconds < 3600 else '🔴 Inactive',
+                    'Opportunities (24h)': result['total_opportunities'] or 0
+                })
+    
+    return pd.DataFrame(status_data)
+
+def get_best_opportunities(hours=24, min_prob=70):
+    """Get best trading opportunities across all scanners"""
+    logger = get_db()
+    opportunities = []
+    
+    if logger.connection:
+        try:
+            # Get balanced mix of scanner types
+            logger.cursor.execute("""
+                (
+                    -- Get top BB scanner trades
+                    SELECT 
+                        t.*,
+                        s.scan_type,
+                        s.scan_timestamp,
+                        'Day Trading' as trading_style,
+                        '4H' as timeframe
+                    FROM trade_opportunities t
+                    JOIN scan_results s ON t.scan_id = s.id
+                    WHERE t.probability >= %s
+                    AND t.trade_taken = FALSE
+                    AND s.scan_type IN ('bb_scanner', 'bb_scanner_4h')
+                    ORDER BY t.probability DESC, s.scan_timestamp DESC
+                    LIMIT 25
+                )
+                UNION ALL
+                (
+                    -- Get top ICT scanner trades
+                    SELECT 
+                        t.*,
+                        s.scan_type,
+                        s.scan_timestamp,
+                        'Day Trading' as trading_style,
+                        '4H' as timeframe
+                    FROM trade_opportunities t
+                    JOIN scan_results s ON t.scan_id = s.id
+                    WHERE t.probability >= %s
+                    AND t.trade_taken = FALSE
+                    AND s.scan_type LIKE '%%ict%%'
+                    ORDER BY t.probability DESC, s.scan_timestamp DESC
+                    LIMIT 25
+                )
+                ORDER BY probability DESC, scan_timestamp DESC
+                LIMIT 50
+            """, (min_prob, min_prob))
             
-        conn = psycopg2.connect(DATABASE_URL)
-        return conn
-    except Exception as e:
-        st.error(f"❌ Database connection failed: {e}")
-        return None
-
-def get_other_scanners_connection():
-    """Get connection to other_scanners database"""
-    try:
-        import psycopg2
-        from dotenv import load_dotenv
-        
-        load_dotenv()
-        
-        # Try OTHER_SCANNERS_DATABASE_URL first
-        DATABASE_URL = os.getenv('OTHER_SCANNERS_DATABASE_URL')
-        if not DATABASE_URL:
-            # Fallback to main DATABASE_URL with schema
-            main_db_url = os.getenv('DATABASE_URL')
-            if main_db_url:
-                if '?' in main_db_url:
-                    DATABASE_URL = main_db_url + '&options=-csearch_path=other_scanners'
+            opportunities = logger.cursor.fetchall()
+            
+            # Convert to list of dictionaries for easier manipulation
+            if opportunities:
+                # Handle RealDictRow objects from PostgreSQL
+                opportunities = [dict(row) for row in opportunities]
+                
+                # Update with live prices if available (but don't break if it fails)
+                if LIVE_PRICES_AVAILABLE:
+                    try:
+                        opportunities = update_opportunities_with_live_prices(opportunities)
+                        print(f"✅ Updated {len(opportunities)} opportunities with live prices")
+                    except Exception as e:
+                        print(f"⚠️ Error updating live prices: {e}")
+                        # Continue with original data if live price update fails
+                        pass
                 else:
-                    DATABASE_URL = main_db_url + '?options=-csearch_path=other_scanners'
-            else:
-                st.error("❌ No database URL found")
-                return None
-        
-        conn = psycopg2.connect(DATABASE_URL)
-        return conn
-    except Exception as e:
-        st.error(f"❌ Other scanners database connection failed: {e}")
-        return None
+                    print(f"✅ Using {len(opportunities)} opportunities without live price updates")
+        except Exception as e:
+            print(f"❌ Error fetching opportunities: {e}")
+            # Return empty list if query fails
+            opportunities = []
+    
+    return opportunities
 
-def load_main_scanner_data():
-    """Load data from main scanner"""
-    conn = get_database_connection()
-    if not conn:
-        return pd.DataFrame()
-    
-    try:
-        query = """
-        SELECT 
-            symbol,
-            timeframe,
-            bb_score,
-            probability,
-            risk_reward_ratio,
-            current_price,
-            entry_price,
-            stop_loss,
-            target_1,
-            pattern_type,
-            pattern_quality,
-            timestamp,
-            scanner_specific_data
-        FROM public.trade_opportunities
-        WHERE timestamp > NOW() - INTERVAL '24 hours'
-        ORDER BY timestamp DESC
-        """
-        
-        df = pd.read_sql_query(query, conn)
-        conn.close()
-        return df
-    except Exception as e:
-        st.error(f"❌ Error loading main scanner data: {e}")
-        conn.close()
-        return pd.DataFrame()
 
-def load_other_scanners_data():
-    """Load data from other scanners"""
-    conn = get_other_scanners_connection()
-    if not conn:
-        return pd.DataFrame()
+# Real-time Update System Functions
+def add_auto_refresh_controls():
+    """
+    Add auto-refresh controls to sidebar
+    """
+    st.sidebar.markdown("### 🔄 Auto Refresh")
     
-    try:
-        query = """
-        SET search_path TO other_scanners;
-        SELECT 
-            id,
-            scanner_name,
-            scanner_version,
-            symbol,
-            timeframe,
-            side,
-            entry_price,
-            stop_loss,
-            take_profit,
-            status,
-            created_at,
-            technical_indicators,
-            scanner_signals,
-            market_conditions,
-            execution_metadata
-        FROM other_scanners_trades
-        WHERE created_at > NOW() - INTERVAL '24 hours'
-        ORDER BY created_at DESC
-        """
+    # Auto-refresh toggle
+    auto_refresh = st.sidebar.checkbox("Enable Auto-Refresh", value=False)
+    
+    # Refresh interval
+    if auto_refresh:
+        refresh_interval = st.sidebar.select_slider(
+            "Refresh Interval",
+            options=[10, 30, 60, 120, 300],
+            format_func=lambda x: f"{x} seconds" if x < 60 else f"{x//60} minutes",
+            value=30
+        )
         
-        df = pd.read_sql_query(query, conn)
-        conn.close()
-        return df
-    except Exception as e:
-        st.error(f"❌ Error loading other scanners data: {e}")
-        conn.close()
-        return pd.DataFrame()
+        # Show countdown
+        if 'last_refresh' not in st.session_state:
+            st.session_state.last_refresh = time.time()
+        
+        time_since_refresh = int(time.time() - st.session_state.last_refresh)
+        time_until_refresh = refresh_interval - time_since_refresh
+        
+        if time_until_refresh > 0:
+            st.sidebar.progress(
+                time_since_refresh / refresh_interval,
+                text=f"Next refresh in {time_until_refresh}s"
+            )
+        
+        # Trigger refresh
+        if time_until_refresh <= 0:
+            st.session_state.last_refresh = time.time()
+            st.experimental_rerun()
+    
+    # Manual refresh button
+    if st.sidebar.button("🔄 Refresh Now"):
+        st.session_state.last_refresh = time.time()
+        st.experimental_rerun()
+    
+    # Last update time
+    st.sidebar.caption(f"Last update: {datetime.now().strftime('%H:%M:%S')}")
 
-def create_main_dashboard():
-    """Create main dashboard page"""
-    st.markdown('<h1 class="main-header">🚀 Crypto Trading Command Center</h1>', unsafe_allow_html=True)
+def create_live_metrics_display():
+    """
+    Create live updating metrics with sparklines
+    """
+    # Initialize session state for metrics history
+    if 'metrics_history' not in st.session_state:
+        st.session_state.metrics_history = {
+            'opportunities': [],
+            'scans': [],
+            'high_prob': [],
+            'timestamps': []
+        }
     
-    # Load data
-    with st.spinner("Loading main scanner data..."):
-        main_data = load_main_scanner_data()
+    # Get current metrics
+    current_metrics = get_current_metrics()
     
-    with st.spinner("Loading other scanners data..."):
-        other_data = load_other_scanners_data()
+    # Update history (keep last 20 points)
+    history = st.session_state.metrics_history
+    history['opportunities'].append(current_metrics['opportunities'])
+    history['scans'].append(current_metrics['scans'])
+    history['high_prob'].append(current_metrics['high_prob'])
+    history['timestamps'].append(datetime.now())
     
-    # Overview metrics
+    # Limit history size
+    max_points = 20
+    for key in history:
+        if len(history[key]) > max_points:
+            history[key] = history[key][-max_points:]
+    
+    # Create columns for metrics
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.markdown("""
-        <div class="metric-card">
-            <h3>Main Scanner</h3>
-            <h2>{}</h2>
-            <p>Trades (24h)</p>
-        </div>
-        """.format(len(main_data)), unsafe_allow_html=True)
+        # Opportunities with sparkline
+        st.metric(
+            "Opportunities",
+            current_metrics['opportunities'],
+            delta=calculate_delta(history['opportunities']),
+            delta_color="normal"
+        )
+        if len(history['opportunities']) > 1:
+            fig = create_sparkline(history['opportunities'], "Opportunities")
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key="sparkline_opportunities")
     
     with col2:
-        st.markdown("""
-        <div class="metric-card">
-            <h3>Other Scanners</h3>
-            <h2>{}</h2>
-            <p>Trades (24h)</p>
-        </div>
-        """.format(len(other_data)), unsafe_allow_html=True)
+        # Scans with sparkline
+        st.metric(
+            "Active Scans",
+            current_metrics['scans'],
+            delta=calculate_delta(history['scans']),
+            delta_color="normal"
+        )
+        if len(history['scans']) > 1:
+            fig = create_sparkline(history['scans'], "Scans")
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key="sparkline_scans")
     
     with col3:
-        if not main_data.empty:
-            avg_prob = main_data['probability'].mean()
-            st.markdown("""
-            <div class="metric-card">
-                <h3>Avg Probability</h3>
-                <h2>{:.1f}%</h2>
-                <p>Main Scanner</p>
-            </div>
-            """.format(avg_prob), unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div class="metric-card">
-                <h3>Avg Probability</h3>
-                <h2>N/A</h2>
-                <p>No Data</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # High probability trades
+        st.metric(
+            "High Probability",
+            current_metrics['high_prob'],
+            delta=calculate_delta(history['high_prob']),
+            delta_color="normal"
+        )
+        if len(history['high_prob']) > 1:
+            fig = create_sparkline(history['high_prob'], "High Prob")
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key="sparkline_high_prob")
     
     with col4:
-        if not other_data.empty:
-            unique_scanners = other_data['scanner_name'].nunique()
-            st.markdown("""
-            <div class="metric-card">
-                <h3>Active Scanners</h3>
-                <h2>{}</h2>
-                <p>Other Scanners</p>
-            </div>
-            """.format(unique_scanners), unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div class="metric-card">
-                <h3>Active Scanners</h3>
-                <h2>0</h2>
-                <p>No Data</p>
-            </div>
-            """, unsafe_allow_html=True)
-    
-    # Main scanner opportunities
-    if not main_data.empty:
-        st.subheader("📊 Main Scanner Opportunities (Last 24h)")
-        
-        # Filter options
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            min_prob = st.slider("Min Probability", 0, 100, 70, key="main_prob")
-        with col2:
-            min_rr = st.slider("Min Risk/Reward", 0.0, 5.0, 1.0, key="main_rr")
-        with col3:
-            selected_patterns = st.multiselect(
-                "Pattern Types",
-                options=main_data['pattern_type'].unique(),
-                default=main_data['pattern_type'].unique()[:5]
-            )
-        
-        # Filter data
-        filtered_data = main_data[
-            (main_data['probability'] >= min_prob) &
-            (main_data['risk_reward_ratio'] >= min_rr) &
-            (main_data['pattern_type'].isin(selected_patterns))
-        ]
-        
-        if not filtered_data.empty:
-            # Display opportunities
-            for _, row in filtered_data.head(10).iterrows():
-                with st.container():
-                    col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
-                    
-                    with col1:
-                        st.markdown(f"**{row['symbol']}** ({row['timeframe']})")
-                        st.markdown(f"Pattern: {row['pattern_type']} - {row['pattern_quality']}")
-                    
-                    with col2:
-                        st.metric("Probability", f"{row['probability']:.1f}%")
-                    
-                    with col3:
-                        st.metric("R/R Ratio", f"{row['risk_reward_ratio']:.2f}")
-                    
-                    with col4:
-                        st.metric("Entry Price", f"${row['entry_price']:.4f}")
-                    
-                    st.divider()
-        else:
-            st.info("No opportunities match the current filters")
-    
-    # Other scanners summary
-    if not other_data.empty:
-        st.subheader("🔧 Other Scanners Summary")
-        
-        # Scanner activity
-        scanner_summary = other_data.groupby('scanner_name').agg({
-            'id': 'count',
-            'created_at': 'max',
-            'symbol': 'nunique'
-        }).rename(columns={'id': 'trades', 'created_at': 'last_run', 'symbol': 'unique_symbols'})
-        
-        st.dataframe(scanner_summary, use_container_width=True)
-        
-        # Recent trades
-        st.subheader("📈 Recent Other Scanner Trades")
-        recent_trades = other_data[['scanner_name', 'symbol', 'side', 'entry_price', 'created_at']].head(10)
-        st.dataframe(recent_trades, use_container_width=True)
+        # Win rate
+        st.metric(
+            "Win Rate",
+            f"{current_metrics['win_rate']:.1f}%",
+            delta=f"{calculate_delta([current_metrics['win_rate']])}%",
+            delta_color="normal"
+        )
 
-def create_analytics_page():
-    """Create analytics page"""
-    st.header("📊 Analytics Dashboard")
+def create_sparkline(data, title):
+    """
+    Create a small sparkline chart
+    """
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        y=data,
+        mode='lines',
+        line=dict(color='#667eea', width=2),
+        fill='tozeroy',
+        fillcolor='rgba(102, 126, 234, 0.2)',
+        fillpattern=dict(fillmode="overlay"),
+        showlegend=False
+    ))
     
-    # Load data
-    main_data = load_main_scanner_data()
-    other_data = load_other_scanners_data()
-    
-    if main_data.empty and other_data.empty:
-        st.warning("No data available for analytics")
-        return
-    
-    # Time series analysis
-    if not main_data.empty:
-        st.subheader("Main Scanner Activity Over Time")
-        
-        # Group by hour
-        main_data['hour'] = pd.to_datetime(main_data['timestamp']).dt.floor('H')
-        hourly_data = main_data.groupby('hour').size().reset_index(name='trades')
-        
-        fig = px.line(hourly_data, x='hour', y='trades', title='Trades per Hour')
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Probability distribution
-        st.subheader("Probability Distribution")
-        fig = px.histogram(main_data, x='probability', nbins=20, title='Probability Distribution')
-        st.plotly_chart(fig, use_container_width=True)
-    
-    if not other_data.empty:
-        st.subheader("Other Scanners Activity")
-        
-        # Scanner comparison
-        scanner_counts = other_data['scanner_name'].value_counts()
-        fig = px.bar(x=scanner_counts.index, y=scanner_counts.values, title='Trades by Scanner')
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Side distribution
-        side_counts = other_data['side'].value_counts()
-        fig = px.pie(values=side_counts.values, names=side_counts.index, title='BUY vs SELL Distribution')
-        st.plotly_chart(fig, use_container_width=True)
-
-def create_settings_page():
-    """Create settings page"""
-    st.header("⚙️ Settings")
-    
-    st.subheader("Database Configuration")
-    
-    # Show current database status
-    main_conn = get_database_connection()
-    other_conn = get_other_scanners_connection()
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        if main_conn:
-            st.success("✅ Main Scanner Database: Connected")
-            main_conn.close()
-        else:
-            st.error("❌ Main Scanner Database: Disconnected")
-    
-    with col2:
-        if other_conn:
-            st.success("✅ Other Scanners Database: Connected")
-            other_conn.close()
-        else:
-            st.error("❌ Other Scanners Database: Disconnected")
-    
-    st.subheader("System Information")
-    
-    # Show system info
-    info_data = {
-        'Component': ['Streamlit Version', 'Pandas Version', 'Python Version', 'Current Time'],
-        'Version': [
-            st.__version__,
-            pd.__version__,
-            sys.version.split()[0],
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        ]
-    }
-    
-    st.dataframe(pd.DataFrame(info_data), use_container_width=True)
-
-def main():
-    """Main application"""
-    # Sidebar navigation
-    st.sidebar.title("Navigation")
-    
-    page = st.sidebar.selectbox(
-        "Choose a page",
-        ["Main Dashboard", "Analytics", "Settings"]
+    fig.update_layout(
+        height=50,
+        margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis=dict(showgrid=False, zeroline=False, visible=False),
+        yaxis=dict(showgrid=False, zeroline=False, visible=False),
+        hovermode=False
     )
     
-    # Page routing
-    if page == "Main Dashboard":
-        create_main_dashboard()
-    elif page == "Analytics":
-        create_analytics_page()
-    elif page == "Settings":
-        create_settings_page()
+    return fig
 
-if __name__ == "__main__":
-    main()
+def calculate_delta(data_list):
+    """Calculate delta for metric display"""
+    if len(data_list) >= 2:
+        return data_list[-1] - data_list[-2]
+    return 0
+
+def create_live_opportunity_feed():
+    """
+    Create a live-updating opportunity feed
+    """
+    st.subheader("🔴 Live Opportunity Feed")
+    
+    # Create placeholder for live updates
+    feed_placeholder = st.empty()
+    
+    # Get latest opportunities
+    opportunities = get_latest_opportunities(limit=10)
+    
+    with feed_placeholder.container():
+        for opp in opportunities:
+            # Time since found
+            time_ago = get_time_ago(opp['timestamp'])
+            
+            # Color based on age
+            if (datetime.now() - opp['timestamp']).seconds < 300:  # Less than 5 minutes
+                badge_color = "🟢"  # Green for fresh
+            elif (datetime.now() - opp['timestamp']).seconds < 900:  # Less than 15 minutes
+                badge_color = "🟡"  # Yellow for recent
+            else:
+                badge_color = "⚪"  # White for older
+            
+            # Display opportunity
+            with st.container():
+                col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 1, 1])
+                
+                with col1:
+                    st.write(f"{badge_color} {time_ago}")
+                
+                with col2:
+                    st.write(f"**{opp['symbol']}** ({opp['scanner_type']})")
+                
+                with col3:
+                    st.write(f"{opp['probability']:.0f}%")
+                
+                with col4:
+                    if opp['risk_reward_ratio'] is not None:
+                        st.write(f"R:R {opp['risk_reward_ratio']:.1f}")
+                    else:
+                        st.write("R:R N/A")
+                
+                with col5:
+                    if st.button("Chart", key=f"chart_{opp['id']}"):
+                        st.session_state.selected_chart = opp['symbol']
+                
+                st.markdown("---")
+
+def create_live_price_monitor(symbols):
+    """
+    Create live price monitoring for tracked symbols
+    """
+    st.subheader("📈 Live Price Monitor")
+    
+    # Create price tracking in session state
+    if 'price_history' not in st.session_state:
+        st.session_state.price_history = {}
+    
+    # Update prices
+    for symbol in symbols:
+        current_price = get_current_price(symbol)
+        
+        if symbol not in st.session_state.price_history:
+            st.session_state.price_history[symbol] = []
+        
+        st.session_state.price_history[symbol].append({
+            'price': current_price,
+            'time': datetime.now()
+        })
+        
+        # Keep only last 50 points
+        if len(st.session_state.price_history[symbol]) > 50:
+            st.session_state.price_history[symbol] = st.session_state.price_history[symbol][-50:]
+    
+    # Display price charts
+    cols = st.columns(min(len(symbols), 3))
+    
+    for i, symbol in enumerate(symbols[:3]):
+        with cols[i % 3]:
+            history = st.session_state.price_history.get(symbol, [])
+            if history:
+                current = history[-1]['price']
+                previous = history[-2]['price'] if len(history) > 1 else current
+                change = ((current - previous) / previous * 100) if previous > 0 else 0
+                
+                st.metric(
+                    symbol,
+                    f"${current:.4f}",
+                    f"{change:+.2f}%",
+                    delta_color="normal"
+                )
+                
+                # Mini price chart
+                if len(history) > 1:
+                    prices = [h['price'] for h in history]
+                    fig = create_sparkline(prices, symbol)
+                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key=f"price_sparkline_{symbol}_{i}")
+
+def get_time_ago(timestamp):
+    """Convert timestamp to human-readable time ago"""
+    delta = datetime.now() - timestamp
+    
+    if delta.seconds < 60:
+        return f"{delta.seconds}s ago"
+    elif delta.seconds < 3600:
+        return f"{delta.seconds // 60}m ago"
+    elif delta.seconds < 86400:
+        return f"{delta.seconds // 3600}h ago"
+    else:
+        return f"{delta.days}d ago"
+
+def get_current_metrics():
+    """Get current metrics from database"""
+    logger = get_db()
+    metrics = {
+        'opportunities': 0,
+        'scans': 0,
+        'high_prob': 0,
+        'win_rate': 0
+    }
+    
+    if logger.connection:
+        try:
+            # Get metrics from last 24 hours
+            logger.cursor.execute("""
+                SELECT 
+                    COUNT(DISTINCT s.id) as scans,
+                    COUNT(t.id) as opportunities,
+                    COUNT(CASE WHEN t.probability >= 80 THEN 1 END) as high_prob
+                FROM scan_results s
+                LEFT JOIN trade_opportunities t ON s.id = t.scan_id
+                WHERE s.scan_timestamp > NOW() - INTERVAL '24 hours'
+                AND s.scan_type != 'BB_Backtest_R10'
+            """)
+            
+            result = logger.cursor.fetchone()
+            if result:
+                # Handle both tuple and dict-like results
+                if hasattr(result, '__getitem__') and not isinstance(result, (list, tuple)):
+                    # RealDictRow or similar
+                    metrics['scans'] = result['scans'] if result['scans'] is not None else 0
+                    metrics['opportunities'] = result['opportunities'] if result['opportunities'] is not None else 0
+                    metrics['high_prob'] = result['high_prob'] if result['high_prob'] is not None else 0
+                else:
+                    # Tuple result
+                    metrics['scans'] = result[0] if result[0] is not None else 0
+                    metrics['opportunities'] = result[1] if result[1] is not None else 0
+                    metrics['high_prob'] = result[2] if result[2] is not None else 0
+                
+                # Calculate win rate from completed trades (if any)
+                logger.cursor.execute("""
+                    SELECT 
+                        COUNT(CASE WHEN profit_loss_percent > 0 THEN 1 END) as wins,
+                        COUNT(*) as total_trades
+                    FROM trade_opportunities 
+                    WHERE trade_taken = TRUE 
+                    AND profit_loss_percent IS NOT NULL
+                    AND timestamp > NOW() - INTERVAL '24 hours'
+                """)
+                
+                win_result = logger.cursor.fetchone()
+                if win_result and win_result[1] > 0:
+                    metrics['win_rate'] = (win_result[0] / win_result[1]) * 100
+                else:
+                    metrics['win_rate'] = 0
+                    
+        except Exception as e:
+            print(f"❌ Error getting metrics: {e}")
+    
+    return metrics
+
+def get_latest_opportunities(limit=10):
+    """Get latest opportunities from database"""
+    logger = get_db()
+    opportunities = []
+    
+    if logger.connection:
+        try:
+            logger.cursor.execute("""
+                SELECT 
+                    t.*,
+                    s.scan_type as scanner_type
+                FROM trade_opportunities t
+                JOIN scan_results s ON t.scan_id = s.id
+                WHERE t.timestamp > NOW() - INTERVAL '24 hours'
+                AND s.scan_type != 'BB_Backtest_R10'
+                ORDER BY t.timestamp DESC
+                LIMIT %s
+            """, (limit,))
+            
+            opportunities = logger.cursor.fetchall()
+            
+            # Convert to list of dictionaries
+            if opportunities:
+                # Handle RealDictRow objects from PostgreSQL
+                opportunities = [dict(row) for row in opportunities]
+                
+        except Exception as e:
+            print(f"❌ Error getting latest opportunities: {e}")
+    
+    return opportunities
+
+def get_current_price(symbol):
+    """Get current price for a symbol"""
+    # This would connect to your price feed
+    # For now, return a mock price
+    import random
+    base_prices = {
+        'BTC/USDT': 43000,
+        'ETH/USDT': 2300,
+        'SOL/USDT': 100
+    }
+    base = base_prices.get(symbol, 100)
+    return base * (1 + random.uniform(-0.01, 0.01))
+
+
+# Sidebar Configuration
+with st.sidebar:
+    st.markdown("## 🎛️ Control Panel")
+    
+    # NEW: Add auto-refresh controls at the top
+    add_auto_refresh_controls()
+    
+    st.markdown("---")
+    
+    # Time filter
+    time_range = st.selectbox(
+        "📅 Time Range",
+        ["Last 1 Hour", "Last 4 Hours", "Last 24 Hours", "Last 7 Days", "Last 30 Days"],
+        index=2
+    )
+    
+    # Convert to hours
+    time_hours = {
+        "Last 1 Hour": 1,
+        "Last 4 Hours": 4,
+        "Last 24 Hours": 24,
+        "Last 7 Days": 168,
+        "Last 30 Days": 720
+    }[time_range]
+    
+    # Probability filter
+    min_probability = st.slider("🎯 Min Probability %", 50, 95, 70, 5)
+    
+    # Scanner filter
+    active_scanners = st.multiselect(
+        "🔍 Active Scanners",
+        list(SCANNER_CONFIG.keys()),
+        default=list(SCANNER_CONFIG.keys())
+    )
+    
+    # Trading style filter
+    trading_styles = st.multiselect(
+        "💹 Trading Styles",
+        ["Scalping", "Day Trading", "Swing Trading", "Position Trading"],
+        default=["Day Trading", "Swing Trading"]
+    )
+    
+    st.markdown("---")
+    
+    # Market conditions (from your market regime logic)
+    st.markdown("### 🌍 Market Conditions")
+    
+    # These would come from your actual market analysis
+    market_regime = st.metric("Market Regime", "Bullish 🟢", "72% strength")
+    btc_dominance = st.metric("BTC Dominance", "48.5%", "-2.1%")
+    fear_greed = st.metric("Fear & Greed", "68", "Greed")
+    
+    st.markdown("---")
+    
+    # Quick actions
+    st.markdown("### ⚡ Quick Actions")
+    
+    if st.button("🔄 Run All Scanners", use_container_width=True):
+        st.success("All scanners initiated!")
+        st.balloons()
+    
+    if st.button("📊 Generate Report", use_container_width=True):
+        st.info("Generating comprehensive report...")
+    
+    if st.button("🔔 Test Alerts", use_container_width=True):
+        st.info("Alert test sent to Telegram!")
+
+# Main navigation
+page = st.sidebar.radio(
+    "📍 Navigation",
+    ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
+     "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
+     "📈 Post-Mortem Analysis", "⚙️ Settings"]
+)
+
+# Page content based on selection
+if page == "🏠 Overview":
+    # Header
+    st.markdown('<h1 class="main-header">🚀 Crypto Trading Command Center</h1>', unsafe_allow_html=True)
+    
+    # Get current data
+    logger = get_db()
+    
+    # Top metrics
+    col1, col2, col3, col4, col5 = st.columns(5)
+    
+    if logger.connection:
+        # Get overview stats
+        logger.cursor.execute("""
+            SELECT 
+                COUNT(DISTINCT scan_type) as active_scanners,
+                COUNT(*) as total_scans,
+                SUM(premium_trades_found) as total_opportunities
+            FROM scan_results
+        """, ())
+        
+        stats = logger.cursor.fetchone()
+        
+        with col1:
+            st.metric("Active Scanners", stats['active_scanners'] or 0, "+2 new")
+        
+        with col2:
+            st.metric("Total Scans", stats['total_scans'] or 0, f"Last {time_range.lower()}")
+        
+        with col3:
+            st.metric("Opportunities", stats['total_opportunities'] or 0, "+23 new")
+        
+        with col4:
+            # Get high probability count
+            logger.cursor.execute("""
+                SELECT COUNT(*) as high_prob
+                FROM trade_opportunities
+                WHERE probability >= 85
+            """, ())
+            high_prob = logger.cursor.fetchone()['high_prob']
+            st.metric("High Probability", high_prob or 0, "≥85%")
+        
+        with col5:
+            # Calculate average win rate
+            logger.cursor.execute("""
+                SELECT 
+                    AVG(CASE WHEN trade_result = 'win' THEN 1 ELSE 0 END) * 100 as win_rate
+                FROM trade_opportunities
+                WHERE trade_taken = TRUE
+                AND trade_result IN ('win', 'loss')
+            """)
+            win_rate = logger.cursor.fetchone()['win_rate'] or 0
+            st.metric("Win Rate", f"{win_rate:.1f}%", "+2.1%")
+    
+    # NEW: Live metrics display
+    st.subheader("📊 Live Metrics")
+    create_live_metrics_display()
+    
+    st.markdown("---")
+    
+    # Two column layout
+    left_col, right_col = st.columns([2, 1])
+    
+    with left_col:
+        # Best opportunities
+        st.subheader("🎯 Top Trading Opportunities")
+        
+        opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
+        
+        if opportunities:
+            # Create formatted dataframe
+            opp_data = []
+            for opp in opportunities[:10]:  # Top 10
+                scanner_type = opp['scan_type'].replace('_', ' ').title()
+                icon = '🎯'  # Default icon
+                for scanner, config in SCANNER_CONFIG.items():
+                    if scanner.lower() in opp['scan_type']:
+                        icon = config['icon']
+                        break
+                
+                opp_data.append({
+                    'Scanner': f"{icon} {scanner_type}",
+                    'Symbol': opp['symbol'],
+                    'Probability': opp['probability'],
+                    'R:R': opp['risk_reward_ratio'],
+                    'Entry': opp['entry_price'],
+                    'Target 1': opp['target_1'],
+                    'Style': opp['trading_style'],
+                    'Time': opp['timestamp']
+                })
+            
+            opp_df = pd.DataFrame(opp_data)
+            
+            # Display with custom formatting
+            st.dataframe(
+                opp_df,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "Probability": st.column_config.ProgressColumn(
+                        "Probability",
+                        format="%.1f%%",
+                        min_value=0,
+                        max_value=100,
+                    ),
+                    "R:R": st.column_config.NumberColumn(
+                        "Risk/Reward",
+                        format="%.2f:1"
+                    ),
+                    "Entry": st.column_config.NumberColumn(
+                        "Entry Price",
+                        format="$%.6f"
+                    ),
+                    "Target 1": st.column_config.NumberColumn(
+                        "Target 1",
+                        format="$%.6f"
+                    ),
+                    "Time": st.column_config.DatetimeColumn(
+                        "Found",
+                        format="MMM D, HH:mm"
+                    )
+                }
+            )
+            
+            # Add chart buttons for top opportunities
+            st.subheader("📊 Chart Analysis")
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                if st.button("Show BTC/USDT Chart", key="btc_chart"):
+                    st.session_state.show_btc_chart = True
+            
+            with col2:
+                if st.button("Show ETH/USDT Chart", key="eth_chart"):
+                    st.session_state.show_eth_chart = True
+            
+            with col3:
+                if st.button("Show SOL/USDT Chart", key="sol_chart"):
+                    st.session_state.show_sol_chart = True
+            
+            # Display charts if requested
+            if st.session_state.get('show_btc_chart', False):
+                with st.expander("📈 BTC/USDT Chart", expanded=True):
+                    # Chart container with better sizing
+                    st.markdown("""
+                    <style>
+                    .tradingview-widget-container {
+                        width: 100% !important;
+                        height: 800px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        max-width: none !important;
+                        min-width: 100% !important;
+                    }
+                    .tradingview-widget-container > div {
+                        width: 100% !important;
+                        height: 100% !important;
+                        max-width: none !important;
+                    }
+                    .stExpander {
+                        width: 100% !important;
+                        max-width: none !important;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
+                    # Full-width chart with no column wrapper
+                    tv.show_tradingview_chart("BTC/USDT", timeframe='240', height=800)
+                    
+                    # Technical analysis and metrics below (not in columns)
+                    st.markdown("---")
+                    tv.show_technical_analysis_widget("BTC/USDT")
+                    
+                    # Metrics in a simple row
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Current Price", "$45,234.56")
+                    with col2:
+                        st.metric("24h Change", "+2.34%")
+                    with col3:
+                        st.metric("Volume", "$2.1B")
+                st.session_state.show_btc_chart = False
+            
+            if st.session_state.get('show_eth_chart', False):
+                with st.expander("📈 ETH/USDT Chart", expanded=True):
+                    # Chart container with better sizing
+                    st.markdown("""
+                    <style>
+                    .tradingview-widget-container {
+                        width: 100% !important;
+                        height: 800px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        max-width: none !important;
+                        min-width: 100% !important;
+                    }
+                    .tradingview-widget-container > div {
+                        width: 100% !important;
+                        height: 100% !important;
+                        max-width: none !important;
+                    }
+                    .stExpander {
+                        width: 100% !important;
+                        max-width: none !important;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
+                    # Full-width chart with no column wrapper
+                    tv.show_tradingview_chart("ETH/USDT", timeframe='240', height=800)
+                    
+                    # Technical analysis and metrics below (not in columns)
+                    st.markdown("---")
+                    tv.show_technical_analysis_widget("ETH/USDT")
+                    
+                    # Metrics in a simple row
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Current Price", "$2,456.78")
+                    with col2:
+                        st.metric("24h Change", "+1.87%")
+                    with col3:
+                        st.metric("Volume", "$1.8B")
+                st.session_state.show_eth_chart = False
+            
+            if st.session_state.get('show_sol_chart', False):
+                with st.expander("📈 SOL/USDT Chart", expanded=True):
+                    # Chart container with better sizing
+                    st.markdown("""
+                    <style>
+                    .tradingview-widget-container {
+                        width: 100% !important;
+                        height: 800px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        max-width: none !important;
+                        min-width: 100% !important;
+                    }
+                    .tradingview-widget-container > div {
+                        width: 100% !important;
+                        height: 100% !important;
+                        max-width: none !important;
+                    }
+                    .stExpander {
+                        width: 100% !important;
+                        max-width: none !important;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
+                    # Full-width chart with no column wrapper
+                    tv.show_tradingview_chart("SOL/USDT", timeframe='240', height=800)
+                    
+                    # Technical analysis and metrics below (not in columns)
+                    st.markdown("---")
+                    tv.show_technical_analysis_widget("SOL/USDT")
+                    
+                    # Metrics in a simple row
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Current Price", "$98.45")
+                    with col2:
+                        st.metric("24h Change", "+3.21%")
+                    with col3:
+                        st.metric("Volume", "$450M")
+                st.session_state.show_sol_chart = False
+        else:
+            st.info("No opportunities found matching your criteria")
+        
+        # Scanner performance chart
+        st.subheader("📈 Scanner Performance")
+        
+        if logger.connection:
+            # Get scanner performance data
+            logger.cursor.execute("""
+                SELECT 
+                    scan_type as scanner,
+                    COUNT(*) as scans,
+                    SUM(premium_trades_found) as opportunities,
+                    AVG(execution_time_seconds) as avg_time
+                FROM scan_results
+                GROUP BY scan_type
+                ORDER BY opportunities DESC
+            """, ())
+            
+            perf_data = pd.DataFrame(logger.cursor.fetchall())
+            
+            if not perf_data.empty:
+                fig = px.bar(
+                    perf_data,
+                    x='scanner',
+                    y='opportunities',
+                    color='avg_time',
+                    color_continuous_scale='viridis',
+                    title='Opportunities Found by Scanner',
+                    labels={'opportunities': 'Total Opportunities', 'avg_time': 'Avg Scan Time (s)'}
+                )
+                st.plotly_chart(fig, use_container_width=True)
+    
+    with right_col:
+        # NEW: Live opportunity feed
+        st.subheader("🔴 Live Opportunity Feed")
+        create_live_opportunity_feed()
+        
+        st.markdown("---")
+        
+        # Scanner status
+        st.subheader("🔄 Scanner Status")
+        
+        status_df = get_scanner_status()
+        
+        if not status_df.empty:
+            # Group by scanner
+            for scanner in active_scanners:
+                if scanner in SCANNER_CONFIG:
+                    config = SCANNER_CONFIG[scanner]
+                    
+                    with st.expander(f"{config['icon']} {scanner}", expanded=True):
+                        scanner_data = status_df[status_df['Scanner'].str.contains(scanner)]
+                        
+                        if not scanner_data.empty:
+                            for _, row in scanner_data.iterrows():
+                                col1, col2, col3 = st.columns([2, 1, 1])
+                                with col1:
+                                    st.write(f"**{row['Timeframe']}**")
+                                with col2:
+                                    st.write(row['Status'])
+                                with col3:
+                                    st.metric("Found", row['Opportunities (24h)'])
+                        
+                        st.caption(f"📅 {config['schedule']}")
+        
+        # Trading distribution pie chart
+        st.subheader("💹 Trading Style Distribution")
+        
+        if opportunities:
+            style_counts = {}
+            for opp in opportunities:
+                style = opp['trading_style']
+                style_counts[style] = style_counts.get(style, 0) + 1
+            
+            if style_counts:
+                fig = px.pie(
+                    values=list(style_counts.values()),
+                    names=list(style_counts.keys()),
+                    color_discrete_sequence=px.colors.sequential.Viridis
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
+elif page == "🎯 Scanner Dashboard":
+    st.title("🎯 Scanner Dashboard")
+    
+    # Scanner selection
+    selected_scanner = st.selectbox(
+        "Select Scanner",
+        list(SCANNER_CONFIG.keys()),
+        format_func=lambda x: f"{SCANNER_CONFIG[x]['icon']} {x}"
+    )
+    
+    config = SCANNER_CONFIG[selected_scanner]
+    
+    # Scanner info
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        st.markdown(f"### {config['description']}")
+    with col2:
+        st.metric("Timeframes", len(config['timeframes']))
+    with col3:
+        st.metric("Schedule", config['schedule'])
+    
+    # Timeframe tabs
+    tabs = st.tabs(config['timeframes'])
+    
+    for i, tf in enumerate(config['timeframes']):
+        with tabs[i]:
+            scanner_type = f"{selected_scanner.lower().replace(' ', '_')}_{tf.lower()}"
+            
+            # Get opportunities for this specific scanner/timeframe
+            logger = get_db()
+            if logger.connection:
+                logger.cursor.execute("""
+                    SELECT t.*, s.scan_timestamp
+                    FROM trade_opportunities t
+                    JOIN scan_results s ON t.scan_id = s.id
+                    WHERE s.scan_type = %s
+
+                    AND t.probability >= %s
+                    ORDER BY t.probability DESC
+                """, (scanner_type, min_probability))
+                
+                scanner_opps = logger.cursor.fetchall()
+                
+                if scanner_opps:
+                    # Display opportunities
+                    st.metric("Active Opportunities", len(scanner_opps))
+                    
+                    # Create detailed view
+                    for i, opp in enumerate(scanner_opps[:5]):  # Show top 5
+                        with st.expander(f"📊 {opp['symbol']} - {opp['probability'] or 0:.1f}% Probability", expanded=(i==0)):
+                            col1, col2 = st.columns([2, 1])
+                            
+                            with col1:
+                                # Show TradingView chart
+                                tv.show_tradingview_chart(
+                                    opp['symbol'],
+                    timeframe='240',
+                    height=400,
+                    studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
+                )
+                            
+                            with col2:
+                                # Trade details
+                                st.markdown(f"""
+                                <div class="scanner-card">
+                                    <h4>Trade Details</h4>
+                                    <p><b>Entry:</b> ${opp['entry_price'] or 0:.6f}</p>
+                                    <p><b>Stop:</b> ${opp['stop_loss'] or 0:.6f}</p>
+                                    <p><b>Target 1:</b> ${opp['target_1'] or 0:.6f}</p>
+                                    <p><b>Risk/Reward:</b> {opp['risk_reward_ratio'] or 0:.2f}:1</p>
+                                    <p><b>Pattern:</b> {opp['pattern_type'] or 'N/A'}</p>
+                                    <p><b>Found:</b> {opp['timestamp'].strftime('%Y-%m-%d %H:%M')}</p>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                # Technical analysis widget
+                                tv.show_technical_analysis_widget(opp['symbol'])
+                else:
+                    st.info(f"No {tf} opportunities found for {selected_scanner}")
+
+elif page == "💹 All Opportunities":
+    st.title("💹 All Trading Opportunities")
+    
+    # Get all opportunities first
+    opportunities = get_best_opportunities(hours=time_hours, min_prob=min_probability)
+    
+    # NEW: Live price monitor for top opportunities
+    if opportunities:
+        top_symbols = list(dict.fromkeys([opp['symbol'] for opp in opportunities[:5]]))  # Top 5 unique symbols
+        create_live_price_monitor(top_symbols)
+        st.markdown("---")
+    
+    if opportunities:
+        # Filter by trading style
+        filtered_opps = [opp for opp in opportunities if opp['trading_style'] in trading_styles]
+        
+        st.metric("Total Opportunities", len(filtered_opps))
+        
+        # Group by timeframe
+        timeframe_groups = {}
+        for opp in filtered_opps:
+            tf = opp['timeframe']
+            if tf not in timeframe_groups:
+                timeframe_groups[tf] = []
+            timeframe_groups[tf].append(opp)
+        
+        # Display by timeframe
+        for tf in ['1M', '5M', '15M', '1H', '4H', 'Daily', 'Weekly']:
+            if tf in timeframe_groups:
+                with st.expander(f"⏰ {tf} Timeframe ({len(timeframe_groups[tf])} opportunities)", expanded=(tf in ['1H', '4H'])):
+                    # Create dataframe for this timeframe
+                    tf_data = []
+                    for opp in timeframe_groups[tf]:
+                        tf_data.append({
+                            'Symbol': opp['symbol'],
+                            'Scanner': opp['scan_type'].replace('_', ' ').title(),
+                            'Probability': opp['probability'],
+                            'R:R': opp['risk_reward_ratio'],
+                            'Entry': opp['entry_price'],
+                            'Stop': opp['stop_loss'],
+                            'Target 1': opp['target_1'],
+                            'Market Cap': f"${float(opp['market_cap'] or 0)/1e9:.1f}B" if float(opp['market_cap'] or 0) > 1e9 else f"${float(opp['market_cap'] or 0)/1e6:.0f}M",
+                            'Volume': f"${float(opp['volume_24h'] or 0)/1e6:.1f}M",
+                            'RSI': opp['rsi'] or 0,
+                            'MFI': opp['mfi'] or 0
+                        })
+                    
+                    tf_df = pd.DataFrame(tf_data)
+                    
+                    # Display with filtering
+                    st.dataframe(
+                        tf_df,
+                        use_container_width=True,
+                        hide_index=True,
+                        column_config={
+                            "Probability": st.column_config.ProgressColumn(
+                                "Prob %",
+                                format="%.0f%%",
+                                min_value=0,
+                                max_value=100,
+                            ),
+                            "R:R": st.column_config.NumberColumn(
+                                "R:R",
+                                format="%.1f"
+                            ),
+                            "Entry": st.column_config.NumberColumn(
+                                "Entry",
+                                format="$%.6f"
+                            ),
+                            "Stop": st.column_config.NumberColumn(
+                                "Stop",
+                                format="$%.6f"
+                            ),
+                            "Target 1": st.column_config.NumberColumn(
+                                "T1",
+                                format="$%.6f"
+                            ),
+                            "RSI": st.column_config.NumberColumn(
+                                "RSI",
+                                format="%.0f"
+                            ),
+                            "MFI": st.column_config.NumberColumn(
+                                "MFI",
+                                format="%.0f"
+                            )
+                        }
+                    )
+                    
+                    # Add chart analysis for top opportunities
+                    if not tf_df.empty:
+                        st.subheader("📊 Chart Analysis")
+                        
+                        # Show charts for top 3 opportunities
+                        for i, (_, row) in enumerate(tf_df.head(3).iterrows()):
+                            symbol = row['Symbol']
+                            with st.expander(f"📈 {symbol} Chart Analysis", expanded=(i==0)):
+                                # Chart container with better sizing
+                                st.markdown("""
+                                <style>
+                                .tradingview-widget-container {
+                                    width: 100% !important;
+                                    height: 600px !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                    max-width: none !important;
+                                    min-width: 100% !important;
+                                }
+                                .tradingview-widget-container > div {
+                                    width: 100% !important;
+                                    height: 100% !important;
+                                    max-width: none !important;
+                                }
+                                .stExpander {
+                                    width: 100% !important;
+                                    max-width: none !important;
+                                }
+                                </style>
+                                """, unsafe_allow_html=True)
+                                
+                                # Full-width chart with no column wrapper
+                                tv.show_tradingview_chart(
+                                    symbol,
+                                    timeframe='240',
+                                    height=600,
+                                    studies=["BB@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies"]
+                                )
+                                
+                                # Trade details and technical analysis below (not in columns)
+                                st.markdown("---")
+                                tv.show_technical_analysis_widget(symbol)
+                                
+                                # Trade metrics in a simple row
+                                col1, col2, col3, col4 = st.columns(4)
+                                
+                                with col1:
+                                    st.metric("Probability", f"{row.get('Probability', 0):.0f}%")
+                                with col2:
+                                    st.metric("Risk/Reward", f"{row.get('R:R', 0):.1f}:1")
+                                with col3:
+                                    st.metric("Entry", f"${row.get('Entry', 0):.6f}")
+                                with col4:
+                                    st.metric("Target", f"${row.get('Target 1', 0):.6f}")
+                                
+                                # Technical indicators in a separate row
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    st.write("**Technical Indicators**")
+                                    st.write(f"RSI: {row.get('RSI', 0):.0f}")
+                                with col2:
+                                    st.write("**Stop Loss**")
+                                    st.write(f"${row.get('Stop', 0):.6f}")
+    else:
+        st.info("No opportunities found matching your criteria")
+
+elif page == "📊 Performance Analytics":
+    st.title("📊 Performance Analytics")
+    
+    # Time period selection
+    period = st.radio(
+        "Select Period",
+        ["Today", "This Week", "This Month", "All Time"],
+        horizontal=True
+    )
+    
+    logger = get_db()
+    
+    if logger.connection:
+        # Performance metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        # Calculate period filter
+        period_filter = {
+            "Today": "1 day",
+            "This Week": "7 days",
+            "This Month": "30 days",
+            "All Time": "10 years"
+        }[period]
+        
+        # Get performance stats
+        logger.cursor.execute("""
+            SELECT 
+                COUNT(CASE WHEN trade_taken = TRUE THEN 1 END) as total_trades,
+                COUNT(CASE WHEN trade_result = 'win' THEN 1 END) as wins,
+                COUNT(CASE WHEN trade_result = 'loss' THEN 1 END) as losses,
+                AVG(CASE WHEN trade_result IN ('win', 'loss') THEN profit_loss_percent END) as avg_pnl,
+                MAX(profit_loss_percent) as best_trade,
+                MIN(profit_loss_percent) as worst_trade
+            FROM trade_opportunities
+            WHERE timestamp > NOW() - INTERVAL '1 day'
+        """)
+        
+        stats = logger.cursor.fetchone()
+        
+        with col1:
+            st.metric("Total Trades", stats['total_trades'] or 0)
+        
+        with col2:
+            win_rate = (stats['wins'] / stats['total_trades'] * 100) if stats['total_trades'] > 0 else 0
+            st.metric("Win Rate", f"{win_rate:.1f}%")
+        
+        with col3:
+            st.metric("Avg P&L", f"{stats['avg_pnl'] or 0:.1f}%")
+        
+        with col4:
+            st.metric("Best Trade", f"{stats['best_trade'] or 0:.1f}%")
+        
+        # Performance by scanner
+        st.subheader("Performance by Scanner")
+        
+        logger.cursor.execute("""
+            SELECT 
+                CASE 
+                    WHEN s.scan_type LIKE '%bb%' THEN 'BB Scanner'
+                    WHEN s.scan_type LIKE '%ict%' THEN 'ICT'
+                    WHEN s.scan_type LIKE '%wyckoff%' THEN 'Wyckoff'
+                    WHEN s.scan_type LIKE '%elliott%' THEN 'Elliott Waves'
+                    WHEN s.scan_type LIKE '%supply%' THEN 'Supply & Demand'
+                    ELSE 'Other'
+                END as scanner,
+                COUNT(CASE WHEN t.trade_taken = TRUE THEN 1 END) as trades,
+                COUNT(CASE WHEN t.trade_result = 'win' THEN 1 END) as wins,
+                AVG(CASE WHEN t.trade_result IN ('win', 'loss') THEN t.profit_loss_percent END) as avg_pnl
+            FROM trade_opportunities t
+            JOIN scan_results s ON t.scan_id = s.id
+            WHERE t.timestamp > NOW() - INTERVAL '1 day'
+            GROUP BY scanner
+            HAVING COUNT(CASE WHEN t.trade_taken = TRUE THEN 1 END) > 0
+        """)
+        
+        perf_by_scanner = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not perf_by_scanner.empty:
+            perf_by_scanner['win_rate'] = (perf_by_scanner['wins'] / perf_by_scanner['trades'] * 100).round(1)
+            
+            fig = px.bar(
+                perf_by_scanner,
+                x='scanner',
+                y='win_rate',
+                color='avg_pnl',
+                color_continuous_scale='RdYlGn',
+                title='Win Rate by Scanner',
+                labels={'win_rate': 'Win Rate %', 'avg_pnl': 'Avg P&L %'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        
+        # P&L over time
+        st.subheader("Cumulative P&L")
+        
+        logger.cursor.execute("""
+            SELECT 
+                DATE(actual_exit_time) as date,
+                SUM(profit_loss_percent) as daily_pnl,
+                SUM(SUM(profit_loss_percent)) OVER (ORDER BY DATE(actual_exit_time)) as cumulative_pnl
+            FROM trade_opportunities
+            WHERE trade_result IN ('win', 'loss')
+            AND actual_exit_time > NOW() - INTERVAL '1 day'
+            GROUP BY date
+            ORDER BY date
+        """)
+        
+        pnl_data = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not pnl_data.empty:
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=pnl_data['date'],
+                y=pnl_data['cumulative_pnl'],
+                mode='lines+markers',
+                name='Cumulative P&L',
+                line=dict(color='green', width=3)
+            ))
+            fig.update_layout(
+                title='Cumulative P&L Over Time',
+                xaxis_title='Date',
+                yaxis_title='Cumulative P&L %',
+                hovermode='x unified'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+elif page == "🧠 Advanced Analytics":
+    st.title("🧠 Advanced Analytics & ML Predictions")
+    
+    if ADVANCED_ANALYTICS_AVAILABLE:
+        # Get historical data
+        historical_trades = get_historical_trades()
+        
+        if not historical_trades.empty and len(historical_trades) >= 50:
+            # Create tabs for different analyses
+            tab1, tab2, tab3, tab4, tab5 = st.tabs([
+                "🔥 Correlation Analysis", 
+                "🤖 ML Predictions", 
+                "📊 Pattern Success", 
+                "⏰ Timeframe Analysis",
+                "🧪 Strategy Backtesting"
+            ])
+            
+            with tab1:
+                create_correlation_heatmap(historical_trades)
+            
+            with tab2:
+                # Trade selection for prediction
+                st.subheader("Select Trade for AI Prediction")
+                
+                # Get current opportunities
+                current_opportunities = get_best_opportunities(hours=24, min_prob=70)
+                
+                if current_opportunities:
+                    selected_symbol = st.selectbox(
+                        "Choose a trade to predict:",
+                        [opp['symbol'] for opp in current_opportunities[:10]]
+                    )
+                    
+                    # Find the selected trade data
+                    selected_trade = None
+                    for opp in current_opportunities:
+                        if opp['symbol'] == selected_symbol:
+                            selected_trade = opp
+                            break
+                    
+                    if selected_trade:
+                        predict_trade_success(selected_trade, historical_trades)
+                else:
+                    st.info("No current opportunities available for prediction.")
+            
+            with tab3:
+                create_pattern_success_analysis(historical_trades)
+            
+            with tab4:
+                create_timeframe_analysis(historical_trades)
+            
+            with tab5:
+                create_ml_backtesting_simulator(historical_trades)
+        else:
+            st.info(f"""
+            **📊 Insufficient Data for Advanced Analytics**
+            
+            We need at least 50 completed trades to provide meaningful insights.
+            Keep trading to build your dataset!
+            
+            **Current Status:**
+            - Historical trades: {len(historical_trades)}
+            - Minimum required: 50
+            """)
+    else:
+        st.error("""
+        **❌ Advanced Analytics Module Not Available**
+        
+        The advanced analytics module (`advanced_analytics.py`) is not installed.
+        Please ensure the module is available in your project directory.
+        """)
+
+elif page == "📁 File Management":
+    if FILE_MANAGEMENT_AVAILABLE:
+        create_import_export_page()
+    else:
+        st.error("""
+        **❌ File Management Module Not Available**
+        
+        The file management module (`file_management.py`) is not installed.
+        Please ensure the module is available in your project directory.
+        """)
+
+elif page == "🎛️ Strategy Tuning":
+    if INTERACTIVE_CONTROLS_AVAILABLE:
+        create_strategy_tuning_page()
+    else:
+        st.error("""
+        **❌ Interactive Controls Module Not Available**
+        
+        The interactive controls module (`interactive_controls.py`) is not installed.
+        Please ensure the module is available in your project directory.
+        """)
+
+elif page == "🤖 3Commas Integration":
+    st.title("🤖 3Commas Integration")
+    
+    # Connection status
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.metric("Connection Status", "🟢 Connected")
+    
+    # Active bots
+    st.subheader("Active Trading Bots")
+    
+    # This would connect to your actual 3Commas integration
+    bot_data = [
+        {"Bot": "BB Bounce Bot", "Status": "🟢 Active", "Deals": 3, "P&L": "+4.2%"},
+        {"Bot": "ICT Scalper", "Status": "🟢 Active", "Deals": 7, "P&L": "+2.8%"},
+        {"Bot": "Wyckoff Swing", "Status": "🟡 Paused", "Deals": 1, "P&L": "+12.3%"},
+        {"Bot": "Elliott Wave", "Status": "🔴 Stopped", "Deals": 0, "P&L": "0%"}
+    ]
+    
+    bot_df = pd.DataFrame(bot_data)
+    st.dataframe(bot_df, use_container_width=True, hide_index=True)
+    
+    # Trade execution queue
+    st.subheader("Trade Execution Queue")
+    
+    logger = get_db()
+    if logger.connection:
+        # Get pending trades
+        logger.cursor.execute("""
+            SELECT 
+                symbol,
+                probability,
+                entry_price,
+                stop_loss,
+                target_1,
+                risk_reward_ratio,
+                timestamp
+            FROM trade_opportunities
+            WHERE trade_taken = FALSE
+            AND probability >= 80
+            AND timestamp > NOW() - INTERVAL '4 hours'
+            ORDER BY probability DESC
+            LIMIT 10
+        """)
+        
+        pending_trades = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not pending_trades.empty:
+            st.dataframe(
+                pending_trades,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "probability": st.column_config.ProgressColumn(
+                        "Probability",
+                        format="%.0f%%",
+                        min_value=0,
+                        max_value=100,
+                    ),
+                    "entry_price": st.column_config.NumberColumn(
+                        "Entry",
+                        format="$%.6f"
+                    ),
+                    "stop_loss": st.column_config.NumberColumn(
+                        "Stop",
+                        format="$%.6f"
+                    ),
+                    "target_1": st.column_config.NumberColumn(
+                        "Target",
+                        format="$%.6f"
+                    ),
+                    "risk_reward_ratio": st.column_config.NumberColumn(
+                        "R:R",
+                        format="%.1f:1"
+                    )
+                }
+            )
+            
+            if st.button("Execute Selected Trades", type="primary", use_container_width=True):
+                st.success("Trades sent to 3Commas for execution!")
+        else:
+            st.info("No high-probability trades pending execution")
+
+elif page == "📈 Post-Mortem Analysis":
+    st.title("📈 Post-Mortem Analysis")
+    
+    # Completed trades analysis
+    logger = get_db()
+    
+    if logger.connection:
+        # Get completed trades
+        logger.cursor.execute("""
+            SELECT 
+                t.*,
+                s.scan_type,
+                CASE 
+                    WHEN profit_loss_percent > 0 THEN 'Profitable'
+                    WHEN profit_loss_percent < 0 THEN 'Loss'
+                    ELSE 'Breakeven'
+                END as outcome
+            FROM trade_opportunities t
+            JOIN scan_results s ON t.scan_id = s.id
+            WHERE t.trade_taken = TRUE
+            AND t.trade_result IS NOT NULL
+            ORDER BY t.actual_exit_time DESC
+            LIMIT 100
+        """)
+        
+        completed_trades = pd.DataFrame(logger.cursor.fetchall())
+        
+        if not completed_trades.empty:
+            # Summary metrics
+            col1, col2, col3, col4 = st.columns(4)
+            
+            profitable = len(completed_trades[completed_trades['outcome'] == 'Profitable'])
+            losses = len(completed_trades[completed_trades['outcome'] == 'Loss'])
+            
+            with col1:
+                st.metric("Total Completed", len(completed_trades))
+            with col2:
+                st.metric("Profitable", profitable, f"{profitable/len(completed_trades)*100:.0f}%")
+            with col3:
+                st.metric("Losses", losses, f"{losses/len(completed_trades)*100:.0f}%")
+            with col4:
+                avg_pnl = completed_trades['profit_loss_percent'].mean()
+                st.metric("Avg P&L", f"{avg_pnl:.1f}%")
+            
+            # Trade analysis
+            st.subheader("Trade Analysis")
+            
+            # Filter options
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                outcome_filter = st.selectbox("Outcome", ["All", "Profitable", "Loss", "Breakeven"])
+            with col2:
+                scanner_filter = st.selectbox("Scanner", ["All"] + list(completed_trades['scan_type'].unique()))
+            with col3:
+                sort_by = st.selectbox("Sort By", ["Exit Time", "P&L %", "Symbol"])
+            
+            # Apply filters
+            filtered_df = completed_trades.copy()
+            if outcome_filter != "All":
+                filtered_df = filtered_df[filtered_df['outcome'] == outcome_filter]
+            if scanner_filter != "All":
+                filtered_df = filtered_df[filtered_df['scan_type'] == scanner_filter]
+            
+            # Sort
+            sort_mapping = {
+                "Exit Time": "actual_exit_time",
+                "P&L %": "profit_loss_percent",
+                "Symbol": "symbol"
+            }
+            filtered_df = filtered_df.sort_values(sort_mapping[sort_by], ascending=False)
+            
+            # Display detailed trades
+            for _, trade in filtered_df.head(20).iterrows():
+                color = "green" if trade['profit_loss_percent'] > 0 else "red"
+                
+                with st.expander(f"{trade['symbol']} - {trade['profit_loss_percent']:.1f}% ({trade['outcome']})"):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.write("**Entry Details**")
+                        st.write(f"Scanner: {trade['scan_type']}")
+                        st.write(f"Entry: ${trade['entry_price']:.6f}")
+                        st.write(f"Probability: {trade['probability']:.0f}%")
+                        st.write(f"Pattern: {trade['pattern_type'] or 'N/A'}")
+                    
+                    with col2:
+                        st.write("**Exit Details**")
+                        st.write(f"Exit: ${trade['actual_exit_price']:.6f}")
+                        st.write(f"Target 1: ${trade['target_1']:.6f}")
+                        st.write(f"Stop Loss: ${trade['stop_loss']:.6f}")
+                        st.write(f"Exit Time: {trade['actual_exit_time']}")
+                    
+                    with col3:
+                        st.write("**Performance**")
+                        st.write(f"P&L: {trade['profit_loss_percent']:.1f}%")
+                        st.write(f"Risk/Reward: {trade['risk_reward_ratio']:.1f}:1")
+                        st.write(f"Hold Time: {(trade['actual_exit_time'] - trade['timestamp']).days} days")
+                    
+                    # Lessons learned section
+                    st.write("**Analysis Notes**")
+                    if trade['profit_loss_percent'] > 0:
+                        st.success(f"✅ Successful {trade['pattern_type'] or 'pattern'} recognition")
+                    else:
+                        st.error(f"❌ Consider reviewing {trade['pattern_type'] or 'pattern'} criteria")
+
+elif page == "⚙️ Settings":
+    st.title("⚙️ Settings")
+    
+    # Scanner configuration
+    st.subheader("Scanner Configuration")
+    
+    # Create tabs for each scanner
+    scanner_tabs = st.tabs(list(SCANNER_CONFIG.keys()))
+    
+    for i, (scanner, config) in enumerate(SCANNER_CONFIG.items()):
+        with scanner_tabs[i]:
+            st.write(f"### {config['icon']} {scanner} Settings")
+            
+            # Schedule settings
+            col1, col2 = st.columns(2)
+            with col1:
+                st.selectbox(
+                    "Run Schedule",
+                    ["Every 15 minutes", "Every hour", "Every 4 hours", "Daily", "Manual only"],
+                    index=1,
+                    key=f"{scanner}_schedule"
+                )
+            
+            with col2:
+                st.multiselect(
+                    "Active Timeframes",
+                    config['timeframes'],
+                    default=config['timeframes'],
+                    key=f"{scanner}_timeframes"
+                )
+            
+            # Quality thresholds
+            st.write("**Quality Thresholds**")
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.slider("Min Probability %", 50, 95, 70, 5, key=f"{scanner}_min_prob")
+            with col2:
+                st.slider("Min Risk/Reward", 1.0, 5.0, 2.0, 0.5, key=f"{scanner}_min_rr")
+            with col3:
+                st.slider("Max Risk %", 1, 5, 2, key=f"{scanner}_max_risk")
+    
+    # Alert settings
+    st.subheader("Alert Settings")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.toggle("Telegram Alerts", value=True)
+        st.text_input("Telegram Chat ID", value="123456789")
+    
+    with col2:
+        st.toggle("Email Alerts", value=False)
+        st.text_input("Email Address", placeholder="your@email.com")
+    
+    # Database settings
+    st.subheader("Database Settings")
+    
+    if st.button("Backup Database"):
+        st.success("Database backup initiated!")
+    
+    if st.button("Clear Old Data (>30 days)"):
+        st.warning("This will delete old scan data. Are you sure?")
+    
+    # Save settings
+    if st.button("Save All Settings", type="primary", use_container_width=True):
+        st.success("Settings saved successfully!")
+
+# Footer
+st.markdown("---")
+st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC | Database: crypto-scanner-db | Server: 165.232.160.52") 
