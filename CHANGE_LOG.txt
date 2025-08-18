@@ -1559,3 +1559,16 @@ Notes:
   * ✅ Excel export with complete field extraction
   * ✅ Streamlit dashboard restored and functional
   * ✅ Ready for next scanner integration
+
+2025-08-18 21:40:00 - ICT 1H AND 15M SCANNERS - R4 VERSIONS CREATED
+- LINES: manual_scanners/1_hour_scanners/ict_scanner_1h_r4.py (new file), manual_scanners/15_min_scanners/ict_scanner_15m_r4.py (new file)
+- CHANGE: Created r4 versions of ICT 1h and 15m scanners by copying r3 versions and adding universal logger integration. Added call_universal_logger function to both scanners with complete JSONB data capture, UAE timezone support, and database isolation. Modified scan_all_symbols to call universal logger after finding high-quality setups.
+- INTENT: To extend the successful ICT 4h scanner integration to the 1h and 15m timeframes, using the same proven pattern for minimal code insertion and maximum data capture.
+- STATUS: IMPLEMENTED. Both scanners now include:
+  * Universal logger integration (5-10 lines of code)
+  * Complete JSONB data capture (gap_high, gap_low, swing_high, swing_low, feature_target_1-3)
+  * UAE timezone support (UTC+4)
+  * Database isolation (other_scanners schema)
+  * Scanner names: 'ict_1h_scanner' (r4), 'ict_15m_scanner' (r4)
+  * Timeframes: '1h', '15m'
+  * Ready for testing and deployment
