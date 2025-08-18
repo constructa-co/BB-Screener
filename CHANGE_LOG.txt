@@ -1474,3 +1474,62 @@ NEXT STEPS:
 4. Test Streamlit dashboard locally and on Digital Ocean
 
 IMPACT: Ready to proceed with full scanner integration once missing files are located.
+
+---
+2025-08-18 17:00 +04 | Cursor
+Files amended:
+- `manual_scanners/4_hour_scanners/ict_scanner_4h_r9.py`
+  Edits (approx refs):
+  - Updated `call_universal_logger` (≈1316–1388) to log full ICT setup context into `scanner_signals` JSONB using original nested fields: `gap_high`, `gap_low`, `gap_midpoint`, `swing_high`, `swing_low`, `swing_range_pct`, `distance_to_entry`, `gap_size_pct`, `fvg_age`, plus `quality_score`, `fib_quality`, and control fields. Also mapped T1/T2/T3 and fib levels into `feature_vector` and ensured `technical_indicators` include `final_quality`, `risk_reward`, `probability`.
+  - Added `scan_symbol` helper and `display_scan_summary` (around ≈1018–1100, ≈1100–1180) to separate raw-setup generation from enrichment. The universal logger now receives raw setups (pre-enrichment) so nested FVG/swing data is preserved in JSONB.
+  - Refactored `scan_all_symbols` loop (≈1065–1130 and tail section) to: (1) collect raw setups; (2) perform enrichment only for legacy/main DB logging path; (3) return raw setups for the universal logger. This avoids the previous flattening that dropped `fvg_zone`/`swing_levels`.
+  Intent: Ensure JSONB contains complete ICT-specific fields (Gap Low/High/Midpoint, Swing High/Low/Range, Distance to Entry, Gap Size/Age, targets). Avoids loss of data when enrichment flattens structures.
+
+- Deployment (DO): Streamlit dashboard
+  - Created an isolated venv `venv_new` under `/opt/bb-screener` and installed `streamlit, psycopg2-binary, pandas, plotly, python-dotenv`.
+  - Started dashboard with: `source venv_new/bin/activate && nohup streamlit run dashboard/dashboard_fixed.py --server.port 8501 --server.address 0.0.0.0 > dashboard_fixed.log 2>&1 &`.
+  Intent: Resolve 404/ModuleNotFound by running Streamlit in a proper venv without touching main scanner.
+
+Verification next steps (not code):
+- Run SQL on DO to confirm new keys are present in `scanner_signals` JSONB for latest `ict_4h_scanner` trades (check: `gap_high, gap_low, gap_midpoint, swing_high, swing_low, swing_range_pct, distance_to_entry, gap_size_pct, fvg_age`).
+- Re-run `database_and_logging/export_ict_results.py` (it expands JSONB generically) to see the new columns `scanner_signals_*` in Excel.
+
+Notes:
+- No changes to `main_scanner.py`.
+- Structure unchanged; no files added at repo root.
+
+2025-08-18 17:15:00 - ICT SCANNER DATA CAPTURE FIX - COMPREHENSIVE VERIFICATION
+- LINES: manual_scanners/4_hour_scanners/ict_scanner_4h_r9.py (970-978, 1333-1360, 1370-1378)
+- CHANGE: Implemented the user's precise solution to fix JSONB data capture. Modified `calculate_setup_details` to store `original_fvg_zone`, `original_swing_levels`, and `original_targets` before enrichment. Updated `call_universal_logger` to use preserved original data for `scanner_signals` and `feature_vector` JSONB fields. This prevents data loss from the enrichment process flattening the nested structure.
+- INTENT: To ensure complete ICT scanner data (gap_high, gap_low, gap_midpoint, swing_high, swing_low, swing_range_pct, distance_to_entry, gap_size_pct, fvg_age, and Fibonacci targets T1-T3) is correctly captured in JSONB fields and exported to Excel.
+- STATUS: IMPLEMENTED AND VERIFIED. Database queries confirm:
+  * scanner_signals JSONB now contains: gap_high (4457.02), gap_low (4348.44), gap_midpoint (4402.73), swing_high (4666.66), swing_low (4423.53), gap_size_pct (2.50), fvg_age (3), distance_to_entry (1.68), swing_range_pct (5.50)
+  * feature_vector JSONB now contains: [4357.40, 4273.28, 4180.40, 0.0, 0.0, 0.0, 0.0, 0.0] (T1, T2, T3 targets)
+  * All numeric values are properly stored as numbers, not strings or nulls
+  * The fix successfully preserves original nested data structure before enrichment destroys it
+
+2025-08-18 17:16:00 - DIGITAL OCEAN DEPLOYMENT AND TESTING
+- LINES: N/A (Terminal commands)
+- CHANGE: Backed up ICT r9 scanner on Digital Ocean, uploaded updated local version, ran scanner with correct database URL, and performed comprehensive verification queries.
+- INTENT: To deploy the fixed ICT scanner and verify that JSONB data capture is working correctly with complete ICT-specific fields.
+- STATUS: SUCCESSFUL. Scanner ran without errors, logged trade 3e9cb60c-4a1e-42ec-8965-85d4b5bd8f5f for ETH/USDT, and all JSONB fields contain the expected data. Ready for Excel export and Streamlit dashboard verification.
+
+2025-08-18 17:17:00 - EXCEL EXPORT CREATION AND VERIFICATION
+- LINES: outputs/database_exports/export_other_scanners_to_excel.py (new file)
+- CHANGE: Created comprehensive Excel export script for other_scanners database. The script extracts all JSONB fields (scanner_signals, technical_indicators, feature_vector, execution_metadata, market_conditions) and creates multiple Excel sheets: All_Trades, ICT_4H_Scanner, and Recent_Trades_24h. Installed openpyxl dependency on Digital Ocean.
+- INTENT: To verify that the ICT scanner data capture fix is working by exporting all JSONB fields to Excel and confirming that gap_high, gap_low, swing_high, swing_low, feature_target_1-3, and other ICT-specific fields are properly captured and displayed.
+- STATUS: SUCCESSFUL. Export completed with 66 total trades, 56 ICT scanner trades, and 66 recent trades (24h). Sample data shows:
+  * Latest ETH/USDT trade: gap_high (4457.02), gap_low (4348.44), swing_high (4666.66), swing_low (4423.53)
+  * Feature targets: feature_target_1 (4357.40), feature_target_2 (4273.28), feature_target_3 (4180.40)
+  * All numeric values are properly stored and exported
+  * Excel file: other_scanners_export_20250818_172429.xlsx (66KB) downloaded to local outputs/database_exports/
+
+2025-08-18 21:32:00 - TIMEZONE FIX AND DATA COMPLETENESS VERIFICATION
+- LINES: database_and_logging/universal_scanner_logger.py (imports and log_trade method)
+- CHANGE: Fixed timezone issue by adding UAE timezone support (+4 hours from UTC). Modified universal logger to store both UTC and UAE time in execution_metadata. Added timedelta import for timezone calculations.
+- INTENT: To ensure that trade timestamps are displayed in UAE timezone (UTC+4) as requested by the user, while maintaining UTC time for database consistency.
+- STATUS: SUCCESSFUL. Latest trades now show:
+  * UAE time: 2025-08-18T21:31:45+04:00 (21:31 UAE time, correct)
+  * Complete data: gap_high, gap_low, swing_high, swing_low, feature_target_1-3 all populated
+  * Both ETH/USDT and BTC/USDT trades have full JSONB data capture
+  * Older trades (pre-fix) still show missing data and no UAE time, but new trades are complete

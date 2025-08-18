@@ -967,10 +967,27 @@ class ICTFVGScanner:
             'timestamp': datetime.now()
         }
         
+        # Debug: Print the setup structure before enrichment
+        logger.info(f"🔍 Setup structure for {symbol} BEFORE enrichment:")
+        logger.info(f"  fvg_zone: {setup.get('fvg_zone', 'NOT FOUND')}")
+        logger.info(f"  swing_levels: {setup.get('swing_levels', 'NOT FOUND')}")
+        logger.info(f"  targets: {setup.get('targets', 'NOT FOUND')}")
+        
+        # Store original setup data before enrichment
+        original_fvg_zone = setup.get('fvg_zone', {})
+        original_swing_levels = setup.get('swing_levels', {})
+        original_targets = setup.get('targets', {})
+        
         # Enrich with universal data
         logger.info(f"🔧 Enriching data for {symbol}")
         try:
             enriched_output = self.enricher.enrich_scanner_output('ict', setup)
+            
+            # Preserve original nested data in enriched output
+            enriched_output['original_fvg_zone'] = original_fvg_zone
+            enriched_output['original_swing_levels'] = original_swing_levels
+            enriched_output['original_targets'] = original_targets
+            
             return enriched_output
         except Exception as e:
             logger.error(f"❌ Enrichment failed for {symbol}: {e}")
@@ -1062,6 +1079,79 @@ class ICTFVGScanner:
 """
         return alert
         
+    def scan_symbol(self, symbol):
+        """Scan a single symbol for ICT FVG setups"""
+        setups = []
+        
+        try:
+            # Fetch and analyze
+            df = self.fetch_candles(symbol)
+            if df.empty or len(df) < 50:
+                logger.debug(f"⏭️ Skipping {symbol}: No data or insufficient data")
+                return setups
+                
+            # Detect FVGs
+            fvgs = self.detect_fvg(df)
+            logger.debug(f"🔍 Found {len(fvgs)} FVGs for {symbol}")
+            
+            for fvg in fvgs:
+                try:
+                    setup = self.calculate_setup_details(
+                        symbol, 
+                        fvg, 
+                        df.iloc[-1]['close']
+                    )
+                    
+                    # Only add high quality setups
+                    if setup['final_quality'] >= 75:  # Default minimum quality
+                        # Debug: Print the setup structure before enrichment
+                        logger.info(f"🔍 Setup structure for {symbol} BEFORE enrichment:")
+                        logger.info(f"  fvg_zone: {setup.get('fvg_zone', 'NOT FOUND')}")
+                        logger.info(f"  swing_levels: {setup.get('swing_levels', 'NOT FOUND')}")
+                        logger.info(f"  targets: {setup.get('targets', 'NOT FOUND')}")
+                        
+                        setups.append(setup)
+                        logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
+                        
+                except Exception as e:
+                    logger.error(f"❌ Error calculating setup for {symbol}: {e}")
+                    continue
+                    
+        except Exception as e:
+            logger.error(f"❌ Error scanning {symbol}: {e}")
+            
+        return setups
+
+    def display_scan_summary(self, high_quality_setups):
+        """Display scan summary"""
+        if not high_quality_setups:
+            return
+            
+        print(f"\n{'='*60}")
+        print(f"SCAN SUMMARY: Found {len(high_quality_setups)} setups, showing top {min(len(high_quality_setups), 20)}")
+        print(f"{'='*60}")
+        
+        # Show top 10 by different criteria
+        print(f"\n📊 TOP 10 BY QUALITY SCORE:")
+        for i, setup in enumerate(high_quality_setups[:10]):
+            action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+            print(f"{i+1:2d}. {action} {setup['symbol']:<12} | Score: {setup['final_quality']:3.0f} | R/R: {setup['risk_reward']:4.1f}:1 | Entry Distance: {abs(setup['distance_to_entry']):5.1f}%")
+        
+        # Best risk/reward setups
+        by_rr = sorted(high_quality_setups, key=lambda x: x['risk_reward'], reverse=True)[:5]
+        print(f"\n💰 TOP 5 BY RISK/REWARD:")
+        for i, setup in enumerate(by_rr):
+            action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+            print(f"{i+1}. {action} {setup['symbol']:<12} | R/R: {setup['risk_reward']:4.1f}:1 | Quality: {setup['final_quality']:3.0f}")
+        
+        # Immediately actionable (closest to entry)
+        actionable = [s for s in high_quality_setups if abs(s['distance_to_entry']) < 1.0]
+        if actionable:
+            print(f"\n⚡ IMMEDIATELY ACTIONABLE (within 1% of entry):")
+            for setup in actionable[:5]:
+                action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
+                print(f"• {action} {setup['symbol']:<12} | Entry: ${setup['entry_price']:.4f} | Current: ${setup['current_price']:.4f}")
+
     def scan_all_symbols(self, top_n=500, min_quality=75, max_alerts=20):
         """Main scanning loop with improved sorting and limits"""
         logger.info(f"Starting scan of top {top_n} symbols...")
@@ -1098,169 +1188,69 @@ class ICTFVGScanner:
                 if datetime.now() - last_scan < timedelta(minutes=15):
                     continue
                     
-                # Fetch and analyze
-                df = self.fetch_candles(symbol)
-                if df.empty or len(df) < 50:
-                    logger.debug(f"⏭️ Skipping {symbol}: No data or insufficient data")
-                    continue
-                    
-                # Detect FVGs
-                fvgs = self.detect_fvg(df)
-                logger.debug(f"🔍 Found {len(fvgs)} FVGs for {symbol}")
+                # Scan for setups
+                setups = self.scan_symbol(symbol)
                 
-                for fvg in fvgs:
-                    try:
-                        setup = self.calculate_setup_details(
-                            symbol, 
-                            fvg, 
-                            df.iloc[-1]['close']
-                        )
-                        
-                        # Only add high quality setups
-                        if setup['final_quality'] >= min_quality:
-                            high_quality_setups.append(setup)
-                            logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
-                            
-                            # Log to database (only if connected and scan_id exists)
-                            if self.db_logger and self.db_logger.connection and scan_id is not None:
-                                try:
-                                    # Prepare trade data for database - convert numpy types to Python types
-                                    def convert_to_python_type(value):
-                                        """Convert numpy types to Python types for database compatibility"""
-                                        if hasattr(value, 'item'):  # numpy type
-                                            return value.item()
-                                        return value
-                                    
-                                    trade_data = {
-                                        'symbol': setup['symbol'],
-                                        'exchange': 'Binance',
-                                        'timeframe': '4H',
-                                        'bb_score': convert_to_python_type(setup.get('final_quality', 0)),
-                                        'probability': convert_to_python_type(setup.get('probability', setup.get('final_quality', 0))),
-                                        'risk_reward_ratio': convert_to_python_type(setup.get('risk_reward', 0)),
-                                        'current_price': convert_to_python_type(setup.get('current_price', 0)),
-                                        'entry_price': convert_to_python_type(setup.get('entry_price', 0)),
-                                        'stop_loss': convert_to_python_type(setup.get('stop_loss', 0)),
-                                        'target_1': convert_to_python_type(setup.get('targets', {}).get('T1', 0)),
-                                        'target_2': convert_to_python_type(setup.get('targets', {}).get('T2', 0)),
-                                        'target_3': convert_to_python_type(setup.get('targets', {}).get('T3', 0)),
-                                        'rsi': convert_to_python_type(setup.get('rsi', 0)),
-                                        'mfi': convert_to_python_type(setup.get('mfi', 0)),
-                                        'stochastic_k': convert_to_python_type(setup.get('stochastic_k', 0)),
-                                        'volume_surge': convert_to_python_type(setup.get('volume_surge', 0)),
-                                        'macd_signal': setup.get('macd_signal', 'neutral'),
-                                        'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
-                                        'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
-                                        'confluence_score': convert_to_python_type(setup.get('final_quality', 0)),
-                                        'historical_win_rate': convert_to_python_type(setup.get('historical_win_rate', 0)),
-                                        'category_win_rate': convert_to_python_type(setup.get('category_win_rate', 0)),
-                                        'similar_setups_count': convert_to_python_type(setup.get('similar_setups_count', 0)),
-                                        'market_cap': convert_to_python_type(setup.get('market_cap', 0)),
-                                        'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
-                                        'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
-                                        'scanner_type': 'ict_scanner_4h',
-                                        
-                                        # ICT-SPECIFIC FIELDS - Now captured in dedicated columns
-                                        'gap_high': convert_to_python_type(setup.get('fvg', {}).get('high', 0)),
-                                        'gap_low': convert_to_python_type(setup.get('fvg', {}).get('low', 0)),
-                                        'gap_size_pct': convert_to_python_type(setup.get('gap_size', 0)),
-                                        'swing_high': convert_to_python_type(setup.get('swing_high', 0)),
-                                        'swing_low': convert_to_python_type(setup.get('swing_low', 0)),
-                                        'order_block_high': convert_to_python_type(setup.get('order_block_high', 0)),
-                                        'order_block_low': convert_to_python_type(setup.get('order_block_low', 0)),
-                                        'fib_236': convert_to_python_type(setup.get('targets', {}).get('fib_236', 0)),
-                                        'fib_382': convert_to_python_type(setup.get('targets', {}).get('fib_382', 0)),
-                                        'fib_500': convert_to_python_type(setup.get('targets', {}).get('fib_500', 0)),
-                                        'fib_618': convert_to_python_type(setup.get('targets', {}).get('fib_618', 0)),
-                                        'fib_786': convert_to_python_type(setup.get('targets', {}).get('fib_786', 0)),
-                                        'liquidity_sweep_level': convert_to_python_type(setup.get('liquidity_sweep_level', 0)),
-                                        'imbalance_high': convert_to_python_type(setup.get('imbalance_high', 0)),
-                                        'imbalance_low': convert_to_python_type(setup.get('imbalance_low', 0))
-                                    }
-                                    
-                                    # Debug: Print the trade data being sent
-                                    logger.info(f"🔍 Debug: Logging {symbol} with data: {trade_data}")
-                                    
-                                    success = self.db_logger.log_trade_opportunity(scan_id, trade_data)
-                                    if success:
-                                        logger.info(f"✅ Logged ICT setup: {symbol} -> {setup.get('final_quality', 0):.1f}%")
-                                    else:
-                                        logger.warning(f"❌ Failed to log ICT setup: {symbol}")
-                                        
-                                except Exception as e:
-                                    logger.error(f"❌ Database logging error for {symbol}: {e}")
-                        else:
-                            logger.debug(f"⏭️ Skipping {symbol}: Quality={setup['final_quality']} < {min_quality}")
-                    except Exception as e:
-                        logger.error(f"❌ Error calculating setup for {symbol}: {e}")
-                        continue
-                        
+                # Filter by quality
+                quality_setups = [s for s in setups if s.get('final_quality', 0) >= min_quality]
+                
+                if quality_setups:
+                    # Sort by quality and add to results
+                    quality_setups.sort(key=lambda x: x.get('final_quality', 0), reverse=True)
+                    high_quality_setups.extend(quality_setups)
+                    
+                    # Log to main database (if available)
+                    if self.db_logger and self.db_logger.connection:
+                        try:
+                            for setup in quality_setups:
+                                # Debug: Print the original setup structure
+                                logger.info(f"🔍 Original setup structure for {symbol}:")
+                                logger.info(f"  fvg_zone: {setup.get('fvg_zone', 'NOT FOUND')}")
+                                logger.info(f"  swing_levels: {setup.get('swing_levels', 'NOT FOUND')}")
+                                logger.info(f"  targets: {setup.get('targets', 'NOT FOUND')}")
+                                
+                                # Enrich the setup for main database logging
+                                enriched_setup = self.enricher.enrich_scanner_output('ict', setup)
+                                self.db_logger.log_trade_opportunity(scan_id, enriched_setup)
+                        except Exception as e:
+                            logger.warning(f"❌ Failed to log ICT setup: {symbol}")
+                            logger.error(f"Error logging trade {symbol}: {e}")
+                
+                # Update last scan time
                 self.last_scan_time[symbol] = datetime.now()
                 
             except Exception as e:
-                logger.error(f"Error scanning {symbol}: {e}")
+                logger.error(f"❌ Error scanning {symbol}: {e}")
                 continue
         
-        # Sort by multiple criteria for best setups first
-        high_quality_setups.sort(
-            key=lambda x: (
-                x['final_quality'],              # Highest quality first
-                x['risk_reward'],                # Best R/R first
-                -abs(x['distance_to_entry']),    # Closest to entry first
-                -x['fvg_age'],                   # Freshest FVGs first
-                1 if x['volume_surge'] else 0    # Volume surge preferred
-            ), 
-            reverse=True
-        )
+        # Sort all results by quality
+        high_quality_setups.sort(key=lambda x: x.get('final_quality', 0), reverse=True)
         
-        # Limit to top setups if too many
-        total_found = len(high_quality_setups)
-        if total_found > max_alerts:
-            logger.info(f"Found {total_found} setups, showing top {max_alerts}")
-            high_quality_setups = high_quality_setups[:max_alerts]
+        # Limit results
+        high_quality_setups = high_quality_setups[:max_alerts]
         
-        # Update stats
-        self.performance_stats['setups_found'] = total_found
-        
-        # Send alerts for selected setups
-        for setup in high_quality_setups:
-            alert_text = self.format_alert(setup)
-            logger.info(alert_text)
-            self.send_alert(alert_text)
-            self.performance_stats['alerts_sent'] += 1
-                
-        # Print summary at the end
-        if high_quality_setups:
-            print(f"\n{'='*60}")
-            print(f"SCAN SUMMARY: Found {total_found} setups, showing top {len(high_quality_setups)}")
-            print(f"{'='*60}")
-            
-            # Show top 10 by different criteria
-            print(f"\n📊 TOP 10 BY QUALITY SCORE:")
-            for i, setup in enumerate(high_quality_setups[:10]):
-                action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
-                print(f"{i+1:2d}. {action} {setup['symbol']:<12} | Score: {setup['final_quality']:3.0f} | R/R: {setup['risk_reward']:4.1f}:1 | Entry Distance: {abs(setup['distance_to_entry']):5.1f}%")
-            
-            # Best risk/reward setups
-            by_rr = sorted(high_quality_setups, key=lambda x: x['risk_reward'], reverse=True)[:5]
-            print(f"\n💰 TOP 5 BY RISK/REWARD:")
-            for i, setup in enumerate(by_rr):
-                action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
-                print(f"{i+1}. {action} {setup['symbol']:<12} | R/R: {setup['risk_reward']:4.1f}:1 | Quality: {setup['final_quality']:3.0f}")
-            
-            # Immediately actionable (closest to entry)
-            actionable = [s for s in high_quality_setups if abs(s['distance_to_entry']) < 1.0]
-            if actionable:
-                print(f"\n⚡ IMMEDIATELY ACTIONABLE (within 1% of entry):")
-                for setup in actionable[:5]:
-                    action = "🟢 LONG" if setup['type'] == 'bullish' else "🔴 SHORT"
-                    print(f"• {action} {setup['symbol']:<12} | Entry: ${setup['entry_price']:.4f} | Current: ${setup['current_price']:.4f}")
-        
-        # Summary
-        logger.info(f"Scan complete. Found {total_found} high-quality setups, displayed {len(high_quality_setups)}")
-        
-        # Store high_quality_setups for universal logger access
+        # Store results for universal logger
         self.last_scan_results = high_quality_setups
+        
+        # Display results
+        if high_quality_setups:
+            logger.info(f"Found {len(high_quality_setups)} setups, showing top {min(len(high_quality_setups), max_alerts)}")
+            
+            for setup in high_quality_setups[:max_alerts]:
+                alert = self.format_alert(setup)
+                logger.info(alert)
+        else:
+            logger.info("No high-quality setups found")
+        
+        # Display summary
+        self.display_scan_summary(high_quality_setups)
+        
+        # Update performance stats
+        self.performance_stats['setups_found'] += len(high_quality_setups)
+        self.performance_stats['alerts_sent'] += len(high_quality_setups)
+        
+        logger.info(f"Scan complete. Found {len(high_quality_setups)} high-quality setups, displayed {min(len(high_quality_setups), max_alerts)}")
+        logger.info(f"Performance Stats: {self.performance_stats}")
         
         return high_quality_setups
         
@@ -1327,6 +1317,14 @@ def call_universal_logger(high_quality_setups):
         # Log all detected trades
         if high_quality_setups:
             for setup in high_quality_setups:
+                # Debug: Print the setup structure
+                print(f"🔍 Setup structure for {setup.get('symbol', 'UNKNOWN')}:")
+                print(f"  fvg_zone: {setup.get('fvg_zone', 'NOT FOUND')}")
+                print(f"  swing_levels: {setup.get('swing_levels', 'NOT FOUND')}")
+                print(f"  targets: {setup.get('targets', 'NOT FOUND')}")
+                print(f"  gap_high: {setup.get('gap_high', 'NOT FOUND')}")
+                print(f"  gap_low: {setup.get('gap_low', 'NOT FOUND')}")
+                
                 # Prepare trade data for universal logger
                 trade_data = {
                     'symbol': setup.get('symbol', ''),
@@ -1349,20 +1347,28 @@ def call_universal_logger(high_quality_setups):
                         'probability': float(setup.get('probability', setup.get('final_quality', 0)))
                     },
                     
-                    # Scanner signals
+                    # Scanner signals - FIXED: Use preserved original data
                     'scanner_signals': {
                         'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
                         'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
-                        'gap_size_pct': float(setup.get('gap_size', 0)),
+                        'gap_size_pct': float(setup.get('gap_size_pct', 0)),
                         'fvg_age': int(setup.get('fvg_age', 0)),
                         'distance_to_entry': float(setup.get('distance_to_entry', 0)),
-                        'swing_high': float(setup.get('swing_high', 0)),
-                        'swing_low': float(setup.get('swing_low', 0)),
+                        'gap_high': float(setup.get('original_fvg_zone', {}).get('high', 0)),
+                        'gap_low': float(setup.get('original_fvg_zone', {}).get('low', 0)),
+                        'gap_midpoint': float(setup.get('entry_price', 0)),
+                        'swing_high': float(setup.get('original_swing_levels', {}).get('high', 0)),
+                        'swing_low': float(setup.get('original_swing_levels', {}).get('low', 0)),
+                        'swing_range_pct': float(abs(setup.get('original_swing_levels', {}).get('high', 0) - setup.get('original_swing_levels', {}).get('low', 0)) / setup.get('original_swing_levels', {}).get('low', 1) * 100),
                         'order_block_high': float(setup.get('order_block_high', 0)),
                         'order_block_low': float(setup.get('order_block_low', 0)),
                         'liquidity_sweep_level': float(setup.get('liquidity_sweep_level', 0)),
                         'imbalance_high': float(setup.get('imbalance_high', 0)),
-                        'imbalance_low': float(setup.get('imbalance_low', 0))
+                        'imbalance_low': float(setup.get('imbalance_low', 0)),
+                        'risk_pct': float(setup.get('risk_pct', 0)),
+                        'action_required': setup.get('action_required', ''),
+                        'quality_score': float(setup.get('quality_score', 0)),
+                        'fib_quality': float(setup.get('fib_quality', 0))
                     },
                     
                     # Market conditions
@@ -1373,16 +1379,21 @@ def call_universal_logger(high_quality_setups):
                         'historical_win_rate': float(setup.get('historical_win_rate', 0)),
                         'category_win_rate': float(setup.get('category_win_rate', 0)),
                         'similar_setups_count': int(setup.get('similar_setups_count', 0)),
-                        'current_price': float(setup.get('current_price', 0))
+                        'current_price': float(setup.get('current_price', 0)),
+                        'category': setup.get('category', ''),
+                        'volume_surge': bool(setup.get('volume_surge', False))
                     },
                     
-                    # Fibonacci targets
+                    # Fibonacci targets - FIXED: Use preserved original targets
                     'feature_vector': [
-                        float(setup.get('targets', {}).get('fib_236', 0)),
-                        float(setup.get('targets', {}).get('fib_382', 0)),
-                        float(setup.get('targets', {}).get('fib_500', 0)),
-                        float(setup.get('targets', {}).get('fib_618', 0)),
-                        float(setup.get('targets', {}).get('fib_786', 0))
+                        float(setup.get('original_targets', {}).get('T1', 0)),
+                        float(setup.get('original_targets', {}).get('T2', 0)),
+                        float(setup.get('original_targets', {}).get('T3', 0)),
+                        float(setup.get('original_targets', {}).get('fib_236', 0)),
+                        float(setup.get('original_targets', {}).get('fib_382', 0)),
+                        float(setup.get('original_targets', {}).get('fib_500', 0)),
+                        float(setup.get('original_targets', {}).get('fib_618', 0)),
+                        float(setup.get('original_targets', {}).get('fib_786', 0))
                     ]
                 }
                 

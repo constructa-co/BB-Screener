@@ -10,7 +10,7 @@ import re
 import json
 import uuid
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional, List
 from contextlib import contextmanager
 import psycopg2
@@ -154,7 +154,11 @@ class UniversalScannerLogger:
             
             # Add scanner instance UUID to metadata
             execution_metadata['scanner_instance_uuid'] = self.scanner_uuid
-            execution_metadata['logged_at'] = datetime.now(timezone.utc).isoformat()
+            # Store both UTC and UAE time
+            utc_time = datetime.now(timezone.utc)
+            uae_time = utc_time.replace(tzinfo=timezone.utc).astimezone(timezone(timedelta(hours=4)))
+            execution_metadata['logged_at_utc'] = utc_time.isoformat()
+            execution_metadata['logged_at_uae'] = uae_time.isoformat()
             execution_metadata['scanner_name'] = self.scanner_name
             execution_metadata['scanner_version'] = self.scanner_version
             execution_metadata['schema'] = 'other_scanners'  # Track schema usage
