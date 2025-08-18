@@ -1572,3 +1572,15 @@ Notes:
   * Scanner names: 'ict_1h_scanner' (r4), 'ict_15m_scanner' (r4)
   * Timeframes: '1h', '15m'
   * Ready for testing and deployment
+
+2025-08-18 22:00:00 - ICT 1H AND 15M SCANNERS - TESTING AND DEPLOYMENT SUCCESSFUL
+- LINES: N/A (Testing and deployment verification)
+- CHANGE: Successfully tested and deployed ICT 1h and 15m r4 scanners on Digital Ocean. Fixed import path issues by adding sys.path.append for database_and_logging module. Created __init__.py file in database_and_logging directory to make it a proper Python package.
+- INTENT: To verify that both new ICT scanners are working correctly with universal logger integration, database isolation, and UAE timezone support.
+- STATUS: SUCCESSFUL. Both scanners deployed and tested:
+  * ICT 1h Scanner (r4): Successfully logged ETH/USDT trade with gap_high (4382.14), gap_low (4336.61), UAE time (22:59:49)
+  * ICT 15m Scanner (r4): Successfully initialized and ready (no setups found in current market conditions)
+  * Database isolation confirmed (other_scanners schema)
+  * UAE timezone working correctly (UTC+4)
+  * Universal logger integration working for both scanners
+  * All three ICT scanners (4h, 1h, 15m) now integrated and operational

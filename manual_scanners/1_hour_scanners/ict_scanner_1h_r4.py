@@ -1252,6 +1252,9 @@ class ICTFVGScanner:
 def call_universal_logger(high_quality_setups):
     """Log trades to database with complete ICT data capture"""
     try:
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         from database_and_logging.universal_scanner_logger import UniversalScannerLogger
         
         logger = UniversalScannerLogger('ict_1h_scanner', 'r4')
