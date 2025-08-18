@@ -5261,3 +5261,1020 @@ ccxt.base.errors.RequestTimeout: binance GET https://api.binance.com/api/v3/tick
 2025-08-18 19:06:25,354 - INFO - Scan complete. Found 60 high-quality setups, displayed 20
 2025-08-18 19:06:25,355 - INFO - Performance Stats: {'total_scans': 6, 'setups_found': 60, 'alerts_sent': 160}
 2025-08-18 19:06:25,355 - INFO - Next scan in 900 seconds...
+2025-08-18 19:21:25,320 - INFO - Starting scan of top 500 symbols...
+2025-08-18 19:21:25,324 - INFO - ✅ Scan started with ID: None
+2025-08-18 19:21:25,782 - INFO - Scanning 337 symbols
+2025-08-18 19:21:25,783 - INFO - Progress: 0/337 symbols scanned
+2025-08-18 19:21:26,953 - INFO - 🔧 Enriching data for BTC/USDT
+2025-08-18 19:21:27,994 - INFO - 📊 Found setup for BTC/USDT: Quality=100, R/R=1.09949645813441
+2025-08-18 19:21:29,048 - INFO - 🔧 Enriching data for XRP/USDT
+2025-08-18 19:21:30,091 - INFO - 📊 Found setup for XRP/USDT: Quality=100, R/R=2.701371216633262
+2025-08-18 19:21:31,147 - INFO - Progress: 10/337 symbols scanned
+2025-08-18 19:21:31,887 - INFO - 🔧 Enriching data for BNB/USDT
+2025-08-18 19:21:32,903 - INFO - 📊 Found setup for BNB/USDT: Quality=100, R/R=0.03424371460005406
+2025-08-18 19:21:33,462 - INFO - 🔧 Enriching data for TRX/USDT
+2025-08-18 19:21:34,464 - INFO - 📊 Found setup for TRX/USDT: Quality=100, R/R=0.6282519600855349
+2025-08-18 19:21:34,993 - INFO - 🔧 Enriching data for ARB/USDT
+2025-08-18 19:21:35,885 - INFO - 📊 Found setup for ARB/USDT: Quality=100, R/R=0.48102538326212774
+2025-08-18 19:21:37,442 - INFO - Progress: 20/337 symbols scanned
+2025-08-18 19:21:37,960 - INFO - 🔧 Enriching data for LTC/USDT
+2025-08-18 19:21:39,001 - INFO - 📊 Found setup for LTC/USDT: Quality=100, R/R=0.33051218198949983
+2025-08-18 19:21:40,275 - INFO - 🔧 Enriching data for SKL/USDT
+2025-08-18 19:21:41,293 - INFO - 📊 Found setup for SKL/USDT: Quality=85.0, R/R=1.1650943396226408
+2025-08-18 19:21:41,841 - INFO - 🔧 Enriching data for TRUMP/USDT
+2025-08-18 19:21:42,867 - INFO - 📊 Found setup for TRUMP/USDT: Quality=100, R/R=0.47031772575252734
+2025-08-18 19:21:43,960 - INFO - Progress: 30/337 symbols scanned
+2025-08-18 19:21:46,581 - INFO - Progress: 40/337 symbols scanned
+2025-08-18 19:21:49,206 - INFO - Progress: 50/337 symbols scanned
+2025-08-18 19:21:49,713 - INFO - 🔧 Enriching data for PENDLE/USDT
+2025-08-18 19:21:50,730 - INFO - 📊 Found setup for PENDLE/USDT: Quality=100, R/R=0.09580546265329806
+2025-08-18 19:21:53,180 - INFO - Progress: 60/337 symbols scanned
+2025-08-18 19:21:55,804 - INFO - Progress: 70/337 symbols scanned
+2025-08-18 19:21:58,101 - INFO - 🔧 Enriching data for CFX/USDT
+2025-08-18 19:21:59,113 - INFO - 📊 Found setup for CFX/USDT: Quality=100, R/R=0.8517080745341693
+2025-08-18 19:21:59,690 - INFO - Progress: 80/337 symbols scanned
+2025-08-18 19:22:01,029 - INFO - 🔧 Enriching data for MAV/USDT
+2025-08-18 19:22:02,070 - INFO - 📊 Found setup for MAV/USDT: Quality=90.0, R/R=3.3888965327462772
+2025-08-18 19:22:03,668 - INFO - Progress: 90/337 symbols scanned
+2025-08-18 19:22:05,223 - INFO - 🔧 Enriching data for WBTC/USDT
+2025-08-18 19:22:06,264 - INFO - 📊 Found setup for WBTC/USDT: Quality=100, R/R=0.4808079277696996
+2025-08-18 19:22:07,844 - INFO - 🔧 Enriching data for RESOLV/USDT
+2025-08-18 19:22:08,885 - INFO - 📊 Found setup for RESOLV/USDT: Quality=85.0, R/R=1.746353880022006
+2025-08-18 19:22:08,886 - INFO - Progress: 100/337 symbols scanned
+2025-08-18 19:22:09,419 - INFO - 🔧 Enriching data for PEOPLE/USDT
+2025-08-18 19:22:10,987 - INFO - 📊 Found setup for PEOPLE/USDT: Quality=100, R/R=0.15696930946291307
+2025-08-18 19:22:14,663 - INFO - 🔧 Enriching data for BEAMX/USDT
+2025-08-18 19:22:15,701 - INFO - 📊 Found setup for BEAMX/USDT: Quality=100, R/R=1.4258252818035464
+2025-08-18 19:22:15,915 - INFO - Progress: 110/337 symbols scanned
+2025-08-18 19:22:18,560 - INFO - Progress: 120/337 symbols scanned
+2025-08-18 19:22:21,186 - INFO - Progress: 130/337 symbols scanned
+2025-08-18 19:22:22,612 - INFO - 🔧 Enriching data for ZRO/USDT
+2025-08-18 19:22:23,567 - INFO - 📊 Found setup for ZRO/USDT: Quality=100, R/R=0.6793478260869523
+2025-08-18 19:22:25,159 - INFO - Progress: 140/337 symbols scanned
+2025-08-18 19:22:26,196 - INFO - 🔧 Enriching data for A/USDT
+2025-08-18 19:22:27,235 - INFO - 📊 Found setup for A/USDT: Quality=100, R/R=1.3890509013785806
+2025-08-18 19:22:27,767 - INFO - 🔧 Enriching data for GMT/USDT
+2025-08-18 19:22:28,811 - INFO - 📊 Found setup for GMT/USDT: Quality=100, R/R=0.24782608695652997
+2025-08-18 19:22:30,408 - INFO - Progress: 150/337 symbols scanned
+2025-08-18 19:22:33,024 - INFO - Progress: 160/337 symbols scanned
+2025-08-18 19:22:34,868 - INFO - 🔧 Enriching data for GLM/USDT
+2025-08-18 19:22:35,814 - INFO - 📊 Found setup for GLM/USDT: Quality=100, R/R=1.9244953416148916
+2025-08-18 19:22:36,372 - INFO - 🔧 Enriching data for KAITO/USDT
+2025-08-18 19:22:37,392 - INFO - 📊 Found setup for KAITO/USDT: Quality=85.0, R/R=20.511701919310624
+2025-08-18 19:22:39,325 - INFO - 🔧 Enriching data for NOT/USDT
+2025-08-18 19:22:40,355 - INFO - 📊 Found setup for NOT/USDT: Quality=100, R/R=4.180602006688987
+2025-08-18 19:22:40,581 - INFO - Progress: 170/337 symbols scanned
+2025-08-18 19:22:43,499 - INFO - 🔧 Enriching data for MOVR/USDT
+2025-08-18 19:22:44,539 - INFO - 📊 Found setup for MOVR/USDT: Quality=90.0, R/R=3.3173570694967824
+2025-08-18 19:22:44,539 - INFO - Progress: 180/337 symbols scanned
+2025-08-18 19:22:47,172 - INFO - Progress: 190/337 symbols scanned
+2025-08-18 19:22:48,739 - INFO - 🔧 Enriching data for CHR/USDT
+2025-08-18 19:22:49,963 - INFO - 📊 Found setup for CHR/USDT: Quality=100, R/R=0.25501885536823476
+2025-08-18 19:22:51,375 - INFO - Progress: 200/337 symbols scanned
+2025-08-18 19:22:52,624 - INFO - 🔧 Enriching data for 1MBABYDOGE/USDT
+2025-08-18 19:22:53,639 - INFO - 📊 Found setup for 1MBABYDOGE/USDT: Quality=100, R/R=2.682008605072468
+2025-08-18 19:22:54,216 - INFO - 🔧 Enriching data for LUMIA/USDT
+2025-08-18 19:22:55,206 - INFO - 📊 Found setup for LUMIA/USDT: Quality=100, R/R=1.6562499999999853
+2025-08-18 19:22:56,612 - INFO - Progress: 210/337 symbols scanned
+2025-08-18 19:22:59,226 - INFO - 🔧 Enriching data for AUCTION/USDT
+2025-08-18 19:23:00,264 - INFO - 📊 Found setup for AUCTION/USDT: Quality=100.0, R/R=0.9850543478260494
+2025-08-18 19:23:00,578 - INFO - Progress: 220/337 symbols scanned
+2025-08-18 19:23:02,582 - INFO - 🔧 Enriching data for BMT/USDT
+2025-08-18 19:23:03,600 - INFO - 📊 Found setup for BMT/USDT: Quality=100, R/R=0.06291806020066551
+2025-08-18 19:23:04,476 - INFO - Progress: 230/337 symbols scanned
+2025-08-18 19:23:06,562 - INFO - 🔧 Enriching data for AEVO/USDT
+2025-08-18 19:23:07,608 - INFO - 📊 Found setup for AEVO/USDT: Quality=100, R/R=1.1632797731568967
+2025-08-18 19:23:08,143 - INFO - 🔧 Enriching data for ZRX/USDT
+2025-08-18 19:23:09,181 - INFO - 📊 Found setup for ZRX/USDT: Quality=75.0, R/R=5.219367588932842
+2025-08-18 19:23:09,741 - INFO - Progress: 240/337 symbols scanned
+2025-08-18 19:23:10,442 - INFO - 🔧 Enriching data for LUNA/USDT
+2025-08-18 19:23:11,469 - INFO - 📊 Found setup for LUNA/USDT: Quality=100, R/R=0.38462732919255277
+2025-08-18 19:23:12,337 - INFO - 🔧 Enriching data for HOOK/USDT
+2025-08-18 19:23:13,376 - INFO - 📊 Found setup for HOOK/USDT: Quality=100, R/R=0.7549407114624491
+2025-08-18 19:23:14,958 - INFO - 🔧 Enriching data for SXT/USDT
+2025-08-18 19:23:15,998 - INFO - 📊 Found setup for SXT/USDT: Quality=100, R/R=4.286005434782568
+2025-08-18 19:23:16,520 - INFO - 🔧 Enriching data for UMA/USDT
+2025-08-18 19:23:17,417 - INFO - 📊 Found setup for UMA/USDT: Quality=100, R/R=0.7771739130434828
+2025-08-18 19:23:17,417 - INFO - Progress: 250/337 symbols scanned
+2025-08-18 19:23:18,296 - INFO - 🔧 Enriching data for STG/USDT
+2025-08-18 19:23:19,334 - INFO - 📊 Found setup for STG/USDT: Quality=100.0, R/R=2.9236660079051373
+2025-08-18 19:23:20,198 - INFO - 🔧 Enriching data for VANA/USDT
+2025-08-18 19:23:21,241 - INFO - 📊 Found setup for VANA/USDT: Quality=100, R/R=0.335581456259826
+2025-08-18 19:23:22,841 - INFO - Progress: 260/337 symbols scanned
+2025-08-18 19:23:25,658 - INFO - 🔧 Enriching data for ZEC/USDT
+2025-08-18 19:23:26,674 - INFO - 📊 Found setup for ZEC/USDT: Quality=100.0, R/R=2.7151268115942155
+2025-08-18 19:23:26,674 - INFO - Progress: 270/337 symbols scanned
+2025-08-18 19:23:27,542 - INFO - 🔧 Enriching data for YFI/USDT
+2025-08-18 19:23:28,582 - INFO - 📊 Found setup for YFI/USDT: Quality=100, R/R=0.13240540989047048
+2025-08-18 19:23:29,638 - INFO - 🔧 Enriching data for ANKR/USDT
+2025-08-18 19:23:30,677 - INFO - 📊 Found setup for ANKR/USDT: Quality=100, R/R=0.38819875776398954
+2025-08-18 19:23:31,973 - INFO - Progress: 280/337 symbols scanned
+2025-08-18 19:23:34,052 - INFO - 🔧 Enriching data for FLUX/USDT
+2025-08-18 19:23:35,066 - INFO - 📊 Found setup for FLUX/USDT: Quality=100, R/R=0.05147058823529926
+2025-08-18 19:23:35,946 - INFO - 🔧 Enriching data for POLYX/USDT
+2025-08-18 19:23:36,968 - INFO - 📊 Found setup for POLYX/USDT: Quality=100, R/R=0.1455314009661906
+2025-08-18 19:23:37,194 - INFO - Progress: 290/337 symbols scanned
+2025-08-18 19:23:37,729 - INFO - 🔧 Enriching data for MLN/USDT
+2025-08-18 19:23:38,737 - INFO - 📊 Found setup for MLN/USDT: Quality=85.0, R/R=2.498792270531427
+2025-08-18 19:23:39,297 - INFO - 🔧 Enriching data for SIGN/USDT
+2025-08-18 19:23:40,307 - INFO - 📊 Found setup for SIGN/USDT: Quality=100, R/R=0.21568690506818441
+2025-08-18 19:23:42,220 - INFO - 🔧 Enriching data for FARM/USDT
+2025-08-18 19:23:43,259 - INFO - 📊 Found setup for FARM/USDT: Quality=95.0, R/R=0.0397418478260907
+2025-08-18 19:23:43,815 - INFO - Progress: 300/337 symbols scanned
+2025-08-18 19:23:44,316 - INFO - 🔧 Enriching data for ME/USDT
+2025-08-18 19:23:45,356 - INFO - 📊 Found setup for ME/USDT: Quality=100, R/R=4.299999999999982
+2025-08-18 19:23:46,937 - INFO - 🔧 Enriching data for SYS/USDT
+2025-08-18 19:23:47,975 - INFO - 📊 Found setup for SYS/USDT: Quality=100, R/R=0.12160525309193129
+2025-08-18 19:23:48,510 - INFO - 🔧 Enriching data for JST/USDT
+2025-08-18 19:23:49,549 - INFO - 📊 Found setup for JST/USDT: Quality=100, R/R=0.21729595728451548
+2025-08-18 19:23:50,611 - INFO - 🔧 Enriching data for MBOX/USDT
+2025-08-18 19:23:51,647 - INFO - 📊 Found setup for MBOX/USDT: Quality=100, R/R=0.38488142292489497
+2025-08-18 19:23:52,183 - INFO - 🔧 Enriching data for NEXO/USDT
+2025-08-18 19:23:53,220 - INFO - 📊 Found setup for NEXO/USDT: Quality=100.0, R/R=0.40593645484949725
+2025-08-18 19:23:53,220 - INFO - Progress: 310/337 symbols scanned
+2025-08-18 19:23:53,980 - INFO - 🔧 Enriching data for AMP/USDT
+2025-08-18 19:23:54,983 - INFO - 📊 Found setup for AMP/USDT: Quality=100, R/R=2.9026679841896916
+2025-08-18 19:23:55,851 - INFO - 🔧 Enriching data for FTT/USDT
+2025-08-18 19:23:56,892 - INFO - 📊 Found setup for FTT/USDT: Quality=100, R/R=0.20114768034977193
+2025-08-18 19:23:57,951 - INFO - 🔧 Enriching data for AUDIO/USDT
+2025-08-18 19:23:58,986 - INFO - 📊 Found setup for AUDIO/USDT: Quality=100, R/R=0.3237577639751405
+2025-08-18 19:23:59,519 - INFO - 🔧 Enriching data for SUN/USDT
+2025-08-18 19:24:00,561 - INFO - 📊 Found setup for SUN/USDT: Quality=100, R/R=0.50951086956521
+2025-08-18 19:24:01,117 - INFO - Progress: 320/337 symbols scanned
+2025-08-18 19:24:03,737 - INFO - Progress: 330/337 symbols scanned
+2025-08-18 19:24:05,535 - INFO - Found 52 setups, showing top 20
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: ME/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7160
+- Gap Low: $0.7060
+- Entry (Midpoint): $0.7110
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7310
+- Swing Low: $0.7470
+- Swing Range: 2.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.6970
+- Distance to Entry: 2.0%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7184 (-1.0%)
+- Risk/Reward: 4.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7426 (+4.5%) [78.6%] - Exit 50%
+- T2: $0.7371 (+3.7%) [38.2%] - Exit 30%
+- T3: $0.7310 (+2.8%) [23.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: SXT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0828
+- Gap Low: $0.0812
+- Entry (Midpoint): $0.0820
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0853
+- Swing Low: $0.0877
+- Swing Range: 2.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0807
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0832 (-1.4%)
+- Risk/Reward: 4.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0870 (+6.2%) [78.6%] - Exit 50%
+- T2: $0.0862 (+5.1%) [38.2%] - Exit 30%
+- T3: $0.0853 (+4.0%) [23.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.0%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: NOT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0019
+- Gap Low: $0.0019
+- Entry (Midpoint): $0.0019
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0023
+- Swing Low: $0.0018
+- Swing Range: 28.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0019
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0019 (-1.0%)
+- Risk/Reward: 4.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0018 (+4.2%) [100%] - Exit 50%
+- T2: $0.0017 (+11.6%) [127.2%] - Exit 30%
+- T3: $0.0013 (+31.3%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: STG/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1784
+- Gap Low: $0.1740
+- Entry (Midpoint): $0.1762
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1933
+- Swing Low: $0.1873
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1746
+- Distance to Entry: 0.9%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1794 (-1.8%)
+- Risk/Reward: 2.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1857 (+5.4%) [127.2%] - Exit 50%
+- T2: $0.1836 (+4.2%) [161.8%] - Exit 30%
+- T3: $0.1813 (+2.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 0/100
+- Final Score: 100/100
+- Gap Size: 2.5%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: AMP/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0036
+- Gap Low: $0.0036
+- Entry (Midpoint): $0.0036
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0042
+- Swing Low: $0.0035
+- Swing Range: 21.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0036
+- Distance to Entry: 0.0%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0036 (-0.9%)
+- Risk/Reward: 2.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0035 (+2.6%) [100%] - Exit 50%
+- T2: $0.0033 (+8.4%) [127.2%] - Exit 30%
+- T3: $0.0027 (+23.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: ZEC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $36.9900
+- Gap Low: $36.0300
+- Entry (Midpoint): $36.5100
+
+📈 MARKET STRUCTURE:
+- Swing High: $40.4000
+- Swing Low: $38.8500
+- Swing Range: 4.0%
+
+💹 CURRENT STATUS:
+- Price Now: $36.6100
+- Distance to Entry: -0.3%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $37.2166 (-1.9%)
+- Risk/Reward: 2.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $38.4284 (+5.3%) [127.2%] - Exit 50%
+- T2: $37.8921 (+3.8%) [161.8%] - Exit 30%
+- T3: $37.3000 (+2.2%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 0/100
+- Final Score: 100/100
+- Gap Size: 2.7%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: XRP/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $3.0855
+- Gap Low: $3.0052
+- Entry (Midpoint): $3.0454
+
+📈 MARKET STRUCTURE:
+- Swing High: $3.1472
+- Swing Low: $3.2266
+- Swing Range: 2.5%
+
+💹 CURRENT STATUS:
+- Price Now: $2.9897
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $3.1045 (-1.9%)
+- Risk/Reward: 2.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $3.2050 (+5.2%) [78.6%] - Exit 50%
+- T2: $3.1775 (+4.3%) [38.2%] - Exit 30%
+- T3: $3.1472 (+3.3%) [23.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.7%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:21
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: 1MBABYDOGE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0013
+- Gap Low: $0.0013
+- Entry (Midpoint): $0.0013
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0015
+- Swing Low: $0.0012
+- Swing Range: 16.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0013
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0013 (-1.1%)
+- Risk/Reward: 2.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0012 (+2.9%) [100%] - Exit 50%
+- T2: $0.0012 (+7.3%) [127.2%] - Exit 30%
+- T3: $0.0010 (+18.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,536 - INFO - 
+🟢 LONG Signal: GLM/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.2528
+- Gap Low: $0.2500
+- Entry (Midpoint): $0.2514
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.2634
+- Swing Low: $0.2504
+- Swing Range: 5.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.2529
+- Distance to Entry: -0.6%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.2493 (-0.8%)
+- Risk/Reward: 1.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.2554 (+1.6%) [38.2%] - Exit 50%
+- T2: $0.2569 (+2.2%) [50%] - Exit 30%
+- T3: $0.2606 (+3.7%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: LUMIA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3260
+- Gap Low: $0.3200
+- Entry (Midpoint): $0.3230
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3260
+- Swing Low: $0.3530
+- Swing Range: 7.6%
+
+💹 CURRENT STATUS:
+- Price Now: $0.3190
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3274 (-1.4%)
+- Risk/Reward: 1.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.3157 (+2.3%) [23.6%] - Exit 50%
+- T2: $0.3125 (+3.3%) [23.6%] - Exit 30%
+- T3: $0.3048 (+5.6%) [23.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.9%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: BEAMX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0080
+- Gap Low: $0.0077
+- Entry (Midpoint): $0.0078
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0089
+- Swing Low: $0.0072
+- Swing Range: 23.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0078
+- Distance to Entry: 0.7%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0080 (-2.5%)
+- Risk/Reward: 1.4:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0076 (+3.6%) [78.6%] - Exit 50%
+- T2: $0.0072 (+8.2%) [100%] - Exit 30%
+- T3: $0.0062 (+21.5%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 3.5%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: A/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.5104
+- Gap Low: $0.5022
+- Entry (Midpoint): $0.5063
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.5489
+- Swing Low: $0.5220
+- Swing Range: 5.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.4963
+- Distance to Entry: 2.0%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.5123 (-1.2%)
+- Risk/Reward: 1.4:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.5147 (+1.7%) [127.2%] - Exit 50%
+- T2: $0.5054 (+0.2%) [161.8%] - Exit 30%
+- T3: $0.4951 (+2.2%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,536 - INFO - 
+🔴 SHORT Signal: AEVO/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0995
+- Gap Low: $0.0972
+- Entry (Midpoint): $0.0983
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1021
+- Swing Low: $0.1007
+- Swing Range: 1.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0966
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1000 (-1.7%)
+- Risk/Reward: 1.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1003 (+2.0%) [127.2%] - Exit 50%
+- T2: $0.0998 (+1.5%) [161.8%] - Exit 30%
+- T3: $0.0993 (+1.0%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.4%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: BTC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $117371.6500
+- Gap Low: $115712.4900
+- Entry (Midpoint): $116542.0700
+
+📈 MARKET STRUCTURE:
+- Swing High: $118575.0000
+- Swing Low: $118032.3200
+- Swing Range: 0.5%
+
+💹 CURRENT STATUS:
+- Price Now: $115490.4100
+- Distance to Entry: 0.9%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $117763.2118 (-1.0%)
+- Risk/Reward: 1.1:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $117884.7110 (+1.2%) [127.2%] - Exit 50%
+- T2: $117696.9438 (+1.0%) [161.8%] - Exit 30%
+- T3: $117489.6400 (+0.8%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:21
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: AUCTION/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $9.9900
+- Gap Low: $9.9100
+- Entry (Midpoint): $9.9500
+
+📈 MARKET STRUCTURE:
+- Swing High: $10.2100
+- Swing Low: $9.9600
+- Swing Range: 2.5%
+
+💹 CURRENT STATUS:
+- Price Now: $9.7900
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $10.0089 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $9.8920 (+0.6%) [127.2%] - Exit 50%
+- T2: $9.8055 (+1.5%) [161.8%] - Exit 30%
+- T3: $9.7100 (+2.4%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.8%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: CFX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1754
+- Gap Low: $0.1733
+- Entry (Midpoint): $0.1744
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1805
+- Swing Low: $0.1767
+- Swing Range: 2.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1715
+- Distance to Entry: 1.7%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1759 (-0.9%)
+- Risk/Reward: 0.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1757 (+0.8%) [127.2%] - Exit 50%
+- T2: $0.1744 (+0.0%) [161.8%] - Exit 30%
+- T3: $0.1729 (+0.8%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:21
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: UMA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $1.2990
+- Gap Low: $1.2760
+- Entry (Midpoint): $1.2875
+
+📈 MARKET STRUCTURE:
+- Swing High: $1.3350
+- Swing Low: $1.3080
+- Swing Range: 2.1%
+
+💹 CURRENT STATUS:
+- Price Now: $1.2670
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $1.3044 (-1.3%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $1.3007 (+1.0%) [127.2%] - Exit 50%
+- T2: $1.2913 (+0.3%) [161.8%] - Exit 30%
+- T3: $1.2810 (+0.5%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.8%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: HOOK/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1113
+- Gap Low: $0.1091
+- Entry (Midpoint): $0.1102
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1175
+- Swing Low: $0.1108
+- Swing Range: 6.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1081
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1118 (-1.5%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1090 (+1.1%) [127.2%] - Exit 50%
+- T2: $0.1067 (+3.2%) [161.8%] - Exit 30%
+- T3: $0.1041 (+5.5%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.0%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:23
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: ZRO/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $2.1220
+- Gap Low: $2.0740
+- Entry (Midpoint): $2.0980
+
+📈 MARKET STRUCTURE:
+- Swing High: $2.3560
+- Swing Low: $2.0740
+- Swing Range: 13.6%
+
+💹 CURRENT STATUS:
+- Price Now: $2.0660
+- Distance to Entry: 1.5%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $2.1333 (-1.7%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $2.0740 (+1.1%) [100%] - Exit 50%
+- T2: $1.9973 (+4.8%) [127.2%] - Exit 30%
+- T3: $1.7920 (+14.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 2.3%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:22
+
+2025-08-18 19:24:05,537 - INFO - 
+🔴 SHORT Signal: TRX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3579
+- Gap Low: $0.3518
+- Entry (Midpoint): $0.3548
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3552
+- Swing Low: $0.3469
+- Swing Range: 2.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.3487
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3593 (-1.3%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.3520 (+0.8%) [38.2%] - Exit 50%
+- T2: $0.3510 (+1.1%) [50%] - Exit 30%
+- T3: $0.3487 (+1.7%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 17 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-18 19:21
+
+2025-08-18 19:24:05,537 - INFO - Scan complete. Found 52 high-quality setups, displayed 20
+2025-08-18 19:24:05,537 - INFO - Performance Stats: {'total_scans': 7, 'setups_found': 52, 'alerts_sent': 200}
+2025-08-18 19:24:05,537 - INFO - Next scan in 900 seconds...
+2025-08-18 19:39:05,599 - INFO - Starting scan of top 500 symbols...
+2025-08-18 19:39:05,600 - INFO - ✅ Scan started with ID: None
+2025-08-18 19:39:06,016 - INFO - Scanning 338 symbols
+2025-08-18 19:39:06,017 - INFO - Progress: 0/338 symbols scanned
+2025-08-18 19:39:06,588 - INFO - 🔧 Enriching data for ETH/USDT
+2025-08-18 19:39:07,416 - INFO - 📊 Found setup for ETH/USDT: Quality=100, R/R=0.5672455492644106
+2025-08-18 19:39:08,159 - INFO - 🔧 Enriching data for BTC/USDT
+2025-08-18 19:39:09,052 - INFO - 📊 Found setup for BTC/USDT: Quality=100, R/R=1.09949645813441
+2025-08-18 19:39:10,259 - INFO - 🔧 Enriching data for XRP/USDT
+2025-08-18 19:39:11,493 - INFO - 📊 Found setup for XRP/USDT: Quality=100, R/R=2.701371216633262
+2025-08-18 19:39:12,562 - INFO - Progress: 10/338 symbols scanned
+2025-08-18 19:39:13,404 - INFO - 🔧 Enriching data for BNB/USDT
+2025-08-18 19:39:14,289 - INFO - 📊 Found setup for BNB/USDT: Quality=100, R/R=0.03424371460005406
+2025-08-18 19:39:14,691 - INFO - 🔧 Enriching data for TRX/USDT
+2025-08-18 19:39:15,751 - INFO - 📊 Found setup for TRX/USDT: Quality=100, R/R=0.6282519600855349
+2025-08-18 19:39:16,228 - INFO - 🔧 Enriching data for ARB/USDT
+2025-08-18 19:39:17,257 - INFO - 📊 Found setup for ARB/USDT: Quality=100, R/R=0.48102538326212774
+2025-08-18 19:39:18,846 - INFO - Progress: 20/338 symbols scanned
+2025-08-18 19:39:19,372 - INFO - 🔧 Enriching data for LTC/USDT
+2025-08-18 19:39:20,403 - INFO - 📊 Found setup for LTC/USDT: Quality=100, R/R=0.33051218198949983
+2025-08-18 19:39:21,993 - INFO - 🔧 Enriching data for TRUMP/USDT
+2025-08-18 19:39:23,023 - INFO - 📊 Found setup for TRUMP/USDT: Quality=100, R/R=0.47031772575252734
+2025-08-18 19:39:23,547 - INFO - 🔧 Enriching data for SKL/USDT
+2025-08-18 19:39:24,439 - INFO - 📊 Found setup for SKL/USDT: Quality=85.0, R/R=1.1650943396226408
+2025-08-18 19:39:25,147 - INFO - Progress: 30/338 symbols scanned
+2025-08-18 19:39:27,776 - INFO - Progress: 40/338 symbols scanned
+2025-08-18 19:39:29,334 - INFO - 🔧 Enriching data for FET/USDT
+2025-08-18 19:39:30,358 - INFO - 📊 Found setup for FET/USDT: Quality=100, R/R=0.7880434782608632
+2025-08-18 19:39:31,767 - INFO - Progress: 50/338 symbols scanned
+2025-08-18 19:39:32,278 - INFO - 🔧 Enriching data for PENDLE/USDT
+2025-08-18 19:39:33,169 - INFO - 📊 Found setup for PENDLE/USDT: Quality=100, R/R=0.09580546265329806
+2025-08-18 19:39:35,425 - INFO - 🔧 Enriching data for PNUT/USDT
+2025-08-18 19:39:36,317 - INFO - 📊 Found setup for PNUT/USDT: Quality=100, R/R=0.6739130434782596
+2025-08-18 19:39:37,006 - INFO - Progress: 60/338 symbols scanned
+2025-08-18 19:39:37,523 - INFO - 🔧 Enriching data for SHIB/USDT
+2025-08-18 19:39:38,411 - INFO - 📊 Found setup for SHIB/USDT: Quality=100, R/R=0.2900292642140566
+2025-08-18 19:39:39,618 - INFO - 🔧 Enriching data for CYBER/USDT
+2025-08-18 19:39:40,508 - INFO - 📊 Found setup for CYBER/USDT: Quality=100, R/R=1.7618349542334226
+2025-08-18 19:39:42,252 - INFO - Progress: 70/338 symbols scanned
+2025-08-18 19:39:44,868 - INFO - 🔧 Enriching data for CFX/USDT
+2025-08-18 19:39:45,906 - INFO - 📊 Found setup for CFX/USDT: Quality=100, R/R=0.8517080745341693
+2025-08-18 19:39:46,141 - INFO - Progress: 80/338 symbols scanned
+2025-08-18 19:39:47,483 - INFO - 🔧 Enriching data for MAV/USDT
+2025-08-18 19:39:48,370 - INFO - 📊 Found setup for MAV/USDT: Quality=80.0, R/R=6.6249999999998765
+2025-08-18 19:39:49,791 - INFO - Progress: 90/338 symbols scanned
+2025-08-18 19:39:51,155 - INFO - 🔧 Enriching data for SYRUP/USDT
+2025-08-18 19:39:52,198 - INFO - 📊 Found setup for SYRUP/USDT: Quality=100, R/R=0.24456521739130893
+2025-08-18 19:39:52,727 - INFO - 🔧 Enriching data for WBTC/USDT
+2025-08-18 19:39:53,615 - INFO - 📊 Found setup for WBTC/USDT: Quality=100, R/R=0.4808079277696996
+2025-08-18 19:39:55,347 - INFO - 🔧 Enriching data for RESOLV/USDT
+2025-08-18 19:39:56,235 - INFO - 📊 Found setup for RESOLV/USDT: Quality=85.0, R/R=1.746353880022006
+2025-08-18 19:39:56,235 - INFO - Progress: 100/338 symbols scanned
+2025-08-18 19:39:56,918 - INFO - 🔧 Enriching data for PEOPLE/USDT
+2025-08-18 19:39:57,804 - INFO - 📊 Found setup for PEOPLE/USDT: Quality=100, R/R=0.15696930946291307
+2025-08-18 19:39:59,747 - INFO - 🔧 Enriching data for BEAMX/USDT
+2025-08-18 19:40:00,900 - INFO - 📊 Found setup for BEAMX/USDT: Quality=100, R/R=1.4258252818035464
+2025-08-18 19:40:01,230 - INFO - Progress: 110/338 symbols scanned
+2025-08-18 19:40:01,879 - INFO - 🔧 Enriching data for C/USDT
+2025-08-18 19:40:02,865 - INFO - 📊 Found setup for C/USDT: Quality=100.0, R/R=7.375201288244736
+2025-08-18 19:40:05,002 - INFO - Progress: 120/338 symbols scanned
+2025-08-18 19:40:06,357 - INFO - 🔧 Enriching data for WBETH/USDT
+2025-08-18 19:40:07,246 - INFO - 📊 Found setup for WBETH/USDT: Quality=100, R/R=0.5607820982387342
+2025-08-18 19:40:08,976 - INFO - 🔧 Enriching data for SLP/USDT
+2025-08-18 19:40:09,864 - INFO - 📊 Found setup for SLP/USDT: Quality=100, R/R=2.94384057971012
+2025-08-18 19:40:10,067 - INFO - Progress: 130/338 symbols scanned
+2025-08-18 19:40:10,749 - INFO - 🔧 Enriching data for ZRO/USDT
+2025-08-18 19:40:11,624 - INFO - 📊 Found setup for ZRO/USDT: Quality=100, R/R=0.6793478260869523
+2025-08-18 19:40:13,905 - INFO - 🔧 Enriching data for JASMY/USDT
+2025-08-18 19:40:14,925 - INFO - 📊 Found setup for JASMY/USDT: Quality=100.0, R/R=4.849033816425152
+2025-08-18 19:40:14,925 - INFO - Progress: 140/338 symbols scanned
+2025-08-18 19:40:15,455 - INFO - 🔧 Enriching data for GRT/USDT
+2025-08-18 19:40:16,314 - INFO - 📊 Found setup for GRT/USDT: Quality=100, R/R=0.17391304347825448
