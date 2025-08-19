@@ -37,11 +37,11 @@ class ElliottWaveLogger:
         Initialize Elliott Wave logger with separate database connection
         
         Args:
-            dsn: Database connection string (defaults to DATABASE_URL env var)
+            dsn: Database connection string (defaults to OTHER_SCANNERS_DATABASE_URL env var)
         """
-        self.db_url = dsn or os.environ.get('DATABASE_URL')
+        self.db_url = dsn or os.environ.get('OTHER_SCANNERS_DATABASE_URL')
         if not self.db_url:
-            raise ValueError("DATABASE_URL environment variable not set")
+            raise ValueError("OTHER_SCANNERS_DATABASE_URL environment variable not set")
         
         self.connection = None
         self.cursor = None
