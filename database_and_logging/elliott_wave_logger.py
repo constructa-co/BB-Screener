@@ -103,6 +103,40 @@ class ElliottWaveLogger:
         
         return value
     
+    def _sanitize_dict(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Recursively sanitize dictionary values for JSON serialization
+        """
+        if not isinstance(data, dict):
+            return data
+        
+        sanitized = {}
+        for key, value in data.items():
+            if isinstance(value, dict):
+                sanitized[key] = self._sanitize_dict(value)
+            elif isinstance(value, list):
+                sanitized[key] = self._sanitize_list(value)
+            else:
+                sanitized[key] = self._sanitize_value(value)
+        return sanitized
+    
+    def _sanitize_list(self, data: list) -> list:
+        """
+        Recursively sanitize list values for JSON serialization
+        """
+        if not isinstance(data, list):
+            return data
+        
+        sanitized = []
+        for item in data:
+            if isinstance(item, dict):
+                sanitized.append(self._sanitize_dict(item))
+            elif isinstance(item, list):
+                sanitized.append(self._sanitize_list(item))
+            else:
+                sanitized.append(self._sanitize_value(item))
+        return sanitized
+    
     def log_elliott_signal(self, signal_data: Dict[str, Any], scan_id: str) -> Optional[str]:
         """
         Log Elliott Wave signal to elliott_wave_signals table
@@ -145,7 +179,7 @@ class ElliottWaveLogger:
                 'invalidation_level': self._sanitize_value(signal_data.get('invalidation_level')),
                 
                 # Complete wave analysis in JSONB (hierarchical structure)
-                'wave_analysis': Json({
+                'wave_analysis': Json(self._sanitize_dict({
                     'waves': signal_data.get('waves', []),
                     'wave_relationships': signal_data.get('wave_relationships', {}),
                     'internal_structure': signal_data.get('internal_structure', {}),
@@ -154,19 +188,19 @@ class ElliottWaveLogger:
                     'wave_start_date': signal_data.get('wave_start_date'),
                     'current_price': signal_data.get('current_price'),
                     'duration': signal_data.get('duration')
-                }),
+                })),
                 
                 # Fibonacci levels and relationships
-                'fibonacci_levels': Json(signal_data.get('fibonacci_levels', {})),
+                'fibonacci_levels': Json(self._sanitize_dict(signal_data.get('fibonacci_levels', {}))),
                 
                 # Pattern quality metrics and validation
-                'pattern_metrics': Json({
+                'pattern_metrics': Json(self._sanitize_dict({
                     'quality_score': signal_data.get('pattern_quality') or signal_data.get('quality_score'),
                     'confidence': signal_data.get('confidence_score'),
                     'strength_indicators': signal_data.get('strength_indicators', {}),
                     'validation_checks': signal_data.get('validation_checks', {}),
                     'wave_validation': signal_data.get('wave_validation', {})
-                }),
+                })),
                 
                 'analysis_ts': datetime.utcnow()
             }
