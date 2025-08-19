@@ -25,7 +25,14 @@ warnings.filterwarnings('ignore')
 
 # Add Elliott Wave Logger import (completely separate from universal logger)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from database_and_logging.elliott_wave_logger import ElliottWaveLogger
+
+# Conditional import for Elliott Wave Logger
+try:
+    from database_and_logging.elliott_wave_logger import ElliottWaveLogger
+    ELLIOTT_LOGGER_AVAILABLE = True
+except ImportError:
+    ELLIOTT_LOGGER_AVAILABLE = False
+    print("⚠️ Elliott Wave Logger not available - will continue without database logging")
 
 class ElliottWaveScanner:
     def __init__(self):
@@ -46,12 +53,15 @@ class ElliottWaveScanner:
         
         # Initialize Elliott Wave Logger (NOT universal logger)
         self.elliott_logger = None
-        try:
-            self.elliott_logger = ElliottWaveLogger()
-            print("✅ Elliott Wave Logger initialized for database logging")
-        except Exception as e:
-            print(f"⚠️ Elliott Wave Logger not available: {e}")
-            print("Will continue without database logging")
+        if ELLIOTT_LOGGER_AVAILABLE:
+            try:
+                self.elliott_logger = ElliottWaveLogger()
+                print("✅ Elliott Wave Logger initialized for database logging")
+            except Exception as e:
+                print(f"⚠️ Elliott Wave Logger not available: {e}")
+                print("Will continue without database logging")
+        else:
+            print("⚠️ Elliott Wave Logger not available - will continue without database logging")
         
     def get_symbols(self):
         """Get all major trading pairs based on market cap and liquidity"""
