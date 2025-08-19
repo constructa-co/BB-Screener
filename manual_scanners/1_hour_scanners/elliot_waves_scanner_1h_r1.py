@@ -41,7 +41,8 @@ except ImportError:
         pass
 
 # Add Elliott Wave Logger import (completely separate from universal logger)
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append('.')
 
 # Conditional import for Elliott Wave Logger
 try:
