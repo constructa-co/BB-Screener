@@ -74,10 +74,19 @@ class ElliottWaveLogger:
         - None values
         - NaN and Inf floats
         - Numpy types
+        - Pandas Timestamp objects
         - JSON serialization
         """
         if value is None:
             return None
+        
+        # Handle pandas Timestamp objects
+        try:
+            import pandas as pd
+            if isinstance(value, pd.Timestamp):
+                return value.strftime('%Y-%m-%d %H:%M:%S')
+        except ImportError:
+            pass
         
         # Handle numpy types if present
         try:
