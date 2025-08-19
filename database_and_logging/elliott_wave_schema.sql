@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS elliott_wave_signals (
     
     -- Elliott Wave specific fields
     pattern_type VARCHAR(24),  -- 'BULLISH_IMPULSE', 'BEARISH_IMPULSE', 'CORRECTIVE'
-    current_wave VARCHAR(8),   -- 'WAVE_1', 'WAVE_2', 'WAVE_3', 'WAVE_4', 'WAVE_5', 'WAVE_A', 'WAVE_B', 'WAVE_C'
+    current_wave VARCHAR(32),   -- 'WAVE_1', 'WAVE_2', 'WAVE_3', 'WAVE_4', 'WAVE_5', 'WAVE_A', 'WAVE_B', 'WAVE_C', 'WAVE_5_OR_EXTENSION', etc.
     wave_degree VARCHAR(32),   -- 'minor', 'intermediate', 'primary', 'major'
     pattern_quality DECIMAL(5,2),  -- Quality score 0-100
     confidence_score DECIMAL(3,2), -- Confidence 0.0-1.0
