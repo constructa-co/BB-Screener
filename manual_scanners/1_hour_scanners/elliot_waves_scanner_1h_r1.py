@@ -23,6 +23,23 @@ import sys
 import os
 warnings.filterwarnings('ignore')
 
+# Load environment variables for Elliott Wave Logger
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # Fallback: try to load .env manually
+    try:
+        env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '.env')
+        if os.path.exists(env_path):
+            with open(env_path, 'r') as f:
+                for line in f:
+                    if line.strip() and not line.startswith('#') and '=' in line:
+                        key, value = line.strip().split('=', 1)
+                        os.environ[key] = value
+    except:
+        pass
+
 # Add Elliott Wave Logger import (completely separate from universal logger)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
