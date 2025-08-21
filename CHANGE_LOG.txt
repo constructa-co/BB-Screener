@@ -2182,3 +2182,53 @@ FINAL STATUS: ELLIOTT WAVE INTEGRATION COMPLETE AND PRODUCTION-READY! 🚀
   * ✅ Complete isolation from other_scanners_trades
   * ✅ High-quality patterns detected across all timeframes
   * ✅ Production automation fully operational
+
+## 2025-08-20 16:30 - Database Analysis & Export Investigation
+
+### 🔍 **Database Analysis Completed**
+- **Issue Identified**: Excel export only contained ICT data, missing Elliott Wave results
+- **Root Cause**: Export script only queried `other_scanners_trades` table, but Elliott Wave data is in separate `elliott_wave_signals` table
+- **Database Status Discovered**:
+  - ICT Scanner Trades: 59 total (only 1 recent in 24h)
+  - Elliott Wave Patterns: 68 total (all recent - last 24h)
+  - Total Trades: 69
+
+### 📊 **ICT Scanner Issues Identified**
+- **Problem**: ICT scanners not running despite cron jobs being configured
+- **Evidence**: Empty logs directory, no recent database entries
+- **Cron Jobs Status**: All configured but not executing properly
+  - ICT 15M: Every 15 minutes at :10, :25, :40, :55
+  - ICT 1H: Every hour at :20
+  - ICT 4H: Every hour at :30
+
+### 🛠️ **Solutions Implemented**
+1. **Created Comprehensive Export Script** (`export_complete_database.py`)
+   - Exports from BOTH `other_scanners_trades` and `elliott_wave_signals` tables
+   - Includes database summary statistics
+   - Handles timezone issues for Excel export
+   - Multiple sheets: Summary, ICT Data, Elliott Wave Data, Recent Data
+
+2. **Database Export Completed**
+   - File: `complete_database_export_20250820_160620.xlsx`
+   - Contains 69 ICT trades + 68 Elliott Wave patterns
+   - Downloaded to local machine for analysis
+
+### 📋 **Files Modified/Created**
+- `export_complete_database.py` - New comprehensive database export script
+- `complete_database_export_20250820_160620.xlsx` - Complete database export with both datasets
+
+### 🎯 **Next Steps Required**
+1. **Fix ICT Scanner Execution** - Investigate why cron jobs aren't running
+2. **Test Scanners Manually** - Run ICT scanners to identify errors
+3. **Update Cron Configuration** - Fix environment variables and paths
+4. **Create Health Check Script** - Monitor scanner activity
+
+### ✅ **What's Working Perfectly**
+- Elliott Wave scanners: 68 patterns logged in last 24h
+- Database structure: Both tables functioning correctly
+- Export capability: Now captures complete dataset
+
+### ❌ **What Needs Immediate Attention**
+- ICT scanner execution: Not running despite cron configuration
+- Log directory: Empty, indicating execution failures
+- Environment variables: Likely missing in cron context
