@@ -88,11 +88,11 @@ GROUP BY
         ELSE 'Monitor (<60%)'
     END
 ORDER BY 
-    CASE strength_category
-        WHEN 'Premium (≥80%)' THEN 1
-        WHEN 'High (75-79%)' THEN 2
-        WHEN 'Good (70-74%)' THEN 3
-        WHEN 'Fair (60-69%)' THEN 4
+    CASE 
+        WHEN confidence_score >= 0.80 THEN 1
+        WHEN confidence_score >= 0.75 THEN 2
+        WHEN confidence_score >= 0.70 THEN 3
+        WHEN confidence_score >= 0.60 THEN 4
         ELSE 5
     END;"
 
