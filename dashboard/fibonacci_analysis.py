@@ -16,26 +16,15 @@ import sys
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Database connection (use existing connection method from your dashboard)
-@st.cache_resource
-def get_db_connection():
-    """Get database connection - matches existing dashboard pattern"""
-    try:
-        # Use DATABASE_URL like the main dashboard
-        database_url = os.getenv('DATABASE_URL')
-        if database_url:
-            return psycopg2.connect(database_url)
-        else:
-            st.error("DATABASE_URL environment variable not found")
-            return None
-    except Exception as e:
-        st.error(f"Database connection failed: {e}")
-        return None
+# Use the same TradeLogger as the main dashboard
+def get_db():
+    """Get database connection using TradeLogger - matches main dashboard"""
+    return TradeLogger()
 
 def load_fibonacci_signals(hours_back=24, min_confidence=0.6):
     """Load Fibonacci signals from database"""
-    conn = get_db_connection()
-    if not conn:
+    logger = get_db()
+    if not logger.connection:
         return pd.DataFrame()
     
     try:
@@ -70,28 +59,31 @@ def load_fibonacci_signals(hours_back=24, min_confidence=0.6):
                 risk_percentage,
                 setup_stage
             FROM other_scanners.fibonacci_signals
-            WHERE detected_at > NOW() - INTERVAL '%s hours'
+            WHERE detected_at > NOW() - INTERVAL %s
                 AND confidence_score >= %s
             ORDER BY detected_at DESC
             LIMIT 500
         """
-        df = pd.read_sql(query, conn, params=(hours_back, min_confidence))
-        return df
+        logger.cursor.execute(query, (f"{hours_back} hours", min_confidence))
+        results = logger.cursor.fetchall()
+        if results:
+            df = pd.DataFrame(results)
+            return df
+        else:
+            return pd.DataFrame()
     except Exception as e:
         st.error(f"Error loading Fibonacci signals: {e}")
         return pd.DataFrame()
 
 def calculate_performance_metrics():
     """Calculate Fibonacci scanner performance metrics"""
-    conn = get_db_connection()
-    if not conn:
+    logger = get_db()
+    if not logger.connection:
         return None, pd.DataFrame()
     
     try:
-        cur = conn.cursor()
-        
         # Overall metrics
-        cur.execute("""
+        logger.cursor.execute("""
             SELECT 
                 COUNT(*) as total_signals,
                 AVG(confidence_score) as avg_confidence,
@@ -102,7 +94,7 @@ def calculate_performance_metrics():
             WHERE detected_at > NOW() - INTERVAL '24 hours'
         """)
         
-        metrics_row = cur.fetchone()
+        metrics_row = logger.cursor.fetchone()
         if metrics_row:
             metrics = {
                 'total_signals': metrics_row[0],
@@ -115,7 +107,7 @@ def calculate_performance_metrics():
             metrics = None
         
         # Performance by level
-        cur.execute("""
+        logger.cursor.execute("""
             SELECT 
                 fibonacci_level,
                 COUNT(*) as signal_count,
@@ -129,9 +121,8 @@ def calculate_performance_metrics():
             ORDER BY signal_count DESC
         """)
         
-        level_performance = pd.DataFrame(cur.fetchall())
+        level_performance = pd.DataFrame(logger.cursor.fetchall())
         
-        cur.close()
         return metrics, level_performance
     except Exception as e:
         st.error(f"Error calculating performance metrics: {e}")
@@ -305,20 +296,22 @@ def create_fibonacci_analysis_page():
         # Time series analysis
         st.subheader("Signal Generation Over Time")
         
-        conn = get_db_connection()
-        if conn:
+        logger = get_db()
+        if logger.connection:
             try:
-                hourly_signals = pd.read_sql("""
+                logger.cursor.execute("""
                     SELECT 
                         DATE_TRUNC('hour', detected_at) as hour,
                         COUNT(*) as signal_count,
                         AVG(confidence_score) as avg_confidence,
                         AVG(quality_score) as avg_quality
                     FROM other_scanners.fibonacci_signals
-                    WHERE detected_at > NOW() - INTERVAL '%s hours'
+                    WHERE detected_at > NOW() - INTERVAL %s
                     GROUP BY DATE_TRUNC('hour', detected_at)
                     ORDER BY hour
-                """, conn, params=(hours_back,))
+                """, (f"{hours_back} hours",))
+                
+                hourly_signals = pd.DataFrame(logger.cursor.fetchall())
                 
                 if not hourly_signals.empty:
                     fig = go.Figure()
@@ -356,10 +349,10 @@ def create_fibonacci_analysis_page():
         st.header("Top Trading Opportunities")
         
         # Get high confidence signals with complete trading data
-        conn = get_db_connection()
-        if conn:
+        logger = get_db()
+        if logger.connection:
             try:
-                top_signals = pd.read_sql("""
+                logger.cursor.execute("""
                     SELECT 
                         symbol,
                         signal_type,
@@ -389,7 +382,9 @@ def create_fibonacci_analysis_page():
                         AND detected_at > NOW() - INTERVAL '4 hours'
                     ORDER BY confidence_score DESC, quality_score DESC
                     LIMIT 20
-                """, conn)
+                """)
+                
+                top_signals = pd.DataFrame(logger.cursor.fetchall())
                 
                 if not top_signals.empty:
                     st.subheader(f"🎯 Top {len(top_signals)} High-Confidence Signals (Last 4 Hours)")
@@ -430,10 +425,10 @@ def create_fibonacci_analysis_page():
         st.header("Historical Pattern Analysis")
         
         # Most common Fibonacci levels with enhanced data
-        conn = get_db_connection()
-        if conn:
+        logger = get_db()
+        if logger.connection:
             try:
-                historical_patterns = pd.read_sql("""
+                logger.cursor.execute("""
                     SELECT 
                         fibonacci_level,
                         signal_type,
@@ -448,7 +443,9 @@ def create_fibonacci_analysis_page():
                     GROUP BY fibonacci_level, signal_type
                     HAVING COUNT(*) > 10
                     ORDER BY occurrences DESC
-                """, conn)
+                """)
+                
+                historical_patterns = pd.DataFrame(logger.cursor.fetchall())
                 
                 if not historical_patterns.empty:
                     st.subheader("Most Active Fibonacci Levels (7 Days)")
