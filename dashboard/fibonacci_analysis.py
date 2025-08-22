@@ -104,7 +104,17 @@ def calculate_performance_metrics():
             WHERE detected_at > NOW() - INTERVAL '24 hours'
         """)
         
-        metrics = cur.fetchone()
+        metrics_row = cur.fetchone()
+        if metrics_row:
+            metrics = {
+                'total_signals': metrics_row[0],
+                'avg_confidence': metrics_row[1],
+                'high_confidence_count': metrics_row[2],
+                'unique_symbols': metrics_row[3],
+                'avg_quality_score': metrics_row[4]
+            }
+        else:
+            metrics = None
         
         # Performance by level
         cur.execute("""
