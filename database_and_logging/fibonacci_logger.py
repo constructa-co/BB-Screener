@@ -7,6 +7,7 @@ Follows exact isolation patterns from elliott_wave_logger.py
 import asyncio
 import json
 import logging
+import logging.handlers
 import os
 import time
 from collections import deque
@@ -257,7 +258,6 @@ class FibonacciLogger:
         logger.setLevel(LOG_LEVEL)
         
         # File handler with rotation
-        import logging.handlers
         handler = logging.handlers.RotatingFileHandler(
             f'logs/fibonacci_{self.scanner_id}.log',
             maxBytes=50*1024*1024,  # 50MB
