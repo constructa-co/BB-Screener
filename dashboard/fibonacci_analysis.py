@@ -16,6 +16,9 @@ import sys
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Import TradeLogger (same as main dashboard)
+from trade_logger import TradeLogger
+
 # Use the same TradeLogger as the main dashboard
 def get_db():
     """Get database connection using TradeLogger - matches main dashboard"""
