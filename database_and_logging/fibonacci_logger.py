@@ -257,6 +257,7 @@ class FibonacciLogger:
         logger.setLevel(LOG_LEVEL)
         
         # File handler with rotation
+        import logging.handlers
         handler = logging.handlers.RotatingFileHandler(
             f'logs/fibonacci_{self.scanner_id}.log',
             maxBytes=50*1024*1024,  # 50MB
