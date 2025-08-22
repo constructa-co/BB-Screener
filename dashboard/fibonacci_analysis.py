@@ -82,11 +82,12 @@ def calculate_performance_metrics():
     """Calculate Fibonacci scanner performance metrics"""
     logger = get_db()
     if not logger.connection:
+        st.error("Database connection failed")
         return None, pd.DataFrame()
     
     try:
         # Overall metrics
-        logger.cursor.execute("""
+        query = """
             SELECT 
                 COUNT(*) as total_signals,
                 COALESCE(AVG(confidence_score), 0) as avg_confidence,
@@ -95,17 +96,23 @@ def calculate_performance_metrics():
                 COALESCE(AVG(quality_score), 0) as avg_quality_score
             FROM other_scanners.fibonacci_signals
             WHERE detected_at > NOW() - INTERVAL '24 hours'
-        """)
+        """
         
+        logger.cursor.execute(query)
         metrics_row = logger.cursor.fetchone()
+        
+        # Debug logging
+        st.write(f"Debug: Raw metrics row: {metrics_row}")
+        
         if metrics_row and metrics_row[0] > 0:  # Check if we have signals
             metrics = {
-                'total_signals': metrics_row[0] or 0,
-                'avg_confidence': float(metrics_row[1] or 0),
-                'high_confidence_count': metrics_row[2] or 0,
-                'unique_symbols': metrics_row[3] or 0,
-                'avg_quality_score': float(metrics_row[4] or 0)
+                'total_signals': int(metrics_row[0]) if metrics_row[0] else 0,
+                'avg_confidence': float(metrics_row[1]) if metrics_row[1] else 0.0,
+                'high_confidence_count': int(metrics_row[2]) if metrics_row[2] else 0,
+                'unique_symbols': int(metrics_row[3]) if metrics_row[3] else 0,
+                'avg_quality_score': float(metrics_row[4]) if metrics_row[4] else 0.0
             }
+            st.write(f"Debug: Processed metrics: {metrics}")
         else:
             # Return default metrics if no data
             metrics = {
@@ -115,9 +122,10 @@ def calculate_performance_metrics():
                 'unique_symbols': 0,
                 'avg_quality_score': 0.0
             }
+            st.write(f"Debug: Using default metrics: {metrics}")
         
         # Performance by level
-        logger.cursor.execute("""
+        level_query = """
             SELECT 
                 fibonacci_level,
                 COUNT(*) as signal_count,
@@ -129,13 +137,15 @@ def calculate_performance_metrics():
             WHERE detected_at > NOW() - INTERVAL '24 hours'
             GROUP BY fibonacci_level, signal_type
             ORDER BY signal_count DESC
-        """)
+        """
         
+        logger.cursor.execute(level_query)
         level_performance = pd.DataFrame(logger.cursor.fetchall())
         
         return metrics, level_performance
     except Exception as e:
         st.error(f"Error calculating performance metrics: {e}")
+        st.write(f"Debug: Exception details: {type(e).__name__}: {str(e)}")
         # Return default metrics on error
         return {
             'total_signals': 0,
