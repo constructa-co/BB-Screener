@@ -262,64 +262,64 @@ class FibonacciRetracementScannerR1:
         
         return min(score, 100)
     
-                def create_fibonacci_setup(self, symbol, df, swing_high, swing_low, fib_levels, current_price, quality_score):
-                    """Create Fibonacci setup dictionary with complete trading data"""
-                    entry_price = fib_levels['0.236']
-                    stop_loss = fib_levels['0.000']
-                    
-                    # Calculate risk percentage
-                    risk_pct = ((entry_price - stop_loss) / entry_price) * 100
-                    
-                    # Calculate move size
-                    move_size_pct = ((swing_high['price'] - swing_low['price']) / swing_low['price']) * 100
-                    
-                    # Calculate targets with risk/reward ratios
-                    targets = {
-                        'target_1': {
-                            'price': fib_levels['0.382'],
-                            'gain_pct': ((fib_levels['0.382'] - entry_price) / entry_price) * 100,
-                            'risk_reward': ((fib_levels['0.382'] - entry_price) / (entry_price - stop_loss)) if (entry_price - stop_loss) > 0 else 0
-                        },
-                        'target_2': {
-                            'price': fib_levels['0.500'],
-                            'gain_pct': ((fib_levels['0.500'] - entry_price) / entry_price) * 100,
-                            'risk_reward': ((fib_levels['0.500'] - entry_price) / (entry_price - stop_loss)) if (entry_price - stop_loss) > 0 else 0
-                        },
-                        'target_3': {
-                            'price': fib_levels['0.618'],
-                            'gain_pct': ((fib_levels['0.618'] - entry_price) / entry_price) * 100,
-                            'risk_reward': ((fib_levels['0.618'] - entry_price) / (entry_price - stop_loss)) if (entry_price - stop_loss) > 0 else 0
-                        }
-                    }
-                    
-                    # Determine setup stage and entry timing
-                    if abs(current_price - entry_price) / entry_price < 0.005:  # Within 0.5%
-                        setup_stage = 'immediate_entry'
-                        entry_timing = 'NOW'
-                    elif current_price > entry_price:
-                        setup_stage = 'approaching_entry'
-                        entry_timing = 'CLOSE'
-                    else:
-                        setup_stage = 'waiting_for_pullback'
-                        entry_timing = 'WAIT'
-                    
-                    return {
-                        'symbol': symbol,
-                        'type': 'bullish_fibonacci_retracement',
-                        'quality_score': quality_score,
-                        'setup_stage': setup_stage,
-                        'entry_timing_status': entry_timing,
-                        'current_price': current_price,
-                        'entry_price': entry_price,
-                        'stop_loss': stop_loss,
-                        'targets': targets,
-                        'risk_pct': risk_pct,
-                        'move_size_pct': move_size_pct,
-                        'swing_high': swing_high,
-                        'swing_low': swing_low,
-                        'fib_levels': fib_levels,
-                        'timestamp': datetime.now()
-                    }
+    def create_fibonacci_setup(self, symbol, df, swing_high, swing_low, fib_levels, current_price, quality_score):
+        """Create Fibonacci setup dictionary with complete trading data"""
+        entry_price = fib_levels['0.236']
+        stop_loss = fib_levels['0.000']
+        
+        # Calculate risk percentage
+        risk_pct = ((entry_price - stop_loss) / entry_price) * 100
+        
+        # Calculate move size
+        move_size_pct = ((swing_high['price'] - swing_low['price']) / swing_low['price']) * 100
+        
+        # Calculate targets with risk/reward ratios
+        targets = {
+            'target_1': {
+                'price': fib_levels['0.382'],
+                'gain_pct': ((fib_levels['0.382'] - entry_price) / entry_price) * 100,
+                'risk_reward': ((fib_levels['0.382'] - entry_price) / (entry_price - stop_loss)) if (entry_price - stop_loss) > 0 else 0
+            },
+            'target_2': {
+                'price': fib_levels['0.500'],
+                'gain_pct': ((fib_levels['0.500'] - entry_price) / entry_price) * 100,
+                'risk_reward': ((fib_levels['0.500'] - entry_price) / (entry_price - stop_loss)) if (entry_price - stop_loss) > 0 else 0
+            },
+            'target_3': {
+                'price': fib_levels['0.618'],
+                'gain_pct': ((fib_levels['0.618'] - entry_price) / entry_price) * 100,
+                'risk_reward': ((fib_levels['0.618'] - entry_price) / (entry_price - stop_loss)) if (entry_price - stop_loss) > 0 else 0
+            }
+        }
+        
+        # Determine setup stage and entry timing
+        if abs(current_price - entry_price) / entry_price < 0.005:  # Within 0.5%
+            setup_stage = 'immediate_entry'
+            entry_timing = 'NOW'
+        elif current_price > entry_price:
+            setup_stage = 'approaching_entry'
+            entry_timing = 'CLOSE'
+        else:
+            setup_stage = 'waiting_for_pullback'
+            entry_timing = 'WAIT'
+        
+        return {
+            'symbol': symbol,
+            'type': 'bullish_fibonacci_retracement',
+            'quality_score': quality_score,
+            'setup_stage': setup_stage,
+            'entry_timing_status': entry_timing,
+            'current_price': current_price,
+            'entry_price': entry_price,
+            'stop_loss': stop_loss,
+            'targets': targets,
+            'risk_pct': risk_pct,
+            'move_size_pct': move_size_pct,
+            'swing_high': swing_high,
+            'swing_low': swing_low,
+            'fib_levels': fib_levels,
+            'timestamp': datetime.now()
+        }
     
     def log_fibonacci_setup_to_database(self, setup):
         """Log Fibonacci setup to database using the isolated logger"""
