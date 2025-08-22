@@ -101,18 +101,14 @@ def calculate_performance_metrics():
         logger.cursor.execute(query)
         metrics_row = logger.cursor.fetchone()
         
-        # Debug logging
-        st.write(f"Debug: Raw metrics row: {metrics_row}")
-        
-        if metrics_row and metrics_row[0] > 0:  # Check if we have signals
+        if metrics_row and metrics_row['total_signals'] > 0:  # Check if we have signals
             metrics = {
-                'total_signals': int(metrics_row[0]) if metrics_row[0] else 0,
-                'avg_confidence': float(metrics_row[1]) if metrics_row[1] else 0.0,
-                'high_confidence_count': int(metrics_row[2]) if metrics_row[2] else 0,
-                'unique_symbols': int(metrics_row[3]) if metrics_row[3] else 0,
-                'avg_quality_score': float(metrics_row[4]) if metrics_row[4] else 0.0
+                'total_signals': int(metrics_row['total_signals']) if metrics_row['total_signals'] else 0,
+                'avg_confidence': float(metrics_row['avg_confidence']) if metrics_row['avg_confidence'] else 0.0,
+                'high_confidence_count': int(metrics_row['high_confidence_count']) if metrics_row['high_confidence_count'] else 0,
+                'unique_symbols': int(metrics_row['unique_symbols']) if metrics_row['unique_symbols'] else 0,
+                'avg_quality_score': float(metrics_row['avg_quality_score']) if metrics_row['avg_quality_score'] else 0.0
             }
-            st.write(f"Debug: Processed metrics: {metrics}")
         else:
             # Return default metrics if no data
             metrics = {
@@ -122,7 +118,6 @@ def calculate_performance_metrics():
                 'unique_symbols': 0,
                 'avg_quality_score': 0.0
             }
-            st.write(f"Debug: Using default metrics: {metrics}")
         
         # Performance by level
         level_query = """
@@ -145,7 +140,6 @@ def calculate_performance_metrics():
         return metrics, level_performance
     except Exception as e:
         st.error(f"Error calculating performance metrics: {e}")
-        st.write(f"Debug: Exception details: {type(e).__name__}: {str(e)}")
         # Return default metrics on error
         return {
             'total_signals': 0,
