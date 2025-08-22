@@ -708,12 +708,26 @@ with st.sidebar:
     if st.button("🔔 Test Alerts", use_container_width=True):
         st.info("Alert test sent to Telegram!")
 
+# Import Fibonacci analysis
+try:
+    from fibonacci_analysis import show_fibonacci_analysis
+    FIBONACCI_ANALYSIS_AVAILABLE = True
+except ImportError:
+    print("⚠️ Fibonacci analysis not available - fibonacci_analysis.py not found")
+    FIBONACCI_ANALYSIS_AVAILABLE = False
+
 # Main navigation
+navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
+                     "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
+                     "📈 Post-Mortem Analysis", "⚙️ Settings"]
+
+# Add Fibonacci analysis if available
+if FIBONACCI_ANALYSIS_AVAILABLE:
+    navigation_options.append("📐 Fibonacci Analysis")
+
 page = st.sidebar.radio(
     "📍 Navigation",
-    ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
-     "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
-     "📈 Post-Mortem Analysis", "⚙️ Settings"]
+    navigation_options
 )
 
 # Page content based on selection
@@ -1772,6 +1786,9 @@ elif page == "⚙️ Settings":
     # Save settings
     if st.button("Save All Settings", type="primary", use_container_width=True):
         st.success("Settings saved successfully!")
+
+elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
+    show_fibonacci_analysis()
 
 # Footer
 st.markdown("---")
