@@ -420,45 +420,66 @@ class FibonacciLogger:
         
         return abs(roc) > 0.02
     
-    def log_fibonacci_signal(self, signal: FibonacciSignal) -> str:
-        """Log signal to database with isolation"""
-        signal_id = f"{signal.symbol}_{signal.timeframe}_{datetime.now().timestamp()}"
-        
-        try:
-            with self.db_session() as session:
-                db_signal = FibonacciSignalDB(
-                    symbol=signal.symbol,
-                    timeframe=signal.timeframe,
-                    signal_id=signal_id,
-                    signal_type=signal.signal_type,
-                    fibonacci_level=signal.level,
-                    price_level=signal.price,
-                    current_price=signal.metadata.get('current_price', signal.price),
-                    confidence_score=signal.confidence,
-                    volume_confirmation=signal.volume_confirmation,
-                    momentum_confirmation=signal.momentum_confirmation,
-                    swing_high=signal.metadata.get('swing_high'),
-                    swing_low=signal.metadata.get('swing_low'),
-                    trend_direction=signal.metadata.get('trend_direction', 'NEUTRAL'),
-                    validation_rules_passed=self._get_validation_rules(signal),
-                    scanner_version='1.0.0',
-                    algorithm_parameters=self.config
-                )
-                
-                session.add(db_signal)
-                session.commit()
-                
-                self.performance_metrics['signals_generated'] += 1
-                self.logger.info(f"Signal logged: {signal_id}")
-                
-                return signal_id
-                
-        except IntegrityError as e:
-            self.logger.warning(f"Duplicate signal: {signal_id}")
-            return signal_id
-        except Exception as e:
-            self.logger.error(f"Failed to log signal: {str(e)}")
-            raise
+                                    def log_fibonacci_signal(self, signal: FibonacciSignal) -> str:
+                    """Log signal to database with isolation and complete trading data"""
+                    signal_id = f"{signal.symbol}_{signal.timeframe}_{datetime.now().timestamp()}"
+                    
+                    try:
+                        with self.db_session() as session:
+                            # Extract trading data from metadata
+                            metadata = signal.metadata
+                            
+                            db_signal = FibonacciSignalDB(
+                                symbol=signal.symbol,
+                                timeframe=signal.timeframe,
+                                signal_id=signal_id,
+                                signal_type=signal.signal_type,
+                                fibonacci_level=signal.level,
+                                price_level=signal.price,
+                                current_price=metadata.get('current_price', signal.price),
+                                confidence_score=signal.confidence,
+                                volume_confirmation=signal.volume_confirmation,
+                                momentum_confirmation=signal.momentum_confirmation,
+                                swing_high=metadata.get('swing_high'),
+                                swing_low=metadata.get('swing_low'),
+                                trend_direction=metadata.get('trend_direction', 'NEUTRAL'),
+                                validation_rules_passed=self._get_validation_rules(signal),
+                                scanner_version='1.0.0',
+                                algorithm_parameters=self.config,
+                                # Enhanced trading data
+                                quality_score=metadata.get('quality_score'),
+                                move_percentage=metadata.get('move_size_pct'),
+                                stop_loss_price=metadata.get('stop_loss'),
+                                entry_timing_status=metadata.get('entry_timing_status'),
+                                target_1_price=metadata.get('target_1_price'),
+                                target_1_percentage=metadata.get('target_1_percentage'),
+                                target_1_risk_reward=metadata.get('target_1_risk_reward'),
+                                target_2_price=metadata.get('target_2_price'),
+                                target_2_percentage=metadata.get('target_2_percentage'),
+                                target_2_risk_reward=metadata.get('target_2_risk_reward'),
+                                target_3_price=metadata.get('target_3_price'),
+                                target_3_percentage=metadata.get('target_3_percentage'),
+                                target_3_risk_reward=metadata.get('target_3_risk_reward'),
+                                entry_price=signal.price,
+                                risk_percentage=metadata.get('risk_pct'),
+                                setup_stage=metadata.get('setup_stage'),
+                                trading_metadata=metadata
+                            )
+                            
+                            session.add(db_signal)
+                            session.commit()
+                            
+                            self.performance_metrics['signals_generated'] += 1
+                            self.logger.info(f"Signal logged with complete trading data: {signal_id}")
+                            
+                            return signal_id
+                            
+                    except IntegrityError as e:
+                        self.logger.warning(f"Duplicate signal: {signal_id}")
+                        return signal_id
+                    except Exception as e:
+                        self.logger.error(f"Failed to log signal: {str(e)}")
+                        raise
     
     def _get_validation_rules(self, signal: FibonacciSignal) -> Dict:
         """Get validation rules passed for the signal"""
