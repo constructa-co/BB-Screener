@@ -80,8 +80,6 @@ def load_fibonacci_signals(hours_back=24, min_confidence=0.6):
     except Exception as e:
         st.error(f"Error loading Fibonacci signals: {e}")
         return pd.DataFrame()
-    finally:
-        conn.close()
 
 def calculate_performance_metrics():
     """Calculate Fibonacci scanner performance metrics"""
@@ -138,8 +136,6 @@ def calculate_performance_metrics():
     except Exception as e:
         st.error(f"Error calculating performance metrics: {e}")
         return None, pd.DataFrame()
-    finally:
-        conn.close()
 
 def create_fibonacci_analysis_page():
     """Create the main Fibonacci analysis page"""
@@ -355,8 +351,6 @@ def create_fibonacci_analysis_page():
                     st.plotly_chart(fig, use_container_width=True)
             except Exception as e:
                 st.error(f"Error loading time series data: {e}")
-            finally:
-                conn.close()
 
     with tab3:
         st.header("Top Trading Opportunities")
@@ -431,8 +425,6 @@ def create_fibonacci_analysis_page():
                     st.info("No high-confidence signals in the last 4 hours")
             except Exception as e:
                 st.error(f"Error loading top signals: {e}")
-            finally:
-                conn.close()
 
     with tab4:
         st.header("Historical Pattern Analysis")
@@ -487,8 +479,6 @@ def create_fibonacci_analysis_page():
                         )
             except Exception as e:
                 st.error(f"Error loading historical patterns: {e}")
-            finally:
-                conn.close()
 
     # Auto-refresh option
     if st.sidebar.button("🔄 Refresh Data"):
