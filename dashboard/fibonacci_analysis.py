@@ -21,13 +21,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def get_db_connection():
     """Get database connection - matches existing dashboard pattern"""
     try:
-        return psycopg2.connect(
-            host=os.getenv('DB_HOST', 'localhost'),
-            database=os.getenv('DB_NAME', 'bb_screener'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASSWORD'),
-            cursor_factory=RealDictCursor
-        )
+        # Use DATABASE_URL like the main dashboard
+        database_url = os.getenv('DATABASE_URL')
+        if database_url:
+            return psycopg2.connect(database_url)
+        else:
+            st.error("DATABASE_URL environment variable not found")
+            return None
     except Exception as e:
         st.error(f"Database connection failed: {e}")
         return None
