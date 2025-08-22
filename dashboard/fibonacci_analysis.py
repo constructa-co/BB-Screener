@@ -89,35 +89,42 @@ def calculate_performance_metrics():
         logger.cursor.execute("""
             SELECT 
                 COUNT(*) as total_signals,
-                AVG(confidence_score) as avg_confidence,
+                COALESCE(AVG(confidence_score), 0) as avg_confidence,
                 COUNT(CASE WHEN confidence_score >= 0.7 THEN 1 END) as high_confidence_count,
                 COUNT(DISTINCT symbol) as unique_symbols,
-                AVG(quality_score) as avg_quality_score
+                COALESCE(AVG(quality_score), 0) as avg_quality_score
             FROM other_scanners.fibonacci_signals
             WHERE detected_at > NOW() - INTERVAL '24 hours'
         """)
         
         metrics_row = logger.cursor.fetchone()
-        if metrics_row:
+        if metrics_row and metrics_row[0] > 0:  # Check if we have signals
             metrics = {
-                'total_signals': metrics_row[0],
-                'avg_confidence': metrics_row[1],
-                'high_confidence_count': metrics_row[2],
-                'unique_symbols': metrics_row[3],
-                'avg_quality_score': metrics_row[4]
+                'total_signals': metrics_row[0] or 0,
+                'avg_confidence': float(metrics_row[1] or 0),
+                'high_confidence_count': metrics_row[2] or 0,
+                'unique_symbols': metrics_row[3] or 0,
+                'avg_quality_score': float(metrics_row[4] or 0)
             }
         else:
-            metrics = None
+            # Return default metrics if no data
+            metrics = {
+                'total_signals': 0,
+                'avg_confidence': 0.0,
+                'high_confidence_count': 0,
+                'unique_symbols': 0,
+                'avg_quality_score': 0.0
+            }
         
         # Performance by level
         logger.cursor.execute("""
             SELECT 
                 fibonacci_level,
                 COUNT(*) as signal_count,
-                AVG(confidence_score) as avg_confidence,
+                COALESCE(AVG(confidence_score), 0) as avg_confidence,
                 signal_type,
                 COUNT(DISTINCT symbol) as symbols,
-                AVG(quality_score) as avg_quality
+                COALESCE(AVG(quality_score), 0) as avg_quality
             FROM other_scanners.fibonacci_signals
             WHERE detected_at > NOW() - INTERVAL '24 hours'
             GROUP BY fibonacci_level, signal_type
@@ -129,7 +136,14 @@ def calculate_performance_metrics():
         return metrics, level_performance
     except Exception as e:
         st.error(f"Error calculating performance metrics: {e}")
-        return None, pd.DataFrame()
+        # Return default metrics on error
+        return {
+            'total_signals': 0,
+            'avg_confidence': 0.0,
+            'high_confidence_count': 0,
+            'unique_symbols': 0,
+            'avg_quality_score': 0.0
+        }, pd.DataFrame()
 
 def create_fibonacci_analysis_page():
     """Create the main Fibonacci analysis page"""
@@ -176,7 +190,7 @@ def create_fibonacci_analysis_page():
 
     metrics, level_performance = calculate_performance_metrics()
 
-    if metrics:
+    if metrics and metrics['total_signals'] > 0:
         with col1:
             st.metric(
                 "Total Signals (24h)",
@@ -205,7 +219,7 @@ def create_fibonacci_analysis_page():
                 delta=None
             )
     else:
-        st.warning("No Fibonacci data available. Please ensure the scanner is running.")
+        st.info("No recent Fibonacci signals in the last 24 hours. The scanner may be running but no signals detected yet.")
 
     # Main content tabs
     tab1, tab2, tab3, tab4 = st.tabs(["📈 Live Signals", "📊 Performance Analysis", "🎯 Top Opportunities", "📉 Historical Patterns"])
