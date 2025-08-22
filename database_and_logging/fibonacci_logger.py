@@ -59,63 +59,63 @@ class FibonacciSignal:
     momentum_confirmation: bool
     metadata: Dict[str, Any]
 
-            class FibonacciSignalDB(Base):
-                """SQLAlchemy model for Fibonacci signals - isolated table with enhanced trading data"""
-                __tablename__ = 'fibonacci_signals'
-                __table_args__ = {'schema': 'other_scanners'}
-                
-                id = Column(Integer, primary_key=True, autoincrement=True)
-                symbol = Column(String(20), nullable=False)
-                timeframe = Column(String(10), nullable=False)
-                signal_id = Column(String(50), unique=True, nullable=False)
-                signal_type = Column(String(20), nullable=False)
-                fibonacci_level = Column(Float, nullable=False)
-                price_level = Column(Float, nullable=False)
-                current_price = Column(Float, nullable=False)
-                confidence_score = Column(Float, nullable=False)
-                volume_confirmation = Column(Boolean, default=False)
-                momentum_confirmation = Column(Boolean, default=False)
-                
-                # Pattern context
-                swing_high = Column(Float)
-                swing_low = Column(Float)
-                trend_direction = Column(String(10))
-                
-                # Enhanced trading data
-                quality_score = Column(Integer)
-                move_percentage = Column(Float)
-                stop_loss_price = Column(Float)
-                entry_timing_status = Column(String(20))
-                target_1_price = Column(Float)
-                target_1_percentage = Column(Float)
-                target_1_risk_reward = Column(Float)
-                target_2_price = Column(Float)
-                target_2_percentage = Column(Float)
-                target_2_risk_reward = Column(Float)
-                target_3_price = Column(Float)
-                target_3_percentage = Column(Float)
-                target_3_risk_reward = Column(Float)
-                entry_price = Column(Float)
-                risk_percentage = Column(Float)
-                setup_stage = Column(String(30))
-                trading_metadata = Column(JSON)
-                
-                # Validation and metadata
-                validation_rules_passed = Column(JSON)
-                scanner_version = Column(String(20))
-                algorithm_parameters = Column(JSON)
-                detected_at = Column(DateTime, default=datetime.utcnow)
-                
-                # Indexes for performance
-                __table_args__ = (
-                    Index('idx_fib_symbol_time', 'symbol', 'timeframe', 'detected_at'),
-                    Index('idx_fib_confidence', 'confidence_score'),
-                    Index('idx_fib_signal_type', 'signal_type'),
-                    Index('idx_fib_quality_score', 'quality_score'),
-                    Index('idx_fib_entry_timing', 'entry_timing_status'),
-                    Index('idx_fib_setup_stage', 'setup_stage'),
-                    {'schema': 'other_scanners'}
-                )
+class FibonacciSignalDB(Base):
+    """SQLAlchemy model for Fibonacci signals - isolated table with enhanced trading data"""
+    __tablename__ = 'fibonacci_signals'
+    __table_args__ = {'schema': 'other_scanners'}
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    symbol = Column(String(20), nullable=False)
+    timeframe = Column(String(10), nullable=False)
+    signal_id = Column(String(50), unique=True, nullable=False)
+    signal_type = Column(String(20), nullable=False)
+    fibonacci_level = Column(Float, nullable=False)
+    price_level = Column(Float, nullable=False)
+    current_price = Column(Float, nullable=False)
+    confidence_score = Column(Float, nullable=False)
+    volume_confirmation = Column(Boolean, default=False)
+    momentum_confirmation = Column(Boolean, default=False)
+    
+    # Pattern context
+    swing_high = Column(Float)
+    swing_low = Column(Float)
+    trend_direction = Column(String(10))
+    
+    # Enhanced trading data
+    quality_score = Column(Integer)
+    move_percentage = Column(Float)
+    stop_loss_price = Column(Float)
+    entry_timing_status = Column(String(20))
+    target_1_price = Column(Float)
+    target_1_percentage = Column(Float)
+    target_1_risk_reward = Column(Float)
+    target_2_price = Column(Float)
+    target_2_percentage = Column(Float)
+    target_2_risk_reward = Column(Float)
+    target_3_price = Column(Float)
+    target_3_percentage = Column(Float)
+    target_3_risk_reward = Column(Float)
+    entry_price = Column(Float)
+    risk_percentage = Column(Float)
+    setup_stage = Column(String(30))
+    trading_metadata = Column(JSON)
+    
+    # Validation and metadata
+    validation_rules_passed = Column(JSON)
+    scanner_version = Column(String(20))
+    algorithm_parameters = Column(JSON)
+    detected_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Indexes for performance
+    __table_args__ = (
+        Index('idx_fib_symbol_time', 'symbol', 'timeframe', 'detected_at'),
+        Index('idx_fib_confidence', 'confidence_score'),
+        Index('idx_fib_signal_type', 'signal_type'),
+        Index('idx_fib_quality_score', 'quality_score'),
+        Index('idx_fib_entry_timing', 'entry_timing_status'),
+        Index('idx_fib_setup_stage', 'setup_stage'),
+        {'schema': 'other_scanners'}
+    )
 
 class CircuitBreaker:
     """Circuit breaker for fault tolerance - mirrors Elliott Wave pattern"""
