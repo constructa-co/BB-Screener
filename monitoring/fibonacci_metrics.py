@@ -15,18 +15,22 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Database configuration
-DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'database': os.getenv('DB_NAME', 'bb_screener'),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PASSWORD')
-}
-
 def get_db_connection():
     """Get database connection"""
     try:
-        return psycopg2.connect(**DB_CONFIG)
+        # Use DATABASE_URL if available, otherwise fall back to individual config
+        database_url = os.getenv('DATABASE_URL')
+        if database_url:
+            return psycopg2.connect(database_url)
+        else:
+            # Fallback to individual config
+            DB_CONFIG = {
+                'host': os.getenv('DB_HOST', 'localhost'),
+                'database': os.getenv('DB_NAME', 'bb_screener'),
+                'user': os.getenv('DB_USER'),
+                'password': os.getenv('DB_PASSWORD')
+            }
+            return psycopg2.connect(**DB_CONFIG)
     except Exception as e:
         logger.error(f"Database connection failed: {e}")
         return None
