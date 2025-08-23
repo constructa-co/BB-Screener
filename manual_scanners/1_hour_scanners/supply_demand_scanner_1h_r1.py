@@ -217,6 +217,8 @@ class SupplyDemandScanner1HR1(BaseScanner):
                     
                     # Log to database if available
                     if self.db_logger:
+                        print(f"  🔍 Attempting to log {len(zones)} zones to database...")
+                        print(f"  📊 First zone sample: {zones[0] if zones else 'No zones'}")
                         batch_logged = self.db_logger.log_zones_batch(zones)
                         logged_count += batch_logged
                         print(f"  ✅ Logged {batch_logged} zones to database")
