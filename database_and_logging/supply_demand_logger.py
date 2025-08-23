@@ -61,6 +61,9 @@ class SupplyDemandLogger:
         
         # Handle numpy types
         if hasattr(value, 'item'):
+            # Special handling for numpy boolean types
+            if hasattr(value, 'dtype') and value.dtype.kind == 'b':
+                return bool(value.item())
             return self._sanitize_value(value.item())
         
         # Handle pandas types
