@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 
 # Configuration
-DATABASE_URL = os.getenv('DATABASE_URL')
 SCANNER_ID = os.getenv('SD_SCANNER_ID', 'supply_demand_01')
 
 class SupplyDemandLogger:
@@ -29,6 +28,11 @@ class SupplyDemandLogger:
         self.scanner_id = f"{SCANNER_ID}_{timeframe}"
         self.connection = None
         self.cursor = None
+        
+        # Check database URL
+        self.db_url = os.getenv('DATABASE_URL')
+        if not self.db_url:
+            raise ValueError("DATABASE_URL environment variable not set")
         
         # Circuit breaker state
         self.failure_count = 0
@@ -126,7 +130,7 @@ class SupplyDemandLogger:
         
         try:
             if not self.connection or self.connection.closed:
-                self.connection = psycopg2.connect(DATABASE_URL)
+                self.connection = psycopg2.connect(self.db_url)
                 self.connection.autocommit = False
             
             self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
