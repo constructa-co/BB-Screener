@@ -50,14 +50,30 @@ class TrendFollowingScannerR1(TrendFollowingScanner):
         # Initialize database logger if available
         if DB_LOGGING_ENABLED:
             try:
-                self.db_logger = TrendFollowingLogger(timeframe=timeframe)
-                print(f"✅ Database logger initialized for {timeframe}")
+                # Get DATABASE_URL from environment or try to read from .env file
+                db_url = os.getenv('DATABASE_URL')
+                if not db_url:
+                    # Try to read from .env file
+                    env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '.env')
+                    if os.path.exists(env_file):
+                        with open(env_file, 'r') as f:
+                            for line in f:
+                                if line.startswith('DATABASE_URL='):
+                                    db_url = line.split('=', 1)[1].strip().strip('"').strip("'")
+                                    break
+                
+                if db_url:
+                    self.db_logger = TrendFollowingLogger(timeframe=timeframe, dsn=db_url)
+                    print(f"✅ Database logger initialized for {timeframe}")
+                    self._db_logging_enabled = True
+                else:
+                    print("⚠️ DATABASE_URL not found in environment or .env file")
+                    self.db_logger = None
+                    self._db_logging_enabled = False
             except Exception as e:
                 print(f"❌ Failed to initialize database logger: {e}")
                 self.db_logger = None
                 self._db_logging_enabled = False
-            else:
-                self._db_logging_enabled = True
         else:
             self.db_logger = None
             self._db_logging_enabled = False
