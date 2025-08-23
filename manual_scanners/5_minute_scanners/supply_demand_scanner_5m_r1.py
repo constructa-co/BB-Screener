@@ -31,16 +31,16 @@ except ImportError as e:
     print(f"❌ Database logging not available: {e}")
     DB_LOGGING_ENABLED = False
 
-class SupplyDemandScanner5MR1(BaseScanner):
+class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
     """Enhanced Supply & Demand Scanner with database integration"""
     
-    def __init__(self, timeframe='5m'):
-        super().__init__(timeframe)
-        self.timeframe = timeframe
+    def __init__(self):
+        super().__init__()
+        self.timeframe = '5m'
         
         # Initialize database logger if available
         if DB_LOGGING_ENABLED:
-            self.db_logger = SupplyDemandLogger(timeframe=timeframe)
+            self.db_logger = SupplyDemandLogger(timeframe=self.timeframe)
         else:
             self.db_logger = None
     
@@ -246,7 +246,7 @@ class SupplyDemandScanner5MR1(BaseScanner):
 
 def main():
     """Main execution"""
-    scanner = SupplyDemandScanner5MR1(timeframe='5m')
+    scanner = SupplyDemandScanner5MR1()
     results = scanner.scan_and_log()
     
     # Save results to CSV for backup
