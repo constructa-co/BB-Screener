@@ -7,7 +7,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
@@ -18,6 +18,25 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import TradeLogger (same as main dashboard)
 from trade_logger import TradeLogger
+
+# Timezone handling
+def convert_to_uae_time(dt):
+    """Convert datetime to UAE timezone (UTC+4)"""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        # Assume UTC if no timezone info
+        dt = dt.replace(tzinfo=timezone.utc)
+    # UAE is UTC+4
+    uae_offset = timezone(timedelta(hours=4))
+    return dt.astimezone(uae_offset)
+
+def format_datetime_for_display(dt):
+    """Format datetime for display in UAE timezone"""
+    if dt is None:
+        return "N/A"
+    uae_dt = convert_to_uae_time(dt)
+    return uae_dt.strftime('%Y-%m-%d %H:%M:%S UAE')
 
 # Use the same TradeLogger as the main dashboard
 def get_db():
@@ -71,6 +90,9 @@ def load_fibonacci_signals(hours_back=24, min_confidence=0.6):
         results = logger.cursor.fetchall()
         if results:
             df = pd.DataFrame(results)
+            # Convert detected_at timestamps to UAE timezone
+            if 'detected_at' in df.columns:
+                df['detected_at'] = pd.to_datetime(df['detected_at']).apply(convert_to_uae_time)
             return df
         else:
             return pd.DataFrame()
@@ -333,6 +355,9 @@ def create_fibonacci_analysis_page():
                 """, (f"{hours_back} hours",))
                 
                 hourly_signals = pd.DataFrame(logger.cursor.fetchall())
+                # Convert hour timestamps to UAE timezone
+                if not hourly_signals.empty and 'hour' in hourly_signals.columns:
+                    hourly_signals['hour'] = pd.to_datetime(hourly_signals['hour']).apply(convert_to_uae_time)
                 
                 if not hourly_signals.empty:
                     fig = go.Figure()
