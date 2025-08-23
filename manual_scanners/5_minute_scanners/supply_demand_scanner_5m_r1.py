@@ -193,7 +193,7 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
     def scan_and_log(self, symbols: Optional[List[str]] = None) -> Dict:
         """Main scanning method with database logging"""
         if symbols is None:
-            symbols = self.get_top_coins()  # Use parent's method
+            symbols = self.get_symbols()  # Use parent's method
         
         print(f"\n🔍 Scanning {len(symbols)} symbols for Supply & Demand zones")
         print(f"⏰ Timeframe: {self.timeframe}")
@@ -205,7 +205,7 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
         for symbol in symbols:
             try:
                 # Get price data using parent's method
-                df = self.get_binance_klines(symbol)
+                df = self.get_5m_data(symbol)
                 if df is None or len(df) < 50:
                     continue
                 
