@@ -40,7 +40,13 @@ class SupplyDemandScanner1HR1(BaseScanner):
         
         # Initialize database logger if available
         if DB_LOGGING_ENABLED:
-            self.db_logger = SupplyDemandLogger(timeframe=timeframe)
+            try:
+                self.db_logger = SupplyDemandLogger(timeframe=timeframe)
+                print("✅ Database logger initialized successfully")
+            except Exception as e:
+                print(f"❌ Database logger initialization failed: {e}")
+                self.db_logger = None
+                DB_LOGGING_ENABLED = False
         else:
             self.db_logger = None
     
