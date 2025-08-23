@@ -271,6 +271,7 @@ class SupplyDemandLogger:
                 
             except Exception as e:
                 self.logger.error(f"Failed to log zone: {e}")
+                print(f"    ❌ Database error: {e}")
                 return None
     
     def log_zones_batch(self, zones: List[Dict[str, Any]]) -> int:
