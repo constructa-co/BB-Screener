@@ -717,11 +717,17 @@ except ImportError:
     FIBONACCI_ANALYSIS_AVAILABLE = False
 
 # Import Supply & Demand analysis
+import sys
+import os
+
+# Add the parent directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 try:
     from supply_demand_analysis import show_supply_demand_analysis
     SUPPLY_DEMAND_ANALYSIS_AVAILABLE = True
-except ImportError:
-    print("⚠️ Supply & Demand analysis not available - supply_demand_analysis.py not found")
+except ImportError as e:
+    print(f"⚠️ Supply & Demand import failed: {e}")
     SUPPLY_DEMAND_ANALYSIS_AVAILABLE = False
 
 # Main navigation
