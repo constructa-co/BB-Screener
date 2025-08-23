@@ -17,10 +17,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 # Import the original scanner (R0) to extend it
 import importlib.util
-spec = importlib.util.spec_from_file_location("base_scanner", "/opt/bb-screener/manual_scanners/5_min_scanners/supply_&_demand_scanner_5m_r0.py")
+spec = importlib.util.spec_from_file_location("base_scanner", "manual_scanners/5_min_scanners/supply_&_demand_scanner_5m_r0.py")
 base_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base_module)
-BaseScanner = base_module.SupplyDemandScanner5M
+SupplyDemandScanner5M = base_module.SupplyDemandScanner5M
 
 # Import database logger
 try:
