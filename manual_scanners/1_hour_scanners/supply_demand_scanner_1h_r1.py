@@ -46,9 +46,10 @@ class SupplyDemandScanner1HR1(BaseScanner):
             except Exception as e:
                 print(f"❌ Database logger initialization failed: {e}")
                 self.db_logger = None
-                DB_LOGGING_ENABLED = False
+                self.db_logging_enabled = False
         else:
             self.db_logger = None
+            self.db_logging_enabled = False
     
     def identify_zones(self, symbol: str, df: pd.DataFrame) -> List[Dict]:
         """
@@ -222,7 +223,7 @@ class SupplyDemandScanner1HR1(BaseScanner):
                     print(f"\n{symbol}: Found {len(zones)} zones")
                     
                     # Log to database if available
-                    if self.db_logger:
+                    if self.db_logger and hasattr(self, 'db_logging_enabled') and self.db_logging_enabled:
                         print(f"  🔍 Attempting to log {len(zones)} zones to database...")
                         print(f"  📊 First zone sample: {zones[0] if zones else 'No zones'}")
                         batch_logged = self.db_logger.log_zones_batch(zones)
