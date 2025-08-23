@@ -52,33 +52,33 @@ def load_supply_demand_data():
             algorithm_parameters,
             detected_at,
             expires_at,
-            status
-        FROM other_scanners.supply_demand_zones
-        WHERE detected_at > NOW() - INTERVAL '7 days'
-        ORDER BY detected_at DESC
-        """
-        
-        logger.cursor.execute(zones_query)
-        zones_data = pd.DataFrame(logger.cursor.fetchall(), columns=[
-            'symbol', 'zone_type', 'zone_top', 'zone_bottom', 'zone_strength',
-            'touch_count', 'current_price', 'distance_to_zone', 'distance_percentage',
-            'price_position', 'quality_score', 'formation_type', 'freshness_score',
-            'reliability_score', 'zone_volume', 'average_volume', 'volume_ratio',
-            'volume_confirmation', 'formation_candles', 'formation_start', 'formation_end',
-            'algorithm_parameters', 'detected_at', 'expires_at', 'status'
-        ])
-        
-        # Convert timestamp columns
-        zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at'])
-        zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at'])
-        zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start'])
-        zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end'])
-        
-        return zones_data
-        
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return pd.DataFrame()
+                            validation_status
+            FROM other_scanners.supply_demand_zones
+            WHERE detected_at > NOW() - INTERVAL '7 days'
+            ORDER BY detected_at DESC
+            """
+            
+            logger.cursor.execute(zones_query)
+            zones_data = pd.DataFrame(logger.cursor.fetchall(), columns=[
+                'symbol', 'zone_type', 'zone_top', 'zone_bottom', 'zone_strength',
+                'touch_count', 'current_price', 'distance_to_zone', 'distance_percentage',
+                'price_position', 'quality_score', 'formation_type', 'freshness_score',
+                'reliability_score', 'zone_volume', 'average_volume', 'volume_ratio',
+                'volume_confirmation', 'formation_candles', 'formation_start', 'formation_end',
+                'algorithm_parameters', 'detected_at', 'expires_at', 'validation_status'
+            ])
+            
+            # Convert timestamp columns
+            zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at'])
+            zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at'])
+            zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start'])
+            zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end'])
+            
+            return zones_data
+            
+        except Exception as e:
+            st.error(f"Error loading data: {e}")
+            return pd.DataFrame()
 
 def calculate_performance_metrics(data):
     """Calculate performance metrics for S&D zones"""
@@ -86,13 +86,11 @@ def calculate_performance_metrics(data):
         return None
     
     try:
-        logger = get_db()
-        
         # Total zones in last 7 days
         total_zones = len(data)
         
         # Active zones (not expired)
-        active_zones = len(data[data['status'] == 'ACTIVE'])
+        active_zones = len(data[data['validation_status'] == 'ACTIVE'])
         
         # Average quality score
         avg_quality = data['quality_score'].mean()
