@@ -68,11 +68,11 @@ def load_supply_demand_data():
             'algorithm_parameters', 'detected_at', 'expires_at', 'validation_status'
         ])
         
-        # Convert timestamp columns
-        zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at'])
-        zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at'])
-        zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start'])
-        zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end'])
+        # Convert timestamp columns and convert to UAE time (UTC+4)
+        zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
+        zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
+        zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
+        zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
         
         return zones_data
         
