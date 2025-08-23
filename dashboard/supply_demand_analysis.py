@@ -165,7 +165,11 @@ def show_supply_demand_analysis():
     st.write("**Recent Zones (Last 24 hours):**")
     # Convert UTC to UAE time for display only
     uae_offset = timedelta(hours=4)
-    recent_data = data[data['detected_at'] > datetime.now() - timedelta(days=1)]
+    
+    # Fix timezone comparison by making both sides timezone-aware
+    from datetime import timezone
+    cutoff_time = datetime.now(timezone.utc) - timedelta(days=1)
+    recent_data = data[data['detected_at'] > cutoff_time]
     
     if not recent_data.empty:
         # Create display data with UAE time conversion
