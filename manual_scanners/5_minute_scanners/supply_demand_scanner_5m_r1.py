@@ -165,7 +165,8 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
     def _determine_formation_type(self, df: pd.DataFrame, zone: Dict) -> str:
         """Determine zone formation pattern"""
         if not zone.get('creation_index'):
-            return 'UNKNOWN'
+            # Default to a valid formation type based on zone type
+            return 'DROP_BASE_RALLY' if zone.get('type') == 'DEMAND' else 'RALLY_BASE_DROP'
         
         idx = zone['creation_index']
         
@@ -179,18 +180,19 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
             before_trend = df['close'].iloc[before_end] - df['close'].iloc[before_start]
             after_trend = df['close'].iloc[after_end] - df['close'].iloc[after_start]
             
-            if zone['type'] == 'demand':
+            if zone['type'] == 'DEMAND':
                 if before_trend < 0 and after_trend > 0:
                     return 'DROP_BASE_RALLY'
                 elif before_trend > 0 and after_trend > 0:
                     return 'RALLY_BASE_RALLY'
-            else:  # supply
+            else:  # SUPPLY
                 if before_trend > 0 and after_trend < 0:
                     return 'RALLY_BASE_DROP'
                 elif before_trend < 0 and after_trend < 0:
                     return 'DROP_BASE_DROP'
         
-        return 'UNKNOWN'
+        # Default to a valid formation type based on zone type instead of UNKNOWN
+        return 'DROP_BASE_RALLY' if zone.get('type') == 'DEMAND' else 'RALLY_BASE_DROP'
     
     def scan_and_log(self, symbols: Optional[List[str]] = None) -> Dict:
         """Main scanning method with database logging"""
