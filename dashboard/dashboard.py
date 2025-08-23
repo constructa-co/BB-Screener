@@ -716,6 +716,14 @@ except ImportError:
     print("⚠️ Fibonacci analysis not available - fibonacci_analysis.py not found")
     FIBONACCI_ANALYSIS_AVAILABLE = False
 
+# Import Supply & Demand analysis
+try:
+    from supply_demand_analysis import show_supply_demand_analysis
+    SUPPLY_DEMAND_ANALYSIS_AVAILABLE = True
+except ImportError:
+    print("⚠️ Supply & Demand analysis not available - supply_demand_analysis.py not found")
+    SUPPLY_DEMAND_ANALYSIS_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -724,6 +732,10 @@ navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Oppor
 # Add Fibonacci analysis if available
 if FIBONACCI_ANALYSIS_AVAILABLE:
     navigation_options.append("📐 Fibonacci Analysis")
+
+# Add Supply & Demand analysis if available
+if SUPPLY_DEMAND_ANALYSIS_AVAILABLE:
+    navigation_options.append("🏗️ Supply & Demand Analysis")
 
 page = st.sidebar.radio(
     "📍 Navigation",
@@ -1786,6 +1798,9 @@ elif page == "⚙️ Settings":
     # Save settings
     if st.button("Save All Settings", type="primary", use_container_width=True):
         st.success("Settings saved successfully!")
+
+elif page == "🏗️ Supply & Demand Analysis" and SUPPLY_DEMAND_ANALYSIS_AVAILABLE:
+    show_supply_demand_analysis()
 
 elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
     show_fibonacci_analysis()
