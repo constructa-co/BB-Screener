@@ -276,9 +276,14 @@ class SupplyDemandLogger:
     def log_zones_batch(self, zones: List[Dict[str, Any]]) -> int:
         """Log multiple zones in a batch"""
         logged_count = 0
-        for zone in zones:
-            if self.log_zone(zone):
+        for i, zone in enumerate(zones):
+            print(f"    🔍 Logging zone {i+1}/{len(zones)}: {zone.get('symbol', 'UNKNOWN')}")
+            result = self.log_zone(zone)
+            if result:
                 logged_count += 1
+                print(f"    ✅ Zone {i+1} logged successfully: {result}")
+            else:
+                print(f"    ❌ Zone {i+1} failed to log")
         return logged_count
     
     def close(self):
