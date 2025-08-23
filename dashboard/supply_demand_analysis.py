@@ -163,12 +163,17 @@ def show_supply_demand_analysis():
     
     # Recent zones table
     st.write("**Recent Zones (Last 24 hours):**")
+    # Convert UTC to UAE time for display only
+    uae_offset = timedelta(hours=4)
     recent_data = data[data['detected_at'] > datetime.now() - timedelta(days=1)]
     
     if not recent_data.empty:
-        display_cols = ['symbol', 'zone_type', 'quality_score', 'zone_strength', 
-                       'price_position', 'formation_type', 'detected_at']
-        st.dataframe(recent_data[display_cols].head(20), use_container_width=True)
+        # Create display data with UAE time conversion
+        display_data = recent_data[['symbol', 'zone_type', 'quality_score', 'zone_strength', 
+                                   'price_position', 'formation_type', 'detected_at']].copy()
+        # Convert UTC to UAE time for display
+        display_data['detected_at'] = display_data['detected_at'] + timedelta(hours=4)
+        st.dataframe(display_data.head(20), use_container_width=True)
     else:
         st.info("No zones detected in the last 24 hours.")
     
