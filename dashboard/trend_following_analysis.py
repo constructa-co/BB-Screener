@@ -67,24 +67,27 @@ def get_trend_following_data():
             ORDER BY detected_at DESC
         """
         
-        print(f"Executing query: {query[:100]}...")
         cursor.execute(query)
-        print("✅ Query executed successfully")
         
         columns = [desc[0] for desc in cursor.description]
-        print(f"Columns: {columns}")
         
         data = cursor.fetchall()
-        print(f"Data rows: {len(data)}")
         
         if data:
             df = pd.DataFrame(data, columns=columns)
-            print(f"DataFrame created: {df.shape}")
             df['detected_at'] = pd.to_datetime(df['detected_at'])
-            print("✅ Timestamps converted")
+            
+            # Convert decimal types to float for pandas compatibility
+            numeric_columns = ['trend_strength', 'momentum_score', 'quality_score', 'confidence_score',
+                              'entry_price', 'stop_loss', 'target_1', 'target_2', 'target_3',
+                              'risk_reward_1', 'risk_reward_2', 'risk_reward_3', 'risk_pct']
+            
+            for col in numeric_columns:
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+            
             return df
         else:
-            print("ℹ️ No data returned, returning empty DataFrame")
             return pd.DataFrame()
             
     except Exception as e:
