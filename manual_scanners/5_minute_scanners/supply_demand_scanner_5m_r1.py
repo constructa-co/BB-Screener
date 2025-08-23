@@ -49,8 +49,10 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
         Enhanced zone identification with quality scoring
         Extends the base scanner's zone detection
         """
-        # Call parent method to get base zones
-        zones = super().detect_aggressive_moves(df)
+        # Call parent methods to get base zones
+        supply_zones = super().detect_supply_zones(df)
+        demand_zones = super().detect_demand_zones(df)
+        zones = supply_zones + demand_zones
         
         # Enhance zones with additional metrics for database
         current_price = float(df['close'].iloc[-1])
