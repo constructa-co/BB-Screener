@@ -162,9 +162,7 @@ class SupplyDemandLogger:
             
             try:
                 # Sanitize all values
-                print(f"    🔍 Before sanitization - volume_confirmation: {zone_data.get('volume_confirmation')} (type: {type(zone_data.get('volume_confirmation'))})")
                 zone_data = self._sanitize_value(zone_data)
-                print(f"    🔍 After sanitization - volume_confirmation: {zone_data.get('volume_confirmation')} (type: {type(zone_data.get('volume_confirmation'))})")
                 
                 # Generate unique zone ID
                 zone_id = f"{zone_data['symbol']}_{self.timeframe}_{zone_data['zone_type']}_{datetime.now().timestamp()}"
@@ -276,20 +274,14 @@ class SupplyDemandLogger:
                 
             except Exception as e:
                 self.logger.error(f"Failed to log zone: {e}")
-                print(f"    ❌ Database error: {e}")
                 return None
     
     def log_zones_batch(self, zones: List[Dict[str, Any]]) -> int:
         """Log multiple zones in a batch"""
         logged_count = 0
-        for i, zone in enumerate(zones):
-            print(f"    🔍 Logging zone {i+1}/{len(zones)}: {zone.get('symbol', 'UNKNOWN')}")
-            result = self.log_zone(zone)
-            if result:
+        for zone in zones:
+            if self.log_zone(zone):
                 logged_count += 1
-                print(f"    ✅ Zone {i+1} logged successfully: {result}")
-            else:
-                print(f"    ❌ Zone {i+1} failed to log")
         return logged_count
     
     def close(self):
