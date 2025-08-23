@@ -730,6 +730,14 @@ except ImportError as e:
     print(f"⚠️ Supply & Demand import failed: {e}")
     SUPPLY_DEMAND_ANALYSIS_AVAILABLE = False
 
+# Import Trend Following analysis
+try:
+    from trend_following_analysis import show_trend_following_analysis
+    TREND_FOLLOWING_ANALYSIS_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Trend Following import failed: {e}")
+    TREND_FOLLOWING_ANALYSIS_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -742,6 +750,10 @@ if FIBONACCI_ANALYSIS_AVAILABLE:
 # Add Supply & Demand analysis if available
 if SUPPLY_DEMAND_ANALYSIS_AVAILABLE:
     navigation_options.append("🏗️ Supply & Demand Analysis")
+
+# Add Trend Following analysis if available
+if TREND_FOLLOWING_ANALYSIS_AVAILABLE:
+    navigation_options.append("🎯 Trend Following Analysis")
 
 page = st.sidebar.radio(
     "📍 Navigation",
@@ -1807,6 +1819,9 @@ elif page == "⚙️ Settings":
 
 elif page == "🏗️ Supply & Demand Analysis" and SUPPLY_DEMAND_ANALYSIS_AVAILABLE:
     show_supply_demand_analysis()
+
+elif page == "🎯 Trend Following Analysis" and TREND_FOLLOWING_ANALYSIS_AVAILABLE:
+    show_trend_following_analysis()
 
 elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
     show_fibonacci_analysis()
