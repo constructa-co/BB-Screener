@@ -182,6 +182,12 @@ def show_supply_demand_analysis():
         uae_tz = pytz.timezone('Asia/Dubai')
         display_data['detected_at'] = display_data['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
+        # Convert Decimal columns to numeric for calculations
+        display_data['zone_top'] = pd.to_numeric(display_data['zone_top'], errors='coerce')
+        display_data['zone_bottom'] = pd.to_numeric(display_data['zone_bottom'], errors='coerce')
+        display_data['current_price'] = pd.to_numeric(display_data['current_price'], errors='coerce')
+        display_data['zone_strength'] = pd.to_numeric(display_data['zone_strength'], errors='coerce')
+        
         # Add actionable trading data
         display_data['Entry'] = display_data['zone_top'].round(6)  # Use zone top as entry for DEMAND, zone bottom for SUPPLY
         display_data['Stop Loss'] = display_data['zone_bottom'].round(6)  # Use zone bottom as stop for DEMAND, zone top for SUPPLY
