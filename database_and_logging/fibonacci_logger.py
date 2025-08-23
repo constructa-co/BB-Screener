@@ -24,7 +24,6 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.exc import OperationalError, IntegrityError
 
 # Configuration from environment with defaults
-DB_URL = os.getenv('DATABASE_URL')
 LOG_LEVEL = os.getenv('FIBONACCI_LOG_LEVEL', 'INFO')
 SCANNER_ID = os.getenv('FIBONACCI_SCANNER_ID', 'fibonacci_01')
 MEMORY_LIMIT_MB = int(os.getenv('FIBONACCI_MEMORY_LIMIT_MB', '512'))
@@ -258,11 +257,12 @@ class FibonacciLogger:
         self.logger = self._setup_logger()
         
         # Initialize database connection
-        if not DB_URL:
+        db_url = os.getenv('DATABASE_URL')
+        if not db_url:
             raise ValueError("DATABASE_URL environment variable not set")
         
         try:
-            self.db_engine = create_engine(DB_URL, pool_size=5, max_overflow=10)
+            self.db_engine = create_engine(db_url, pool_size=5, max_overflow=10)
             Base.metadata.create_all(self.db_engine)
             self.Session = sessionmaker(bind=self.db_engine)
             self.logger.info("Database connection established successfully")
