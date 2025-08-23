@@ -55,9 +55,12 @@ class TrendFollowingScannerR1(TrendFollowingScanner):
             except Exception as e:
                 print(f"❌ Failed to initialize database logger: {e}")
                 self.db_logger = None
-                DB_LOGGING_ENABLED = False
+                self._db_logging_enabled = False
+            else:
+                self._db_logging_enabled = True
         else:
             self.db_logger = None
+            self._db_logging_enabled = False
         
         # Enhanced configuration
         self.quality_threshold = 60  # Minimum quality score for database logging
@@ -97,7 +100,7 @@ class TrendFollowingScannerR1(TrendFollowingScanner):
             print(f"\n📈 Base scan complete: {total_found} opportunities found")
             
             # Log opportunities to database if enabled
-            if DB_LOGGING_ENABLED and self.db_logger and opportunities:
+            if self._db_logging_enabled and self.db_logger and opportunities:
                 print(f"💾 Logging opportunities to database...")
                 
                 for i, opportunity in enumerate(opportunities, 1):
@@ -172,7 +175,7 @@ class TrendFollowingScannerR1(TrendFollowingScanner):
         print(f"📊 SCAN SUMMARY:")
         print(f"   Total opportunities found: {len(opportunities)}")
         print(f"   Successfully logged to DB: {total_logged}")
-        print(f"   Database logging: {'Enabled' if DB_LOGGING_ENABLED else 'Disabled'}")
+        print(f"   Database logging: {'Enabled' if self._db_logging_enabled else 'Disabled'}")
         print(f"   Quality threshold: {self.quality_threshold}")
         
         if errors:
@@ -194,7 +197,7 @@ class TrendFollowingScannerR1(TrendFollowingScanner):
                       f"Direction: {trade.get('direction', 'Unknown')}")
         
         # Database status
-        if DB_LOGGING_ENABLED:
+        if self._db_logging_enabled:
             print(f"\n💾 DATABASE STATUS:")
             print(f"   Logger: Active")
             print(f"   Schema: other_scanners.trend_following_signals")
