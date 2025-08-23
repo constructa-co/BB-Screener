@@ -21,10 +21,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def get_trend_following_data():
     """Get trend following data from database"""
     try:
-        # Get database URL from environment
+        # Get database URL from environment or .env file
         db_url = os.getenv('DATABASE_URL')
         if not db_url:
-            st.error("❌ DATABASE_URL not found in environment")
+            # Try to read from .env file
+            env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+            if os.path.exists(env_file):
+                with open(env_file, 'r') as f:
+                    for line in f:
+                        if line.startswith('DATABASE_URL='):
+                            db_url = line.split('=', 1)[1].strip().strip('"').strip("'")
+                            break
+        
+        if not db_url:
+            print("❌ DATABASE_URL not found in environment or .env file")
             return None
         
         # Connect to database
@@ -57,19 +67,28 @@ def get_trend_following_data():
             ORDER BY detected_at DESC
         """
         
+        print(f"Executing query: {query[:100]}...")
         cursor.execute(query)
+        print("✅ Query executed successfully")
+        
         columns = [desc[0] for desc in cursor.description]
+        print(f"Columns: {columns}")
+        
         data = cursor.fetchall()
+        print(f"Data rows: {len(data)}")
         
         if data:
             df = pd.DataFrame(data, columns=columns)
+            print(f"DataFrame created: {df.shape}")
             df['detected_at'] = pd.to_datetime(df['detected_at'])
+            print("✅ Timestamps converted")
             return df
         else:
+            print("ℹ️ No data returned, returning empty DataFrame")
             return pd.DataFrame()
             
     except Exception as e:
-        st.error(f"❌ Database connection failed: {e}")
+        print(f"❌ Database connection failed: {e}")
         return None
     finally:
         if 'conn' in locals():
@@ -219,12 +238,15 @@ def show_trend_following_analysis():
     recent_df = df[df['detected_at'] > datetime.now() - timedelta(hours=24)].copy()
     
     if not recent_df.empty:
-        # Format the data for display
+        # Format the data for display with actionable trading data
         display_df = recent_df[['symbol', 'signal_type', 'trend_direction', 'quality_score', 
-                               'trend_strength', 'risk_reward_1', 'detected_at']].copy()
+                               'trend_strength', 'risk_reward_1', 'entry_price', 'stop_loss', 
+                               'target_1', 'target_2', 'target_3', 'detected_at']].copy()
         
-        # Format timestamps
-        display_df['detected_at'] = display_df['detected_at'].dt.strftime('%H:%M')
+        # Format timestamps in UAE timezone
+        import pytz
+        uae_tz = pytz.timezone('Asia/Dubai')
+        display_df['detected_at'] = display_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
         # Add emojis for signal types
         display_df['Signal'] = display_df['signal_type'].map({
@@ -233,12 +255,23 @@ def show_trend_following_analysis():
             'NEUTRAL': '⚪ NEUTRAL'
         })
         
+        # Add actionable trading data
+        display_df['Entry'] = display_df['entry_price'].round(6)
+        display_df['Stop Loss'] = display_df['stop_loss'].round(6)
+        display_df['TP1'] = display_df['target_1'].round(6)
+        display_df['TP2'] = display_df['target_2'].round(6)
+        display_df['TP3'] = display_df['target_3'].round(6)
+        
+        # Add trade action recommendation
+        display_df['Action'] = display_df['quality_score'].apply(lambda x: '🎯 ENTER NOW' if x >= 80 else '⏳ WAIT' if x >= 60 else '❌ AVOID')
+        
         # Reorder columns
         display_df = display_df[['symbol', 'Signal', 'trend_direction', 'quality_score', 
-                                'trend_strength', 'risk_reward_1', 'detected_at']]
+                                'trend_strength', 'risk_reward_1', 'Entry', 'Stop Loss', 
+                                'TP1', 'TP2', 'TP3', 'Action', 'detected_at']]
         
         # Rename columns for display
-        display_df.columns = ['Symbol', 'Signal', 'Trend', 'Quality', 'Strength', 'R:R', 'Time']
+        display_df.columns = ['Symbol', 'Signal', 'Trend', 'Quality', 'Strength', 'R:R', 'Entry', 'Stop Loss', 'TP1', 'TP2', 'TP3', 'Action', 'Time']
         
         st.dataframe(display_df, use_container_width=True)
     else:
@@ -251,22 +284,36 @@ def show_trend_following_analysis():
     
     # Get top 10 signals by quality score
     top_signals = df.nlargest(10, 'quality_score')[['symbol', 'signal_type', 'trend_direction', 
-                                                   'quality_score', 'trend_strength', 'risk_reward_1', 'detected_at']]
+                                                   'quality_score', 'trend_strength', 'risk_reward_1', 
+                                                   'entry_price', 'stop_loss', 'target_1', 'target_2', 'target_3', 'detected_at']]
     
     if not top_signals.empty:
         # Format for display
         top_display = top_signals.copy()
-        top_display['detected_at'] = top_display['detected_at'].dt.strftime('%Y-%m-%d %H:%M')
+        import pytz
+        uae_tz = pytz.timezone('Asia/Dubai')
+        top_display['detected_at'] = top_display['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%Y-%m-%d %H:%M')
         top_display['Signal'] = top_display['signal_type'].map({
             'BULLISH': '🟢 BULLISH',
             'BEARISH': '🔴 BEARISH',
             'NEUTRAL': '⚪ NEUTRAL'
         })
         
+        # Add actionable trading data
+        top_display['Entry'] = top_display['entry_price'].round(6)
+        top_display['Stop Loss'] = top_display['stop_loss'].round(6)
+        top_display['TP1'] = top_display['target_1'].round(6)
+        top_display['TP2'] = top_display['target_2'].round(6)
+        top_display['TP3'] = top_display['target_3'].round(6)
+        
+        # Add trade action recommendation
+        top_display['Action'] = top_display['quality_score'].apply(lambda x: '🎯 ENTER NOW' if x >= 80 else '⏳ WAIT' if x >= 60 else '❌ AVOID')
+        
         # Reorder columns
         top_display = top_display[['symbol', 'Signal', 'trend_direction', 'quality_score', 
-                                  'trend_strength', 'risk_reward_1', 'detected_at']]
-        top_display.columns = ['Symbol', 'Signal', 'Trend', 'Quality', 'Strength', 'R:R', 'Detected']
+                                  'trend_strength', 'risk_reward_1', 'Entry', 'Stop Loss', 
+                                  'TP1', 'TP2', 'TP3', 'Action', 'detected_at']]
+        top_display.columns = ['Symbol', 'Signal', 'Trend', 'Quality', 'Strength', 'R:R', 'Entry', 'Stop Loss', 'TP1', 'TP2', 'TP3', 'Action', 'Detected']
         
         st.dataframe(top_display, use_container_width=True)
     
@@ -280,8 +327,15 @@ def show_trend_following_analysis():
     with col1:
         # Average trend strength
         avg_strength = df['trend_strength'].mean()
-        st.metric("Avg Trend Strength", f"{avg_strength:.1f}/100", 
-                 f"±{df['trend_strength'].std():.1f}")
+        if pd.notna(avg_strength):
+            std_strength = df['trend_strength'].std()
+            if pd.notna(std_strength):
+                st.metric("Avg Trend Strength", f"{float(avg_strength):.1f}/100", 
+                         f"±{float(std_strength):.1f}")
+            else:
+                st.metric("Avg Trend Strength", f"{float(avg_strength):.1f}/100", "±N/A")
+        else:
+            st.metric("Avg Trend Strength", "N/A", "No data")
     
     with col2:
         # High quality signals (>80)
@@ -292,8 +346,15 @@ def show_trend_following_analysis():
         # Average R:R ratio
         if not rr_df.empty:
             avg_rr = rr_df['risk_reward_1'].mean()
-            st.metric("Avg Risk-Reward", f"{avg_rr:.2f}:1", 
-                     f"±{rr_df['risk_reward_1'].std():.2f}")
+            if pd.notna(avg_rr):
+                std_rr = rr_df['risk_reward_1'].std()
+                if pd.notna(std_rr):
+                    st.metric("Avg Risk-Reward", f"{float(avg_rr):.2f}:1", 
+                             f"±{float(std_rr):.2f}")
+                else:
+                    st.metric("Avg Risk-Reward", f"{float(avg_rr):.2f}:1", "±N/A")
+            else:
+                st.metric("Avg Risk-Reward", "N/A", "No data")
         else:
             st.metric("Avg Risk-Reward", "N/A", "No data")
     
