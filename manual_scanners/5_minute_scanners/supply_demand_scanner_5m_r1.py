@@ -96,8 +96,8 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
                 'volume_ratio': zone.get('volume_ratio', 1.0),
                 'volume_confirmation': zone.get('volume_ratio', 1.0) >= 1.1,
                 'formation_candles': zone.get('zone_range_pct', 0),
-                'formation_start': zone.get('creation_index'),
-                'formation_end': zone.get('creation_index'),
+                'formation_start': df.iloc[zone.get('creation_index', 0)]['timestamp'] if zone.get('creation_index') is not None else None,
+                'formation_end': df.iloc[zone.get('creation_index', 0)]['timestamp'] if zone.get('creation_index') is not None else None,
                 'algorithm_parameters': {
                     'timeframe': self.timeframe,
                     'min_move_pct': 1.5,  # Lower threshold for 5M
