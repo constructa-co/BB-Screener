@@ -159,7 +159,9 @@ class SupplyDemandLogger:
             
             try:
                 # Sanitize all values
+                print(f"    🔍 Before sanitization - volume_confirmation: {zone_data.get('volume_confirmation')} (type: {type(zone_data.get('volume_confirmation'))})")
                 zone_data = self._sanitize_value(zone_data)
+                print(f"    🔍 After sanitization - volume_confirmation: {zone_data.get('volume_confirmation')} (type: {type(zone_data.get('volume_confirmation'))})")
                 
                 # Generate unique zone ID
                 zone_id = f"{zone_data['symbol']}_{self.timeframe}_{zone_data['zone_type']}_{datetime.now().timestamp()}"
