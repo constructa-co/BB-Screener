@@ -221,6 +221,8 @@ class SupplyDemandScanner1HR1(BaseScanner):
                 
                 if zones:
                     print(f"\n{symbol}: Found {len(zones)} zones")
+                    print(f"  🔍 Debug: db_logger exists: {self.db_logger is not None}")
+                    print(f"  🔍 Debug: db_logging_enabled: {getattr(self, 'db_logging_enabled', 'NOT_SET')}")
                     
                     # Log to database if available
                     if self.db_logger and hasattr(self, 'db_logging_enabled') and self.db_logging_enabled:
@@ -229,6 +231,8 @@ class SupplyDemandScanner1HR1(BaseScanner):
                         batch_logged = self.db_logger.log_zones_batch(zones)
                         logged_count += batch_logged
                         print(f"  ✅ Logged {batch_logged} zones to database")
+                    else:
+                        print(f"  ❌ Database logging skipped - conditions not met")
                     
                     all_zones.extend(zones)
                 
