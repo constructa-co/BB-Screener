@@ -12,6 +12,7 @@ from plotly.subplots import make_subplots
 import os
 from datetime import datetime, timedelta
 import time
+import pytz
 
 # Import TradeLogger for database connection
 from trade_logger import TradeLogger
@@ -172,11 +173,36 @@ def show_supply_demand_analysis():
     recent_data = data[data['detected_at'] > cutoff_time]
     
     if not recent_data.empty:
-        # Create display data with UAE time conversion
+        # Create display data with UAE time conversion and actionable trading data
         display_data = recent_data[['symbol', 'zone_type', 'quality_score', 'zone_strength', 
-                                   'price_position', 'formation_type', 'detected_at']].copy()
-        # Convert UTC to UAE time for display
-        display_data['detected_at'] = display_data['detected_at'] + timedelta(hours=4)
+                                   'price_position', 'formation_type', 'current_price', 'zone_top', 'zone_bottom', 'detected_at']].copy()
+        
+        # Fix timezone display - convert to UAE timezone properly
+        import pytz
+        uae_tz = pytz.timezone('Asia/Dubai')
+        display_data['detected_at'] = display_data['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        
+        # Add actionable trading data
+        display_data['Entry'] = display_data['zone_top'].round(6)  # Use zone top as entry for DEMAND, zone bottom for SUPPLY
+        display_data['Stop Loss'] = display_data['zone_bottom'].round(6)  # Use zone bottom as stop for DEMAND, zone top for SUPPLY
+        
+        # Calculate targets based on zone strength (simplified)
+        display_data['TP1'] = (display_data['current_price'] * (1 + display_data['zone_strength'] * 0.01)).round(6)
+        display_data['TP2'] = (display_data['current_price'] * (1 + display_data['zone_strength'] * 0.02)).round(6)
+        
+        # Add trade action recommendation
+        display_data['Action'] = display_data['quality_score'].apply(lambda x: '🎯 ENTER NOW' if x >= 80 else '⏳ WAIT' if x >= 60 else '❌ AVOID')
+        
+        # Add trade direction
+        display_data['Direction'] = display_data['zone_type'].map({'DEMAND': '🟢 LONG', 'SUPPLY': '🔴 SHORT'})
+        
+        # Reorder columns for better display
+        display_data = display_data[['symbol', 'Direction', 'zone_type', 'quality_score', 'zone_strength', 
+                                    'Entry', 'Stop Loss', 'TP1', 'TP2', 'Action', 'detected_at']]
+        
+        # Rename columns for display
+        display_data.columns = ['Symbol', 'Direction', 'Zone Type', 'Quality', 'Strength', 'Entry', 'Stop Loss', 'TP1', 'TP2', 'Action', 'Time']
+        
         st.dataframe(display_data.head(20), use_container_width=True)
     else:
         st.info("No zones detected in the last 24 hours.")
@@ -244,18 +270,31 @@ def show_supply_demand_analysis():
     st.subheader("⏰ Time Series Analysis")
     
     if not data.empty and 'detected_at' in data.columns:
-        # Daily zone detection
-        daily_zones = data.groupby(data['detected_at'].dt.date).size().reset_index()
-        daily_zones.columns = ['date', 'zone_count']
-        
-        time_fig = px.line(
-            daily_zones,
-            x='date',
-            y='zone_count',
-            title="Daily Zone Detection",
-            labels={'date': 'Date', 'zone_count': 'Zones Detected'}
-        )
-        st.plotly_chart(time_fig, use_container_width=True)
+        # Daily zone detection - fix timezone handling
+        try:
+            # Convert to UAE timezone for proper date grouping
+            uae_tz = pytz.timezone('Asia/Dubai')
+            data_copy = data.copy()
+            data_copy['detected_at'] = data_copy['detected_at'].dt.tz_convert(uae_tz)
+            
+            # Group by date in UAE timezone
+            daily_zones = data_copy.groupby(data_copy['detected_at'].dt.date).size().reset_index()
+            daily_zones.columns = ['date', 'zone_count']
+            
+            if not daily_zones.empty:
+                time_fig = px.line(
+                    daily_zones,
+                    x='date',
+                    y='zone_count',
+                    title="Daily Zone Detection",
+                    labels={'date': 'Date', 'zone_count': 'Zones Detected'}
+                )
+                st.plotly_chart(time_fig, use_container_width=True)
+            else:
+                st.info("No time series data available")
+        except Exception as e:
+            st.error(f"Error creating time series: {e}")
+            st.info("Time series chart unavailable")
     
     # Symbol performance
     st.subheader("🏆 Top Performing Symbols")
@@ -304,7 +343,14 @@ def show_supply_demand_analysis():
     st.write(f"**Filtered Results: {len(filtered_data)} zones**")
     
     if not filtered_data.empty:
-        st.dataframe(filtered_data[display_cols], use_container_width=True)
+        # Define display columns for filtered data
+        filtered_display_cols = ['symbol', 'zone_type', 'quality_score', 'zone_strength', 'price_position', 'formation_type', 'current_price', 'detected_at']
+        available_cols = [col for col in filtered_display_cols if col in filtered_data.columns]
+        
+        if available_cols:
+            st.dataframe(filtered_data[available_cols], use_container_width=True)
+        else:
+            st.dataframe(filtered_data.head(20), use_container_width=True)
     
     # Export functionality
     st.markdown("---")
