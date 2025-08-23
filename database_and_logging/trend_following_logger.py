@@ -29,6 +29,42 @@ def _to_decimal(val):
     except Exception:
         return None
 
+def _sanitize_for_json(obj):
+    """Recursively sanitize objects for JSON serialization"""
+    if obj is None:
+        return None
+    
+    # Handle numpy types
+    if hasattr(obj, 'item'):
+        return _sanitize_for_json(obj.item())
+    
+    # Handle pandas types
+    if hasattr(obj, 'to_pydatetime'):
+        return obj.to_pydatetime()
+    
+    # Handle basic types
+    if isinstance(obj, (str, int, float, bool)):
+        return obj
+    
+    # Handle numpy types
+    if hasattr(obj, 'dtype'):
+        if obj.dtype.kind in 'biufc':  # boolean, integer, unsigned, float, complex
+            if obj.size == 1:
+                return float(obj.item()) if obj.dtype.kind in 'fc' else int(obj.item())
+            else:
+                return obj.tolist()
+    
+    # Handle lists and tuples
+    if isinstance(obj, (list, tuple)):
+        return [_sanitize_for_json(item) for item in obj]
+    
+    # Handle dictionaries
+    if isinstance(obj, dict):
+        return {key: _sanitize_for_json(value) for key, value in obj.items()}
+    
+    # Fallback to string representation
+    return str(obj)
+
 class TrendDataExtractor:
     """Robust field extraction (Perplexity's enhancement)"""
     
@@ -175,9 +211,9 @@ class TrendFollowingLogger:
             "quality_score": data["quality_score"],
             "scanner_version": "1.0.0",
             "algorithm_parameters": json.dumps({
-                "trend": opportunity.get("trend", {}),
-                "pullback": opportunity.get("pullback", {}),
-                "trade": opportunity.get("trade", {}),
+                "trend": _sanitize_for_json(opportunity.get("trend", {})),
+                "pullback": _sanitize_for_json(opportunity.get("pullback", {})),
+                "trade": _sanitize_for_json(opportunity.get("trade", {})),
                 "scanner_timeframe": primary_tf
             }),
             "detected_at": detected_at,
