@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 # Import the original scanner (R0) to extend it
 import importlib.util
-spec = importlib.util.spec_from_file_location("base_scanner", "supply_&_demand_scanner_1h_r0.py")
+spec = importlib.util.spec_from_file_location("base_scanner", "/opt/bb-screener/manual_scanners/1_hour_scanners/supply_&_demand_scanner_1h_r0.py")
 base_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base_module)
 BaseScanner = base_module.SupplyDemandScanner1H
