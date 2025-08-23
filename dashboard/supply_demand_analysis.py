@@ -210,12 +210,14 @@ def show_supply_demand_analysis():
     
     with col1:
         if not data.empty and 'formation_type' in data.columns:
+            formation_counts = data['formation_type'].value_counts().reset_index()
+            formation_counts.columns = ['formation_type', 'count']
             formation_fig = px.bar(
-                data['formation_type'].value_counts().reset_index(),
-                x='index',
-                y='formation_type',
+                formation_counts,
+                x='formation_type',
+                y='count',
                 title="Formation Type Distribution",
-                labels={'index': 'Formation Type', 'formation_type': 'Count'}
+                labels={'formation_type': 'Formation Type', 'count': 'Count'}
             )
             st.plotly_chart(formation_fig, use_container_width=True)
     
