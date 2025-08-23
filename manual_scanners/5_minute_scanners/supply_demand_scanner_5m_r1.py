@@ -60,14 +60,14 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
         enhanced_zones = []
         for zone in zones:
             # Calculate distance metrics
-            zone_midpoint = (zone['zone_high'] + zone['zone_low']) / 2
+            zone_midpoint = (zone['high'] + zone['low']) / 2
             distance = abs(current_price - zone_midpoint)
             distance_pct = (distance / zone_midpoint) * 100
             
             # Determine price position
-            if current_price > zone['zone_high']:
+            if current_price > zone['high']:
                 price_position = 'ABOVE'
-            elif current_price < zone['zone_low']:
+            elif current_price < zone['low']:
                 price_position = 'BELOW'
             else:
                 price_position = 'INSIDE'
@@ -79,9 +79,9 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
             enhanced_zone = {
                 'symbol': symbol,
                 'zone_type': zone['type'].upper(),
-                'zone_top': zone['zone_high'],
-                'zone_bottom': zone['zone_low'],
-                'zone_strength': zone['move_strength'],
+                'zone_top': zone['high'],
+                'zone_bottom': zone['low'],
+                'zone_strength': zone.get('strength', 0),
                 'touch_count': zone.get('tests', 1),
                 'current_price': current_price,
                 'distance_to_zone': distance,
@@ -96,8 +96,8 @@ class SupplyDemandScanner5MR1(SupplyDemandScanner5M):
                 'volume_ratio': zone.get('volume_ratio', 1.0),
                 'volume_confirmation': zone.get('volume_ratio', 1.0) >= 1.1,
                 'formation_candles': zone.get('zone_range_pct', 0),
-                'formation_start': zone.get('creation_timestamp'),
-                'formation_end': zone.get('creation_timestamp'),
+                'formation_start': zone.get('creation_index'),
+                'formation_end': zone.get('creation_index'),
                 'algorithm_parameters': {
                     'timeframe': self.timeframe,
                     'min_move_pct': 1.5,  # Lower threshold for 5M
