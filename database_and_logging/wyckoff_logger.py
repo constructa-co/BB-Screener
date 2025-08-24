@@ -191,7 +191,7 @@ class WyckoffLogger:
             "algorithm_parameters": json.dumps({
                 "phase": data["phase"],
                 "pattern": data["pattern_type"],
-                "full_setup": setup
+                "full_setup": self._clean_setup_for_json(setup)
             }),
             "detected_at": detected_at,
             "expires_at": detected_at + timedelta(hours=DEFAULT_EXPIRE_HOURS),
@@ -250,3 +250,33 @@ class WyckoffLogger:
         
         finally:
             self._check_memory()
+    
+    def _clean_setup_for_json(self, setup: dict) -> dict:
+        """Clean setup object for JSON serialization by converting numpy types"""
+        if not isinstance(setup, dict):
+            return {}
+        
+        clean_setup = {}
+        for key, value in setup.items():
+            try:
+                # Handle numpy types
+                if hasattr(value, 'item'):
+                    value = value.item()
+                
+                # Convert to basic Python types
+                if isinstance(value, (np.integer, np.floating)):
+                    value = value.item()
+                elif isinstance(value, np.ndarray):
+                    value = value.tolist()
+                elif isinstance(value, (list, tuple)):
+                    value = [self._clean_setup_for_json(item) if isinstance(item, dict) else 
+                            (item.item() if hasattr(item, 'item') else item) for item in value]
+                elif isinstance(value, dict):
+                    value = self._clean_setup_for_json(value)
+                
+                clean_setup[key] = value
+            except Exception:
+                # Skip problematic values
+                continue
+        
+        return clean_setup
