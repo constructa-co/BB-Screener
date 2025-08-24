@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 import psycopg2
 import psycopg2.extras
+import numpy as np
 
 DEFAULT_EXPIRE_HOURS = 12  # Wyckoff setups last 3-12 hours
 
@@ -21,10 +22,15 @@ def _to_decimal(val):
     if val is None:
         return None
     try:
+        # Handle numpy types
+        if hasattr(val, 'item'):
+            val = val.item()
+        
         if isinstance(val, (int, float)):
             if math.isnan(val) or math.isinf(val):
                 return None
             return float(val)
+        return None
     except Exception:
         return None
 
