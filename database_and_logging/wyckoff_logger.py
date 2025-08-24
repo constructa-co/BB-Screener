@@ -60,10 +60,10 @@ class WyckoffDataExtractor:
         
         return {
             'symbol': symbol,
-            'phase': setup.get('phase', 'UNKNOWN'),
-            'pattern_type': setup.get('pattern', 'UNKNOWN'),
+            'phase': setup.get('phase', 'UNKNOWN').upper(),
+            'pattern_type': setup.get('pattern', 'UNKNOWN').upper(),
             'pattern_duration': setup.get('pattern_duration'),
-            'trade_direction': setup.get('trade_direction', 'NEUTRAL'),
+            'trade_direction': setup.get('trade_direction', 'NEUTRAL').upper(),
             'entry_price': _to_decimal(setup.get('entry')),
             'stop_loss': _to_decimal(setup.get('stop_loss')),
             'target_1': _to_decimal(setup.get('target_1')),
