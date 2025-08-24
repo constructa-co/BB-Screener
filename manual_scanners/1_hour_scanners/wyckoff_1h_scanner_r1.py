@@ -48,9 +48,12 @@ class WyckoffScanner1HR1(WyckoffScanner1H):
             except Exception as e:
                 print(f"[{self.scanner_name}] Logger initialization failed: {e}")
                 self.db_logger = None
-                DB_LOGGING_ENABLED = False
+                self._db_logging_enabled = False
+            else:
+                self._db_logging_enabled = True
         else:
             self.db_logger = None
+            self._db_logging_enabled = False
             print(f"[{self.scanner_name}] Running without database logging")
     
     def run(self):
@@ -88,7 +91,7 @@ class WyckoffScanner1HR1(WyckoffScanner1H):
                     quality_setups.append(setup)
                     
                     # Log to database if available
-                    if self.db_logger and DB_LOGGING_ENABLED:
+                    if self.db_logger and self._db_logging_enabled:
                         try:
                             if self.db_logger.log_setup(symbol, setup):
                                 logged_count += 1
@@ -105,7 +108,7 @@ class WyckoffScanner1HR1(WyckoffScanner1H):
             print(f"📊 Scan Summary:")
             print(f"  Total setups found: {len(opportunities)}")
             print(f"  Quality setups (60+): {len(quality_setups)}")
-            if self.db_logger and DB_LOGGING_ENABLED:
+            if self.db_logger and self._db_logging_enabled:
                 print(f"  Logged to database: {logged_count}")
                 print(f"  Database logging: {'✅ ENABLED' if logged_count > 0 else '⚠️  NO QUALITY SETUPS'}")
             else:
