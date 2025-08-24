@@ -82,11 +82,45 @@ def get_wyckoff_data(hours_back=24, min_score=60, phase_filter=None, timeframe_f
             if col in df.columns:
                 df[col] = df[col].astype(float)
         
+        # Extract additional data from algorithm_parameters JSONB
+        if 'algorithm_parameters' in df.columns:
+            df = extract_algorithm_data(df)
+        
         return df
         
     except Exception as e:
         st.error(f"Database connection error: {e}")
         return pd.DataFrame()
+
+def extract_algorithm_data(df):
+    """Extract additional trading data from algorithm_parameters JSONB field"""
+    try:
+        for idx, row in df.iterrows():
+            if pd.notna(row['algorithm_parameters']) and isinstance(row['algorithm_parameters'], dict):
+                params = row['algorithm_parameters']
+                
+                # Extract full_setup data if available
+                if 'full_setup' in params and isinstance(params['full_setup'], dict):
+                    setup = params['full_setup']
+                    
+                    # Extract additional fields that might be in the full setup
+                    if 'duration' in setup:
+                        df.at[idx, 'pattern_duration'] = setup.get('duration')
+                    if 'hold_time' in setup:
+                        df.at[idx, 'hold_time'] = setup.get('hold_time')
+                    if 'entry_instruction' in setup:
+                        df.at[idx, 'entry_instruction'] = setup.get('entry_instruction')
+                    if 'position' in setup:
+                        df.at[idx, 'position'] = setup.get('position')
+                    if 'range_size' in setup:
+                        df.at[idx, 'range_size_pct'] = setup.get('range_size')
+                    if 'volume_ratio' in setup:
+                        df.at[idx, 'volume_confirmation'] = setup.get('volume_ratio')
+        
+        return df
+    except Exception as e:
+        st.warning(f"Could not extract algorithm data: {e}")
+        return df
 
 def calculate_metrics(df):
     """Calculate key metrics for the dashboard"""
@@ -155,35 +189,76 @@ def create_score_distribution(df):
     return fig
 
 def format_signal_table(df):
-    """Format the signals table for display"""
+    """Format the signals table for display with ALL relevant trading data"""
     if df.empty:
         return df
     
-    # Select and rename columns for display
-    display_df = df[[
+    # Select and rename columns for display - include ALL relevant fields
+    columns_to_show = [
         'symbol', 'timeframe', 'phase', 'pattern_type', 'setup_score',
-        'entry_price', 'stop_loss', 'target_1', 'risk_reward_1',
-        'volume_confirmation', 'strength_score', 'computed_at'
-    ]].copy()
-    
-    # Rename columns for better display
-    display_df.columns = [
-        'Symbol', 'TF', 'Phase', 'Pattern', 'Score',
-        'Entry', 'Stop', 'Target1', 'R/R',
-        'Vol Ratio', 'Strength', 'Detected'
+        'current_price', 'entry_price', 'stop_loss', 'target_1', 'target_2',
+        'risk_reward_1', 'risk_reward_2', 'volume_confirmation', 'strength_score',
+        'trade_direction', 'pattern_duration', 'entry_signal', 'wait_condition',
+        'position', 'hold_time', 'entry_instruction', 'computed_at'
     ]
     
-    # Format numeric columns
-    display_df['Entry'] = display_df['Entry'].round(4)
-    display_df['Stop'] = display_df['Stop'].round(4)
-    display_df['Target1'] = display_df['Target1'].round(4)
-    display_df['R/R'] = display_df['R/R'].round(2)
-    display_df['Vol Ratio'] = display_df['Vol Ratio'].round(2)
-    display_df['Strength'] = display_df['Strength'].round(2)
+    # Only include columns that exist in the dataframe
+    available_columns = [col for col in columns_to_show if col in df.columns]
+    display_df = df[available_columns].copy()
     
-    # Convert to UAE time (UTC+4)
-    display_df['Detected'] = pd.to_datetime(display_df['Detected']).dt.tz_convert('Asia/Dubai')
-    display_df['Detected'] = display_df['Detected'].dt.strftime('%Y-%m-%d %H:%M')
+    # Rename columns for better display
+    column_mapping = {
+        'symbol': 'Symbol',
+        'timeframe': 'TF',
+        'phase': 'Phase',
+        'pattern_type': 'Pattern',
+        'setup_score': 'Score',
+        'current_price': 'Current',
+        'entry_price': 'Entry',
+        'stop_loss': 'Stop',
+        'target_1': 'Target1',
+        'target_2': 'Target2',
+        'risk_reward_1': 'R/R1',
+        'risk_reward_2': 'R/R2',
+        'volume_confirmation': 'Vol Ratio',
+        'strength_score': 'Strength',
+        'trade_direction': 'Direction',
+        'pattern_duration': 'Duration',
+        'entry_signal': 'Signal',
+        'wait_condition': 'Wait For',
+        'position': 'Position',
+        'hold_time': 'Hold Time',
+        'entry_instruction': 'Entry Type',
+        'computed_at': 'Detected'
+    }
+    
+    display_df.columns = [column_mapping.get(col, col) for col in display_df.columns]
+    
+    # Format numeric columns
+    numeric_columns = ['Current', 'Entry', 'Stop', 'Target1', 'Target2', 'R/R1', 'R/R2', 'Vol Ratio', 'Strength', 'Score', 'Duration']
+    for col in numeric_columns:
+        if col in display_df.columns:
+            display_df[col] = display_df[col].round(4)
+    
+    # Format duration and hold time
+    if 'Duration' in display_df.columns:
+        display_df['Duration'] = display_df['Duration'].apply(lambda x: f"{x}h" if pd.notna(x) else "N/A")
+    if 'Hold Time' in display_df.columns:
+        display_df['Hold Time'] = display_df['Hold Time'].apply(lambda x: f"{x}h" if pd.notna(x) else "N/A")
+    
+    # Format risk/reward ratios
+    if 'R/R1' in display_df.columns:
+        display_df['R/R1'] = display_df['R/R1'].round(2)
+    if 'R/R2' in display_df.columns:
+        display_df['R/R2'] = display_df['R/R2'].round(2)
+    if 'Vol Ratio' in display_df.columns:
+        display_df['Vol Ratio'] = display_df['Vol Ratio'].round(2)
+    if 'Strength' in display_df.columns:
+        display_df['Strength'] = display_df['Strength'].round(2)
+    
+    # Format timestamp
+    if 'Detected' in display_df.columns:
+        display_df['Detected'] = display_df['Detected'].dt.strftime('%Y-%m-%d %H:%M')
     
     return display_df
 
@@ -291,19 +366,27 @@ def show_wyckoff_analysis():
             return 'background-color: #FFE4B5'  # Light orange
         return ''
     
-    # Apply styling
-    styled_df = display_df.style.applymap(
-        color_phase, 
-        subset=['Phase']
-    ).format({
+    # Apply styling with enhanced formatting for all columns
+    format_dict = {
         'Score': '{:.0f}',
+        'Current': '{:.4f}',
         'Entry': '{:.4f}',
         'Stop': '{:.4f}',
         'Target1': '{:.4f}',
-        'R/R': '{:.2f}',
+        'Target2': '{:.4f}',
+        'R/R1': '{:.2f}',
+        'R/R2': '{:.2f}',
         'Vol Ratio': '{:.2f}',
         'Strength': '{:.2f}'
-    })
+    }
+    
+    # Only apply formatting to columns that exist
+    existing_format_dict = {k: v for k, v in format_dict.items() if k in display_df.columns}
+    
+    styled_df = display_df.style.applymap(
+        color_phase, 
+        subset=['Phase']
+    ).format(existing_format_dict)
     
     st.dataframe(
         styled_df,
