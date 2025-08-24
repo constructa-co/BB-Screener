@@ -738,6 +738,14 @@ except ImportError as e:
     print(f"⚠️ Trend Following import failed: {e}")
     TREND_FOLLOWING_ANALYSIS_AVAILABLE = False
 
+# Import Wyckoff analysis
+try:
+    from wyckoff_analysis import show_wyckoff_analysis
+    WYCKOFF_ANALYSIS_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Wyckoff analysis import failed: {e}")
+    WYCKOFF_ANALYSIS_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -754,6 +762,10 @@ if SUPPLY_DEMAND_ANALYSIS_AVAILABLE:
 # Add Trend Following analysis if available
 if TREND_FOLLOWING_ANALYSIS_AVAILABLE:
     navigation_options.append("🎯 Trend Following Analysis")
+
+# Add Wyckoff analysis if available
+if WYCKOFF_ANALYSIS_AVAILABLE:
+    navigation_options.append("🎯 Wyckoff Analysis")
 
 page = st.sidebar.radio(
     "📍 Navigation",
@@ -1825,6 +1837,9 @@ elif page == "🎯 Trend Following Analysis" and TREND_FOLLOWING_ANALYSIS_AVAILA
 
 elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
     show_fibonacci_analysis()
+
+elif page == "🎯 Wyckoff Analysis" and WYCKOFF_ANALYSIS_AVAILABLE:
+    show_wyckoff_analysis()
 
 # Footer
 st.markdown("---")
