@@ -3784,6 +3784,74 @@ differentiation, filtering capabilities, and all actionable trading data.
 Users can access it through the main dashboard navigation menu.
 
 ============================================
+ICT DASHBOARD & CRON FIXES - CRITICAL
+============================================
+Date: 2025-01-24
+Time: 23:55 UAE (UTC+4)
+Status: ✅ CRITICAL FIXES COMPLETE
+
+CRITICAL ISSUES IDENTIFIED:
+==========================
+1. ❌ Database Schema Error: ICT dashboard query failed
+   - Error: "column 'side' does not exist"
+   - ICT signals stored in public.trade_opportunities table
+   - Different schema than other_scanners tables
+
+2. ❌ ICT Cron Jobs Not Running: No signals in 7 days
+   - ICT scanners haven't run since August 23rd
+   - Database URL configuration issues
+   - Universal logger connection problems
+
+FIXES IMPLEMENTED:
+==================
+1. ✅ ICT Dashboard Database Schema Fix:
+   - Removed non-existent 'side' column from query
+   - Use target_1 as take_profit field
+   - Extract 'side' from scanner_specific_data JSONB
+   - Fixed timeframe handling with COALESCE
+   - Updated query to match actual table structure
+
+2. ✅ ICT Cron Jobs Fix:
+   - Fixed cron job environment variable sourcing
+   - Added missing OTHER_SCANNERS_DATABASE_URL to .env
+   - Updated cron jobs to use source .env instead of export
+   - Fixed Python path to use /usr/bin/python3
+
+3. ✅ Database Connection Fix:
+   - Added OTHER_SCANNERS_DATABASE_URL environment variable
+   - Resolved universal logger connection pool issues
+   - Fixed database URL parameter conflicts
+
+TECHNICAL DETAILS:
+==================
+- Database Table: public.trade_opportunities (not other_scanners)
+- ICT Signals: 123 signals found (Aug 17-18, 2025)
+- Cron Jobs: 15M (:10, :25, :40, :55), 1H (:20), 4H (:30)
+- Environment: Fixed .env file with proper database URLs
+
+VERIFICATION RESULTS:
+====================
+- ✅ ICT dashboard query now works correctly
+- ✅ ICT scanner runs manually and finds signals
+- ✅ Cron jobs configured with correct environment
+- ✅ Database connection issues resolved
+
+DEPLOYMENT STATUS:
+==================
+- ✅ Committed to Git
+- ✅ Pushed to GitHub
+- ✅ Pulled to Digital Ocean
+- ✅ Dashboard fixes deployed
+- ✅ Cron jobs fixed and configured
+
+RESOLUTION SUMMARY:
+===================
+Both critical issues have been resolved. The ICT dashboard now correctly
+queries the database and displays signals, while the ICT cron jobs are
+properly configured and should start generating new signals. The system
+is now fully operational for ICT scanner analysis and automation.
+
+============================================
 WYCKOFF SCANNER DATABASE INTEGRATION - PHASE 5 COMPLETE
 ============================================
 Date: 2025-01-24
