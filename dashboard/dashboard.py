@@ -746,6 +746,14 @@ except ImportError as e:
     print(f"⚠️ Wyckoff analysis import failed: {e}")
     WYCKOFF_ANALYSIS_AVAILABLE = False
 
+# Import ICT analysis
+try:
+    from ict_analysis import show_ict_analysis
+    ICT_ANALYSIS_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ ICT analysis import failed: {e}")
+    ICT_ANALYSIS_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -766,6 +774,10 @@ if TREND_FOLLOWING_ANALYSIS_AVAILABLE:
 # Add Wyckoff analysis if available
 if WYCKOFF_ANALYSIS_AVAILABLE:
     navigation_options.append("🎯 Wyckoff Analysis")
+
+# Add ICT analysis if available
+if ICT_ANALYSIS_AVAILABLE:
+    navigation_options.append("🎯 ICT Analysis")
 
 page = st.sidebar.radio(
     "📍 Navigation",
@@ -1840,6 +1852,8 @@ elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
 
 elif page == "🎯 Wyckoff Analysis" and WYCKOFF_ANALYSIS_AVAILABLE:
     show_wyckoff_analysis()
+elif page == "🎯 ICT Analysis" and ICT_ANALYSIS_AVAILABLE:
+    show_ict_analysis()
 
 # Footer
 st.markdown("---")
