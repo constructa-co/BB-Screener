@@ -33,7 +33,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
         query = """
             SELECT 
                 symbol,
-                timeframe,
+                COALESCE(timeframe, '1h') as timeframe,
                 side,
                 entry_price,
                 stop_loss,
@@ -85,7 +85,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
         params = [hours_back]
         
         if timeframe_filter and timeframe_filter != "All":
-            query += " AND timeframe = %s"
+            query += " AND COALESCE(timeframe, '1h') = %s"
             params.append(timeframe_filter)
         
         if pattern_filter and pattern_filter != "All":
