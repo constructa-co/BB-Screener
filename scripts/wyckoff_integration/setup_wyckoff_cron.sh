@@ -9,7 +9,7 @@ echo "Setting up Wyckoff Scanner cron job..."
 
 # Define application home and paths
 APP_HOME="${APP_HOME:-/opt/bb-screener}"
-PY="${PYTHON_BIN:-$APP_HOME/.venv/bin/python}"
+PY="${PYTHON_BIN:-/usr/bin/python3}"
 ENV_FILE="${ENV_FILE:-$APP_HOME/.env}"
 
 # Ensure logs directory exists
