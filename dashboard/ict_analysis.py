@@ -34,11 +34,9 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
             SELECT 
                 symbol,
                 COALESCE(timeframe, '1h') as timeframe,
-                side,
                 entry_price,
                 stop_loss,
-                take_profit,
-                quantity,
+                target_1 as take_profit,
                 timestamp,
                 probability,
                 risk_reward_ratio,
@@ -245,6 +243,11 @@ def show_ict_analysis():
     if df.empty:
         st.warning(f"No ICT signals found with probability >= {min_score}")
         return
+    
+    # Extract side from scanner_specific_data
+    df['side'] = df['scanner_specific_data'].apply(
+        lambda x: x.get('side', 'UNKNOWN') if isinstance(x, dict) else 'UNKNOWN'
+    )
     
     # Convert timestamp to UAE time (UTC+4)
     df['timestamp_uae'] = pd.to_datetime(df['timestamp']) + timedelta(hours=4)
