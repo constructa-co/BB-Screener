@@ -196,26 +196,16 @@ def extract_ict_data(df):
             lambda x: x.get('volume_surge', False) if isinstance(x, dict) else False
         )
         
-        # Extract Fibonacci targets from scanner_specific_data
-        df['target_t1'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('target_t1', 0) if isinstance(x, dict) else 0
-        )
-        df['target_t2'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('target_t2', 0) if isinstance(x, dict) else 0
-        )
-        df['target_t3'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('target_t3', 0) if isinstance(x, dict) else 0
-        )
+        # Extract Fibonacci targets - try main columns first, then JSON
+        df['target_t1'] = df['target_1'].fillna(0)
+        df['target_t2'] = df['target_2'].fillna(0)
+        df['target_t3'] = df['target_3'].fillna(0)
         
-        # Extract current price from scanner_specific_data
-        df['current_price'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('current_price', 0) if isinstance(x, dict) else 0
-        )
+        # Extract current price - try main column first, then JSON
+        df['current_price'] = df['current_price'].fillna(0)
         
-        # Extract risk/reward ratio from scanner_specific_data
-        df['risk_reward_ratio'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('risk_reward_ratio', 0) if isinstance(x, dict) else 0
-        )
+        # Extract risk/reward ratio - try main column first, then JSON
+        df['risk_reward_ratio'] = df['risk_reward_ratio'].fillna(0)
         
         # Extract side from scanner_specific_data (ICT scanners store it here)
         df['side'] = df['scanner_specific_data'].apply(
