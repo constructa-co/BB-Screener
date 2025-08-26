@@ -3179,6 +3179,13 @@ IMPLEMENTED FIXES:
    - Fixed display logic to use T1, T2, T3 columns instead of take_profit
    - Result: ✅ Dashboard should now display without KeyError
 
+3. FIXED MISSING CURRENT PRICE AND R:R RATIO IN DASHBOARD:
+   - Enhanced extract_ict_data function to properly extract current_price from multiple locations
+   - Added automatic R:R ratio calculation when not present in database
+   - Added FVG age calculation from timestamps when available
+   - Improved data extraction from scanner_specific_data JSONB field
+   - Result: ✅ Dashboard should now display current price and R:R ratio correctly
+
 2. ADDED DATABASE LOGGING TO 15M SCANNER:
    - Added TradeLogger import and initialization to ict_scanner_15m_r3.py
    - Added complete database logging in scan_all_symbols method

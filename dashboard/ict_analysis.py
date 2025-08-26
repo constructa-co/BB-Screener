@@ -122,7 +122,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
         return pd.DataFrame()
 
 def extract_ict_data(df):
-    """Extract additional ICT-specific data from scanner_specific_data JSONB field"""
+    """Extract ICT-specific data from raw database results"""
     try:
         # Extract timeframe from scanner_specific_data
         df['timeframe'] = df['scanner_specific_data'].apply(
@@ -201,6 +201,61 @@ def extract_ict_data(df):
             lambda x: x.get('volume_surge', False) if isinstance(x, dict) else False
         )
         
+        # Extract current price - check multiple possible locations
+        df['current_price'] = df.apply(
+            lambda row: (
+                row.get('current_price') or 
+                (row.get('scanner_specific_data', {}).get('current_price') if isinstance(row.get('scanner_specific_data'), dict) else None) or
+                (row.get('scanner_specific_data', {}).get('last_price') if isinstance(row.get('scanner_specific_data'), dict) else None) or
+                (row.get('scanner_specific_data', {}).get('price') if isinstance(row.get('scanner_specific_data'), dict) else None) or
+                0
+            ), axis=1
+        )
+        
+        # Calculate R:R if not present
+        def calculate_rr(row):
+            risk_reward = row.get('risk_reward_ratio')
+            if risk_reward and risk_reward > 0:
+                return risk_reward
+            
+            # Try to calculate from entry, stop, and target
+            entry_price = row.get('entry_price')
+            stop_loss = row.get('stop_loss')
+            target_1 = row.get('target_1')
+            
+            if all([entry_price, stop_loss, target_1]) and entry_price > 0 and stop_loss > 0 and target_1 > 0:
+                try:
+                    risk = abs(float(entry_price) - float(stop_loss))
+                    reward = abs(float(target_1) - float(entry_price))
+                    if risk > 0:
+                        return round(reward / risk, 2)
+                except:
+                    pass
+            
+            return 0
+        
+        df['risk_reward_ratio'] = df.apply(calculate_rr, axis=1)
+        
+        # Calculate FVG age if timestamp present
+        def calculate_fvg_age(row):
+            scanner_data = row.get('scanner_specific_data', {})
+            if not isinstance(scanner_data, dict):
+                return 0
+                
+            try:
+                from datetime import datetime
+                gap_time = scanner_data.get('fvg_timestamp') or scanner_data.get('gap_formed_at')
+                if gap_time:
+                    gap_dt = datetime.fromisoformat(gap_time)
+                    age_hours = (datetime.now() - gap_dt).total_seconds() / 3600
+                    return int(age_hours)
+            except:
+                pass
+            
+            return row.get('fvg_age', 0)
+        
+        df['fvg_age'] = df.apply(calculate_fvg_age, axis=1)
+        
         # Ensure target columns exist and are properly formatted
         if 'target_1' not in df.columns:
             df['target_1'] = 0
@@ -208,10 +263,6 @@ def extract_ict_data(df):
             df['target_2'] = 0
         if 'target_3' not in df.columns:
             df['target_3'] = 0
-        if 'current_price' not in df.columns:
-            df['current_price'] = 0
-        if 'risk_reward_ratio' not in df.columns:
-            df['risk_reward_ratio'] = 0
             
         # Fill NaN values with 0
         df['target_1'] = df['target_1'].fillna(0)
