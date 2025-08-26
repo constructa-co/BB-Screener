@@ -3072,6 +3072,106 @@ Time: 08:00 UTC
 Status: ✅ COMPLETE SUCCESS
 
 ============================================
+ICT SCANNER DASHBOARD DATA INTEGRATION - COMPREHENSIVE FIX ATTEMPT
+============================================
+Date: 2025-08-26
+Time: 17:30 UAE (UTC+4)
+Status: 🔄 IN PROGRESS - MULTIPLE ISSUES IDENTIFIED
+
+COMPREHENSIVE ISSUE ANALYSIS:
+============================
+
+CURRENT PROBLEMS:
+================
+1. DASHBOARD DATA EXTRACTION FAILURES:
+   - T1, T2, T3 columns showing "N/A" despite data being in database
+   - Current Price showing "$nan" for most records
+   - R:R Ratio showing "N/A" for most records
+   - Action Instructions missing from display
+   - KeyError: 'target_1' in data extraction
+
+2. TIMEFRAME FILTERING ISSUES:
+   - Only 1H signals showing in dashboard
+   - 4H and 15M signals not appearing
+   - Mixed data from old vs new scanner formats
+
+3. SCANNER DATA INCONSISTENCY:
+   - NEW 1H scanner: Logs complete data ✅
+   - OLD scanners (15M, 4H): Missing current_price and risk_reward_ratio ❌
+   - 15M scanner: No database logging at all ❌
+
+DATABASE DATA CONFIRMED WORKING:
+===============================
+- NEW 1H DATA: Target 1: 0.5292928, Target 2: 0.5317, Target 3: 0.5375344
+- NEW 1H DATA: Current Price: 0.5297, R:R Ratio: 1.1390526916492156
+- OLD DATA: Target 1: 9.231072, Target 2: 9.196818, Target 3: 9.159
+- OLD DATA: Current Price: None, R:R Ratio: 0.0
+
+ATTEMPTS MADE:
+=============
+
+1. FIXED 1H SCANNER DATABASE LOGGING:
+   - Added TradeLogger import and initialization to ict_scanner_1h_r3.py
+   - Added scan logging with unique IDs
+   - Added complete data logging with all fields (T1/T2/T3, current_price, R:R ratio)
+   - Fixed volume_surge boolean to float conversion for database compatibility
+   - Result: ✅ 1H scanner now logs complete data successfully
+
+2. FIXED DASHBOARD DATA EXTRACTION:
+   - Changed from JSON extraction to main column extraction in ict_analysis.py
+   - Added error handling for missing columns
+   - Fixed pandas column access methods (display_df.get() → display_df[])
+   - Added fallback logic for missing data
+   - Result: ❌ Still getting KeyError 'target_1'
+
+3. DATABASE QUERY FIXES:
+   - Fixed timeframe filtering in SQL queries
+   - Improved timestamp filtering
+   - Added proper column selection
+   - Result: ❌ Timeframe filtering still not working properly
+
+4. DEBUGGING EFFORTS:
+   - Created debug_ict_data.py to check actual database content
+   - Confirmed data exists in database but not being extracted properly
+   - Identified mixed data sources (old vs new scanner formats)
+   - Result: ✅ Database data confirmed, ❌ Dashboard extraction failing
+
+REQUIRED FIXES:
+==============
+
+1. DASHBOARD DATA EXTRACTION:
+   - Fix KeyError 'target_1' in extract_ict_data function
+   - Implement proper column access and fallback logic
+   - Handle mixed data sources (old vs new scanner formats)
+
+2. 15M SCANNER DATABASE LOGGING:
+   - Add TradeLogger to ict_scanner_15m_r3.py (like 1H scanner)
+   - Implement complete data logging with all fields
+
+3. 4H SCANNER DATA COMPLETENESS:
+   - Update ict_scanner_4h_r8.py to include current_price and risk_reward_ratio
+   - Ensure consistent data format across all scanners
+
+4. TIMEFRAME FILTERING:
+   - Fix timeframe column access in dashboard queries
+   - Implement proper filtering for all timeframes (1H, 4H, 15M)
+
+TECHNICAL DEBT:
+==============
+- Multiple scanner versions with inconsistent data formats
+- Mixed JSON vs main column data storage
+- Incomplete error handling in dashboard data extraction
+- Missing database logging in 15M scanner
+
+NEXT STEPS:
+===========
+1. Fix dashboard KeyError 'target_1' issue
+2. Add database logging to 15M scanner
+3. Update 4H scanner for complete data logging
+4. Implement proper timeframe filtering
+5. Test all timeframes in dashboard
+
+============================================
 WYCKOFF SCANNER DATABASE INTEGRATION - PHASE 1 COMPLETE
 ============================================
 Date: 2025-01-24
