@@ -77,7 +77,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
                 fib_236,
                 fib_786
             FROM public.trade_opportunities
-            WHERE timestamp > NOW() - INTERVAL '%s hours'
+            WHERE timestamp > (SELECT MAX(timestamp) FROM public.trade_opportunities WHERE scanner_specific_data::text LIKE '%%ICT%%') - INTERVAL '%s hours'
             AND scanner_specific_data::text LIKE '%%ICT%%'
         """
         params = [hours_back]
