@@ -7410,3 +7410,59 @@
 2025-08-26 21:44:46,329 - INFO - Scan complete. Found 1 high-quality setups, displayed 1
 2025-08-26 21:44:46,329 - INFO - Performance Stats: {'total_scans': 44, 'setups_found': 1, 'alerts_sent': 254}
 2025-08-26 21:44:46,329 - INFO - Next scan in 300 seconds...
+2025-08-26 21:49:46,301 - INFO - Starting scan of top 500 symbols...
+2025-08-26 21:49:47,235 - INFO - Scanning 346 symbols
+2025-08-26 21:49:47,236 - INFO - Progress: 0/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 10/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 20/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 30/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 40/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 50/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 60/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 70/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 80/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 90/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 100/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 110/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 120/346 symbols scanned
+2025-08-26 21:49:47,237 - INFO - Progress: 130/346 symbols scanned
+2025-08-26 21:49:47,609 - ERROR - Error scanning OG/USDT: 'swing_high'
+2025-08-26 21:49:47,984 - ERROR - Error scanning HOOK/USDT: 'swing_high'
+2025-08-26 21:49:47,985 - INFO - Progress: 140/346 symbols scanned
+2025-08-26 21:49:48,355 - ERROR - Error scanning IO/USDT: 'swing_high'
+2025-08-26 21:49:48,355 - INFO - Progress: 150/346 symbols scanned
+2025-08-26 21:49:48,355 - INFO - Progress: 160/346 symbols scanned
+2025-08-26 21:49:48,579 - INFO - Progress: 170/346 symbols scanned
+2025-08-26 21:49:48,579 - INFO - Progress: 180/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 190/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 200/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 210/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 220/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 230/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 240/346 symbols scanned
+2025-08-26 21:49:48,580 - INFO - Progress: 250/346 symbols scanned
+2025-08-26 21:49:48,957 - ERROR - Error scanning SOPH/USDT: 'swing_high'
+2025-08-26 21:49:48,957 - INFO - Progress: 260/346 symbols scanned
+2025-08-26 21:49:48,957 - INFO - Progress: 270/346 symbols scanned
+2025-08-26 21:49:49,329 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-08-26 21:49:49,695 - ERROR - Error scanning TKO/USDT: 'swing_high'
+2025-08-26 21:49:49,695 - INFO - Progress: 280/346 symbols scanned
+2025-08-26 21:49:50,066 - ERROR - Error scanning BICO/USDT: 'swing_high'
+2025-08-26 21:49:50,066 - INFO - Progress: 290/346 symbols scanned
+2025-08-26 21:49:50,438 - ERROR - Error scanning COTI/USDT: 'swing_high'
+2025-08-26 21:49:50,438 - INFO - Progress: 300/346 symbols scanned
+2025-08-26 21:49:50,439 - INFO - Progress: 310/346 symbols scanned
+2025-08-26 21:49:50,439 - INFO - Progress: 320/346 symbols scanned
+2025-08-26 21:49:50,439 - INFO - Progress: 330/346 symbols scanned
+2025-08-26 21:49:50,439 - INFO - Progress: 340/346 symbols scanned
+2025-08-26 21:49:50,439 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-08-26 21:49:50,439 - INFO - Performance Stats: {'total_scans': 45, 'setups_found': 0, 'alerts_sent': 254}
+2025-08-26 21:49:50,439 - INFO - Next scan in 300 seconds...
+2025-08-26 21:54:50,447 - INFO - Starting scan of top 500 symbols...
+2025-08-26 21:54:51,389 - INFO - Scanning 345 symbols
+2025-08-26 21:54:51,390 - INFO - Progress: 0/345 symbols scanned
+2025-08-26 21:54:53,934 - INFO - Progress: 10/345 symbols scanned
+2025-08-26 21:54:56,297 - ERROR - Error scanning AAVE/USDT: 'swing_high'
+2025-08-26 21:54:56,679 - INFO - Progress: 20/345 symbols scanned
+2025-08-26 21:54:58,762 - INFO - Progress: 30/345 symbols scanned
+2025-08-26 21:55:01,456 - INFO - Progress: 40/345 symbols scanned

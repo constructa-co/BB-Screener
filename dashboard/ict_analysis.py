@@ -373,7 +373,6 @@ def show_ict_analysis():
     # Format columns for display
     display_df['Entry Price'] = display_df['entry_price'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['Stop Loss'] = display_df['stop_loss'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
-    display_df['Take Profit'] = display_df['take_profit'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['Current Price'] = display_df['current_price'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['Score'] = display_df['probability'].apply(lambda x: f"{x:.1f}" if x and x != 0 else "N/A")
     display_df['R:R Ratio'] = display_df['risk_reward_ratio'].apply(lambda x: f"{x:.2f}" if x and x != 0 else "N/A")
@@ -402,7 +401,7 @@ def show_ict_analysis():
     
     # Select columns for display
     columns_to_show = [
-        'symbol', 'Side', 'Timeframe', 'Score', 'Entry Price', 'Stop Loss', 'Take Profit',
+        'symbol', 'Side', 'Timeframe', 'Score', 'Entry Price', 'Stop Loss',
         'Current Price', 'R:R Ratio', 'Gap Size %', 'FVG Age', 'Distance to Entry', 
         'T1', 'T2', 'T3', 'Gap High', 'Gap Low', 'Swing High', 'Swing Low', 'Action', 'pattern_type', 'Detected'
     ]

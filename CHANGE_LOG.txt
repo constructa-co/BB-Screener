@@ -3173,6 +3173,12 @@ IMPLEMENTED FIXES:
    - Added action column extraction from scanner_specific_data
    - Result: ✅ Dashboard should now properly access all target columns
 
+2. FIXED DASHBOARD KEYERROR 'take_profit' ISSUE:
+   - Removed reference to non-existent 'take_profit' column in display formatting
+   - Updated columns_to_show list to remove 'Take Profit' column
+   - Fixed display logic to use T1, T2, T3 columns instead of take_profit
+   - Result: ✅ Dashboard should now display without KeyError
+
 2. ADDED DATABASE LOGGING TO 15M SCANNER:
    - Added TradeLogger import and initialization to ict_scanner_15m_r3.py
    - Added complete database logging in scan_all_symbols method
