@@ -122,6 +122,11 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
 def extract_ict_data(df):
     """Extract additional ICT-specific data from scanner_specific_data JSONB field"""
     try:
+        # Extract timeframe from scanner_specific_data
+        df['timeframe'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('timeframe', '1h') if isinstance(x, dict) else '1h'
+        )
+        
         # Extract pattern type
         df['pattern_type'] = df['scanner_specific_data'].apply(
             lambda x: x.get('pattern_type', 'Unknown') if isinstance(x, dict) else 'Unknown'
@@ -336,6 +341,15 @@ def show_ict_analysis():
     display_df['R:R Ratio'] = display_df['risk_reward_ratio'].apply(lambda x: f"{x:.2f}" if x else "N/A")
     display_df['Gap Size %'] = display_df['gap_size_pct'].apply(lambda x: f"{x:.2f}%" if x else "N/A")
     display_df['FVG Age'] = display_df['fvg_age'].apply(lambda x: f"{x}h" if x else "N/A")
+    display_df['Distance to Entry'] = display_df['distance_to_entry'].apply(lambda x: f"{x:.2f}%" if x else "N/A")
+    display_df['T1'] = display_df['target_t1'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['T2'] = display_df['target_t2'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['T3'] = display_df['target_t3'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['Gap High'] = display_df['gap_high'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['Gap Low'] = display_df['gap_low'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['Swing High'] = display_df['swing_high'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['Swing Low'] = display_df['swing_low'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    display_df['Action'] = display_df['action_required'].apply(lambda x: x if x else "N/A")
     display_df['Side'] = display_df['side'].apply(lambda x: "🟢 LONG" if x == 'BUY' else "🔴 SHORT")
     display_df['Timeframe'] = display_df['timeframe'].apply(lambda x: x.upper())
     display_df['Detected'] = display_df['timestamp_uae'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M') if pd.notna(x) else "N/A")
@@ -343,7 +357,8 @@ def show_ict_analysis():
     # Select columns for display
     columns_to_show = [
         'symbol', 'Side', 'Timeframe', 'Score', 'Entry Price', 'Stop Loss', 'Take Profit',
-        'Current Price', 'R:R Ratio', 'Gap Size %', 'FVG Age', 'pattern_type', 'Detected'
+        'Current Price', 'R:R Ratio', 'Gap Size %', 'FVG Age', 'Distance to Entry', 
+        'T1', 'T2', 'T3', 'Gap High', 'Gap Low', 'Swing High', 'Swing Low', 'Action', 'pattern_type', 'Detected'
     ]
     
     # Rename columns for display
