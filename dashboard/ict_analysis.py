@@ -77,7 +77,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
                 fib_236,
                 fib_786
             FROM public.trade_opportunities
-            WHERE timestamp > NOW() - INTERVAL '%s hours'
+            WHERE timestamp > (SELECT MAX(timestamp) FROM public.trade_opportunities WHERE scanner_specific_data::text LIKE '%%ICT%%') - INTERVAL '%s hours'
             AND scanner_specific_data::text LIKE '%%ICT%%'
         """
         params = [hours_back]
@@ -200,6 +200,11 @@ def extract_ict_data(df):
         df['target_t1'] = df['target_1']
         df['target_t2'] = df['target_2']
         df['target_t3'] = df['target_3']
+        
+        # Extract side from scanner_specific_data (ICT scanners store it here)
+        df['side'] = df['scanner_specific_data'].apply(
+            lambda x: 'SELL' if isinstance(x, dict) and x.get('pattern_type', '').lower().find('bearish') >= 0 else 'BUY'
+        )
         
         return df
         
