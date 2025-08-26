@@ -158,6 +158,12 @@ class UniversalScannerLogger:
         trade_id = str(uuid.uuid4())
         
         try:
+            # Determine table name based on scanner type
+            if self.use_main_schema:
+                table_name = "trade_opportunities"
+            else:
+                table_name = "other_scanners_trades"
+            
             # Prepare JSONB fields with defaults
             market_conditions = trade_data.pop('market_conditions', {})
             technical_indicators = trade_data.pop('technical_indicators', {})
@@ -181,8 +187,8 @@ class UniversalScannerLogger:
             trade_data.setdefault('side', 'BUY')
             trade_data.setdefault('quantity', 1.0)
             
-            query = """
-                INSERT INTO other_scanners_trades (
+            query = f"""
+                INSERT INTO {table_name} (
                     id, scanner_name, scanner_version, timeframe, symbol, side,
                     entry_price, quantity, stop_loss, take_profit,
                     market_conditions, technical_indicators, scanner_signals,
@@ -213,7 +219,8 @@ class UniversalScannerLogger:
                         Json(execution_metadata)
                     ))
             
-            self.logger.info(f"✅ Trade logged: {trade_id} for {trade_data.get('symbol')} (schema: other_scanners)")
+            schema_name = "public" if self.use_main_schema else "other_scanners"
+            self.logger.info(f"✅ Trade logged: {trade_id} for {trade_data.get('symbol')} (schema: {schema_name})")
             return trade_id
             
         except Exception as e:
@@ -239,7 +246,8 @@ class UniversalScannerLogger:
             if self.log_trade(trade):
                 success_count += 1
         
-        self.logger.info(f"✅ Logged {success_count}/{len(trades_list)} trades to database (schema: other_scanners)")
+        schema_name = "public" if self.use_main_schema else "other_scanners"
+        self.logger.info(f"✅ Logged {success_count}/{len(trades_list)} trades to database (schema: {schema_name})")
         return success_count
     
     def update_trade_status(self, trade_id: str, new_status: str, metadata: Dict[str, Any] = None) -> bool:
@@ -255,10 +263,16 @@ class UniversalScannerLogger:
             success: True if update was successful
         """
         try:
+            # Determine table name based on scanner type
+            if self.use_main_schema:
+                table_name = "trade_opportunities"
+            else:
+                table_name = "other_scanners_trades"
+                
             status_column = f"status_{new_status.lower()}_at"
             
             query = f"""
-                UPDATE other_scanners_trades 
+                UPDATE {table_name} 
                 SET status = %s, {status_column} = CURRENT_TIMESTAMP
                 WHERE id = %s
             """
