@@ -282,8 +282,8 @@ class UniversalScannerLogger:
                     cursor.execute(query, (new_status, trade_id))
                     
                     if metadata:
-                        cursor.execute("""
-                            UPDATE other_scanners_trades
+                        cursor.execute(f"""
+                            UPDATE {table_name}
                             SET execution_metadata = execution_metadata || %s
                             WHERE id = %s
                         """, (Json(metadata), trade_id))
@@ -308,8 +308,14 @@ class UniversalScannerLogger:
             success: True if trade was closed successfully
         """
         try:
-            query = """
-                UPDATE other_scanners_trades
+            # Determine table name based on scanner type
+            if self.use_main_schema:
+                table_name = "trade_opportunities"
+            else:
+                table_name = "other_scanners_trades"
+                
+            query = f"""
+                UPDATE {table_name}
                 SET status = 'CLOSED',
                     exit_price = %s,
                     status_closed_at = CURRENT_TIMESTAMP,
@@ -322,8 +328,8 @@ class UniversalScannerLogger:
                     cursor.execute(query, (exit_price, trade_id))
                     
                     if metadata:
-                        cursor.execute("""
-                            UPDATE other_scanners_trades
+                        cursor.execute(f"""
+                            UPDATE {table_name}
                             SET execution_metadata = execution_metadata || %s
                             WHERE id = %s
                         """, (Json(metadata), trade_id))
