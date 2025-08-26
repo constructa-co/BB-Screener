@@ -201,23 +201,67 @@ class UniversalScannerLogger:
             
             with self.get_connection() as conn:
                 with conn.cursor() as cursor:
-                    cursor.execute(query, (
-                        trade_id,
-                        self.scanner_name,
-                        self.scanner_version,
-                        trade_data.get('timeframe'),
-                        trade_data.get('symbol'),
-                        trade_data.get('side'),
-                        trade_data.get('entry_price'),
-                        trade_data.get('quantity'),
-                        trade_data.get('stop_loss'),
-                        trade_data.get('take_profit'),
-                        Json(market_conditions),
-                        Json(technical_indicators),
-                        Json(scanner_signals),
-                        Json(feature_vector),
-                        Json(execution_metadata)
-                    ))
+                    if self.use_main_schema:
+                        # ICT scanner - use trade_opportunities table structure
+                        cursor.execute(f"""
+                            INSERT INTO {table_name} (
+                                symbol, timeframe, probability, risk_reward_ratio, 
+                                current_price, entry_price, stop_loss, target_1, target_2, target_3,
+                                rsi, mfi, stochastic_k, volume_surge, macd_signal, pattern_type,
+                                pattern_quality, confluence_score, historical_win_rate, 
+                                category_win_rate, similar_setups_count, market_cap,
+                                volume_24h, price_change_24h, scanner_specific_data
+                            ) VALUES (
+                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                                %s, %s, %s, %s, %s
+                            )
+                        """, (
+                            trade_data.get('symbol'),
+                            trade_data.get('timeframe', '1h'),
+                            trade_data.get('quality_score', 0),
+                            trade_data.get('risk_reward_ratio', 0),
+                            trade_data.get('current_price'),
+                            trade_data.get('entry_price'),
+                            trade_data.get('stop_loss'),
+                            feature_vector[0] if len(feature_vector) > 0 else None,
+                            feature_vector[1] if len(feature_vector) > 1 else None,
+                            feature_vector[2] if len(feature_vector) > 2 else None,
+                            technical_indicators.get('rsi', 0),
+                            technical_indicators.get('mfi', 0),
+                            technical_indicators.get('stochastic_k', 0),
+                            market_conditions.get('volume_surge', 0),
+                            technical_indicators.get('macd_signal', ''),
+                            scanner_signals.get('pattern_type', ''),
+                            scanner_signals.get('pattern_quality', ''),
+                            scanner_signals.get('confluence_score', 0),
+                            market_conditions.get('historical_win_rate', 0),
+                            market_conditions.get('category_win_rate', 0),
+                            market_conditions.get('similar_setups_count', 0),
+                            market_conditions.get('market_cap', 0),
+                            market_conditions.get('volume_24h', 0),
+                            market_conditions.get('price_change_24h', 0),
+                            Json(scanner_signals)  # Store all ICT-specific data here
+                        ))
+                    else:
+                        # Other scanners - use original other_scanners_trades structure
+                        cursor.execute(query, (
+                            trade_id,
+                            self.scanner_name,
+                            self.scanner_version,
+                            trade_data.get('timeframe'),
+                            trade_data.get('symbol'),
+                            trade_data.get('side'),
+                            trade_data.get('entry_price'),
+                            trade_data.get('quantity'),
+                            trade_data.get('stop_loss'),
+                            trade_data.get('take_profit'),
+                            Json(market_conditions),
+                            Json(technical_indicators),
+                            Json(scanner_signals),
+                            Json(feature_vector),
+                            Json(execution_metadata)
+                        ))
             
             schema_name = "public" if self.use_main_schema else "other_scanners"
             self.logger.info(f"✅ Trade logged: {trade_id} for {trade_data.get('symbol')} (schema: {schema_name})")
