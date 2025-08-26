@@ -219,7 +219,7 @@ class UniversalScannerLogger:
                         """, (
                             trade_data.get('symbol'),
                             trade_data.get('timeframe', '1h'),
-                            trade_data.get('quality_score', 0),
+                            scanner_signals.get('quality_score', 0),
                             trade_data.get('risk_reward_ratio', 0),
                             trade_data.get('current_price'),
                             trade_data.get('entry_price'),
