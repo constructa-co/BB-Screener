@@ -369,11 +369,11 @@ def show_ict_analysis():
     display_df['Distance to Entry'] = display_df['distance_to_entry'].apply(lambda x: f"{x:.2f}%" if x and x != 0 else "N/A")
     # Ensure target columns exist in display_df
     if 'target_t1' not in display_df.columns:
-        display_df['target_t1'] = display_df.get('target_1', 0)
+        display_df['target_t1'] = display_df['target_1'] if 'target_1' in display_df.columns else 0
     if 'target_t2' not in display_df.columns:
-        display_df['target_t2'] = display_df.get('target_2', 0)
+        display_df['target_t2'] = display_df['target_2'] if 'target_2' in display_df.columns else 0
     if 'target_t3' not in display_df.columns:
-        display_df['target_t3'] = display_df.get('target_3', 0)
+        display_df['target_t3'] = display_df['target_3'] if 'target_3' in display_df.columns else 0
     
     display_df['T1'] = display_df['target_t1'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['T2'] = display_df['target_t2'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
