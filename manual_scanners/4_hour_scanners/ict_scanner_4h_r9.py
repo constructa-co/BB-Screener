@@ -1334,6 +1334,11 @@ def call_universal_logger(high_quality_setups):
                     'quantity': 1.0,  # Default quantity
                     'stop_loss': float(setup.get('stop_loss', 0)),
                     'take_profit': float(setup.get('targets', {}).get('T1', 0)),
+                    'current_price': float(setup.get('current_price', 0)),
+                    'risk_reward_ratio': float(setup.get('risk_reward', 0)),
+                    'target_1': float(setup.get('targets', {}).get('T1', 0)),
+                    'target_2': float(setup.get('targets', {}).get('T2', 0)),
+                    'target_3': float(setup.get('targets', {}).get('T3', 0)),
                     
                     # Technical indicators
                     'technical_indicators': {
@@ -1349,6 +1354,7 @@ def call_universal_logger(high_quality_setups):
                     
                     # Scanner signals - FIXED: Use preserved original data
                     'scanner_signals': {
+                        'timeframe': '4h',
                         'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
                         'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
                         'gap_size_pct': float(setup.get('gap_size_pct', 0)),
@@ -1368,7 +1374,13 @@ def call_universal_logger(high_quality_setups):
                         'risk_pct': float(setup.get('risk_pct', 0)),
                         'action_required': setup.get('action_required', ''),
                         'quality_score': float(setup.get('quality_score', 0)),
-                        'fib_quality': float(setup.get('fib_quality', 0))
+                        'fib_quality': float(setup.get('fib_quality', 0)),
+                        'current_price': float(setup.get('current_price', 0)),
+                        'risk_reward_ratio': float(setup.get('risk_reward', 0)),
+                        'target_t1': float(setup.get('targets', {}).get('T1', 0)),
+                        'target_t2': float(setup.get('targets', {}).get('T2', 0)),
+                        'target_t3': float(setup.get('targets', {}).get('T3', 0)),
+                        'side': setup.get('type', 'UNKNOWN').upper()
                     },
                     
                     # Market conditions

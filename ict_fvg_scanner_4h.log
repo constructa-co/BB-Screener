@@ -7948,3 +7948,705 @@
 2025-08-26 21:56:19,329 - INFO - Scan complete. Found 67 high-quality setups, displayed 20
 2025-08-26 21:56:19,329 - INFO - Performance Stats: {'total_scans': 46, 'setups_found': 67, 'alerts_sent': 276}
 2025-08-26 21:56:19,329 - INFO - Next scan in 300 seconds...
+2025-08-26 22:10:51,278 - INFO - Connected to binance
+2025-08-26 22:12:07,136 - INFO - Connected to binance
+2025-08-26 22:13:22,382 - ERROR - ❌ Database connection failed: connection to server at "crypto-scanner-db-do-user-24043773-0.h.db.ondigitalocean.com" (128.199.202.109), port 25060 failed: Operation timed out
+	Is the server running on that host and accepting TCP/IP connections?
+
+2025-08-26 22:13:22,383 - INFO - ✅ Database logger initialized
+2025-08-26 22:13:22,383 - INFO - Starting continuous scanner (interval: 300s)
+2025-08-26 22:13:22,383 - INFO - Starting scan of top 500 symbols...
+2025-08-26 22:13:22,383 - INFO - ✅ Scan logged to database with ID: None
+2025-08-26 22:13:25,456 - INFO - Scanning 346 symbols
+2025-08-26 22:13:25,457 - INFO - Progress: 0/346 symbols scanned
+2025-08-26 22:13:26,217 - WARNING - ❌ Failed to log ICT setup: BTC/USDT
+2025-08-26 22:13:26,590 - WARNING - ❌ Failed to log ICT setup: SOL/USDT
+2025-08-26 22:13:27,356 - WARNING - ❌ Failed to log ICT setup: DOGE/USDT
+2025-08-26 22:13:27,934 - INFO - Progress: 10/346 symbols scanned
+2025-08-26 22:13:28,490 - WARNING - ❌ Failed to log ICT setup: ADA/USDT
+2025-08-26 22:13:29,385 - WARNING - ❌ Failed to log ICT setup: ARB/USDT
+2025-08-26 22:13:29,753 - WARNING - ❌ Failed to log ICT setup: UNI/USDT
+2025-08-26 22:13:30,510 - INFO - Progress: 20/346 symbols scanned
+2025-08-26 22:13:32,465 - INFO - Progress: 30/346 symbols scanned
+2025-08-26 22:13:33,654 - WARNING - ❌ Failed to log ICT setup: OP/USDT
+2025-08-26 22:13:34,621 - INFO - Progress: 40/346 symbols scanned
+2025-08-26 22:13:35,285 - WARNING - ❌ Failed to log ICT setup: LDO/USDT
+2025-08-26 22:13:35,844 - WARNING - ❌ Failed to log ICT setup: FIL/USDT
+2025-08-26 22:13:37,788 - INFO - Progress: 50/346 symbols scanned
+2025-08-26 22:13:40,211 - INFO - Progress: 60/346 symbols scanned
+2025-08-26 22:13:41,432 - WARNING - ❌ Failed to log ICT setup: C/USDT
+2025-08-26 22:13:43,350 - WARNING - ❌ Failed to log ICT setup: RUNE/USDT
+2025-08-26 22:13:43,350 - INFO - Progress: 70/346 symbols scanned
+2025-08-26 22:13:44,515 - WARNING - ❌ Failed to log ICT setup: SYRUP/USDT
+2025-08-26 22:13:46,077 - WARNING - ❌ Failed to log ICT setup: NEO/USDT
+2025-08-26 22:13:46,621 - WARNING - ❌ Failed to log ICT setup: WBTC/USDT
+2025-08-26 22:13:46,621 - INFO - Progress: 80/346 symbols scanned
+2025-08-26 22:13:47,537 - WARNING - ❌ Failed to log ICT setup: SAND/USDT
+2025-08-26 22:13:47,911 - WARNING - ❌ Failed to log ICT setup: CFX/USDT
+2025-08-26 22:13:48,645 - WARNING - ❌ Failed to log ICT setup: CYBER/USDT
+2025-08-26 22:13:49,022 - INFO - Progress: 90/346 symbols scanned
+2025-08-26 22:13:49,861 - WARNING - ❌ Failed to log ICT setup: TRB/USDT
+2025-08-26 22:13:50,217 - WARNING - ❌ Failed to log ICT setup: JUP/USDT
+2025-08-26 22:13:51,586 - INFO - Progress: 100/346 symbols scanned
+2025-08-26 22:13:51,959 - WARNING - ❌ Failed to log ICT setup: MKR/USDT
+2025-08-26 22:13:52,443 - WARNING - ❌ Failed to log ICT setup: JST/USDT
+2025-08-26 22:13:54,872 - WARNING - ❌ Failed to log ICT setup: DOGS/USDT
+2025-08-26 22:13:55,233 - WARNING - ❌ Failed to log ICT setup: PEOPLE/USDT
+2025-08-26 22:13:55,588 - WARNING - ❌ Failed to log ICT setup: ID/USDT
+2025-08-26 22:13:55,588 - INFO - Progress: 110/346 symbols scanned
+2025-08-26 22:13:56,330 - WARNING - ❌ Failed to log ICT setup: AIXBT/USDT
+2025-08-26 22:13:57,296 - WARNING - ❌ Failed to log ICT setup: INIT/USDT
+2025-08-26 22:13:57,845 - INFO - Progress: 120/346 symbols scanned
+2025-08-26 22:13:58,559 - WARNING - ❌ Failed to log ICT setup: FORM/USDT
+2025-08-26 22:13:59,831 - WARNING - ❌ Failed to log ICT setup: A/USDT
+2025-08-26 22:14:00,192 - INFO - Progress: 130/346 symbols scanned
+2025-08-26 22:14:00,947 - WARNING - ❌ Failed to log ICT setup: OG/USDT
+2025-08-26 22:14:02,044 - WARNING - ❌ Failed to log ICT setup: AI/USDT
+2025-08-26 22:14:02,411 - INFO - Progress: 140/346 symbols scanned
+2025-08-26 22:14:02,953 - ERROR - Error scanning IO/USDT: 'swing_high'
+2025-08-26 22:14:03,321 - WARNING - ❌ Failed to log ICT setup: ZEN/USDT
+2025-08-26 22:14:04,048 - WARNING - ❌ Failed to log ICT setup: SKL/USDT
+2025-08-26 22:14:04,784 - INFO - Progress: 150/346 symbols scanned
+2025-08-26 22:14:06,530 - WARNING - ❌ Failed to log ICT setup: RSR/USDT
+2025-08-26 22:14:06,898 - INFO - Progress: 160/346 symbols scanned
+2025-08-26 22:14:08,784 - INFO - Progress: 170/346 symbols scanned
+2025-08-26 22:14:09,592 - WARNING - ❌ Failed to log ICT setup: BNSOL/USDT
+2025-08-26 22:14:10,140 - WARNING - ❌ Failed to log ICT setup: LAYER/USDT
+2025-08-26 22:14:10,504 - WARNING - ❌ Failed to log ICT setup: KAIA/USDT
+2025-08-26 22:14:11,130 - WARNING - ❌ Failed to log ICT setup: LUNC/USDT
+2025-08-26 22:14:11,519 - INFO - Progress: 180/346 symbols scanned
+2025-08-26 22:14:12,246 - WARNING - ❌ Failed to log ICT setup: CVX/USDT
+2025-08-26 22:14:13,450 - WARNING - ❌ Failed to log ICT setup: ONE/USDT
+2025-08-26 22:14:14,124 - WARNING - ❌ Failed to log ICT setup: NXPC/USDT
+2025-08-26 22:14:14,125 - INFO - Progress: 190/346 symbols scanned
+2025-08-26 22:14:16,053 - INFO - Progress: 200/346 symbols scanned
+2025-08-26 22:14:16,428 - WARNING - ❌ Failed to log ICT setup: VANA/USDT
+2025-08-26 22:14:17,491 - WARNING - ❌ Failed to log ICT setup: HFT/USDT
+2025-08-26 22:14:17,854 - WARNING - ❌ Failed to log ICT setup: THE/USDT
+2025-08-26 22:14:18,728 - INFO - Progress: 210/346 symbols scanned
+2025-08-26 22:14:20,457 - WARNING - ❌ Failed to log ICT setup: WIN/USDT
+2025-08-26 22:14:21,239 - INFO - Progress: 220/346 symbols scanned
+2025-08-26 22:14:22,002 - WARNING - ❌ Failed to log ICT setup: LUNA/USDT
+2025-08-26 22:14:22,354 - WARNING - ❌ Failed to log ICT setup: PHB/USDT
+2025-08-26 22:14:22,927 - WARNING - ❌ Failed to log ICT setup: IMX/USDT
+2025-08-26 22:14:23,476 - WARNING - ❌ Failed to log ICT setup: SUPER/USDT
+2025-08-26 22:14:23,848 - INFO - Progress: 230/346 symbols scanned
+2025-08-26 22:14:24,402 - WARNING - ❌ Failed to log ICT setup: RARE/USDT
+2025-08-26 22:14:25,129 - WARNING - ❌ Failed to log ICT setup: 1INCH/USDT
+2025-08-26 22:14:26,073 - WARNING - ❌ Failed to log ICT setup: SUN/USDT
+2025-08-26 22:14:26,263 - INFO - Progress: 240/346 symbols scanned
+2025-08-26 22:14:27,803 - WARNING - ❌ Failed to log ICT setup: 1000CAT/USDT
+2025-08-26 22:14:28,368 - INFO - Progress: 250/346 symbols scanned
+2025-08-26 22:14:29,296 - WARNING - ❌ Failed to log ICT setup: SOPH/USDT
+2025-08-26 22:14:30,385 - WARNING - ❌ Failed to log ICT setup: IOTX/USDT
+2025-08-26 22:14:30,565 - INFO - Progress: 260/346 symbols scanned
+2025-08-26 22:14:31,483 - WARNING - ❌ Failed to log ICT setup: STEEM/USDT
+2025-08-26 22:14:32,771 - WARNING - ❌ Failed to log ICT setup: DF/USDT
+2025-08-26 22:14:32,771 - INFO - Progress: 270/346 symbols scanned
+2025-08-26 22:14:33,128 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-08-26 22:14:33,487 - WARNING - ❌ Failed to log ICT setup: TKO/USDT
+2025-08-26 22:14:34,084 - WARNING - ❌ Failed to log ICT setup: TST/USDT
+2025-08-26 22:14:34,741 - ERROR - Error scanning NEWT/USDT: 'swing_high'
+2025-08-26 22:14:35,954 - INFO - Progress: 280/346 symbols scanned
+2025-08-26 22:14:36,327 - ERROR - Error scanning ASTR/USDT: 'swing_high'
+2025-08-26 22:14:36,685 - ERROR - Error scanning BICO/USDT: 'swing_high'
+2025-08-26 22:14:38,153 - WARNING - ❌ Failed to log ICT setup: RLC/USDT
+2025-08-26 22:14:38,338 - INFO - Progress: 290/346 symbols scanned
+2025-08-26 22:14:38,692 - WARNING - ❌ Failed to log ICT setup: NFP/USDT
+2025-08-26 22:14:39,409 - WARNING - ❌ Failed to log ICT setup: FXS/USDT
+2025-08-26 22:14:39,968 - WARNING - ❌ Failed to log ICT setup: SXP/USDT
+2025-08-26 22:14:40,703 - INFO - Progress: 300/346 symbols scanned
+2025-08-26 22:14:41,435 - WARNING - ❌ Failed to log ICT setup: IDEX/USDT
+2025-08-26 22:14:42,598 - WARNING - ❌ Failed to log ICT setup: CTK/USDT
+2025-08-26 22:14:43,173 - WARNING - ❌ Failed to log ICT setup: RPL/USDT
+2025-08-26 22:14:43,373 - INFO - Progress: 310/346 symbols scanned
+2025-08-26 22:14:44,475 - WARNING - ❌ Failed to log ICT setup: MOVR/USDT
+2025-08-26 22:14:45,574 - WARNING - ❌ Failed to log ICT setup: QUICK/USDT
+2025-08-26 22:14:45,574 - INFO - Progress: 320/346 symbols scanned
+2025-08-26 22:14:47,433 - WARNING - ❌ Failed to log ICT setup: ACM/USDT
+2025-08-26 22:14:47,621 - INFO - Progress: 330/346 symbols scanned
+2025-08-26 22:14:48,354 - WARNING - ❌ Failed to log ICT setup: CGPT/USDT
+2025-08-26 22:14:48,763 - WARNING - ❌ Failed to log ICT setup: MATIC/USDT
+2025-08-26 22:14:49,118 - ERROR - Error scanning G/USDT: 'swing_high'
+2025-08-26 22:14:49,477 - WARNING - ❌ Failed to log ICT setup: PUNDIX/USDT
+2025-08-26 22:14:50,209 - INFO - Progress: 340/346 symbols scanned
+2025-08-26 22:14:51,521 - WARNING - ❌ Failed to log ICT setup: PYR/USDT
+2025-08-26 22:14:51,521 - INFO - Found 72 setups, showing top 20
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: AI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1246
+- Gap Low: $0.1233
+- Entry (Midpoint): $0.1240
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1175
+- Swing Low: $0.1155
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1228
+- Distance to Entry: 0.9%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1247 (-0.6%)
+- Risk/Reward: 9.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1167 (+5.8%) [38.2%] - Exit 50%
+- T2: $0.1165 (+6.0%) [50%] - Exit 30%
+- T3: $0.1159 (+6.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 0/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🟢 LONG Signal: ARB/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.5305
+- Gap Low: $0.5209
+- Entry (Midpoint): $0.5257
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.5634
+- Swing Low: $0.5419
+- Swing Range: 4.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.5285
+- Distance to Entry: -0.5%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.5225 (-0.6%)
+- Risk/Reward: 7.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.5501 (+4.6%) [38.2%] - Exit 50%
+- T2: $0.5527 (+5.1%) [50%] - Exit 30%
+- T3: $0.5588 (+6.3%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 0/100
+- Final Score: 100/100
+- Gap Size: 1.8%
+- FVG Age: 16 bars
+- Volume Surge: No ❌
+- Category: Layer 2/Scaling
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:13
+
+2025-08-26 22:14:51,522 - INFO - 
+🟢 LONG Signal: TST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0260
+- Gap Low: $0.0257
+- Entry (Midpoint): $0.0258
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0273
+- Swing Low: $0.0265
+- Swing Range: 3.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0261
+- Distance to Entry: -1.1%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0257 (-0.6%)
+- Risk/Reward: 6.5:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0268 (+3.9%) [38.2%] - Exit 50%
+- T2: $0.0269 (+4.3%) [50%] - Exit 30%
+- T3: $0.0272 (+5.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 0/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 17 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🟢 LONG Signal: SKL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0297
+- Gap Low: $0.0291
+- Entry (Midpoint): $0.0294
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0315
+- Swing Low: $0.0294
+- Swing Range: 7.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0298
+- Distance to Entry: -1.2%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0292 (-0.6%)
+- Risk/Reward: 4.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0302 (+2.8%) [38.2%] - Exit 50%
+- T2: $0.0305 (+3.6%) [50%] - Exit 30%
+- T3: $0.0311 (+5.7%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.0%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: TRB/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $33.6400
+- Gap Low: $32.8800
+- Entry (Midpoint): $33.2600
+
+📈 MARKET STRUCTURE:
+- Swing High: $36.6000
+- Swing Low: $32.4500
+- Swing Range: 12.8%
+
+💹 CURRENT STATUS:
+- Price Now: $33.0400
+- Distance to Entry: 0.7%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $33.4596 (-0.6%)
+- Risk/Reward: 4.1:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $32.4500 (+2.4%) [100%] - Exit 50%
+- T2: $31.3212 (+5.8%) [127.2%] - Exit 30%
+- T3: $28.3000 (+14.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 2.3%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:13
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: CGPT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0892
+- Gap Low: $0.0880
+- Entry (Midpoint): $0.0886
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0965
+- Swing Low: $0.0866
+- Swing Range: 11.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0886
+- Distance to Entry: 0.0%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0891 (-0.6%)
+- Risk/Reward: 3.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0866 (+2.3%) [100%] - Exit 50%
+- T2: $0.0839 (+5.3%) [127.2%] - Exit 30%
+- T3: $0.0767 (+13.4%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: AIXBT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1070
+- Gap Low: $0.1053
+- Entry (Midpoint): $0.1061
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1172
+- Swing Low: $0.1006
+- Swing Range: 16.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1041
+- Distance to Entry: 2.0%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1068 (-0.6%)
+- Risk/Reward: 3.1:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1042 (+1.9%) [78.6%] - Exit 50%
+- T2: $0.1006 (+5.2%) [100%] - Exit 30%
+- T3: $0.0903 (+14.9%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:13
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: RARE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0541
+- Gap Low: $0.0534
+- Entry (Midpoint): $0.0538
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0574
+- Swing Low: $0.0516
+- Swing Range: 11.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0533
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0541 (-0.6%)
+- Risk/Reward: 2.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0528 (+1.7%) [78.6%] - Exit 50%
+- T2: $0.0516 (+4.0%) [100%] - Exit 30%
+- T3: $0.0480 (+10.7%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.3%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: SXP/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1777
+- Gap Low: $0.1750
+- Entry (Midpoint): $0.1764
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1754
+- Swing Low: $0.1709
+- Swing Range: 2.6%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1759
+- Distance to Entry: 0.3%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1774 (-0.6%)
+- Risk/Reward: 2.5:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1737 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.1731 (+1.8%) [50%] - Exit 30%
+- T3: $0.1719 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: RPL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $7.4700
+- Gap Low: $7.3900
+- Entry (Midpoint): $7.4300
+
+📈 MARKET STRUCTURE:
+- Swing High: $7.4400
+- Swing Low: $7.1400
+- Swing Range: 4.2%
+
+💹 CURRENT STATUS:
+- Price Now: $7.3200
+- Distance to Entry: 1.5%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $7.4746 (-0.6%)
+- Risk/Reward: 2.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $7.3254 (+1.4%) [38.2%] - Exit 50%
+- T2: $7.2900 (+1.9%) [50%] - Exit 30%
+- T3: $7.2042 (+3.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 24 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: 1000CAT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0079
+- Gap Low: $0.0078
+- Entry (Midpoint): $0.0078
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0089
+- Swing Low: $0.0074
+- Swing Range: 19.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0077
+- Distance to Entry: 1.0%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0079 (-0.6%)
+- Risk/Reward: 2.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0077 (+1.4%) [78.6%] - Exit 50%
+- T2: $0.0074 (+5.3%) [100%] - Exit 30%
+- T3: $0.0065 (+16.7%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Meme/Community
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: LAYER/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.5398
+- Gap Low: $0.5314
+- Entry (Midpoint): $0.5356
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.5322
+- Swing Low: $0.5235
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.5382
+- Distance to Entry: -0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.5388 (-0.6%)
+- Risk/Reward: 2.1:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.5289 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.5278 (+1.4%) [50%] - Exit 30%
+- T3: $0.5254 (+1.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 22 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,522 - INFO - 
+🔴 SHORT Signal: LUNC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0001
+- Gap Low: $0.0001
+- Entry (Midpoint): $0.0001
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0001
+- Swing Low: $0.0001
+- Swing Range: 10.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0001
+- Distance to Entry: 1.2%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0001 (-0.6%)
+- Risk/Reward: 2.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0001 (+1.2%) [61.8%] - Exit 50%
+- T2: $0.0001 (+2.9%) [78.6%] - Exit 30%
+- T3: $0.0001 (+7.9%) [127.2%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 35 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-08-26 22:14
+
+2025-08-26 22:14:51,523 - INFO - Scan complete. Found 72 high-quality setups, displayed 20
+2025-08-26 22:14:51,523 - INFO - Performance Stats: {'total_scans': 1, 'setups_found': 72, 'alerts_sent': 26}
+2025-08-26 22:14:51,523 - INFO - Next scan in 300 seconds...
+2025-08-26 22:19:51,539 - INFO - Starting scan of top 500 symbols...
+2025-08-26 22:19:51,540 - INFO - ✅ Scan logged to database with ID: None
+2025-08-26 22:19:51,972 - INFO - Scanning 345 symbols
+2025-08-26 22:19:51,973 - INFO - Progress: 0/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 10/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 20/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 30/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 40/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 50/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 60/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 70/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 80/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 90/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 100/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 110/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 120/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 130/345 symbols scanned
+2025-08-26 22:19:51,973 - INFO - Progress: 140/345 symbols scanned
+2025-08-26 22:19:52,338 - ERROR - Error scanning IO/USDT: 'swing_high'
+2025-08-26 22:19:52,338 - INFO - Progress: 150/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 160/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 170/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 180/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 190/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 200/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 210/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 220/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 230/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 240/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 250/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 260/345 symbols scanned
+2025-08-26 22:19:52,338 - INFO - Progress: 270/345 symbols scanned
+2025-08-26 22:19:52,700 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-08-26 22:19:53,064 - ERROR - Error scanning NEWT/USDT: 'swing_high'
+2025-08-26 22:19:53,064 - INFO - Progress: 280/345 symbols scanned
+2025-08-26 22:19:53,546 - ERROR - Error scanning ASTR/USDT: 'swing_high'
+2025-08-26 22:19:53,908 - ERROR - Error scanning BICO/USDT: 'swing_high'
+2025-08-26 22:19:53,908 - INFO - Progress: 290/345 symbols scanned
+2025-08-26 22:19:53,908 - INFO - Progress: 300/345 symbols scanned
+2025-08-26 22:19:53,908 - INFO - Progress: 310/345 symbols scanned
+2025-08-26 22:19:53,908 - INFO - Progress: 320/345 symbols scanned
+2025-08-26 22:19:53,908 - INFO - Progress: 330/345 symbols scanned
+2025-08-26 22:19:54,265 - ERROR - Error scanning G/USDT: 'swing_high'
+2025-08-26 22:19:54,265 - INFO - Progress: 340/345 symbols scanned
+2025-08-26 22:19:54,265 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-08-26 22:19:54,265 - INFO - Performance Stats: {'total_scans': 2, 'setups_found': 0, 'alerts_sent': 26}
+2025-08-26 22:19:54,265 - INFO - Next scan in 300 seconds...
+2025-08-26 22:21:38,102 - INFO - Scanner stopped by user
+2025-08-26 22:21:38,935 - INFO - Connected to binance
+2025-08-26 22:21:38,939 - INFO - Starting continuous scanner (interval: 300s)
+2025-08-26 22:21:38,939 - INFO - Starting scan of top 500 symbols...
+2025-08-26 22:21:43,051 - INFO - Scanning 345 symbols
+2025-08-26 22:21:43,052 - INFO - Progress: 0/345 symbols scanned
+2025-08-26 22:21:47,445 - INFO - Progress: 10/345 symbols scanned
+2025-08-26 22:21:51,962 - INFO - Progress: 20/345 symbols scanned
