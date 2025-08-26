@@ -230,7 +230,7 @@ class UniversalScannerLogger:
                             technical_indicators.get('rsi', 0),
                             technical_indicators.get('mfi', 0),
                             technical_indicators.get('stochastic_k', 0),
-                            market_conditions.get('volume_surge', 0),
+                            1.0 if market_conditions.get('volume_surge', False) else 0.0,
                             technical_indicators.get('macd_signal', ''),
                             scanner_signals.get('pattern_type', ''),
                             scanner_signals.get('pattern_quality', ''),
