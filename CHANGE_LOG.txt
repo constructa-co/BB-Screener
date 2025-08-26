@@ -3199,6 +3199,14 @@ IMPLEMENTED FIXES:
    - Changed from 'modules' to '../universal_enrichment' to match actual file location
    - Result: ✅ 4H scanner R8 should now run without import errors
 
+6. FIXED WYCKOFF AND TREND FOLLOWING CRON JOBS:
+   - Identified issue: 'source .env' command not working properly in cron environment
+   - Updated all Wyckoff and trend following cron jobs to use explicit DATABASE_URL exports
+   - Changed from 'source .env &&' to 'export DATABASE_URL="..." && export OTHER_SCANNERS_DATABASE_URL="..." &&'
+   - Applied same pattern that ICT scanners use successfully
+   - Result: ✅ Wyckoff and trend following scanners now working via cron
+   - Verified: Wyckoff 1H scanner successfully created log file and completed scan
+
 2. ADDED DATABASE LOGGING TO 15M SCANNER:
    - Added TradeLogger import and initialization to ict_scanner_15m_r3.py
    - Added complete database logging in scan_all_symbols method
