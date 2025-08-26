@@ -3194,6 +3194,11 @@ IMPLEMENTED FIXES:
    - Added timeframe, current_price, risk_reward_ratio, target_t1/t2/t3 to scanner_specific_data JSONB
    - Result: ✅ All ICT scanners should now properly log complete data to database
 
+5. FIXED 4H SCANNER R8 IMPORT PATH:
+   - Fixed import path for universal_enrichment.py in ict_scanner_4h_r8.py
+   - Changed from 'modules' to '../universal_enrichment' to match actual file location
+   - Result: ✅ 4H scanner R8 should now run without import errors
+
 2. ADDED DATABASE LOGGING TO 15M SCANNER:
    - Added TradeLogger import and initialization to ict_scanner_15m_r3.py
    - Added complete database logging in scan_all_symbols method

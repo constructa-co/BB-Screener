@@ -1069,15 +1069,20 @@ class ICTFVGScanner:
         
         # Start scan logging if database is available (do this early)
         scan_id = None
-        try:
-            if self.db_logger:
+        
+        # Check if database is connected
+        if not self.db_logger or not self.db_logger.connection:
+            logger.warning("⚠️ Database not connected - running in offline mode")
+            logger.warning("Results will not be saved to database")
+            logger.info("📝 Running without database logging (offline mode)")
+        else:
+            try:
                 scan_id = self.db_logger.log_scan_start('ict_scanner_4h', 'R8')
                 logger.info(f"✅ Scan started with ID: {scan_id}")
-            else:
-                logger.warning("❌ No database logger available")
-        except Exception as e:
-            logger.warning(f"❌ Failed to start scan logging: {e}")
-            scan_id = None
+            except Exception as e:
+                logger.warning(f"❌ Failed to start scan logging: {e}")
+                scan_id = None
+                logger.info("📝 Running without database logging (offline mode)")
         
         symbols = self.get_top_symbols(limit=top_n)
         high_quality_setups = []
@@ -1116,8 +1121,8 @@ class ICTFVGScanner:
                             high_quality_setups.append(setup)
                             logger.info(f"📊 Found setup for {symbol}: Quality={setup['final_quality']}, R/R={setup['risk_reward']}")
                             
-                            # Log to database
-                            if self.db_logger and scan_id is not None:
+                            # Log to database (only if connected and scan_id exists)
+                            if self.db_logger and self.db_logger.connection and scan_id is not None:
                                 try:
                                     # Prepare trade data for database - convert numpy types to Python types
                                     def convert_to_python_type(value):
@@ -1154,31 +1159,23 @@ class ICTFVGScanner:
                                         'volume_24h': convert_to_python_type(setup.get('volume_24h', 0)),
                                         'price_change_24h': convert_to_python_type(setup.get('price_change_24h', 0)),
                                         'scanner_type': 'ict_scanner_4h',
-                                        'scanner_specific_data': {
-                                            'timeframe': '4h',
-                                            'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
-                                            'fvg_age': convert_to_python_type(setup.get('fvg_age', 0)),
-                                            'distance_to_entry': convert_to_python_type(setup.get('distance_to_entry', 0)),
-                                            'gap_midpoint': convert_to_python_type(setup.get('gap_midpoint', 0)),
-                                            'swing_range_pct': convert_to_python_type(setup.get('swing_range_pct', 0)),
-                                            'gap_high': convert_to_python_type(setup.get('gap_high', 0)),
-                                            'gap_low': convert_to_python_type(setup.get('gap_low', 0)),
-                                            'gap_size_pct': convert_to_python_type(setup.get('gap_size_pct', 0)),
-                                            'swing_high': convert_to_python_type(setup.get('swing_high', 0)),
-                                            'swing_low': convert_to_python_type(setup.get('swing_low', 0)),
-                                            'risk_pct': convert_to_python_type(setup.get('risk_pct', 0)),
-                                            'action_required': setup.get('action_required', 'MONITOR'),
-                                            'quality_score': convert_to_python_type(setup.get('final_quality', 0)),
-                                            'fib_quality': convert_to_python_type(setup.get('fib_quality', 0)),
-                                            'category': setup.get('category', ''),
-                                            'volume_surge': float(setup.get('volume_surge', False)),
-                                            'target_t1': convert_to_python_type(setup.get('targets', {}).get('T1', 0)),
-                                            'target_t2': convert_to_python_type(setup.get('targets', {}).get('T2', 0)),
-                                            'target_t3': convert_to_python_type(setup.get('targets', {}).get('T3', 0)),
-                                            'current_price': convert_to_python_type(setup.get('current_price', 0)),
-                                            'risk_reward_ratio': convert_to_python_type(setup.get('risk_reward', 0)),
-                                            'side': setup.get('type', 'UNKNOWN').upper()
-                                        }
+                                        
+                                        # ICT-SPECIFIC FIELDS - Now captured in dedicated columns
+                                        'gap_high': convert_to_python_type(setup.get('fvg', {}).get('high', 0)),
+                                        'gap_low': convert_to_python_type(setup.get('fvg', {}).get('low', 0)),
+                                        'gap_size_pct': convert_to_python_type(setup.get('gap_size', 0)),
+                                        'swing_high': convert_to_python_type(setup.get('swing_high', 0)),
+                                        'swing_low': convert_to_python_type(setup.get('swing_low', 0)),
+                                        'order_block_high': convert_to_python_type(setup.get('order_block_high', 0)),
+                                        'order_block_low': convert_to_python_type(setup.get('order_block_low', 0)),
+                                        'fib_236': convert_to_python_type(setup.get('targets', {}).get('fib_236', 0)),
+                                        'fib_382': convert_to_python_type(setup.get('targets', {}).get('fib_382', 0)),
+                                        'fib_500': convert_to_python_type(setup.get('targets', {}).get('fib_500', 0)),
+                                        'fib_618': convert_to_python_type(setup.get('targets', {}).get('fib_618', 0)),
+                                        'fib_786': convert_to_python_type(setup.get('targets', {}).get('fib_786', 0)),
+                                        'liquidity_sweep_level': convert_to_python_type(setup.get('liquidity_sweep_level', 0)),
+                                        'imbalance_high': convert_to_python_type(setup.get('imbalance_high', 0)),
+                                        'imbalance_low': convert_to_python_type(setup.get('imbalance_low', 0))
                                     }
                                     
                                     # Debug: Print the trade data being sent
