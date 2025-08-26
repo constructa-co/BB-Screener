@@ -77,13 +77,13 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
                 fib_236,
                 fib_786
             FROM public.trade_opportunities
-            WHERE timestamp > (SELECT MAX(timestamp) FROM public.trade_opportunities WHERE scanner_specific_data::text LIKE '%%ICT%%') - INTERVAL '%s hours'
+            WHERE timestamp > NOW() - INTERVAL '%s hours'
             AND scanner_specific_data::text LIKE '%%ICT%%'
         """
         params = [hours_back]
         
         if timeframe_filter and timeframe_filter != "All":
-            query += " AND COALESCE(timeframe, '1h') = %s"
+            query += " AND scanner_specific_data->>'timeframe' = %s"
             params.append(timeframe_filter)
         
         if pattern_filter and pattern_filter != "All":
@@ -196,10 +196,26 @@ def extract_ict_data(df):
             lambda x: x.get('volume_surge', False) if isinstance(x, dict) else False
         )
         
-        # Extract Fibonacci targets from main table columns
-        df['target_t1'] = df['target_1']
-        df['target_t2'] = df['target_2']
-        df['target_t3'] = df['target_3']
+        # Extract Fibonacci targets from scanner_specific_data
+        df['target_t1'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('target_t1', 0) if isinstance(x, dict) else 0
+        )
+        df['target_t2'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('target_t2', 0) if isinstance(x, dict) else 0
+        )
+        df['target_t3'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('target_t3', 0) if isinstance(x, dict) else 0
+        )
+        
+        # Extract current price from scanner_specific_data
+        df['current_price'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('current_price', 0) if isinstance(x, dict) else 0
+        )
+        
+        # Extract risk/reward ratio from scanner_specific_data
+        df['risk_reward_ratio'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('risk_reward_ratio', 0) if isinstance(x, dict) else 0
+        )
         
         # Extract side from scanner_specific_data (ICT scanners store it here)
         df['side'] = df['scanner_specific_data'].apply(
@@ -352,36 +368,18 @@ def show_ict_analysis():
     display_df = df.copy()
     
     # Format columns for display
-    display_df['Entry Price'] = display_df['entry_price'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Stop Loss'] = display_df['stop_loss'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Take Profit'] = display_df['take_profit'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Current Price'] = display_df['current_price'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Score'] = display_df['probability'].apply(lambda x: f"{x:.1f}" if x else "N/A")
-    display_df['R:R Ratio'] = display_df['risk_reward_ratio'].apply(lambda x: f"{x:.2f}" if x else "N/A")
-    display_df['Gap Size %'] = display_df['gap_size_pct'].apply(lambda x: f"{x:.2f}%" if x else "N/A")
-    display_df['FVG Age'] = display_df['fvg_age'].apply(lambda x: f"{x}h" if x else "N/A")
-    display_df['Distance to Entry'] = display_df['distance_to_entry'].apply(lambda x: f"{x:.2f}%" if x else "N/A")
-    # Ensure target columns exist, create them if they don't
-    if 'target_t1' not in display_df.columns:
-        display_df['target_t1'] = display_df.get('target_1', 0)
-    if 'target_t2' not in display_df.columns:
-        display_df['target_t2'] = display_df.get('target_2', 0)
-    if 'target_t3' not in display_df.columns:
-        display_df['target_t3'] = display_df.get('target_3', 0)
-    
+    display_df['Entry Price'] = display_df['entry_price'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Stop Loss'] = display_df['stop_loss'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Take Profit'] = display_df['take_profit'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Current Price'] = display_df['current_price'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Score'] = display_df['probability'].apply(lambda x: f"{x:.1f}" if x and x != 0 else "N/A")
+    display_df['R:R Ratio'] = display_df['risk_reward_ratio'].apply(lambda x: f"{x:.2f}" if x and x != 0 else "N/A")
+    display_df['Gap Size %'] = display_df['gap_size_pct'].apply(lambda x: f"{x:.2f}%" if x and x != 0 else "N/A")
+    display_df['FVG Age'] = display_df['fvg_age'].apply(lambda x: f"{x}h" if x and x != 0 else "N/A")
+    display_df['Distance to Entry'] = display_df['distance_to_entry'].apply(lambda x: f"{x:.2f}%" if x and x != 0 else "N/A")
     display_df['T1'] = display_df['target_t1'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['T2'] = display_df['target_t2'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['T3'] = display_df['target_t3'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
-    # Ensure gap and swing columns exist, create them if they don't
-    if 'gap_high' not in display_df.columns:
-        display_df['gap_high'] = display_df['scanner_specific_data'].apply(lambda x: x.get('gap_high', 0) if isinstance(x, dict) else 0)
-    if 'gap_low' not in display_df.columns:
-        display_df['gap_low'] = display_df['scanner_specific_data'].apply(lambda x: x.get('gap_low', 0) if isinstance(x, dict) else 0)
-    if 'swing_high' not in display_df.columns:
-        display_df['swing_high'] = display_df['scanner_specific_data'].apply(lambda x: x.get('swing_high', 0) if isinstance(x, dict) else 0)
-    if 'swing_low' not in display_df.columns:
-        display_df['swing_low'] = display_df['scanner_specific_data'].apply(lambda x: x.get('swing_low', 0) if isinstance(x, dict) else 0)
-    
     display_df['Gap High'] = display_df['gap_high'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['Gap Low'] = display_df['gap_low'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['Swing High'] = display_df['swing_high'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
