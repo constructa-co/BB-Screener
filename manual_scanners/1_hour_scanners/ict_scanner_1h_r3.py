@@ -1211,7 +1211,7 @@ class ICTFVGScanner:
                                     'rsi': convert_to_python_type(setup.get('rsi', 0)),
                                     'mfi': convert_to_python_type(setup.get('mfi', 0)),
                                     'stochastic_k': convert_to_python_type(setup.get('stochastic_k', 0)),
-                                    'volume_surge': convert_to_python_type(setup.get('volume_surge', 0)),
+                                    'volume_surge': convert_to_python_type(1.0 if setup.get('volume_surge', False) else 0.0),
                                     'macd_signal': setup.get('macd_signal', 'neutral'),
                                     'pattern_type': f"ICT FVG {setup.get('type', 'unknown')}",
                                     'pattern_quality': 'GOOD' if setup.get('final_quality', 0) > 80 else 'FAIR',
