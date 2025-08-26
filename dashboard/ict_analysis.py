@@ -367,6 +367,14 @@ def show_ict_analysis():
     display_df['Gap Size %'] = display_df['gap_size_pct'].apply(lambda x: f"{x:.2f}%" if x and x != 0 else "N/A")
     display_df['FVG Age'] = display_df['fvg_age'].apply(lambda x: f"{x}h" if x and x != 0 else "N/A")
     display_df['Distance to Entry'] = display_df['distance_to_entry'].apply(lambda x: f"{x:.2f}%" if x and x != 0 else "N/A")
+    # Ensure target columns exist in display_df
+    if 'target_t1' not in display_df.columns:
+        display_df['target_t1'] = display_df.get('target_1', 0)
+    if 'target_t2' not in display_df.columns:
+        display_df['target_t2'] = display_df.get('target_2', 0)
+    if 'target_t3' not in display_df.columns:
+        display_df['target_t3'] = display_df.get('target_3', 0)
+    
     display_df['T1'] = display_df['target_t1'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['T2'] = display_df['target_t2'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['T3'] = display_df['target_t3'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
