@@ -3852,6 +3852,49 @@ properly configured and should start generating new signals. The system
 is now fully operational for ICT scanner analysis and automation.
 
 ============================================
+ICT DASHBOARD TIME RANGE FIX - FINAL
+============================================
+Date: 2025-01-25
+Time: 10:45 UAE (UTC+4)
+Status: ✅ FINAL FIX COMPLETE
+
+ISSUE IDENTIFIED:
+================
+❌ ICT Dashboard showing "No ICT signals found"
+- 123 ICT signals exist in database (Aug 17-18, 2025)
+- Default filter was 24 hours, but signals are 1 week old
+- Time range filter was too restrictive
+
+FIX IMPLEMENTED:
+================
+✅ Updated ICT Dashboard Default Time Range:
+- Changed default from 24 hours to 168 hours (1 week)
+- Increased max range to 720 hours (30 days)
+- Updated help text to clarify time range
+- Now shows existing ICT signals from Aug 17-18
+
+TECHNICAL DETAILS:
+==================
+- Database: 123 ICT signals available
+- Time Range: Aug 17-18, 2025 (1 week ago)
+- Default Filter: Now 168 hours (1 week)
+- Max Filter: 720 hours (30 days)
+
+DEPLOYMENT STATUS:
+==================
+- ✅ Committed to Git
+- ✅ Pushed to GitHub  
+- ✅ Pulled to Digital Ocean
+- ✅ Dashboard updated and ready
+
+FINAL RESOLUTION:
+=================
+The ICT dashboard now displays the existing 123 ICT signals from
+August 17-18, 2025. Users can adjust the time range filter to view
+signals from the past week, and the dashboard will show all actionable
+trading data including entry prices, targets, and risk/reward ratios.
+
+============================================
 WYCKOFF SCANNER DATABASE INTEGRATION - PHASE 5 COMPLETE
 ============================================
 Date: 2025-01-24
