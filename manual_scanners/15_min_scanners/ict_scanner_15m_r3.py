@@ -22,6 +22,15 @@ from typing import Dict, List, Tuple, Optional
 import warnings
 warnings.filterwarnings('ignore')
 
+# Add TradeLogger for database integration
+try:
+    from database_and_logging.trade_logger import TradeLogger
+    trade_logger = TradeLogger()
+    DB_LOGGING_AVAILABLE = True
+except ImportError:
+    print("Warning: TradeLogger not available - database logging disabled")
+    DB_LOGGING_AVAILABLE = False
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -1225,13 +1234,70 @@ class ICTFVGScanner:
         # Update stats
         self.performance_stats['setups_found'] = total_found
         
-        # Send alerts for selected setups
+        # Send alerts for selected setups and log to database
         for setup in high_quality_setups:
             alert_text = self.format_alert(setup)
             if alert_text: # Only send if format_alert didn't return None
                 logger.info(alert_text)
                 self.send_alert(alert_text)
                 self.performance_stats['alerts_sent'] += 1
+                
+            # Log to database if TradeLogger is available
+            if DB_LOGGING_AVAILABLE:
+                try:
+                    # Create unique ID for the signal
+                    signal_id = f"ICT_15M_{setup['symbol']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    
+                    # Prepare opportunity data
+                    opportunity = {
+                        'symbol': setup['symbol'],
+                        'timeframe': '15m',
+                        'pattern_type': setup.get('pattern_type', 'ICT_FVG'),
+                        'entry_price': setup.get('entry_price'),
+                        'stop_loss': setup.get('stop_loss'),
+                        'target_1': setup.get('target_1'),
+                        'target_2': setup.get('target_2'),
+                        'target_3': setup.get('target_3'),
+                        'current_price': setup.get('current_price'),
+                        'risk_reward_ratio': setup.get('risk_reward', 0),
+                        'confidence_score': setup.get('final_quality', 50),
+                        'scanner_specific_data': {
+                            'timeframe': '15m',
+                            'pattern_type': setup.get('pattern_type', 'ICT_FVG'),
+                            'fvg_age': setup.get('fvg_age', 0),
+                            'distance_to_entry': setup.get('distance_to_entry', 0),
+                            'gap_midpoint': setup.get('gap_midpoint', 0),
+                            'swing_range_pct': setup.get('swing_range_pct', 0),
+                            'gap_high': setup.get('gap_high', 0),
+                            'gap_low': setup.get('gap_low', 0),
+                            'gap_size_pct': setup.get('gap_size_pct', 0),
+                            'swing_high': setup.get('swing_high', 0),
+                            'swing_low': setup.get('swing_low', 0),
+                            'risk_pct': setup.get('risk_pct', 0),
+                            'action_required': setup.get('action_required', 'MONITOR'),
+                            'quality_score': setup.get('final_quality', 0),
+                            'fib_quality': setup.get('fib_quality', 0),
+                            'category': setup.get('category', ''),
+                            'volume_surge': float(setup.get('volume_surge', False)),
+                            'target_t1': setup.get('target_1', 0),
+                            'target_t2': setup.get('target_2', 0),
+                            'target_t3': setup.get('target_3', 0),
+                            'current_price': setup.get('current_price', 0),
+                            'risk_reward_ratio': setup.get('risk_reward', 0),
+                            'side': setup.get('type', 'UNKNOWN').upper()
+                        }
+                    }
+                    
+                    # Log to database
+                    trade_logger.log_scan(
+                        scan_id=signal_id,
+                        symbol=setup['symbol'],
+                        opportunities=[opportunity]
+                    )
+                    print(f"✅ Logged ICT 15M signal for {setup['symbol']}")
+                    
+                except Exception as e:
+                    print(f"❌ Failed to log 15M signal for {setup['symbol']}: {e}")
                 
         # Print summary at the end
         if high_quality_setups:

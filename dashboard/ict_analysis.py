@@ -29,14 +29,16 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
         
         conn = psycopg2.connect(dsn)
         
-        # Build query with filters
+        # Build query with filters - Updated to include target_1, target_2, target_3
         query = """
             SELECT 
                 symbol,
-                COALESCE(timeframe, '1h') as timeframe,
+                COALESCE(scanner_specific_data->>'timeframe', timeframe, '1h') as timeframe,
                 entry_price,
                 stop_loss,
-                target_1 as take_profit,
+                target_1,
+                target_2,
+                target_3,
                 timestamp,
                 probability,
                 risk_reward_ratio,
@@ -83,7 +85,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
         params = [hours_back]
         
         if timeframe_filter and timeframe_filter != "All":
-            query += " AND scanner_specific_data->>'timeframe' = %s"
+            query += " AND COALESCE(scanner_specific_data->>'timeframe', timeframe, '1h') = %s"
             params.append(timeframe_filter)
         
         if pattern_filter and pattern_filter != "All":
@@ -95,8 +97,8 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
         df = pd.read_sql_query(query, conn, params=params)
         conn.close()
         
-        # Convert Decimal to float for display
-        numeric_columns = ['entry_price', 'stop_loss', 'take_profit', 'current_price', 
+        # Convert Decimal to float for display - Updated to include target columns
+        numeric_columns = ['entry_price', 'stop_loss', 'target_1', 'target_2', 'target_3', 'current_price', 
                           'probability', 'risk_reward_ratio', 'bb_score', 'rsi', 'mfi', 
                           'stochastic_k', 'volume_surge', 'confluence_score', 
                           'historical_win_rate', 'category_win_rate', 'market_cap', 
@@ -179,6 +181,9 @@ def extract_ict_data(df):
             lambda x: x.get('action_required', '') if isinstance(x, dict) else ''
         )
         
+        # Create action column for display
+        df['action'] = df['action_required']
+        
         df['quality_score'] = df['scanner_specific_data'].apply(
             lambda x: x.get('quality_score', 0) if isinstance(x, dict) else 0
         )
@@ -196,15 +201,23 @@ def extract_ict_data(df):
             lambda x: x.get('volume_surge', False) if isinstance(x, dict) else False
         )
         
-        # Extract Fibonacci targets - try main columns first, then JSON
-        df['target_t1'] = df['target_1'].fillna(0)
-        df['target_t2'] = df['target_2'].fillna(0)
-        df['target_t3'] = df['target_3'].fillna(0)
-        
-        # Extract current price - try main column first, then JSON
+        # Ensure target columns exist and are properly formatted
+        if 'target_1' not in df.columns:
+            df['target_1'] = 0
+        if 'target_2' not in df.columns:
+            df['target_2'] = 0
+        if 'target_3' not in df.columns:
+            df['target_3'] = 0
+        if 'current_price' not in df.columns:
+            df['current_price'] = 0
+        if 'risk_reward_ratio' not in df.columns:
+            df['risk_reward_ratio'] = 0
+            
+        # Fill NaN values with 0
+        df['target_1'] = df['target_1'].fillna(0)
+        df['target_2'] = df['target_2'].fillna(0)
+        df['target_3'] = df['target_3'].fillna(0)
         df['current_price'] = df['current_price'].fillna(0)
-        
-        # Extract risk/reward ratio - try main column first, then JSON
         df['risk_reward_ratio'] = df['risk_reward_ratio'].fillna(0)
         
         # Extract side from scanner_specific_data (ICT scanners store it here)
