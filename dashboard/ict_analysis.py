@@ -77,7 +77,7 @@ def get_ict_data(hours_back=24, min_score=60, timeframe_filter=None, pattern_fil
                 fib_236,
                 fib_786
             FROM public.trade_opportunities
-            WHERE timestamp > (SELECT MAX(timestamp) FROM public.trade_opportunities WHERE scanner_specific_data::text LIKE '%%ICT%%') - INTERVAL '%s hours'
+            WHERE timestamp > NOW() - INTERVAL '%s hours'
             AND scanner_specific_data::text LIKE '%%ICT%%'
         """
         params = [hours_back]
@@ -149,6 +149,28 @@ def extract_ict_data(df):
             lambda x: x.get('swing_range_pct', 0) if isinstance(x, dict) else 0
         )
         
+        # Extract gap data
+        df['gap_high'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('gap_high', 0) if isinstance(x, dict) else 0
+        )
+        
+        df['gap_low'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('gap_low', 0) if isinstance(x, dict) else 0
+        )
+        
+        df['gap_size_pct'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('gap_size_pct', 0) if isinstance(x, dict) else 0
+        )
+        
+        # Extract swing data
+        df['swing_high'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('swing_high', 0) if isinstance(x, dict) else 0
+        )
+        
+        df['swing_low'] = df['scanner_specific_data'].apply(
+            lambda x: x.get('swing_low', 0) if isinstance(x, dict) else 0
+        )
+        
         df['risk_pct'] = df['scanner_specific_data'].apply(
             lambda x: x.get('risk_pct', 0) if isinstance(x, dict) else 0
         )
@@ -174,18 +196,10 @@ def extract_ict_data(df):
             lambda x: x.get('volume_surge', False) if isinstance(x, dict) else False
         )
         
-        # Extract Fibonacci targets from feature_vector
-        df['target_t1'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('feature_vector', [0]*8)[0] if isinstance(x, dict) and 'feature_vector' in x else 0
-        )
-        
-        df['target_t2'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('feature_vector', [0]*8)[1] if isinstance(x, dict) and 'feature_vector' in x else 0
-        )
-        
-        df['target_t3'] = df['scanner_specific_data'].apply(
-            lambda x: x.get('feature_vector', [0]*8)[2] if isinstance(x, dict) and 'feature_vector' in x else 0
-        )
+        # Extract Fibonacci targets from main table columns
+        df['target_t1'] = df['target_1']
+        df['target_t2'] = df['target_2']
+        df['target_t3'] = df['target_3']
         
         return df
         
