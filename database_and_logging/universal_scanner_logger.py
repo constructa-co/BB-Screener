@@ -73,30 +73,37 @@ class UniversalScannerLogger:
     def _init_connection_pool(self):
         """Initialize PostgreSQL connection pool with schema isolation."""
         try:
-            # Get database configuration from environment - USE SEPARATE ENV VAR FOR ISOLATION
-            DATABASE_URL = os.getenv('OTHER_SCANNERS_DATABASE_URL')
-            
-            if not DATABASE_URL:
-                # Fallback to main DATABASE_URL but with schema specification
-                main_db_url = os.getenv('DATABASE_URL')
-                if main_db_url:
-                    # Add schema parameter to main database URL
-                    if '?' in main_db_url:
-                        DATABASE_URL = main_db_url + '&options=-csearch_path=other_scanners'
+            # Special handling for ICT scanners - use main database
+            if 'ict' in self.scanner_name.lower():
+                DATABASE_URL = os.getenv('DATABASE_URL')
+                self.use_main_schema = True
+                self.logger.info(f"✅ ICT scanner detected - using main database schema")
+            else:
+                # Get database configuration from environment - USE SEPARATE ENV VAR FOR ISOLATION
+                DATABASE_URL = os.getenv('OTHER_SCANNERS_DATABASE_URL')
+                self.use_main_schema = False
+                
+                if not DATABASE_URL:
+                    # Fallback to main DATABASE_URL but with schema specification
+                    main_db_url = os.getenv('DATABASE_URL')
+                    if main_db_url:
+                        # Add schema parameter to main database URL
+                        if '?' in main_db_url:
+                            DATABASE_URL = main_db_url + '&options=-csearch_path=other_scanners'
+                        else:
+                            DATABASE_URL = main_db_url + '?options=-csearch_path=other_scanners'
                     else:
-                        DATABASE_URL = main_db_url + '?options=-csearch_path=other_scanners'
-                else:
-                    # Fallback configuration for local development
-                    db_config = {
-                        'host': os.getenv('DB_HOST', 'localhost'),
-                        'port': int(os.getenv('DB_PORT', 5432)),
-                        'database': os.getenv('DB_NAME', 'bb_scanners'),
-                        'user': os.getenv('DB_USER', 'bbscanner'),
-                        'password': os.getenv('DB_PASSWORD', ''),
-                    }
-                    
-                    # Build connection string with schema
-                    DATABASE_URL = f"postgresql://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}?options=-csearch_path=other_scanners"
+                        # Fallback configuration for local development
+                        db_config = {
+                            'host': os.getenv('DB_HOST', 'localhost'),
+                            'port': int(os.getenv('DB_PORT', 5432)),
+                            'database': os.getenv('DB_NAME', 'bb_scanners'),
+                            'user': os.getenv('DB_USER', 'bbscanner'),
+                            'password': os.getenv('DB_PASSWORD', ''),
+                        }
+                        
+                        # Build connection string with schema
+                        DATABASE_URL = f"postgresql://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}?options=-csearch_path=other_scanners"
             
             # Create connection pool
             self.connection_pool = psycopg2.pool.SimpleConnectionPool(
@@ -106,7 +113,10 @@ class UniversalScannerLogger:
             )
             
             self.logger.info(f"✅ Database connection pool initialized (max connections: {os.getenv('DB_POOL_SIZE', 20)})")
-            self.logger.info(f"✅ Using schema: other_scanners (isolated from main scanner)")
+            if self.use_main_schema:
+                self.logger.info(f"✅ Using schema: public (main scanner table)")
+            else:
+                self.logger.info(f"✅ Using schema: other_scanners (isolated from main scanner)")
             
         except Exception as e:
             self.logger.error(f"❌ Failed to initialize database connection pool: {e}")
@@ -120,7 +130,10 @@ class UniversalScannerLogger:
             conn = self.connection_pool.getconn()
             # Set schema for this connection
             with conn.cursor() as cursor:
-                cursor.execute("SET search_path TO other_scanners")
+                if self.use_main_schema:
+                    cursor.execute("SET search_path TO public")
+                else:
+                    cursor.execute("SET search_path TO other_scanners")
             yield conn
             conn.commit()
         except Exception as e:
