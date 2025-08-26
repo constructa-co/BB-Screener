@@ -361,13 +361,31 @@ def show_ict_analysis():
     display_df['Gap Size %'] = display_df['gap_size_pct'].apply(lambda x: f"{x:.2f}%" if x else "N/A")
     display_df['FVG Age'] = display_df['fvg_age'].apply(lambda x: f"{x}h" if x else "N/A")
     display_df['Distance to Entry'] = display_df['distance_to_entry'].apply(lambda x: f"{x:.2f}%" if x else "N/A")
-    display_df['T1'] = display_df['target_t1'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['T2'] = display_df['target_t2'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['T3'] = display_df['target_t3'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Gap High'] = display_df['gap_high'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Gap Low'] = display_df['gap_low'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Swing High'] = display_df['swing_high'].apply(lambda x: f"${x:.6f}" if x else "N/A")
-    display_df['Swing Low'] = display_df['swing_low'].apply(lambda x: f"${x:.6f}" if x else "N/A")
+    # Ensure target columns exist, create them if they don't
+    if 'target_t1' not in display_df.columns:
+        display_df['target_t1'] = display_df.get('target_1', 0)
+    if 'target_t2' not in display_df.columns:
+        display_df['target_t2'] = display_df.get('target_2', 0)
+    if 'target_t3' not in display_df.columns:
+        display_df['target_t3'] = display_df.get('target_3', 0)
+    
+    display_df['T1'] = display_df['target_t1'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['T2'] = display_df['target_t2'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['T3'] = display_df['target_t3'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    # Ensure gap and swing columns exist, create them if they don't
+    if 'gap_high' not in display_df.columns:
+        display_df['gap_high'] = display_df['scanner_specific_data'].apply(lambda x: x.get('gap_high', 0) if isinstance(x, dict) else 0)
+    if 'gap_low' not in display_df.columns:
+        display_df['gap_low'] = display_df['scanner_specific_data'].apply(lambda x: x.get('gap_low', 0) if isinstance(x, dict) else 0)
+    if 'swing_high' not in display_df.columns:
+        display_df['swing_high'] = display_df['scanner_specific_data'].apply(lambda x: x.get('swing_high', 0) if isinstance(x, dict) else 0)
+    if 'swing_low' not in display_df.columns:
+        display_df['swing_low'] = display_df['scanner_specific_data'].apply(lambda x: x.get('swing_low', 0) if isinstance(x, dict) else 0)
+    
+    display_df['Gap High'] = display_df['gap_high'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Gap Low'] = display_df['gap_low'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Swing High'] = display_df['swing_high'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
+    display_df['Swing Low'] = display_df['swing_low'].apply(lambda x: f"${x:.6f}" if x and x != 0 else "N/A")
     display_df['Action'] = display_df['action_required'].apply(lambda x: x if x else "N/A")
     display_df['Side'] = display_df['side'].apply(lambda x: "🟢 LONG" if x == 'BUY' else "🔴 SHORT")
     display_df['Timeframe'] = display_df['timeframe'].apply(lambda x: x.upper())
