@@ -200,9 +200,9 @@ def show_ict_analysis():
     hours_back = st.sidebar.slider(
         "Hours Back", 
         min_value=1, 
-        max_value=168, 
-        value=24,
-        help="Number of hours to look back for signals"
+        max_value=720, 
+        value=168,
+        help="Number of hours to look back for signals (168 = 1 week)"
     )
     
     # Minimum score filter
