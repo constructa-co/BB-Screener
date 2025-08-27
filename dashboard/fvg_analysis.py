@@ -166,6 +166,8 @@ def get_fvg_signals(hours_back=24, limit=1000):
 def display_signals(df, title="FVG Signals"):
     """Display FVG signals in a formatted table"""
     
+    st.write(f"DEBUG: display_signals called with {len(df)} rows")
+    
     if df.empty:
         st.info("No signals found for selected filters")
         return
@@ -316,7 +318,12 @@ def main():
         filtered_df = filtered_df[filtered_df['timeframe'] == selected_timeframe]
     
     # Display filtered results using enhanced display function
-    display_signals(filtered_df.head(50), "Filtered FVG Signals")
+    try:
+        display_signals(filtered_df.head(50), "Filtered FVG Signals")
+    except Exception as e:
+        st.error(f"Display function error: {e}")
+        # Fallback to old display
+        st.dataframe(filtered_df.head(50), use_container_width=True)
     
     # Download button
     if not filtered_df.empty:
