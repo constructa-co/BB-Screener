@@ -91,11 +91,12 @@ def get_fvg_signals(hours_back=24, limit=1000):
             # Convert UTC to local time using pytz (same as trend_following_analysis.py)
             import pytz
             uae_tz = pytz.timezone('Asia/Dubai')
-            # Use the same pattern as trend_following_analysis.py
-            df['detected_at'] = df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
+            
+            # Simple timezone conversion: add 4 hours for UAE time (UTC+4)
+            df['detected_at'] = df['detected_at'] + pd.Timedelta(hours=4)
             
             if 'expires_at' in df.columns:
-                df['expires_at'] = df['expires_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
+                df['expires_at'] = df['expires_at'] + pd.Timedelta(hours=4)
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -360,13 +361,14 @@ def main():
         # Time fields with UAE timezone
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        # Use the same pattern as trend_following_analysis.py
-        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
-        # Calculate age
-        now_uae = datetime.now(uae_tz)
+        # Simple timezone display: timestamps already have +4 hours added
+        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.strftime('%H:%M')
+        
+        # Calculate age (timestamps already in UAE time)
+        now_uae = datetime.now() + pd.Timedelta(hours=4)
         display_df['Age'] = filtered_df['detected_at'].apply(
-            lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+            lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
         )
         
         st.dataframe(display_df.head(50), use_container_width=True, hide_index=True)
