@@ -114,7 +114,6 @@ class FairValueGapLogger:
         
         # Use timeframe from data, fallback to logger's timeframe
         timeframe = fvg_data.get('timeframe', self.timeframe)
-        print(f"[FVGLogger] Debug: Using timeframe = {timeframe} (from data: {fvg_data.get('timeframe', 'NOT_FOUND')})")
         signal_id = self._make_signal_id(symbol, gap_type, gap_high, gap_low, detected_at, timeframe)
         
         # Calculate expiry based on timeframe
