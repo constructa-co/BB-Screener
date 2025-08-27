@@ -53,6 +53,8 @@ def get_fvg_signals(hours_back=24, limit=1000):
                 fib_level, fib_confluence, fib_confluence_score,
                 setup_score, volume_confirmation, momentum_confirmation,
                 gap_status, fill_percentage, gap_age_minutes,
+                entry_timing, current_distance_pct, risk_pct,
+                swing_high, swing_low, fib_levels, target_levels,
                 expires_at, algorithm_parameters
             FROM other_scanners.fvg_signals
             WHERE detected_at > NOW() - INTERVAL '%s hours'
@@ -61,6 +63,29 @@ def get_fvg_signals(hours_back=24, limit=1000):
         """
         
         df = pd.read_sql(query, conn, params=(hours_back, limit))
+        
+        if not df.empty:
+            # Convert UTC to local time (UTC-4)
+            df['detected_at'] = pd.to_datetime(df['detected_at']).dt.tz_convert('UTC').dt.tz_localize(None) - pd.Timedelta(hours=4)
+            
+            # Add entry timing display
+            df['entry_status'] = df['entry_timing'].apply(lambda x: {
+                'immediate': '⚡ NOW',
+                'waiting': '⏳ WAIT', 
+                'approaching': '🔜 APPROACHING',
+                'close': '🔜 CLOSE'
+            }.get(str(x).lower(), str(x).upper()) if x else 'UNKNOWN')
+            
+            # Add distance display
+            df['distance_display'] = df['current_distance_pct'].apply(
+                lambda x: f"{float(x):.2f}%" if x and not pd.isna(x) else "N/A"
+            )
+            
+            # Add risk display
+            df['risk_display'] = df['risk_pct'].apply(
+                lambda x: f"{float(x):.2f}%" if x and not pd.isna(x) else "N/A"
+            )
+        
         return df
         
     except Exception as e:
@@ -179,7 +204,8 @@ def main():
         # Select columns to display
         columns_to_show = [
             'symbol', 'timeframe', 'detected_at', 'gap_type', 'gap_range', 
-            'midpoint', 'width_pct', 'setup_score', 'fib_confluence', 'gap_status'
+            'midpoint', 'width_pct', 'setup_score', 'entry_status', 'distance_display',
+            'risk_display', 'fib_confluence', 'gap_status'
         ]
         
         st.dataframe(

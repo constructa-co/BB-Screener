@@ -167,6 +167,13 @@ class FairValueGapScanner1MR1:
                 'volume_confirmation': bool(gap.get('volume_confirmed', False)),
                 'momentum_confirmation': bool(gap.get('momentum_confirmed', False)),
                 'gap_age': int(result.get('gap_age', 0)) if result.get('gap_age') is not None else 0,
+                'entry_timing': str(trade.get('entry_timing', 'unknown')).upper(),
+                'current_distance_pct': float(trade.get('current_distance_pct', 0)) if trade.get('current_distance_pct') is not None else None,
+                'risk_pct': float(trade.get('risk_pct', 0)) if trade.get('risk_pct') is not None else None,
+                'swing_high': float(fib.get('swing_high', {}).get('price', 0)) if fib.get('swing_high', {}).get('price') is not None else None,
+                'swing_low': float(fib.get('swing_low', {}).get('price', 0)) if fib.get('swing_low', {}).get('price') is not None else None,
+                'fib_levels': str(fib.get('fib_levels', {})),
+                'target_levels': str(fib.get('target_levels', {})),
                 'source_scanner': 'fvg_1m_r1',
                 'scanner_version': '1.0.0'
             }

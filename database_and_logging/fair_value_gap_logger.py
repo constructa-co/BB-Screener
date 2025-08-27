@@ -144,6 +144,13 @@ class FairValueGapLogger:
             "gap_status": 'OPEN',
             "fill_percentage": 0,
             "gap_age_minutes": fvg_data.get('gap_age'),
+            "entry_timing": fvg_data.get('entry_timing'),
+            "current_distance_pct": _to_decimal(fvg_data.get('current_distance_pct')),
+            "risk_pct": _to_decimal(fvg_data.get('risk_pct')),
+            "swing_high": _to_decimal(fvg_data.get('swing_high')),
+            "swing_low": _to_decimal(fvg_data.get('swing_low')),
+            "fib_levels": fvg_data.get('fib_levels'),
+            "target_levels": fvg_data.get('target_levels'),
             "expires_at": detected_at + timedelta(hours=expire_hours),
             "scanner_version": "1.0.0",
             "algorithm_parameters": json.dumps(fvg_data),
@@ -159,7 +166,8 @@ class FairValueGapLogger:
                 risk_reward_1, risk_reward_2, risk_reward_3, fib_level, fib_confluence,
                 fib_confluence_score, setup_score, volume_at_gap, volume_confirmation,
                 momentum_confirmation, gap_status, fill_percentage, gap_age_minutes,
-                expires_at, scanner_version, algorithm_parameters, source
+                entry_timing, current_distance_pct, risk_pct, swing_high, swing_low,
+                fib_levels, target_levels, expires_at, scanner_version, algorithm_parameters, source
             ) VALUES (
                 %(signal_id)s, %(symbol)s, %(timeframe)s, %(detected_at)s,
                 %(gap_type)s, %(gap_high)s, %(gap_low)s, %(gap_size)s, %(gap_size_pct)s,
@@ -167,7 +175,8 @@ class FairValueGapLogger:
                 %(risk_reward_1)s, %(risk_reward_2)s, %(risk_reward_3)s, %(fib_level)s, %(fib_confluence)s,
                 %(fib_confluence_score)s, %(setup_score)s, %(volume_at_gap)s, %(volume_confirmation)s,
                 %(momentum_confirmation)s, %(gap_status)s, %(fill_percentage)s, %(gap_age_minutes)s,
-                %(expires_at)s, %(scanner_version)s, %(algorithm_parameters)s, %(source)s
+                %(entry_timing)s, %(current_distance_pct)s, %(risk_pct)s, %(swing_high)s, %(swing_low)s,
+                %(fib_levels)s, %(target_levels)s, %(expires_at)s, %(scanner_version)s, %(algorithm_parameters)s, %(source)s
             )
             ON CONFLICT (signal_id) DO UPDATE SET
                 detected_at = EXCLUDED.detected_at,
