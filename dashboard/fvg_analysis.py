@@ -88,15 +88,17 @@ def get_fvg_signals(hours_back=24, limit=1000):
         df = pd.read_sql(query, conn, params=(hours_back, limit))
         
         if not df.empty:
-            # The timestamps are already timezone-aware from PostgreSQL
-            # Use tz_convert (not tz_localize) to convert to UAE time
-            import pytz
-            uae_tz = pytz.timezone('Asia/Dubai')
+            # Convert timestamps to datetime (same as trend_following_analysis.py)
+            df['detected_at'] = pd.to_datetime(df['detected_at'])
             
-            # Convert timezone-aware timestamps to UAE time
-            df['detected_at'] = df['detected_at'].dt.tz_convert(uae_tz)
-            if 'expires_at' in df.columns:
-                df['expires_at'] = df['expires_at'].dt.tz_convert(uae_tz)
+            # Convert numeric columns for pandas compatibility
+            numeric_columns = ['setup_score', 'gap_size', 'gap_size_pct', 'current_price', 'entry_price', 
+                              'stop_loss', 'target_1', 'target_2', 'risk_reward_1', 'risk_reward_2', 
+                              'fib_confluence_score', 'fill_percentage', 'gap_age_minutes']
+            
+            for col in numeric_columns:
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -209,15 +211,15 @@ def display_signals(df, title="FVG Signals"):
     display_df['Status'] = df['gap_status']
     display_df['Filled'] = df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
     
-    # Time fields with UAE time (timestamps already converted to UAE timezone)
-    display_df['Detected (UAE)'] = df['detected_at'].dt.strftime('%H:%M')
-    
-    # Calculate age using UAE timezone
+    # Time fields with UAE time (same as trend_following_analysis.py)
     import pytz
     uae_tz = pytz.timezone('Asia/Dubai')
+    display_df['Detected (UAE)'] = df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+    
+    # Calculate age using UAE timezone
     now_uae = datetime.now(uae_tz)
     display_df['Age'] = df['detected_at'].apply(
-        lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
+        lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
     )
     
     st.dataframe(display_df, use_container_width=True, hide_index=True)
