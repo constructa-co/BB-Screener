@@ -13,7 +13,12 @@ import traceback
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from fair_value_gap_logger import FairValueGapLogger
+# Import the logger
+try:
+    from fair_value_gap_logger import FairValueGapLogger
+except ImportError:
+    # Fallback to database_and_logging path
+    from database_and_logging.fair_value_gap_logger import FairValueGapLogger
 
 def load_r0_scanner():
     """Dynamically load the R0 scanner module"""
