@@ -45,13 +45,15 @@ def get_fvg_signals(hours_back=24, limit=1000):
     try:
         query = """
             SELECT 
+                signal_id,
                 symbol, timeframe, detected_at, gap_type, gap_high, gap_low,
+                gap_size, gap_percentage,
                 (gap_high + gap_low) / 2.0 AS gap_midpoint,
                 COALESCE(gap_size_pct, ((gap_high - gap_low) / ((gap_high + gap_low) / 2.0)) * 100.0) AS gap_width_pct,
                 current_price, entry_price, stop_loss, target_1, target_2, target_3,
                 risk_reward_1, risk_reward_2, risk_reward_3,
                 fib_level, fib_confluence, fib_confluence_score,
-                setup_score, volume_confirmation, momentum_confirmation,
+                setup_score, volume_at_gap, volume_confirmation, momentum_confirmation,
                 gap_status, fill_percentage, gap_age_minutes,
                 entry_timing, current_distance_pct, risk_pct,
                 swing_high, swing_low, fib_levels, target_levels,
@@ -87,8 +89,8 @@ def get_fvg_signals(hours_back=24, limit=1000):
         
         if not df.empty:
             # Convert UTC to local time (UTC+4 for UAE)
-            df['detected_at'] = pd.to_datetime(df['detected_at']) - pd.Timedelta(hours=4)
-            df['expires_at'] = pd.to_datetime(df['expires_at']) - pd.Timedelta(hours=4)
+            df['detected_at'] = pd.to_datetime(df['detected_at']) + pd.Timedelta(hours=4)
+            df['expires_at'] = pd.to_datetime(df['expires_at']) + pd.Timedelta(hours=4)
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -157,6 +159,58 @@ def get_fvg_signals(hours_back=24, limit=1000):
         return pd.DataFrame()
     finally:
         conn.close()
+
+def display_signals(df, title="FVG Signals"):
+    """Display FVG signals in a formatted table"""
+    
+    if df.empty:
+        st.info("No signals found for selected filters")
+        return
+    
+    st.subheader(f"{title} ({len(df)} signals)")
+    
+    # Prepare display DataFrame with ALL fields
+    display_df = pd.DataFrame()
+    
+    # Basic fields
+    display_df['Symbol'] = df['symbol']
+    display_df['TF'] = df['timeframe']
+    display_df['Type'] = df['gap_type']
+    display_df['Gap Range'] = df.apply(lambda x: f"${x['gap_low']:.6f} - ${x['gap_high']:.6f}" 
+                                       if pd.notna(x['gap_low']) else "N/A", axis=1)
+    display_df['Gap %'] = df['gap_percentage'].apply(lambda x: f"{x:.2f}%" if pd.notna(x) else "N/A")
+    
+    # Price fields - these are missing in your current version
+    display_df['Current'] = df['current_price'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+    display_df['Entry'] = df['entry_price'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+    display_df['Stop'] = df['stop_loss'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+    
+    # Target fields
+    display_df['TP1'] = df['target_1'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+    display_df['TP2'] = df['target_2'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+    
+    # Risk/Reward
+    display_df['R:R'] = df['risk_reward_1'].apply(lambda x: f"{x:.2f}" if pd.notna(x) else "N/A")
+    
+    # Fibonacci
+    display_df['Fib'] = df['fib_level'].apply(lambda x: f"{x:.3f}" if pd.notna(x) else "N/A")
+    display_df['Confluence'] = df['fib_confluence'].apply(lambda x: "✓" if x else "")
+    
+    # Status fields
+    display_df['Score'] = df['setup_score']
+    display_df['Status'] = df['gap_status']
+    display_df['Filled'] = df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
+    
+    # Time fields with UAE time
+    display_df['Detected (UAE)'] = df['detected_at'].dt.strftime('%m-%d %H:%M')
+    
+    # Calculate age
+    now_uae = datetime.now() + timedelta(hours=4)
+    display_df['Age'] = df['detected_at'].apply(
+        lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
+    )
+    
+    st.dataframe(display_df, use_container_width=True, hide_index=True)
 
 def main():
     st.title("🎯 Fair Value Gap Analysis")
@@ -256,31 +310,11 @@ def main():
     if selected_timeframe != "All":
         filtered_df = filtered_df[filtered_df['timeframe'] == selected_timeframe]
     
-    # Display filtered results
+    # Display filtered results using enhanced display function
+    display_signals(filtered_df.head(50), "Filtered FVG Signals")
+    
+    # Download button
     if not filtered_df.empty:
-        # Format display columns
-        display_df = filtered_df.copy()
-        # detected_at is already converted to UAE time, just format it
-        display_df['detected_at'] = display_df['detected_at'].dt.strftime('%Y-%m-%d %H:%M')
-        display_df['gap_range'] = display_df.apply(lambda x: f"${x['gap_low']:.4f} - ${x['gap_high']:.4f}", axis=1)
-        display_df['midpoint'] = display_df['gap_midpoint'].apply(lambda x: f"${x:.4f}" if pd.notna(x) else "N/A")
-        display_df['width_pct'] = display_df['gap_width_pct'].apply(lambda x: f"{x:.3f}%" if pd.notna(x) else "N/A")
-        
-        # Select columns to display
-        columns_to_show = [
-            'symbol', 'timeframe', 'detected_at', 'gap_type', 'gap_range', 
-            'current_price_display', 'entry_price_display', 'setup_score', 'entry_status', 
-            'tp1_display', 'tp2_display', 'stop_display', 'fib_range_display',
-            'fib_confluence_score', 'gap_age_minutes', 'gap_status'
-        ]
-        
-        st.dataframe(
-            display_df[columns_to_show].head(50),
-            use_container_width=True,
-            hide_index=True
-        )
-        
-        # Download button
         csv = filtered_df.to_csv(index=False)
         st.download_button(
             label="Download CSV",
@@ -288,8 +322,6 @@ def main():
             file_name=f"fvg_signals_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
             mime="text/csv"
         )
-    else:
-        st.info("No signals match the selected filters")
     
     # Footer
     st.markdown("---")
