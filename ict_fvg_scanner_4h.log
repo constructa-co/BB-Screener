@@ -12193,3 +12193,11 @@ TypeError: '>' not supported between instances of 'NoneType' and 'int'
 2025-08-26 22:59:09,881 - INFO - Scan complete. Found 134 high-quality setups, displayed 20
 2025-08-26 22:59:09,881 - INFO - Performance Stats: {'total_scans': 2, 'setups_found': 134, 'alerts_sent': 80}
 2025-08-26 22:59:09,881 - INFO - Next scan in 900 seconds...
+2025-08-27 03:56:41,728 - INFO - Starting scan of top 500 symbols...
+2025-08-27 03:56:41,731 - WARNING - ⚠️ Database not connected - running in offline mode
+2025-08-27 03:56:41,731 - WARNING - Results will not be saved to database
+2025-08-27 03:56:41,731 - INFO - 📝 Running without database logging (offline mode)
+2025-08-27 03:56:41,746 - ERROR - Error fetching symbols: binance GET https://api.binance.com/api/v3/ticker/24hr
+2025-08-27 03:56:41,746 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-08-27 03:56:41,747 - INFO - Performance Stats: {'total_scans': 3, 'setups_found': 0, 'alerts_sent': 80}
+2025-08-27 03:56:41,747 - INFO - Next scan in 900 seconds...

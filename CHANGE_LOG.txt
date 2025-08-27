@@ -3207,6 +3207,12 @@ IMPLEMENTED FIXES:
    - Result: ✅ Wyckoff and trend following scanners now working via cron
    - Verified: Wyckoff 1H scanner successfully created log file and completed scan
 
+7. CRITICAL LESSON LEARNED - REPEATED CODE BREAKING PATTERN:
+   - PROBLEM: Every time we integrate new scanners, existing working scanners break
+   - ROOT CAUSE: Changes to shared infrastructure (database loggers, environment variables, import paths) affect multiple scanners
+   - IMPACT: Wyckoff and trend following dashboards stopped working after ICT scanner integration
+   - SOLUTION NEEDED: Systematic approach to prevent breaking existing functionality during new integrations
+
 2. ADDED DATABASE LOGGING TO 15M SCANNER:
    - Added TradeLogger import and initialization to ict_scanner_15m_r3.py
    - Added complete database logging in scan_all_symbols method
