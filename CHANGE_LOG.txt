@@ -71,6 +71,23 @@ FVG DASHBOARD SUCCESS - 2025-08-27 15:25 UTC
 
 🎯 **All Issues Resolved**: Timezone, missing fields, display format, and data type issues all fixed!
 
+FVG DASHBOARD TIMEZONE FIX - 2025-08-27 15:38 UTC
+==================================================
+🔧 **Timezone Error Fix**: Applied the exact same timezone conversion pattern from working trend_following_analysis.py
+
+**Changes Made**:
+- **Database Connection**: Added `options="-c timezone=UTC"` to psycopg2 connection
+- **Timezone Conversion**: Changed from direct `tz_convert()` to `tz_localize('UTC').dt.tz_convert(uae_tz)` pattern
+- **Display Section**: Updated display timezone conversion to use same pattern
+- **Age Calculation**: Fixed age calculation lambda to use proper timezone conversion
+
+**Pattern Used** (from trend_following_analysis.py):
+```python
+df['detected_at'] = df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
+```
+
+**Status**: Timezone error should now be resolved and dashboard should display correctly!
+
 CHANGES MADE:
 ============
 
