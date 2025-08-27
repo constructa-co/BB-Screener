@@ -87,7 +87,8 @@ def get_fvg_signals(hours_back=24, limit=1000):
         
         if not df.empty:
             # Convert UTC to local time (UTC+4 for UAE)
-            df['detected_at'] = pd.to_datetime(df['detected_at']) + pd.Timedelta(hours=4)
+            df['detected_at'] = pd.to_datetime(df['detected_at']) - pd.Timedelta(hours=4)
+            df['expires_at'] = pd.to_datetime(df['expires_at']) - pd.Timedelta(hours=4)
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -137,6 +138,15 @@ def get_fvg_signals(hours_back=24, limit=1000):
             )
             
             df['gap_age_display'] = df['gap_age_minutes'].apply(
+                lambda x: f"{int(x)}m" if x and not pd.isna(x) else "N/A"
+            )
+            
+            # Format numeric columns for display
+            df['fib_confluence_score'] = df['fib_confluence_score'].apply(
+                lambda x: f"{int(x)}/10" if x and not pd.isna(x) else "N/A"
+            )
+            
+            df['gap_age_minutes'] = df['gap_age_minutes'].apply(
                 lambda x: f"{int(x)}m" if x and not pd.isna(x) else "N/A"
             )
         
@@ -261,7 +271,7 @@ def main():
             'symbol', 'timeframe', 'detected_at', 'gap_type', 'gap_range', 
             'current_price_display', 'entry_price_display', 'setup_score', 'entry_status', 
             'tp1_display', 'tp2_display', 'stop_display', 'fib_range_display',
-            'confluence_display', 'gap_age_display', 'gap_status'
+            'fib_confluence_score', 'gap_age_minutes', 'gap_status'
         ]
         
         st.dataframe(
