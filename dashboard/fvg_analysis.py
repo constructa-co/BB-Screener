@@ -88,9 +88,12 @@ def get_fvg_signals(hours_back=24, limit=1000):
         df = pd.read_sql(query, conn, params=(hours_back, limit))
         
         if not df.empty:
-            # Convert UTC to local time (UTC+4 for UAE)
-            df['detected_at'] = pd.to_datetime(df['detected_at']) + pd.Timedelta(hours=4)
-            df['expires_at'] = pd.to_datetime(df['expires_at']) + pd.Timedelta(hours=4)
+            # Convert UTC to local time using pytz (same as trend_following_analysis.py)
+            import pytz
+            uae_tz = pytz.timezone('Asia/Dubai')
+            df['detected_at'] = df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
+            if 'expires_at' in df.columns:
+                df['expires_at'] = df['expires_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -201,11 +204,13 @@ def display_signals(df, title="FVG Signals"):
     display_df['Status'] = df['gap_status']
     display_df['Filled'] = df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
     
-    # Time fields with UAE time
-    display_df['Detected (UAE)'] = df['detected_at'].dt.strftime('%m-%d %H:%M')
+    # Time fields with UAE time (same as trend_following_analysis.py)
+    display_df['Detected (UAE)'] = df['detected_at'].dt.strftime('%H:%M')
     
-    # Calculate age
-    now_uae = datetime.now() + timedelta(hours=4)
+    # Calculate age using UAE timezone
+    import pytz
+    uae_tz = pytz.timezone('Asia/Dubai')
+    now_uae = datetime.now(uae_tz)
     display_df['Age'] = df['detected_at'].apply(
         lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
     )
