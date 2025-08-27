@@ -70,14 +70,17 @@ class FairValueGapLogger:
         return psycopg2.connect(self.dsn)
     
     def _make_signal_id(self, symbol: str, gap_type: str, gap_high: float, 
-                       gap_low: float, detected_at: datetime) -> str:
+                       gap_low: float, detected_at: datetime, timeframe: str = None) -> str:
         """Create deterministic signal ID"""
+        # Use provided timeframe or fallback to logger's timeframe
+        tf = timeframe or self.timeframe
+        
         # Include price levels to make unique
         bucket = detected_at.strftime("%Y%m%d%H")
-        if self.timeframe in ['1m', '5m']:
+        if tf in ['1m', '5m']:
             bucket = detected_at.strftime("%Y%m%d%H%M")
         
-        id_string = f"fvg::{symbol}::{self.timeframe}::{gap_type}::{gap_high:.2f}::{gap_low:.2f}::{bucket}"
+        id_string = f"fvg::{symbol}::{tf}::{gap_type}::{gap_high:.2f}::{gap_low:.2f}::{bucket}"
         return hashlib.sha256(id_string.encode()).hexdigest()[:40]
     
     def _check_circuit_breaker(self) -> bool:
@@ -109,16 +112,18 @@ class FairValueGapLogger:
             print(f"[FVGLogger] Invalid FVG data for {symbol}")
             return False
         
-        signal_id = self._make_signal_id(symbol, gap_type, gap_high, gap_low, detected_at)
+        # Use timeframe from data, fallback to logger's timeframe
+        timeframe = fvg_data.get('timeframe', self.timeframe)
+        signal_id = self._make_signal_id(symbol, gap_type, gap_high, gap_low, detected_at, timeframe)
         
         # Calculate expiry based on timeframe
-        expire_hours = DEFAULT_EXPIRE_HOURS.get(self.timeframe, 24)
+        expire_hours = DEFAULT_EXPIRE_HOURS.get(timeframe, 24)
         
         # Build record
         record = {
             "signal_id": signal_id,
             "symbol": symbol.upper(),
-            "timeframe": self.timeframe,
+            "timeframe": fvg_data.get('timeframe', self.timeframe),
             "detected_at": detected_at,
             "gap_type": gap_type,
             "gap_high": gap_high,
@@ -154,7 +159,7 @@ class FairValueGapLogger:
             "expires_at": detected_at + timedelta(hours=expire_hours),
             "scanner_version": "1.0.0",
             "algorithm_parameters": json.dumps(fvg_data),
-            "source": f"fvg_{self.timeframe}_scanner"
+            "source": f"fvg_{timeframe}_scanner"
         }
         
         # SQL with upsert
