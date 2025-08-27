@@ -47,7 +47,7 @@ def get_fvg_signals(hours_back=24, limit=1000):
             SELECT 
                 signal_id,
                 symbol, timeframe, detected_at, gap_type, gap_high, gap_low,
-                gap_size, gap_percentage,
+                gap_size, gap_size_pct,
                 (gap_high + gap_low) / 2.0 AS gap_midpoint,
                 COALESCE(gap_size_pct, ((gap_high - gap_low) / ((gap_high + gap_low) / 2.0)) * 100.0) AS gap_width_pct,
                 current_price, entry_price, stop_loss, target_1, target_2, target_3,
