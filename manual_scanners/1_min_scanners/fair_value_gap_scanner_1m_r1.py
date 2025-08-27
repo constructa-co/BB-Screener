@@ -3,7 +3,6 @@
 Fair Value Gap 1M Scanner R1 - Database Integration
 Handles special characters in filename safely
 """
-
 import os
 import sys
 import importlib.util
@@ -13,83 +12,79 @@ from datetime import datetime
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, project_root)
 
-# Dynamic import to handle '+' in filename
+from database_and_logging.fair_value_gap_logger import FairValueGapLogger
+
 def load_fvg_scanner():
-    """Dynamically load scanner with special character in filename"""
-    scanner_path = os.path.join(
-        project_root,
-        "manual_scanners",
-        "1_min_scanners", 
-        "fair_value_gap_+_fibonacci_scanner_1m_r0.py"
-    )
-    
-    if not os.path.exists(scanner_path):
-        print(f"[FVG R1] ERROR: Scanner not found at {scanner_path}")
-        return None
-    
+    """Dynamically load the FVG scanner with special characters in filename"""
     try:
-        spec = importlib.util.spec_from_file_location("fvg_fib_scanner", scanner_path)
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+        # Path to the R0 scanner with special characters
+        scanner_path = os.path.join(
+            project_root, 
+            "manual_scanners", 
+            "1_min_scanners", 
+            "fair_value_gap_+_fibonacci_scanner_1m_r0.py"
+        )
+        
+        if not os.path.exists(scanner_path):
+            print(f"[FVG R1] ERROR: Scanner file not found: {scanner_path}")
+            return None
+        
+        # Load the module dynamically
+        spec = importlib.util.spec_from_file_location("fvg_scanner", scanner_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        
+        # Find the scanner class
+        scanner_class = None
+        for attr_name in dir(module):
+            attr = getattr(module, attr_name)
+            if hasattr(attr, '__name__') and 'Scanner' in attr.__name__:
+                scanner_class = attr
+                break
+        
+        if scanner_class:
+            print(f"[FVG R1] Found scanner class: {scanner_class.__name__}")
+            return scanner_class
+        else:
+            print("[FVG R1] ERROR: No scanner class found in module")
+            return None
             
-            # Try to find the scanner class
-            for attr_name in dir(module):
-                attr = getattr(module, attr_name)
-                if isinstance(attr, type) and 'scanner' in attr_name.lower():
-                    print(f"[FVG R1] Found scanner class: {attr_name}")
-                    return attr
-            
-            print("[FVG R1] Warning: No scanner class found, trying direct execution")
-            return module
     except Exception as e:
         print(f"[FVG R1] ERROR loading scanner: {e}")
         return None
 
-# Import logger
-try:
-    from database_and_logging.fair_value_gap_logger import FairValueGapLogger
-    DB_LOGGING_ENABLED = True
-except ImportError as e:
-    print(f"[FVG R1] Logger not available: {e}")
-    DB_LOGGING_ENABLED = False
-
 class FairValueGapScanner1MR1:
-    """R1 wrapper for FVG 1M scanner"""
+    """R1 wrapper for Fair Value Gap 1M scanner with database integration"""
     
     def __init__(self):
-        self.timeframe = '1m'
-        self.scanner_name = 'FVG 1M Scanner R1'
+        """Initialize the scanner with database logger"""
         self.base_scanner = load_fvg_scanner()
-        
-        if DB_LOGGING_ENABLED:
-            self.db_logger = FairValueGapLogger(timeframe=self.timeframe)
+        if self.base_scanner:
+            self.db_logger = FairValueGapLogger(timeframe='1m')
         else:
             self.db_logger = None
+            print("[FVG R1] ERROR: Failed to load base scanner")
     
     def run(self):
-        """Execute scanner with database logging"""
-        print(f"\n{'='*60}")
-        print(f"🎯 {self.scanner_name} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"{'='*60}")
-        
-        if not self.base_scanner:
-            print("[FVG R1] ERROR: Base scanner not available")
-            return []
-        
+        """Run the scanner and log results to database"""
         try:
-            # Try different execution patterns
-            results = None
+            print("=" * 60)
+            print(f"🎯 FVG 1M Scanner R1 - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print("=" * 60)
             
-            if isinstance(self.base_scanner, type):
-                # It's a class, instantiate and run
+            if not self.base_scanner:
+                print("[FVG R1] ERROR: No base scanner available")
+                return []
+            
+            # Execute the base scanner
+            if hasattr(self.base_scanner, 'scan_for_fvg_fibonacci_setups'):
+                # It's a class, instantiate and call the method
                 scanner_instance = self.base_scanner()
-                if hasattr(scanner_instance, 'scan_for_fvg_fibonacci_setups'):
-                    results = scanner_instance.scan_for_fvg_fibonacci_setups()
-                elif hasattr(scanner_instance, 'run'):
-                    results = scanner_instance.run()
-                elif hasattr(scanner_instance, 'scan'):
-                    results = scanner_instance.scan()
+                results = scanner_instance.scan_for_fvg_fibonacci_setups()
+            elif hasattr(self.base_scanner, 'scan'):
+                # It's a class, instantiate and call the method
+                scanner_instance = self.base_scanner()
+                results = scanner_instance.scan()
             else:
                 # It's a module, try to execute directly
                 if hasattr(self.base_scanner, 'main'):
@@ -110,7 +105,7 @@ class FairValueGapScanner1MR1:
                     continue
                 
                 symbol = result.get('symbol', result.get('ticker', 'UNKNOWN'))
-                score = int(result.get('setup_score', result.get('score', 0)))
+                score = int(result.get('quality_score', result.get('setup_score', result.get('score', 0))))
                 
                 # Quality filter
                 if score >= 60:
@@ -151,27 +146,27 @@ class FairValueGapScanner1MR1:
             
             # Map the data to our database schema
             fvg_data = {
-                'gap_type': trade.get('direction', 'UNKNOWN').upper(),
-                'gap_high': gap.get('gap_top'),
-                'gap_low': gap.get('gap_bottom'),
-                'gap_size_pct': gap.get('gap_size_pct'),
-                'current_price': result.get('current_price'),
-                'entry_price': trade.get('entry_price'),
-                'stop_loss': trade.get('stop_loss'),
-                'target_1': trade.get('targets', {}).get('TP1', {}).get('price'),
-                'target_2': trade.get('targets', {}).get('TP2', {}).get('price'),
-                'target_3': trade.get('targets', {}).get('TP3', {}).get('price'),
-                'risk_reward_1': trade.get('targets', {}).get('TP1', {}).get('risk_reward'),
-                'risk_reward_2': trade.get('targets', {}).get('TP2', {}).get('risk_reward'),
-                'risk_reward_3': trade.get('targets', {}).get('TP3', {}).get('risk_reward'),
-                'fib_level': fib.get('confluence_level'),
-                'fib_confluence': fib.get('confluence_score', 0) > 5,
-                'fib_confluence_score': fib.get('confluence_score'),
-                'setup_score': result.get('quality_score', result.get('setup_score', 0)),
-                'volume_at_gap': gap.get('volume'),
-                'volume_confirmation': gap.get('volume_confirmed', False),
-                'momentum_confirmation': gap.get('momentum_confirmed', False),
-                'gap_age': result.get('gap_age'),
+                'gap_type': 'BULLISH' if trade.get('direction') == 'LONG' else 'BEARISH',
+                'gap_high': float(gap.get('gap_top', 0)) if gap.get('gap_top') is not None else None,
+                'gap_low': float(gap.get('gap_bottom', 0)) if gap.get('gap_bottom') is not None else None,
+                'gap_size_pct': float(gap.get('gap_size_pct', 0)) if gap.get('gap_size_pct') is not None else None,
+                'current_price': float(result.get('current_price', 0)) if result.get('current_price') is not None else None,
+                'entry_price': float(trade.get('entry_price', 0)) if trade.get('entry_price') is not None else None,
+                'stop_loss': float(trade.get('stop_loss', 0)) if trade.get('stop_loss') is not None else None,
+                'target_1': float(trade.get('targets', {}).get('TP1', {}).get('price', 0)) if trade.get('targets', {}).get('TP1', {}).get('price') is not None else None,
+                'target_2': float(trade.get('targets', {}).get('TP2', {}).get('price', 0)) if trade.get('targets', {}).get('TP2', {}).get('price') is not None else None,
+                'target_3': float(trade.get('targets', {}).get('TP3', {}).get('price', 0)) if trade.get('targets', {}).get('TP3', {}).get('price') is not None else None,
+                'risk_reward_1': float(trade.get('targets', {}).get('TP1', {}).get('risk_reward', 0)) if trade.get('targets', {}).get('TP1', {}).get('risk_reward') is not None else None,
+                'risk_reward_2': float(trade.get('targets', {}).get('TP2', {}).get('risk_reward', 0)) if trade.get('targets', {}).get('TP2', {}).get('risk_reward') is not None else None,
+                'risk_reward_3': float(trade.get('targets', {}).get('TP3', {}).get('risk_reward', 0)) if trade.get('targets', {}).get('TP3', {}).get('risk_reward') is not None else None,
+                'fib_level': float(fib.get('confluence_level', 0)) if fib.get('confluence_level') is not None else None,
+                'fib_confluence': bool(fib.get('confluence_score', 0) > 5),
+                'fib_confluence_score': int(fib.get('confluence_score', 0)) if fib.get('confluence_score') is not None else 0,
+                'setup_score': int(result.get('quality_score', 0)) if result.get('quality_score') is not None else 0,
+                'volume_at_gap': float(gap.get('volume', 0)) if gap.get('volume') is not None else None,
+                'volume_confirmation': bool(gap.get('volume_confirmed', False)),
+                'momentum_confirmation': bool(gap.get('momentum_confirmed', False)),
+                'gap_age': int(result.get('gap_age', 0)) if result.get('gap_age') is not None else 0,
                 'source_scanner': 'fvg_1m_r1',
                 'scanner_version': '1.0.0'
             }
