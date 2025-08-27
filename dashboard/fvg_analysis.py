@@ -65,8 +65,8 @@ def get_fvg_signals(hours_back=24, limit=1000):
         df = pd.read_sql(query, conn, params=(hours_back, limit))
         
         if not df.empty:
-            # Convert UTC to local time (UTC-4)
-            df['detected_at'] = pd.to_datetime(df['detected_at']).dt.tz_convert('UTC').dt.tz_localize(None) - pd.Timedelta(hours=4)
+            # Convert UTC to local time (UTC+4 for UAE)
+            df['detected_at'] = pd.to_datetime(df['detected_at']) + pd.Timedelta(hours=4)
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -196,7 +196,8 @@ def main():
     if not filtered_df.empty:
         # Format display columns
         display_df = filtered_df.copy()
-        display_df['detected_at'] = pd.to_datetime(display_df['detected_at']).dt.strftime('%Y-%m-%d %H:%M')
+        # detected_at is already converted to UAE time, just format it
+        display_df['detected_at'] = display_df['detected_at'].dt.strftime('%Y-%m-%d %H:%M')
         display_df['gap_range'] = display_df.apply(lambda x: f"${x['gap_low']:.4f} - ${x['gap_high']:.4f}", axis=1)
         display_df['midpoint'] = display_df['gap_midpoint'].apply(lambda x: f"${x:.4f}" if pd.notna(x) else "N/A")
         display_df['width_pct'] = display_df['gap_width_pct'].apply(lambda x: f"{x:.3f}%" if pd.notna(x) else "N/A")
