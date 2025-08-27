@@ -55,7 +55,28 @@ def get_fvg_signals(hours_back=24, limit=1000):
                 gap_status, fill_percentage, gap_age_minutes,
                 entry_timing, current_distance_pct, risk_pct,
                 swing_high, swing_low, fib_levels, target_levels,
-                expires_at, algorithm_parameters
+                expires_at, algorithm_parameters,
+                -- Additional computed fields
+                CASE 
+                    WHEN current_price IS NOT NULL AND entry_price IS NOT NULL 
+                    THEN ROUND(((current_price - entry_price) / entry_price) * 100, 2)
+                    ELSE NULL 
+                END AS price_vs_entry_pct,
+                CASE 
+                    WHEN target_1 IS NOT NULL AND entry_price IS NOT NULL 
+                    THEN ROUND(((target_1 - entry_price) / entry_price) * 100, 2)
+                    ELSE NULL 
+                END AS tp1_pct,
+                CASE 
+                    WHEN target_2 IS NOT NULL AND entry_price IS NOT NULL 
+                    THEN ROUND(((target_2 - entry_price) / entry_price) * 100, 2)
+                    ELSE NULL 
+                END AS tp2_pct,
+                CASE 
+                    WHEN stop_loss IS NOT NULL AND entry_price IS NOT NULL 
+                    THEN ROUND(((stop_loss - entry_price) / entry_price) * 100, 2)
+                    ELSE NULL 
+                END AS stop_pct
             FROM other_scanners.fvg_signals
             WHERE detected_at > NOW() - INTERVAL '%s hours'
             ORDER BY detected_at DESC
@@ -84,6 +105,39 @@ def get_fvg_signals(hours_back=24, limit=1000):
             # Add risk display
             df['risk_display'] = df['risk_pct'].apply(
                 lambda x: f"{float(x):.2f}%" if x and not pd.isna(x) else "N/A"
+            )
+            
+            # Add enhanced display fields
+            df['current_price_display'] = df['current_price'].apply(
+                lambda x: f"${x:.4f}" if x and not pd.isna(x) else "N/A"
+            )
+            
+            df['entry_price_display'] = df['entry_price'].apply(
+                lambda x: f"${x:.4f}" if x and not pd.isna(x) else "N/A"
+            )
+            
+            df['tp1_display'] = df.apply(
+                lambda x: f"${x['target_1']:.4f} ({x['tp1_pct']:.2f}%)" if x['target_1'] and not pd.isna(x['target_1']) else "N/A", axis=1
+            )
+            
+            df['tp2_display'] = df.apply(
+                lambda x: f"${x['target_2']:.4f} ({x['tp2_pct']:.2f}%)" if x['target_2'] and not pd.isna(x['target_2']) else "N/A", axis=1
+            )
+            
+            df['stop_display'] = df.apply(
+                lambda x: f"${x['stop_loss']:.4f} ({x['stop_pct']:.2f}%)" if x['stop_loss'] and not pd.isna(x['stop_loss']) else "N/A", axis=1
+            )
+            
+            df['fib_range_display'] = df.apply(
+                lambda x: f"${x['swing_low']:.4f} → ${x['swing_high']:.4f}" if x['swing_low'] and x['swing_high'] and not pd.isna(x['swing_low']) and not pd.isna(x['swing_high']) else "N/A", axis=1
+            )
+            
+            df['confluence_display'] = df['fib_confluence_score'].apply(
+                lambda x: f"{int(x)}/10" if x and not pd.isna(x) else "N/A"
+            )
+            
+            df['gap_age_display'] = df['gap_age_minutes'].apply(
+                lambda x: f"{int(x)}m" if x and not pd.isna(x) else "N/A"
             )
         
         return df
@@ -205,8 +259,9 @@ def main():
         # Select columns to display
         columns_to_show = [
             'symbol', 'timeframe', 'detected_at', 'gap_type', 'gap_range', 
-            'midpoint', 'width_pct', 'setup_score', 'entry_status', 'distance_display',
-            'risk_display', 'fib_confluence', 'gap_status'
+            'current_price_display', 'entry_price_display', 'setup_score', 'entry_status', 
+            'tp1_display', 'tp2_display', 'stop_display', 'fib_range_display',
+            'confluence_display', 'gap_age_display', 'gap_status'
         ]
         
         st.dataframe(
