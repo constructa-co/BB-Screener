@@ -281,8 +281,12 @@ def main():
         st.plotly_chart(fig_score, use_container_width=True)
     
     # Gap width vs Score scatter
+    # Convert fib_confluence_score to numeric for the scatter plot
+    df_scatter = df.copy()
+    df_scatter['fib_confluence_score'] = pd.to_numeric(df_scatter['fib_confluence_score'], errors='coerce').fillna(0)
+    
     fig_scatter = px.scatter(
-        df,
+        df_scatter,
         x='gap_width_pct',
         y='setup_score',
         color='gap_type',
