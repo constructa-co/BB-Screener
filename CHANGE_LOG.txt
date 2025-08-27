@@ -183,6 +183,87 @@ FVG DASHBOARD WORKING - 2025-08-27 20:45 UTC
 
 **Current Status**: Dashboard fully functional, only missing time columns in table display
 
+FVG DASHBOARD TIME COLUMNS FIX - 2025-08-27 20:51 UTC
+=====================================================
+🔧 **Fixed Missing Time Columns**: Applied tz_localize pattern for UAE time display
+
+**Issue**: "Detected (UAE)" and "Age" columns were not showing in the table
+
+**Fix Applied**:
+- Used the exact same pattern as trend_following_analysis.py for timezone conversion
+- Applied `dt.tz_localize('UTC').dt.tz_convert(uae_tz)` pattern for display
+- Fixed age calculation to use proper timezone conversion
+
+**Code Changes**:
+```python
+# Time fields with UAE timezone (same as trend_following_analysis.py)
+display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+
+# Calculate age using UAE time
+display_df['Age'] = filtered_df['detected_at'].apply(
+    lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+)
+```
+
+**Status**: ✅ **COMPLETE** - FVG Dashboard should now display all columns including time!
+
+FVG DASHBOARD FINAL TIMEZONE FIX - 2025-08-27 21:01 UTC
+========================================================
+✅ **FINAL FIX**: Applied correct timezone handling for PostgreSQL timezone-aware timestamps
+
+**Root Cause Identified**: 
+- PostgreSQL returns timestamps as `timestamp with time zone` (already timezone-aware)
+- Previous attempts used `tz_localize('UTC')` on already timezone-aware timestamps
+- This caused: `TypeError: Already tz-aware, use tz_convert to convert.`
+
+**Correct Fix Applied**:
+1. **Data Fetching**: Use `dt.tz_convert(uae_tz)` directly on timezone-aware timestamps
+2. **Display**: Use `dt.tz_convert(uae_tz)` directly for UAE time display
+3. **Age Calculation**: Use timezone-aware calculation with `dt.tz_convert(uae_tz)`
+
+**Code Changes**:
+```python
+# Data fetching - timestamps already timezone-aware from PostgreSQL
+df['detected_at'] = df['detected_at'].dt.tz_convert(uae_tz)
+
+# Display - use tz_convert directly (no tz_localize needed)
+display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+
+# Age calculation - timezone-aware
+display_df['Age'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).apply(
+    lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
+)
+```
+
+**Status**: ✅ **FIXED** - FVG Dashboard should now work completely without timezone errors!
+
+FVG DASHBOARD FINAL TIMESTAMP FIX - 2025-08-27 21:08 UTC
+========================================================
+✅ **FINAL TIMESTAMP FIX**: Removed redundant timezone conversion
+
+**Root Cause Identified**: 
+- `get_fvg_signals()` already converts timestamps to UAE timezone (lines 91-95)
+- Display section was doing redundant timezone conversion
+- This caused unnecessary complexity and potential errors
+
+**Correct Fix Applied**:
+- **Removed redundant conversion**: No more `dt.tz_convert()` in display section
+- **Simple formatting**: Just format already-converted UAE timestamps
+- **Clean age calculation**: Use already-converted timestamps for age calculation
+
+**Code Changes**:
+```python
+# Time fields - timestamps are already converted to UAE timezone in get_fvg_signals()
+display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.strftime('%m-%d %H:%M')
+
+# Calculate age using the already-converted timestamps
+display_df['Age'] = filtered_df['detected_at'].apply(
+    lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h" if pd.notna(x) else "N/A"
+)
+```
+
+**Status**: ✅ **COMPLETE** - FVG Dashboard should now display all columns including timestamps correctly!
+
 CHANGES MADE:
 ============
 
