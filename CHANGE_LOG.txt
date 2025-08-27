@@ -264,6 +264,39 @@ display_df['Age'] = filtered_df['detected_at'].apply(
 
 **Status**: ✅ **COMPLETE** - FVG Dashboard should now display all columns including timestamps correctly!
 
+FVG MULTI-TIMEFRAME INTEGRATION - 2025-08-27 21:15 UTC
+======================================================
+✅ **MULTI-TIMEFRAME FVG SCANNERS**: Added 4H and 5M timeframes with database integration
+
+**New Scanners Created**:
+1. **4-Hour FVG Scanner**: `fair_value_gap_+_fibonacci_scanner_4h_r1.py`
+   - R1 wrapper for 4-hour FVG + Fibonacci scanner
+   - Database integration using FairValueGapLogger
+   - Cron job: Every 4 hours (0 */4 * * *)
+
+2. **5-Minute FVG + Fibonacci Scanner**: `fair_value_gap_+_fibonacci_scanner_5m_r1.py`
+   - R1 wrapper for 5-minute FVG + Fibonacci scanner
+   - Database integration using FairValueGapLogger
+   - Cron job: Every 5 minutes (*/5 * * * *)
+
+3. **5-Minute Simple FVG Scanner**: `fair_value_gap_scanner_5m_r1.py`
+   - R1 wrapper for simple 5-minute FVG scanner
+   - Database integration using FairValueGapLogger
+   - Cron job: Every 5 minutes (*/5 * * * *)
+
+**Cron Job Setup Scripts**:
+- `setup_fvg_4h_cron.sh`: Sets up 4-hour scanner cron job
+- `setup_fvg_5m_cron.sh`: Sets up both 5-minute scanner cron jobs
+
+**Implementation Details**:
+- **Surgical Approach**: Created new R1 files without touching existing R0 scanners
+- **Database Integration**: Uses same FairValueGapLogger as 1-minute scanner
+- **Data Extraction**: Extracts all FVG fields including Fibonacci data
+- **Error Handling**: Robust error handling and logging
+- **Timezone Support**: Proper timezone handling for all timeframes
+
+**Status**: ✅ **READY** - All FVG timeframes now integrated with database!
+
 CHANGES MADE:
 ============
 
