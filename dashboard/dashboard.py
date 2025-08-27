@@ -754,6 +754,14 @@ except ImportError as e:
     print(f"⚠️ ICT analysis import failed: {e}")
     ICT_ANALYSIS_AVAILABLE = False
 
+# Import FVG analysis
+try:
+    from fvg_analysis import main as show_fvg_analysis
+    FVG_ANALYSIS_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ FVG analysis import failed: {e}")
+    FVG_ANALYSIS_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -778,6 +786,10 @@ if WYCKOFF_ANALYSIS_AVAILABLE:
 # Add ICT analysis if available
 if ICT_ANALYSIS_AVAILABLE:
     navigation_options.append("🎯 ICT Analysis")
+
+# Add FVG analysis if available
+if FVG_ANALYSIS_AVAILABLE:
+    navigation_options.append("🎯 FVG Analysis")
 
 page = st.sidebar.radio(
     "📍 Navigation",
@@ -1854,6 +1866,9 @@ elif page == "🎯 Wyckoff Analysis" and WYCKOFF_ANALYSIS_AVAILABLE:
     show_wyckoff_analysis()
 elif page == "🎯 ICT Analysis" and ICT_ANALYSIS_AVAILABLE:
     show_ict_analysis()
+
+elif page == "🎯 FVG Analysis" and FVG_ANALYSIS_AVAILABLE:
+    show_fvg_analysis()
 
 # Footer
 st.markdown("---")
