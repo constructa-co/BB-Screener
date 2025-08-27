@@ -88,8 +88,15 @@ def get_fvg_signals(hours_back=24, limit=1000):
         df = pd.read_sql(query, conn, params=(hours_back, limit))
         
         if not df.empty:
-            # Convert timestamps to datetime (same as trend_following_analysis.py)
-            df['detected_at'] = pd.to_datetime(df['detected_at'])
+            # Timestamps from PostgreSQL are already timezone-aware
+            # Just convert to UAE timezone (don't localize)
+            import pytz
+            uae_tz = pytz.timezone('Asia/Dubai')
+            
+            df['detected_at'] = df['detected_at'].dt.tz_convert(uae_tz)
+            
+            if 'expires_at' in df.columns and not df['expires_at'].isna().all():
+                df['expires_at'] = df['expires_at'].dt.tz_convert(uae_tz)
             
             # Convert numeric columns for pandas compatibility
             numeric_columns = ['setup_score', 'gap_size', 'gap_size_pct', 'current_price', 'entry_price', 
@@ -368,15 +375,15 @@ def main():
         display_df['Status'] = filtered_df['gap_status']
         display_df['Filled'] = filtered_df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
         
-        # Time fields with UAE timezone (same as trend_following_analysis.py)
+        # Time fields with UAE timezone (FIX: Use tz_convert directly for already tz-aware timestamps)
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
-        # Calculate age using UAE time
+        # Calculate age using UAE time (timezone-aware calculation)
         now_uae = datetime.now(uae_tz)
-        display_df['Age'] = filtered_df['detected_at'].apply(
-            lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+        display_df['Age'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).apply(
+            lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
         )
         
         st.dataframe(display_df.head(50), use_container_width=True, hide_index=True)
