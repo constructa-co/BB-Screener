@@ -28,11 +28,11 @@ mkdir -p "$LOG_DIR"
 # Remove existing cron job if it exists
 (crontab -l 2>/dev/null | grep -v "fair_value_gap_+_fibonacci_scanner_4h_r1.py") | crontab -
 
-# Add new cron job (run every 4 hours)
-(crontab -l 2>/dev/null; echo "0 */4 * * * cd $PROJECT_ROOT && python3 $SCANNER_PATH >> $LOG_DIR/fvg_4h_scanner.log 2>&1") | crontab -
+# Add new cron job (run every hour)
+(crontab -l 2>/dev/null; echo "0 * * * * cd $PROJECT_ROOT && python3 $SCANNER_PATH >> $LOG_DIR/fvg_4h_scanner.log 2>&1") | crontab -
 
 echo "✅ 4H FVG Scanner cron job set up successfully"
-echo "📅 Schedule: Every 4 hours (0 */4 * * *)"
+echo "📅 Schedule: Every hour (0 * * * *)"
 echo "📁 Log file: $LOG_DIR/fvg_4h_scanner.log"
 echo "🔧 Scanner: $SCANNER_PATH"
 
