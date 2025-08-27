@@ -317,13 +317,54 @@ def main():
     if selected_timeframe != "All":
         filtered_df = filtered_df[filtered_df['timeframe'] == selected_timeframe]
     
-    # Display filtered results using enhanced display function
-    try:
-        display_signals(filtered_df.head(50), "Filtered FVG Signals")
-    except Exception as e:
-        st.error(f"Display function error: {e}")
-        # Fallback to old display
-        st.dataframe(filtered_df.head(50), use_container_width=True)
+    # Display filtered results with enhanced format
+    if not filtered_df.empty:
+        # Create enhanced display DataFrame
+        display_df = pd.DataFrame()
+        
+        # Basic fields
+        display_df['Symbol'] = filtered_df['symbol']
+        display_df['TF'] = filtered_df['timeframe']
+        display_df['Type'] = filtered_df['gap_type']
+        display_df['Gap Range'] = filtered_df.apply(lambda x: f"${x['gap_low']:.6f} - ${x['gap_high']:.6f}" 
+                                                   if pd.notna(x['gap_low']) else "N/A", axis=1)
+        display_df['Gap %'] = filtered_df['gap_size_pct'].apply(lambda x: f"{x:.2f}%" if pd.notna(x) else "N/A")
+        
+        # Price fields
+        display_df['Current'] = filtered_df['current_price'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+        display_df['Entry'] = filtered_df['entry_price'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+        display_df['Stop'] = filtered_df['stop_loss'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+        
+        # Target fields
+        display_df['TP1'] = filtered_df['target_1'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+        display_df['TP2'] = filtered_df['target_2'].apply(lambda x: f"${x:.6f}" if pd.notna(x) else "N/A")
+        
+        # Risk/Reward
+        display_df['R:R'] = filtered_df['risk_reward_1'].apply(lambda x: f"{x:.2f}" if pd.notna(x) else "N/A")
+        
+        # Fibonacci
+        display_df['Fib'] = filtered_df['fib_level'].apply(lambda x: f"{x:.3f}" if pd.notna(x) else "N/A")
+        display_df['Confluence'] = filtered_df['fib_confluence'].apply(lambda x: "✓" if x else "")
+        
+        # Status fields
+        display_df['Score'] = filtered_df['setup_score']
+        display_df['Status'] = filtered_df['gap_status']
+        display_df['Filled'] = filtered_df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
+        
+        # Time fields with UAE timezone
+        import pytz
+        uae_tz = pytz.timezone('Asia/Dubai')
+        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        
+        # Calculate age
+        now_uae = datetime.now(uae_tz)
+        display_df['Age'] = filtered_df['detected_at'].apply(
+            lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+        )
+        
+        st.dataframe(display_df.head(50), use_container_width=True, hide_index=True)
+    else:
+        st.info("No signals match the selected filters")
     
     # Download button
     if not filtered_df.empty:
