@@ -121,7 +121,7 @@ def main():
         # Extract and log FVG data
         fvg_data = extract_fvg_data(scanner_output)
         if fvg_data:
-            logger.log_fvg_signal(fvg_data)
+            logger.log_fvg(fvg_data['symbol'], fvg_data)
             print(f"✅ 4H FVG signal logged for {fvg_data['symbol']}")
         else:
             print("⚠️ No valid FVG data to log")
