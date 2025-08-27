@@ -88,16 +88,15 @@ def get_fvg_signals(hours_back=24, limit=1000):
         df = pd.read_sql(query, conn, params=(hours_back, limit))
         
         if not df.empty:
-            # Convert UTC to local time using pytz (same as trend_following_analysis.py)
+            # The timestamps are already timezone-aware from PostgreSQL
+            # Use tz_convert (not tz_localize) to convert to UAE time
             import pytz
             uae_tz = pytz.timezone('Asia/Dubai')
             
-            # Convert timezone-aware timestamps to UAE time (UTC+4)
-            # The database returns timezone-aware UTC timestamps, so we can convert directly
-            df['detected_at'] = df['detected_at'].dt.tz_convert('Asia/Dubai')
-            
+            # Convert timezone-aware timestamps to UAE time
+            df['detected_at'] = df['detected_at'].dt.tz_convert(uae_tz)
             if 'expires_at' in df.columns:
-                df['expires_at'] = df['expires_at'].dt.tz_convert('Asia/Dubai')
+                df['expires_at'] = df['expires_at'].dt.tz_convert(uae_tz)
             
             # Add entry timing display
             df['entry_status'] = df['entry_timing'].apply(lambda x: {
@@ -210,7 +209,7 @@ def display_signals(df, title="FVG Signals"):
     display_df['Status'] = df['gap_status']
     display_df['Filled'] = df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
     
-    # Time fields with UAE time (same as trend_following_analysis.py)
+    # Time fields with UAE time (timestamps already converted to UAE timezone)
     display_df['Detected (UAE)'] = df['detected_at'].dt.strftime('%H:%M')
     
     # Calculate age using UAE timezone
@@ -225,6 +224,14 @@ def display_signals(df, title="FVG Signals"):
 
 def main():
     st.title("🎯 Fair Value Gap Analysis")
+    
+    # Display current UAE time at the top
+    import pytz
+    from datetime import datetime
+    uae_tz = pytz.timezone('Asia/Dubai')
+    current_time_uae = datetime.now(uae_tz)
+    st.caption(f"Last updated: {current_time_uae.strftime('%Y-%m-%d %H:%M:%S')} UAE")
+    
     st.markdown("---")
     
     # Sidebar filters
