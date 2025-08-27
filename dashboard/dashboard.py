@@ -756,7 +756,7 @@ except ImportError as e:
 
 # Import FVG analysis
 try:
-    from fvg_analysis import main as show_fvg_analysis
+    from dashboard.fvg_analysis import main as show_fvg_analysis
     FVG_ANALYSIS_AVAILABLE = True
 except ImportError as e:
     print(f"⚠️ FVG analysis import failed: {e}")
