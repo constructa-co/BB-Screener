@@ -34,58 +34,56 @@ def load_r0_scanner():
 def extract_fvg_data(scanner_output):
     """Extract FVG data from scanner output for database logging"""
     try:
-        if not scanner_output or 'trades' not in scanner_output:
+        if not scanner_output or not isinstance(scanner_output, list) or len(scanner_output) == 0:
             return None
         
-        trades = scanner_output['trades']
-        if not trades:
-            return None
-        
-        # Extract the first trade (most recent)
-        trade = trades[0]
+        # Extract the first opportunity (highest quality score)
+        setup = scanner_output[0]
         
         # Extract basic trade data
+        gap = setup['gap']
+        trade = setup['trade']
+        fib = setup['fibonacci']
+        
         fvg_data = {
-            'symbol': trade.get('symbol', ''),
+            'symbol': setup.get('symbol', ''),
             'timeframe': '5m',
             'gap_type': 'BULLISH' if trade.get('direction') == 'LONG' else 'BEARISH',
-            'gap_high': float(trade.get('gap_high', 0)),
-            'gap_low': float(trade.get('gap_low', 0)),
-            'gap_size': float(trade.get('gap_size', 0)),
-            'gap_size_pct': float(trade.get('gap_percentage', 0)),
-            'current_price': float(trade.get('current_price', 0)),
+            'gap_high': float(gap.get('gap_top', 0)),
+            'gap_low': float(gap.get('gap_bottom', 0)),
+            'gap_size': float(gap.get('gap_size', 0)),
+            'gap_size_pct': float(gap.get('gap_size_pct', 0)),
+            'current_price': float(setup.get('current_price', 0)),
             'entry_price': float(trade.get('entry_price', 0)),
             'stop_loss': float(trade.get('stop_loss', 0)),
-            'target_1': float(trade.get('target_1', 0)),
-            'target_2': float(trade.get('target_2', 0)),
-            'target_3': float(trade.get('target_3', 0)),
-            'risk_reward_1': float(trade.get('risk_reward_1', 0)),
-            'risk_reward_2': float(trade.get('risk_reward_2', 0)),
-            'risk_reward_3': float(trade.get('risk_reward_3', 0)),
-            'setup_score': int(trade.get('quality_score', 0)),
-            'volume_at_gap': float(trade.get('volume_at_gap', 0)),
-            'volume_confirmation': bool(trade.get('volume_confirmation', False)),
-            'momentum_confirmation': bool(trade.get('momentum_confirmation', False)),
-            'gap_status': trade.get('gap_status', 'OPEN'),
-            'fill_percentage': float(trade.get('fill_percentage', 0)),
-            'gap_age_minutes': int(trade.get('gap_age_minutes', 0)),
+            'target_1': float(trade.get('targets', {}).get('TP1', {}).get('price', 0)),
+            'target_2': float(trade.get('targets', {}).get('TP2', {}).get('price', 0)),
+            'target_3': float(trade.get('targets', {}).get('TP3', {}).get('price', 0)),
+            'risk_reward_1': float(trade.get('targets', {}).get('TP1', {}).get('risk_reward', 0)),
+            'risk_reward_2': float(trade.get('targets', {}).get('TP2', {}).get('risk_reward', 0)),
+            'risk_reward_3': float(trade.get('targets', {}).get('TP3', {}).get('risk_reward', 0)),
+            'setup_score': int(setup.get('quality_score', 0)),
+            'volume_at_gap': float(gap.get('volume_at_gap', 0)),
+            'volume_confirmation': bool(gap.get('volume_confirmation', False)),
+            'momentum_confirmation': bool(gap.get('momentum_confirmation', False)),
+            'gap_status': 'OPEN',
+            'fill_percentage': float(gap.get('fill_percentage', 0)),
+            'gap_age_minutes': int(setup.get('gap_age', 0) * 5),  # Convert 5M candles to minutes
             'entry_timing': trade.get('entry_timing', 'waiting'),
             'current_distance_pct': float(trade.get('current_distance_pct', 0)),
             'risk_pct': float(trade.get('risk_pct', 0)),
         }
         
-        # Extract Fibonacci data if available
-        if 'fibonacci' in trade:
-            fib_data = trade['fibonacci']
-            fvg_data.update({
-                'fib_level': float(fib_data.get('fib_level', 0)),
-                'fib_confluence': bool(fib_data.get('fib_confluence', False)),
-                'fib_confluence_score': int(fib_data.get('fib_confluence_score', 0)),
-                'swing_high': float(fib_data.get('swing_high', 0)),
-                'swing_low': float(fib_data.get('swing_low', 0)),
-                'fib_levels': str(fib_data.get('fib_levels', [])),
-                'target_levels': str(fib_data.get('target_levels', [])),
-            })
+        # Extract Fibonacci data
+        fvg_data.update({
+            'fib_level': float(fib.get('fib_level', 0)),
+            'fib_confluence': bool(fib.get('confluence', False)),
+            'fib_confluence_score': int(fib.get('confluence_score', 0)),
+            'swing_high': float(fib.get('swing_high', {}).get('price', 0)),
+            'swing_low': float(fib.get('swing_low', {}).get('price', 0)),
+            'fib_levels': str(fib.get('fib_levels', [])),
+            'target_levels': str(fib.get('target_levels', [])),
+        })
         
         # Convert all numeric fields to native Python types
         for key, value in fvg_data.items():
@@ -114,7 +112,7 @@ def main():
         
         # Run the scanner
         print("📊 Running 5M FVG scan...")
-        scanner_output = scanner.scan_all_coins()
+        scanner_output = scanner.scan_for_fvg_fibonacci_setups()
         
         if not scanner_output:
             print("⚠️ No scanner output received")
