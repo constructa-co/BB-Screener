@@ -368,17 +368,15 @@ def main():
         display_df['Status'] = filtered_df['gap_status']
         display_df['Filled'] = filtered_df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
         
-        # Time fields with UAE timezone
+        # Time fields with UAE timezone (same as trend_following_analysis.py)
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        
-        # Display UAE time (timestamps already converted to UAE timezone)
-        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.strftime('%H:%M')
+        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
         # Calculate age using UAE time
-        now_uae = datetime.now(pytz.timezone('Asia/Dubai'))
+        now_uae = datetime.now(uae_tz)
         display_df['Age'] = filtered_df['detected_at'].apply(
-            lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
+            lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
         )
         
         st.dataframe(display_df.head(50), use_container_width=True, hide_index=True)
