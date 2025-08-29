@@ -762,6 +762,14 @@ except ImportError as e:
     print(f"⚠️ FVG analysis import failed: {e}")
     FVG_ANALYSIS_AVAILABLE = False
 
+# Import Flagpole analysis
+try:
+    from dashboard.flagpole_analysis import show_flagpole_analysis
+    FLAGPOLE_ANALYSIS_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Flagpole analysis import failed: {e}")
+    FLAGPOLE_ANALYSIS_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -790,6 +798,10 @@ if ICT_ANALYSIS_AVAILABLE:
 # Add FVG analysis if available
 if FVG_ANALYSIS_AVAILABLE:
     navigation_options.append("🎯 FVG Analysis")
+
+# Add Flagpole analysis if available
+if FLAGPOLE_ANALYSIS_AVAILABLE:
+    navigation_options.append("🚩 Flagpole Analysis")
 
 page = st.sidebar.radio(
     "📍 Navigation",
@@ -1869,6 +1881,8 @@ elif page == "🎯 ICT Analysis" and ICT_ANALYSIS_AVAILABLE:
 
 elif page == "🎯 FVG Analysis" and FVG_ANALYSIS_AVAILABLE:
     show_fvg_analysis()
+elif page == "🚩 Flagpole Analysis" and FLAGPOLE_ANALYSIS_AVAILABLE:
+    show_flagpole_analysis()
 
 # Footer
 st.markdown("---")
