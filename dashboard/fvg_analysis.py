@@ -221,12 +221,12 @@ def display_signals(df, title="FVG Signals"):
     # Time fields with UAE time (same as trend_following_analysis.py)
     import pytz
     uae_tz = pytz.timezone('Asia/Dubai')
-    display_df['Detected (UAE)'] = df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+    display_df['Detected (UAE)'] = df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
     
     # Calculate age using UAE timezone
     now_uae = datetime.now(uae_tz)
     display_df['Age'] = df['detected_at'].apply(
-        lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+        lambda x: f"{(now_uae - x.tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
     )
     
     st.dataframe(display_df, use_container_width=True, hide_index=True)
