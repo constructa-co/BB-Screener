@@ -107,6 +107,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Initialize database connection
+@st.cache_resource
 def get_db():
     return TradeLogger()
 

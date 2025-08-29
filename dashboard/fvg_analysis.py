@@ -221,12 +221,12 @@ def display_signals(df, title="FVG Signals"):
     # Time fields with UAE time (same as trend_following_analysis.py)
     import pytz
     uae_tz = pytz.timezone('Asia/Dubai')
-    display_df['Detected (UAE)'] = df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+    display_df['Detected (UAE)'] = df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
     
     # Calculate age using UAE timezone
     now_uae = datetime.now(uae_tz)
     display_df['Age'] = df['detected_at'].apply(
-        lambda x: f"{(now_uae - x.tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+        lambda x: f"{(now_uae - x.tz_localize('UTC').tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
     )
     
     st.dataframe(display_df, use_container_width=True, hide_index=True)
@@ -375,15 +375,15 @@ def main():
         display_df['Status'] = filtered_df['gap_status']
         display_df['Filled'] = filtered_df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
         
-        # Time fields - timestamps are already converted to UAE timezone in get_fvg_signals()
-        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.strftime('%m-%d %H:%M')
-        
-        # Calculate age using the already-converted timestamps
+        # Time fields with UAE timezone (FIX: Use tz_convert directly for already tz-aware timestamps)
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
+        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        
+        # Calculate age using UAE time (timezone-aware calculation)
         now_uae = datetime.now(uae_tz)
-        display_df['Age'] = filtered_df['detected_at'].apply(
-            lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h" if pd.notna(x) else "N/A"
+        display_df['Age'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).apply(
+            lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
         )
         
         st.dataframe(display_df.head(50), use_container_width=True, hide_index=True)
