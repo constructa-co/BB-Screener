@@ -49,7 +49,7 @@ def get_scanner_data(scanner_name, timeframe='1h', limit=100):
         with engine.connect() as conn:
             df = pd.read_sql(query, conn, params={"limit": limit})
             # Sanitize the dataframe for display
-            from data_processor import sanitize_dataframe
+            from dashboard.data_processor import sanitize_dataframe
             df = sanitize_dataframe(df)
             return df
     except Exception as e:
