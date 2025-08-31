@@ -70,10 +70,10 @@ def load_supply_demand_data():
         ])
         
         # Convert timestamp columns and convert to UAE time (UTC+4)
-        zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
-        zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
-        zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
-        zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
+        zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at']).dt.tz_convert('Asia/Dubai')
+        zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at']).dt.tz_convert('Asia/Dubai')
+        zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start']).dt.tz_convert('Asia/Dubai')
+        zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end']).dt.tz_convert('Asia/Dubai')
         
         return zones_data
         

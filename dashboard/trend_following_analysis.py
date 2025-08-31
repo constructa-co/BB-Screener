@@ -249,7 +249,7 @@ def show_trend_following_analysis():
         # Format timestamps in UAE timezone
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        display_df['detected_at'] = display_df['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        display_df['detected_at'] = display_df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
         # Add emojis for signal types
         display_df['Signal'] = display_df['signal_type'].map({
@@ -295,7 +295,7 @@ def show_trend_following_analysis():
         top_display = top_signals.copy()
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        top_display['detected_at'] = top_display['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%Y-%m-%d %H:%M')
+        top_display['detected_at'] = top_display['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%Y-%m-%d %H:%M')
         top_display['Signal'] = top_display['signal_type'].map({
             'BULLISH': '🟢 BULLISH',
             'BEARISH': '🔴 BEARISH',
