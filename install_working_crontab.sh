@@ -39,8 +39,8 @@ BB_DIR=/opt/bb-screener
 # === 4-HOUR SCANNERS ===
 0 */4 * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/4_hour_scanners/elliott_wave_scanner_4h_r1.py >> logs/elliott_4h.log 2>&1
 0 */4 * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/4_hour_scanners/ict_scanner_4h_r1.py >> logs/ict_4h.log 2>&1
-0 */4 * * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/4_hour_scanners/supply_demand_scanner_4h_r1.py >> logs/sd_4h.log 2>&1
-0 */4 * * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/4_hour_scanners/wyckoff_4h_scanner_r1.py >> logs/wyckoff_4h.log 2>&1
+0 */4 * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/4_hour_scanners/supply_demand_scanner_4h_r1.py >> logs/sd_4h.log 2>&1
+0 */4 * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/4_hour_scanners/wyckoff_4h_scanner_r1.py >> logs/wyckoff_4h.log 2>&1
 
 # === DAILY SCANNERS ===
 0 0 * * * cd $BB_DIR && export $(cat .env | xargs) && PYTHONPATH=. python3 manual_scanners/daily_scanners/elliott_wave_scanner_daily_r1.py >> logs/elliott_daily.log 2>&1
