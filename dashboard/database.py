@@ -20,7 +20,7 @@ def get_scanner_data(scanner_name, timeframe='1h', limit=100):
         },
         'flagpole': {
             'table': 'other_scanners.flagpole_signals',
-            'columns': 'symbol, timeframe, detected_at, pattern_type, direction, current_price, breakout_level, target_price, stop_loss, potential_pct, risk_reward, setup_score'
+            'columns': 'symbol, timeframe, detected_at, pattern_type, direction, current_price, breakout_level, target_price, stop_loss, potential_pct, risk_reward, score'
         },
         'elliott': {
             'table': 'other_scanners.elliott_wave_signals',
