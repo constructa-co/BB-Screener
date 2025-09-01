@@ -72,10 +72,11 @@ def load_supply_demand_data():
         # Convert timestamp columns and convert to UAE time (UTC+4)
         # Fix: timestamp WITHOUT timezone - need to localize first
         # Timestamps already handled by timezone wrapper
-        zones_data['detected_at'] = zones_data['detected_at'].dt.tz_convert('Asia/Dubai')
-        zones_data['expires_at'] = zones_data['expires_at'].dt.tz_convert('Asia/Dubai')
-        zones_data['formation_start'] = zones_data['formation_start'].dt.tz_convert('Asia/Dubai')
-        zones_data['formation_end'] = zones_data['formation_end'].dt.tz_convert('Asia/Dubai')
+        # Timestamps already handled by timezone wrapper - just format for display
+        zones_data['detected_at'] = zones_data['detected_at'].dt.strftime('%Y-%m-%d %H:%M')
+        zones_data['expires_at'] = zones_data['expires_at'].dt.strftime('%Y-%m-%d %H:%M')
+        zones_data['formation_start'] = zones_data['formation_start'].dt.strftime('%Y-%m-%d %H:%M')
+        zones_data['formation_end'] = zones_data['formation_end'].dt.strftime('%Y-%m-%d %H:%M')
         
         return zones_data
         
