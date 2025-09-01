@@ -71,10 +71,11 @@ def load_supply_demand_data():
         
         # Convert timestamp columns and convert to UAE time (UTC+4)
         # Fix: timestamp WITHOUT timezone - need to localize first
-        zones_data['detected_at'] = pd.to_datetime(zones_data['detected_at']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
-        zones_data['expires_at'] = pd.to_datetime(zones_data['expires_at']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
-        zones_data['formation_start'] = pd.to_datetime(zones_data['formation_start']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
-        zones_data['formation_end'] = pd.to_datetime(zones_data['formation_end']).dt.tz_localize('UTC').dt.tz_convert('Asia/Dubai')
+        # Timestamps already handled by timezone wrapper
+        zones_data['detected_at'] = zones_data['detected_at'].dt.tz_convert('Asia/Dubai')
+        zones_data['expires_at'] = zones_data['expires_at'].dt.tz_convert('Asia/Dubai')
+        zones_data['formation_start'] = zones_data['formation_start'].dt.tz_convert('Asia/Dubai')
+        zones_data['formation_end'] = zones_data['formation_end'].dt.tz_convert('Asia/Dubai')
         
         return zones_data
         
@@ -182,7 +183,7 @@ def show_supply_demand_analysis():
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
         # Fix: timestamp WITHOUT timezone - need to localize first
-        display_data['detected_at'] = display_data['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        display_data['detected_at'] = display_data['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
         # Convert Decimal columns to numeric for calculations
         display_data['zone_top'] = pd.to_numeric(display_data['zone_top'], errors='coerce')
@@ -284,7 +285,7 @@ def show_supply_demand_analysis():
             uae_tz = pytz.timezone('Asia/Dubai')
             data_copy = data.copy()
             # Fix: timestamp WITHOUT timezone - need to localize first
-            data_copy['detected_at'] = data_copy['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
+            data_copy['detected_at'] = data_copy['detected_at'].dt.tz_convert(uae_tz)
             
             # Group by date in UAE timezone
             daily_zones = data_copy.groupby(data_copy['detected_at'].dt.date).size().reset_index()

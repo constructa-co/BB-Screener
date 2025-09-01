@@ -246,11 +246,8 @@ def show_trend_following_analysis():
                                'trend_strength', 'risk_reward_1', 'entry_price', 'stop_loss', 
                                'target_1', 'target_2', 'target_3', 'detected_at']].copy()
         
-        # Format timestamps in UAE timezone
-        import pytz
-        uae_tz = pytz.timezone('Asia/Dubai')
-        # Fix: timestamp WITHOUT timezone - need to localize first
-        display_df['detected_at'] = pd.to_datetime(display_df['detected_at']).dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        # Format timestamps in UAE timezone (already handled by timezone wrapper)
+        display_df['detected_at'] = display_df['detected_at'].dt.tz_convert('Asia/Dubai').dt.strftime('%H:%M')
         
         # Add emojis for signal types
         display_df['Signal'] = display_df['signal_type'].map({
@@ -294,10 +291,8 @@ def show_trend_following_analysis():
     if not top_signals.empty:
         # Format for display
         top_display = top_signals.copy()
-        import pytz
-        uae_tz = pytz.timezone('Asia/Dubai')
-        # Fix: timestamp WITHOUT timezone - need to localize first
-        top_display['detected_at'] = pd.to_datetime(top_display['detected_at']).dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%Y-%m-%d %H:%M')
+        # Format timestamps in UAE timezone (already handled by timezone wrapper)
+        top_display['detected_at'] = top_display['detected_at'].dt.tz_convert('Asia/Dubai').dt.strftime('%Y-%m-%d %H:%M')
         top_display['Signal'] = top_display['signal_type'].map({
             'BULLISH': '🟢 BULLISH',
             'BEARISH': '🔴 BEARISH',
