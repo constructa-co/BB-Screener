@@ -173,7 +173,7 @@ def show_supply_demand_analysis():
     # Fix timezone comparison by making both sides timezone-aware
     from datetime import timezone
     cutoff_time = datetime.now(timezone.utc) - timedelta(days=1)
-    recent_data = data[data['detected_at'] > cutoff_time]
+    recent_data = data[pd.to_datetime(data['detected_at']) > cutoff_time]
     
     if not recent_data.empty:
         # Create display data with UAE time conversion and actionable trading data

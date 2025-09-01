@@ -15,8 +15,16 @@ import os
 import json
 
 def format_timestamp(timestamp_series):
-    """Format timestamps to UTC string format"""
-    return timestamp_series.dt.strftime('%Y-%m-%d %H:%M')
+    """Format timestamp for display"""
+    try:
+        # Check if it's a Series with datetime
+        if hasattr(timestamp_series, 'dt'):
+            return timestamp_series.dt.strftime('%Y-%m-%d %H:%M')
+        # If it's already datetime objects
+        else:
+            return pd.Series(timestamp_series).apply(lambda x: x.strftime('%Y-%m-%d %H:%M') if pd.notna(x) else '')
+    except:
+        return timestamp_series
 
 # Page configuration
 st.set_page_config(
