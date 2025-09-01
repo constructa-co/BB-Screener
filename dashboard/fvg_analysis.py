@@ -14,6 +14,15 @@ import psycopg2.extras
 import os
 import json
 
+def safe_tz_convert(timestamp_series, target_tz):
+    """Safely convert timestamps to target timezone, handling both naive and aware timestamps"""
+    if timestamp_series.dt.tz is None:
+        # Timezone-naive: localize to UTC first, then convert
+        return timestamp_series.dt.tz_localize('UTC').dt.tz_convert(target_tz)
+    else:
+        # Already timezone-aware: convert directly
+        return timestamp_series.dt.tz_convert(target_tz)
+
 # Page configuration
 st.set_page_config(
     page_title="FVG Analysis",
@@ -93,10 +102,10 @@ def get_fvg_signals(hours_back=24, limit=1000):
             import pytz
             uae_tz = pytz.timezone('Asia/Dubai')
             
-            df['detected_at'] = df['detected_at'].dt.tz_convert(uae_tz)
+            df['detected_at'] = safe_tz_convert(df['detected_at'], uae_tz)
             
             if 'expires_at' in df.columns and not df['expires_at'].isna().all():
-                df['expires_at'] = df['expires_at'].dt.tz_convert(uae_tz)
+                df['expires_at'] = safe_tz_convert(df['expires_at'], uae_tz)
             
             # Convert numeric columns for pandas compatibility
             numeric_columns = ['setup_score', 'gap_size', 'gap_size_pct', 'current_price', 'entry_price', 
@@ -221,12 +230,12 @@ def display_signals(df, title="FVG Signals"):
     # Time fields with UAE time (same as trend_following_analysis.py)
     import pytz
     uae_tz = pytz.timezone('Asia/Dubai')
-    display_df['Detected (UAE)'] = df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+    display_df['Detected (UAE)'] = safe_tz_convert(df['detected_at'], uae_tz).dt.strftime('%H:%M')
     
     # Calculate age using UAE timezone
     now_uae = datetime.now(uae_tz)
     display_df['Age'] = df['detected_at'].apply(
-        lambda x: f"{(now_uae - x.tz_convert(uae_tz)).total_seconds() / 3600:.1f}h"
+        lambda x: f"{(now_uae - safe_tz_convert(pd.Series([x]), uae_tz).iloc[0]).total_seconds() / 3600:.1f}h"
     )
     
     st.dataframe(display_df, use_container_width=True, hide_index=True)
@@ -375,14 +384,14 @@ def main():
         display_df['Status'] = filtered_df['gap_status']
         display_df['Filled'] = filtered_df['fill_percentage'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "0%")
         
-        # Time fields with UAE timezone (FIX: Use tz_convert directly for already tz-aware timestamps)
+        # Time fields with UAE timezone (FIX: Use safe timezone conversion for both naive and aware timestamps)
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        display_df['Detected (UAE)'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        display_df['Detected (UAE)'] = safe_tz_convert(filtered_df['detected_at'], uae_tz).dt.strftime('%H:%M')
         
         # Calculate age using UAE time (timezone-aware calculation)
         now_uae = datetime.now(uae_tz)
-        display_df['Age'] = filtered_df['detected_at'].dt.tz_convert(uae_tz).apply(
+        display_df['Age'] = safe_tz_convert(filtered_df['detected_at'], uae_tz).apply(
             lambda x: f"{(now_uae - x).total_seconds() / 3600:.1f}h"
         )
         
