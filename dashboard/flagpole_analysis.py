@@ -62,11 +62,10 @@ def fetch_flagpole_signals(hours_back=24, min_score=60):
         df = pd.read_sql(query, conn, params=(hours_back, min_score))
         
         if not df.empty:
-            # Convert to UAE time
-            uae_tz = pytz.timezone('Asia/Dubai')
-            df['detected_at'] = df['detected_at'].dt.tz_convert(uae_tz)
+            # Format timestamps in UTC (already handled by timezone wrapper)
+            df['detected_at'] = df['detected_at'].dt.strftime('%Y-%m-%d %H:%M')
             if 'expires_at' in df.columns:
-                df['expires_at'] = df['expires_at'].dt.tz_convert(uae_tz)
+                df['expires_at'] = df['expires_at'].dt.strftime('%Y-%m-%d %H:%M')
         
         return df
         

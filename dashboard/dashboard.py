@@ -762,6 +762,14 @@ except ImportError as e:
     print(f"⚠️ FVG analysis import failed: {e}")
     FVG_ANALYSIS_AVAILABLE = False
 
+# Import clock display
+try:
+    from clock_display import display_time_header
+    CLOCK_DISPLAY_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Clock display import failed: {e}")
+    CLOCK_DISPLAY_AVAILABLE = False
+
 # Main navigation
 navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Opportunities", 
                      "📊 Performance Analytics", "🧠 Advanced Analytics", "📁 File Management", "🎛️ Strategy Tuning", "🤖 3Commas Integration", 
@@ -800,6 +808,12 @@ page = st.sidebar.radio(
 if page == "🏠 Overview":
     # Header
     st.markdown('<h1 class="main-header">🚀 Crypto Trading Command Center</h1>', unsafe_allow_html=True)
+    
+    # Display UTC/UAE clock
+    if CLOCK_DISPLAY_AVAILABLE:
+        display_time_header()
+    else:
+        st.info("🌍 All times shown in UTC format (+4 hours = UAE time)")
     
     # Get current data
     logger = get_db()
