@@ -94,7 +94,9 @@ def get_fvg_signals(hours_back=24, limit=1000):
             LIMIT %s
         """
         
-        df = pd.read_sql(query, conn, params=(hours_back, limit))
+        # Use the timezone wrapper to handle inconsistent timestamp types
+        from db_helper import query_with_timezone_fix
+        df = query_with_timezone_fix(query, conn, params=(hours_back, limit))
         
         if not df.empty:
             # Timestamps from PostgreSQL are already timezone-aware
