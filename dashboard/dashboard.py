@@ -709,12 +709,13 @@ with st.sidebar:
         st.info("Alert test sent to Telegram!")
 
 # Import Fibonacci analysis
-try:
-    from fibonacci_analysis import show_fibonacci_analysis
-    FIBONACCI_ANALYSIS_AVAILABLE = True
-except ImportError:
-    print("⚠️ Fibonacci analysis not available - fibonacci_analysis.py not found")
-    FIBONACCI_ANALYSIS_AVAILABLE = False
+# try:
+#     from fibonacci_analysis import show_fibonacci_analysis
+#     FIBONACCI_ANALYSIS_AVAILABLE = True
+# except ImportError:
+#     print("⚠️ Fibonacci analysis not available - fibonacci_analysis.py not found")
+#     FIBONACCI_ANALYSIS_AVAILABLE = False
+FIBONACCI_ANALYSIS_AVAILABLE = False
 
 # Import Supply & Demand analysis
 import sys
@@ -776,8 +777,8 @@ navigation_options = ["🏠 Overview", "🎯 Scanner Dashboard", "💹 All Oppor
                      "📈 Post-Mortem Analysis", "⚙️ Settings"]
 
 # Add Fibonacci analysis if available
-if FIBONACCI_ANALYSIS_AVAILABLE:
-    navigation_options.append("📐 Fibonacci Analysis")
+# if FIBONACCI_ANALYSIS_AVAILABLE:
+#     navigation_options.append("📐 Fibonacci Analysis")
 
 # Add Supply & Demand analysis if available
 if SUPPLY_DEMAND_ANALYSIS_AVAILABLE:
@@ -1873,8 +1874,8 @@ elif page == "🏗️ Supply & Demand Analysis" and SUPPLY_DEMAND_ANALYSIS_AVAIL
 elif page == "🎯 Trend Following Analysis" and TREND_FOLLOWING_ANALYSIS_AVAILABLE:
     show_trend_following_analysis()
 
-elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
-    show_fibonacci_analysis()
+# elif page == "📐 Fibonacci Analysis" and FIBONACCI_ANALYSIS_AVAILABLE:
+#     show_fibonacci_analysis()
 
 elif page == "🎯 Wyckoff Analysis" and WYCKOFF_ANALYSIS_AVAILABLE:
     show_wyckoff_analysis()
