@@ -181,7 +181,8 @@ def show_supply_demand_analysis():
         # Fix timezone display - convert to UAE timezone properly
         import pytz
         uae_tz = pytz.timezone('Asia/Dubai')
-        display_data['detected_at'] = display_data['detected_at'].dt.tz_convert(uae_tz).dt.strftime('%H:%M')
+        # Fix: timestamp WITHOUT timezone - need to localize first
+        display_data['detected_at'] = display_data['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz).dt.strftime('%H:%M')
         
         # Convert Decimal columns to numeric for calculations
         display_data['zone_top'] = pd.to_numeric(display_data['zone_top'], errors='coerce')
@@ -282,7 +283,8 @@ def show_supply_demand_analysis():
             # Convert to UAE timezone for proper date grouping
             uae_tz = pytz.timezone('Asia/Dubai')
             data_copy = data.copy()
-            data_copy['detected_at'] = data_copy['detected_at'].dt.tz_convert(uae_tz)
+            # Fix: timestamp WITHOUT timezone - need to localize first
+            data_copy['detected_at'] = data_copy['detected_at'].dt.tz_localize('UTC').dt.tz_convert(uae_tz)
             
             # Group by date in UAE timezone
             daily_zones = data_copy.groupby(data_copy['detected_at'].dt.date).size().reset_index()
