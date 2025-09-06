@@ -116,7 +116,7 @@ def show_trend_following_analysis():
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Total Signals", len(df), f"Last 24h: {len(df[df['detected_at'] > datetime.now() - timedelta(hours=24)])}")
+        st.metric("Total Signals", len(df), f"Last 24h: {len(df[pd.to_datetime(df['detected_at']) > datetime.now() - timedelta(hours=24)])}")
     
     with col2:
         avg_quality = df['quality_score'].mean()
