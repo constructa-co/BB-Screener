@@ -12201,3 +12201,4526 @@ TypeError: '>' not supported between instances of 'NoneType' and 'int'
 2025-08-27 03:56:41,746 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
 2025-08-27 03:56:41,747 - INFO - Performance Stats: {'total_scans': 3, 'setups_found': 0, 'alerts_sent': 80}
 2025-08-27 03:56:41,747 - INFO - Next scan in 900 seconds...
+2025-09-07 20:32:11,674 - INFO - Connected to binance
+2025-09-07 20:32:11,675 - INFO - Starting continuous scanner (interval: 300s)
+2025-09-07 20:32:11,675 - INFO - Starting scan of top 500 symbols...
+2025-09-07 20:32:14,346 - INFO - Scanning 230 symbols
+2025-09-07 20:32:14,347 - INFO - Progress: 0/230 symbols scanned
+2025-09-07 20:32:17,156 - ERROR - Error scanning TRX/USDT: 'swing_high'
+2025-09-07 20:32:19,940 - INFO - Progress: 10/230 symbols scanned
+2025-09-07 20:32:25,185 - INFO - Progress: 20/230 symbols scanned
+2025-09-07 20:32:26,226 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 20:32:30,151 - ERROR - Error scanning ARB/USDT: 'swing_high'
+2025-09-07 20:32:30,492 - INFO - Progress: 30/230 symbols scanned
+2025-09-07 20:32:34,682 - INFO - Progress: 40/230 symbols scanned
+2025-09-07 20:32:38,808 - INFO - Progress: 50/230 symbols scanned
+2025-09-07 20:32:41,656 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 20:32:43,720 - INFO - Progress: 60/230 symbols scanned
+2025-09-07 20:32:44,418 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 20:32:48,614 - INFO - Progress: 70/230 symbols scanned
+2025-09-07 20:32:52,610 - INFO - Progress: 80/230 symbols scanned
+2025-09-07 20:32:56,829 - INFO - Progress: 90/230 symbols scanned
+2025-09-07 20:33:01,371 - INFO - Progress: 100/230 symbols scanned
+2025-09-07 20:33:03,455 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 20:33:05,926 - INFO - Progress: 110/230 symbols scanned
+2025-09-07 20:33:06,966 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 20:33:10,243 - INFO - Progress: 120/230 symbols scanned
+2025-09-07 20:33:11,683 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 20:33:14,839 - INFO - Progress: 130/230 symbols scanned
+2025-09-07 20:33:16,555 - ERROR - Error scanning SANTOS/USDT: 'swing_high'
+2025-09-07 20:33:18,662 - INFO - Progress: 140/230 symbols scanned
+2025-09-07 20:33:24,276 - INFO - Progress: 150/230 symbols scanned
+2025-09-07 20:33:29,197 - INFO - Progress: 160/230 symbols scanned
+2025-09-07 20:33:33,339 - INFO - Progress: 170/230 symbols scanned
+2025-09-07 20:33:36,152 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 20:33:38,260 - INFO - Progress: 180/230 symbols scanned
+2025-09-07 20:33:40,662 - ERROR - Error scanning SUSHI/USDT: 'swing_high'
+2025-09-07 20:33:42,444 - INFO - Progress: 190/230 symbols scanned
+2025-09-07 20:33:46,643 - INFO - Progress: 200/230 symbols scanned
+2025-09-07 20:33:51,165 - INFO - Progress: 210/230 symbols scanned
+2025-09-07 20:33:55,391 - INFO - Progress: 220/230 symbols scanned
+2025-09-07 20:33:58,503 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 20:34:01,333 - INFO - Found 62 setups, showing top 20
+2025-09-07 20:34:01,333 - INFO - 
+🔴 SHORT Signal: RSR/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0076
+- Gap Low: $0.0074
+- Entry (Midpoint): $0.0075
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0075
+- Swing Low: $0.0072
+- Swing Range: 3.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0075
+- Distance to Entry: 0.2%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0076 (-0.6%)
+- Risk/Reward: 3.4:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0074 (+2.1%) [38.2%] - Exit 50%
+- T2: $0.0073 (+2.5%) [50%] - Exit 30%
+- T3: $0.0073 (+3.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.4%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,333 - INFO - 
+🔴 SHORT Signal: ETC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $20.7600
+- Gap Low: $20.4700
+- Entry (Midpoint): $20.6150
+
+📈 MARKET STRUCTURE:
+- Swing High: $20.3800
+- Swing Low: $20.0500
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $20.3700
+- Distance to Entry: 1.2%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $20.7387 (-0.6%)
+- Risk/Reward: 2.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $20.2539 (+1.8%) [38.2%] - Exit 50%
+- T2: $20.2150 (+1.9%) [50%] - Exit 30%
+- T3: $20.1206 (+2.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - 
+🟢 LONG Signal: BAND/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7310
+- Gap Low: $0.7220
+- Entry (Midpoint): $0.7265
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7600
+- Swing Low: $0.7240
+- Swing Range: 5.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7400
+- Distance to Entry: -1.8%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7221 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7378 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.7420 (+2.1%) [50%] - Exit 30%
+- T3: $0.7523 (+3.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 29 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: ETH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $4434.6100
+- Gap Low: $4304.9500
+- Entry (Midpoint): $4369.7800
+
+📈 MARKET STRUCTURE:
+- Swing High: $4343.0300
+- Swing Low: $4236.0000
+- Swing Range: 2.5%
+
+💹 CURRENT STATUS:
+- Price Now: $4290.3600
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $4395.9987 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $4302.1445 (+1.5%) [38.2%] - Exit 50%
+- T2: $4289.5150 (+1.8%) [50%] - Exit 30%
+- T3: $4258.9044 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 3.0%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: SOL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $208.3900
+- Gap Low: $204.4500
+- Entry (Midpoint): $206.4200
+
+📈 MARKET STRUCTURE:
+- Swing High: $204.3700
+- Swing Low: $201.4100
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $204.1600
+- Distance to Entry: 1.1%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $207.6585 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $203.2393 (+1.5%) [38.2%] - Exit 50%
+- T2: $202.8900 (+1.7%) [50%] - Exit 30%
+- T3: $202.0434 (+2.1%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.9%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: ENS/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $22.7300
+- Gap Low: $22.2200
+- Entry (Midpoint): $22.4750
+
+📈 MARKET STRUCTURE:
+- Swing High: $22.3000
+- Swing Low: $21.9000
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $22.2100
+- Distance to Entry: 1.2%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $22.6099 (-0.6%)
+- Risk/Reward: 2.4:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $22.1472 (+1.5%) [38.2%] - Exit 50%
+- T2: $22.1000 (+1.7%) [50%] - Exit 30%
+- T3: $21.9856 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.3%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: XAI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0473
+- Gap Low: $0.0463
+- Entry (Midpoint): $0.0468
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0465
+- Swing Low: $0.0456
+- Swing Range: 2.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0467
+- Distance to Entry: 0.2%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0471 (-0.6%)
+- Risk/Reward: 2.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0462 (+1.4%) [38.2%] - Exit 50%
+- T2: $0.0461 (+1.6%) [50%] - Exit 30%
+- T3: $0.0458 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.2%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: ADA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8401
+- Gap Low: $0.8283
+- Entry (Midpoint): $0.8342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.8285
+- Swing Low: $0.8143
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8303
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8392 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8231 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.8214 (+1.5%) [50%] - Exit 30%
+- T3: $0.8173 (+2.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: GRT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0900
+- Gap Low: $0.0885
+- Entry (Midpoint): $0.0892
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0885
+- Swing Low: $0.0876
+- Swing Range: 1.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0888
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0898 (-0.6%)
+- Risk/Reward: 2.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0882 (+1.2%) [38.2%] - Exit 50%
+- T2: $0.0880 (+1.3%) [50%] - Exit 30%
+- T3: $0.0878 (+1.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: JST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0344
+- Gap Low: $0.0340
+- Entry (Midpoint): $0.0342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0344
+- Swing Low: $0.0330
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0336
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0344 (-0.6%)
+- Risk/Reward: 1.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0338 (+1.1%) [38.2%] - Exit 50%
+- T2: $0.0337 (+1.5%) [50%] - Exit 30%
+- T3: $0.0333 (+2.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: BTC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $112706.7100
+- Gap Low: $111017.8000
+- Entry (Midpoint): $111862.2550
+
+📈 MARKET STRUCTURE:
+- Swing High: $111248.2000
+- Swing Low: $109977.0000
+- Swing Range: 1.2%
+
+💹 CURRENT STATUS:
+- Price Now: $111204.0000
+- Distance to Entry: 0.6%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $112533.4285 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $110762.6016 (+1.0%) [38.2%] - Exit 50%
+- T2: $110612.6000 (+1.1%) [50%] - Exit 30%
+- T3: $110249.0368 (+1.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: JASMY/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0142
+- Gap Low: $0.0140
+- Entry (Midpoint): $0.0141
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0142
+- Swing Low: $0.0137
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0140
+- Distance to Entry: 0.7%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0142 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0140 (+0.9%) [38.2%] - Exit 50%
+- T2: $0.0139 (+1.3%) [50%] - Exit 30%
+- T3: $0.0138 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: SUI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $3.4276
+- Gap Low: $3.3932
+- Entry (Midpoint): $3.4104
+
+📈 MARKET STRUCTURE:
+- Swing High: $3.3995
+- Swing Low: $3.3492
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $3.3956
+- Distance to Entry: 0.4%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $3.4309 (-0.6%)
+- Risk/Reward: 1.5:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $3.3803 (+0.9%) [38.2%] - Exit 50%
+- T2: $3.3744 (+1.1%) [50%] - Exit 30%
+- T3: $3.3600 (+1.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.0%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - 
+🔴 SHORT Signal: BEAMX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0072
+- Gap Low: $0.0071
+- Entry (Midpoint): $0.0071
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0072
+- Swing Low: $0.0070
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0070
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0072 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0071 (+0.6%) [38.2%] - Exit 50%
+- T2: $0.0071 (+1.0%) [50%] - Exit 30%
+- T3: $0.0070 (+1.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.3%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:33
+
+2025-09-07 20:34:01,334 - INFO - 
+🟢 LONG Signal: ENA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7432
+- Gap Low: $0.7400
+- Entry (Midpoint): $0.7416
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7448
+- Swing Low: $0.7244
+- Swing Range: 2.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7434
+- Distance to Entry: -0.2%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7372 (-0.6%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7448 (+0.4%) [100%] - Exit 50%
+- T2: $0.7503 (+1.2%) [127.2%] - Exit 30%
+- T3: $0.7652 (+3.2%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.4%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:32
+
+2025-09-07 20:34:01,334 - INFO - Scan complete. Found 62 high-quality setups, displayed 20
+2025-09-07 20:34:01,335 - INFO - Performance Stats: {'total_scans': 1, 'setups_found': 62, 'alerts_sent': 30}
+2025-09-07 20:34:01,335 - INFO - Next scan in 300 seconds...
+2025-09-07 20:39:01,323 - INFO - Starting scan of top 500 symbols...
+2025-09-07 20:39:02,022 - INFO - Scanning 231 symbols
+2025-09-07 20:39:02,023 - INFO - Progress: 0/231 symbols scanned
+2025-09-07 20:39:02,769 - ERROR - Error scanning TRX/USDT: 'swing_high'
+2025-09-07 20:39:02,769 - INFO - Progress: 10/231 symbols scanned
+2025-09-07 20:39:02,769 - INFO - Progress: 20/231 symbols scanned
+2025-09-07 20:39:03,472 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 20:39:04,145 - ERROR - Error scanning ARB/USDT: 'swing_high'
+2025-09-07 20:39:04,145 - INFO - Progress: 30/231 symbols scanned
+2025-09-07 20:39:04,145 - INFO - Progress: 40/231 symbols scanned
+2025-09-07 20:39:04,145 - INFO - Progress: 50/231 symbols scanned
+2025-09-07 20:39:04,855 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 20:39:04,855 - INFO - Progress: 60/231 symbols scanned
+2025-09-07 20:39:05,563 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 20:39:05,564 - INFO - Progress: 70/231 symbols scanned
+2025-09-07 20:39:05,564 - INFO - Progress: 80/231 symbols scanned
+2025-09-07 20:39:05,564 - INFO - Progress: 90/231 symbols scanned
+2025-09-07 20:39:05,564 - INFO - Progress: 100/231 symbols scanned
+2025-09-07 20:39:06,237 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 20:39:06,237 - INFO - Progress: 110/231 symbols scanned
+2025-09-07 20:39:06,951 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 20:39:06,951 - INFO - Progress: 120/231 symbols scanned
+2025-09-07 20:39:07,661 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 20:39:07,661 - INFO - Progress: 130/231 symbols scanned
+2025-09-07 20:39:08,331 - ERROR - Error scanning SANTOS/USDT: 'swing_high'
+2025-09-07 20:39:08,331 - INFO - Progress: 140/231 symbols scanned
+2025-09-07 20:39:08,332 - INFO - Progress: 150/231 symbols scanned
+2025-09-07 20:39:08,332 - INFO - Progress: 160/231 symbols scanned
+2025-09-07 20:39:08,332 - INFO - Progress: 170/231 symbols scanned
+2025-09-07 20:39:09,046 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 20:39:09,047 - INFO - Progress: 180/231 symbols scanned
+2025-09-07 20:39:09,757 - ERROR - Error scanning SUSHI/USDT: 'swing_high'
+2025-09-07 20:39:09,757 - INFO - Progress: 190/231 symbols scanned
+2025-09-07 20:39:09,757 - INFO - Progress: 200/231 symbols scanned
+2025-09-07 20:39:09,757 - INFO - Progress: 210/231 symbols scanned
+2025-09-07 20:39:09,757 - INFO - Progress: 220/231 symbols scanned
+2025-09-07 20:39:10,428 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 20:39:10,429 - INFO - Progress: 230/231 symbols scanned
+2025-09-07 20:39:10,821 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-09-07 20:39:10,821 - INFO - Performance Stats: {'total_scans': 2, 'setups_found': 0, 'alerts_sent': 30}
+2025-09-07 20:39:10,821 - INFO - Next scan in 300 seconds...
+2025-09-07 20:44:10,830 - INFO - Starting scan of top 500 symbols...
+2025-09-07 20:44:11,442 - INFO - Scanning 232 symbols
+2025-09-07 20:44:11,443 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 20:44:12,149 - ERROR - Error scanning TRX/USDT: 'swing_high'
+2025-09-07 20:44:12,149 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 20:44:12,149 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 20:44:12,823 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 20:44:13,496 - ERROR - Error scanning ARB/USDT: 'swing_high'
+2025-09-07 20:44:13,496 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 20:44:13,496 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 20:44:13,496 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 20:44:14,195 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 20:44:14,196 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 20:44:14,902 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 20:44:14,902 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 20:44:14,902 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 20:44:14,902 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 20:44:14,902 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 20:44:15,605 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 20:44:15,605 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 20:44:16,300 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 20:44:16,300 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 20:44:16,999 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 20:44:17,000 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 20:44:17,704 - ERROR - Error scanning SANTOS/USDT: 'swing_high'
+2025-09-07 20:44:17,704 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 20:44:17,704 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 20:44:17,704 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 20:44:17,704 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 20:44:18,425 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 20:44:18,425 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 20:44:19,104 - ERROR - Error scanning SUSHI/USDT: 'swing_high'
+2025-09-07 20:44:19,104 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 20:44:19,104 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 20:44:19,449 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 20:44:19,449 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 20:44:20,159 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 20:44:20,159 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 20:44:20,159 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-09-07 20:44:20,159 - INFO - Performance Stats: {'total_scans': 3, 'setups_found': 0, 'alerts_sent': 30}
+2025-09-07 20:44:20,159 - INFO - Next scan in 300 seconds...
+2025-09-07 20:49:20,169 - INFO - Starting scan of top 500 symbols...
+2025-09-07 20:49:20,745 - INFO - Scanning 232 symbols
+2025-09-07 20:49:20,746 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 20:49:23,541 - ERROR - Error scanning TRX/USDT: 'swing_high'
+2025-09-07 20:49:26,355 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 20:49:31,604 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 20:49:32,636 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 20:49:36,459 - ERROR - Error scanning ARB/USDT: 'swing_high'
+2025-09-07 20:49:36,839 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 20:49:41,036 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 20:49:45,230 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 20:49:48,003 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 20:49:50,473 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 20:49:51,513 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 20:49:55,037 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 20:49:58,864 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 20:50:04,630 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 20:50:09,212 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 20:50:11,678 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 20:50:13,710 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 20:50:16,152 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 20:50:17,894 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 20:50:19,298 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 20:50:22,458 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 20:50:24,177 - ERROR - Error scanning SANTOS/USDT: 'swing_high'
+2025-09-07 20:50:26,284 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 20:50:31,513 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 20:50:36,745 - ERROR - Error scanning MAGIC/USDT: 'swing_high'
+2025-09-07 20:50:36,746 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 20:50:40,951 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 20:50:44,111 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 20:50:45,864 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 20:50:48,285 - ERROR - Error scanning SUSHI/USDT: 'swing_high'
+2025-09-07 20:50:50,402 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 20:50:53,912 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 20:50:58,447 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 20:51:02,666 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 20:51:06,827 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 20:51:08,592 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 20:51:08,930 - INFO - Found 61 setups, showing top 20
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: RSR/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0076
+- Gap Low: $0.0074
+- Entry (Midpoint): $0.0075
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0075
+- Swing Low: $0.0072
+- Swing Range: 3.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0075
+- Distance to Entry: 0.4%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0076 (-0.6%)
+- Risk/Reward: 3.4:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0074 (+2.1%) [38.2%] - Exit 50%
+- T2: $0.0073 (+2.5%) [50%] - Exit 30%
+- T3: $0.0073 (+3.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.4%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: ETC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $20.7600
+- Gap Low: $20.4700
+- Entry (Midpoint): $20.6150
+
+📈 MARKET STRUCTURE:
+- Swing High: $20.3800
+- Swing Low: $20.0500
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $20.3600
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $20.7387 (-0.6%)
+- Risk/Reward: 2.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $20.2539 (+1.8%) [38.2%] - Exit 50%
+- T2: $20.2150 (+1.9%) [50%] - Exit 30%
+- T3: $20.1206 (+2.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🟢 LONG Signal: BAND/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7310
+- Gap Low: $0.7220
+- Entry (Midpoint): $0.7265
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7600
+- Swing Low: $0.7240
+- Swing Range: 5.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7400
+- Distance to Entry: -1.8%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7221 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7378 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.7420 (+2.1%) [50%] - Exit 30%
+- T3: $0.7523 (+3.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 29 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: ETH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $4434.6100
+- Gap Low: $4304.9500
+- Entry (Midpoint): $4369.7800
+
+📈 MARKET STRUCTURE:
+- Swing High: $4343.0300
+- Swing Low: $4236.0000
+- Swing Range: 2.5%
+
+💹 CURRENT STATUS:
+- Price Now: $4285.4800
+- Distance to Entry: 2.0%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $4395.9987 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $4302.1445 (+1.5%) [38.2%] - Exit 50%
+- T2: $4289.5150 (+1.8%) [50%] - Exit 30%
+- T3: $4258.9044 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 3.0%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:49
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: SOL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $208.3900
+- Gap Low: $204.4500
+- Entry (Midpoint): $206.4200
+
+📈 MARKET STRUCTURE:
+- Swing High: $204.3700
+- Swing Low: $201.4100
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $203.5300
+- Distance to Entry: 1.4%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $207.6585 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $203.2393 (+1.5%) [38.2%] - Exit 50%
+- T2: $202.8900 (+1.7%) [50%] - Exit 30%
+- T3: $202.0434 (+2.1%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.9%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:49
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: ENS/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $22.7300
+- Gap Low: $22.2200
+- Entry (Midpoint): $22.4750
+
+📈 MARKET STRUCTURE:
+- Swing High: $22.3000
+- Swing Low: $21.9000
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $22.1800
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $22.6099 (-0.6%)
+- Risk/Reward: 2.4:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $22.1472 (+1.5%) [38.2%] - Exit 50%
+- T2: $22.1000 (+1.7%) [50%] - Exit 30%
+- T3: $21.9856 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.3%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: XAI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0473
+- Gap Low: $0.0463
+- Entry (Midpoint): $0.0468
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0465
+- Swing Low: $0.0456
+- Swing Range: 2.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0466
+- Distance to Entry: 0.4%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0471 (-0.6%)
+- Risk/Reward: 2.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0462 (+1.4%) [38.2%] - Exit 50%
+- T2: $0.0461 (+1.6%) [50%] - Exit 30%
+- T3: $0.0458 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.2%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: ADA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8401
+- Gap Low: $0.8283
+- Entry (Midpoint): $0.8342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.8285
+- Swing Low: $0.8143
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8304
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8392 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8231 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.8214 (+1.5%) [50%] - Exit 30%
+- T3: $0.8173 (+2.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:49
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: GRT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0900
+- Gap Low: $0.0885
+- Entry (Midpoint): $0.0892
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0885
+- Swing Low: $0.0876
+- Swing Range: 1.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0887
+- Distance to Entry: 0.6%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0898 (-0.6%)
+- Risk/Reward: 2.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0882 (+1.2%) [38.2%] - Exit 50%
+- T2: $0.0880 (+1.3%) [50%] - Exit 30%
+- T3: $0.0878 (+1.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: JST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0344
+- Gap Low: $0.0340
+- Entry (Midpoint): $0.0342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0344
+- Swing Low: $0.0330
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0336
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0344 (-0.6%)
+- Risk/Reward: 1.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0338 (+1.1%) [38.2%] - Exit 50%
+- T2: $0.0337 (+1.5%) [50%] - Exit 30%
+- T3: $0.0333 (+2.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: BTC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $112706.7100
+- Gap Low: $111017.8000
+- Entry (Midpoint): $111862.2550
+
+📈 MARKET STRUCTURE:
+- Swing High: $111248.2000
+- Swing Low: $109977.0000
+- Swing Range: 1.2%
+
+💹 CURRENT STATUS:
+- Price Now: $111212.0900
+- Distance to Entry: 0.6%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $112533.4285 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $110762.6016 (+1.0%) [38.2%] - Exit 50%
+- T2: $110612.6000 (+1.1%) [50%] - Exit 30%
+- T3: $110249.0368 (+1.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:49
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: JASMY/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0142
+- Gap Low: $0.0140
+- Entry (Midpoint): $0.0141
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0142
+- Swing Low: $0.0137
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0140
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0142 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0140 (+0.9%) [38.2%] - Exit 50%
+- T2: $0.0139 (+1.3%) [50%] - Exit 30%
+- T3: $0.0138 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:51
+
+2025-09-07 20:51:08,931 - INFO - 
+🔴 SHORT Signal: SUI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $3.4276
+- Gap Low: $3.3932
+- Entry (Midpoint): $3.4104
+
+📈 MARKET STRUCTURE:
+- Swing High: $3.3995
+- Swing Low: $3.3492
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $3.3901
+- Distance to Entry: 0.6%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $3.4309 (-0.6%)
+- Risk/Reward: 1.5:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $3.3803 (+0.9%) [38.2%] - Exit 50%
+- T2: $3.3744 (+1.1%) [50%] - Exit 30%
+- T3: $3.3600 (+1.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.0%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:49
+
+2025-09-07 20:51:08,932 - INFO - 
+🔴 SHORT Signal: BEAMX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0072
+- Gap Low: $0.0071
+- Entry (Midpoint): $0.0071
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0072
+- Swing Low: $0.0070
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0070
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0072 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0071 (+0.6%) [38.2%] - Exit 50%
+- T2: $0.0071 (+1.0%) [50%] - Exit 30%
+- T3: $0.0070 (+1.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.3%
+- FVG Age: 49 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:50
+
+2025-09-07 20:51:08,932 - INFO - 
+🟢 LONG Signal: ENA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7431
+- Gap Low: $0.7400
+- Entry (Midpoint): $0.7415
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7448
+- Swing Low: $0.7244
+- Swing Range: 2.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7447
+- Distance to Entry: -0.4%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7371 (-0.6%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7448 (+0.4%) [100%] - Exit 50%
+- T2: $0.7503 (+1.2%) [127.2%] - Exit 30%
+- T3: $0.7652 (+3.2%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.4%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 20:49
+
+2025-09-07 20:51:08,932 - INFO - Scan complete. Found 61 high-quality setups, displayed 20
+2025-09-07 20:51:08,932 - INFO - Performance Stats: {'total_scans': 4, 'setups_found': 61, 'alerts_sent': 60}
+2025-09-07 20:51:08,932 - INFO - Next scan in 300 seconds...
+2025-09-07 21:44:24,722 - INFO - Connected to binance
+2025-09-07 21:44:24,726 - INFO - Starting continuous scanner (interval: 300s)
+2025-09-07 21:44:24,727 - INFO - Starting scan of top 500 symbols...
+2025-09-07 21:44:27,584 - INFO - Scanning 233 symbols
+2025-09-07 21:44:27,585 - INFO - Progress: 0/233 symbols scanned
+2025-09-07 21:44:31,062 - ERROR - Error scanning SOL/USDT: 'swing_high'
+2025-09-07 21:44:33,133 - INFO - Progress: 10/233 symbols scanned
+2025-09-07 21:44:37,324 - ERROR - Error scanning LINK/USDT: 'swing_high'
+2025-09-07 21:44:38,380 - INFO - Progress: 20/233 symbols scanned
+2025-09-07 21:44:39,512 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 21:44:40,992 - ERROR - Error scanning SEI/USDT: 'swing_high'
+2025-09-07 21:44:43,771 - INFO - Progress: 30/233 symbols scanned
+2025-09-07 21:44:48,674 - INFO - Progress: 40/233 symbols scanned
+2025-09-07 21:44:52,170 - INFO - Progress: 50/233 symbols scanned
+2025-09-07 21:44:54,621 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 21:44:56,355 - INFO - Progress: 60/233 symbols scanned
+2025-09-07 21:44:57,446 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 21:45:01,107 - INFO - Progress: 70/233 symbols scanned
+2025-09-07 21:45:05,492 - INFO - Progress: 80/233 symbols scanned
+2025-09-07 21:45:09,643 - INFO - Progress: 90/233 symbols scanned
+2025-09-07 21:45:14,192 - INFO - Progress: 100/233 symbols scanned
+2025-09-07 21:45:16,266 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 21:45:18,750 - INFO - Progress: 110/233 symbols scanned
+2025-09-07 21:45:21,527 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 21:45:23,543 - INFO - Progress: 120/233 symbols scanned
+2025-09-07 21:45:24,406 - ERROR - Error scanning JUV/USDT: 'swing_high'
+2025-09-07 21:45:28,187 - INFO - Progress: 130/233 symbols scanned
+2025-09-07 21:45:33,237 - ERROR - Error scanning VET/USDT: 'swing_high'
+2025-09-07 21:45:33,943 - INFO - Progress: 140/233 symbols scanned
+2025-09-07 21:45:37,841 - INFO - Progress: 150/233 symbols scanned
+2025-09-07 21:45:41,284 - ERROR - Error scanning ENS/USDT: 'swing_high'
+2025-09-07 21:45:43,022 - INFO - Progress: 160/233 symbols scanned
+2025-09-07 21:45:47,215 - INFO - Progress: 170/233 symbols scanned
+2025-09-07 21:45:48,963 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 21:45:52,309 - ERROR - Error scanning RSR/USDT: 'swing_high'
+2025-09-07 21:45:52,309 - INFO - Progress: 180/233 symbols scanned
+2025-09-07 21:45:56,497 - INFO - Progress: 190/233 symbols scanned
+2025-09-07 21:46:00,682 - INFO - Progress: 200/233 symbols scanned
+2025-09-07 21:46:04,884 - INFO - Progress: 210/233 symbols scanned
+2025-09-07 21:46:09,752 - INFO - Progress: 220/233 symbols scanned
+2025-09-07 21:46:12,557 - ERROR - Error scanning AXL/USDT: 'swing_high'
+2025-09-07 21:46:14,314 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 21:46:14,314 - INFO - Progress: 230/233 symbols scanned
+2025-09-07 21:46:15,705 - INFO - Found 52 setups, showing top 20
+2025-09-07 21:46:15,705 - INFO - 
+🔴 SHORT Signal: SUI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $3.4276
+- Gap Low: $3.3932
+- Entry (Midpoint): $3.4104
+
+📈 MARKET STRUCTURE:
+- Swing High: $3.3618
+- Swing Low: $3.3135
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $3.3847
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $3.4309 (-0.6%)
+- Risk/Reward: 3.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $3.3433 (+2.0%) [38.2%] - Exit 50%
+- T2: $3.3377 (+2.1%) [50%] - Exit 30%
+- T3: $3.3238 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.0%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,705 - INFO - 
+🔴 SHORT Signal: MITO/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.2335
+- Gap Low: $0.2297
+- Entry (Midpoint): $0.2316
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.2292
+- Swing Low: $0.2257
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $0.2277
+- Distance to Entry: 1.7%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.2330 (-0.6%)
+- Risk/Reward: 2.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.2279 (+1.6%) [38.2%] - Exit 50%
+- T2: $0.2274 (+1.8%) [50%] - Exit 30%
+- T3: $0.2264 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 7 bars
+- Volume Surge: No ❌
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,705 - INFO - 
+🔴 SHORT Signal: ETH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $4434.6100
+- Gap Low: $4304.9500
+- Entry (Midpoint): $4369.7800
+
+📈 MARKET STRUCTURE:
+- Swing High: $4343.0300
+- Swing Low: $4236.0000
+- Swing Range: 2.5%
+
+💹 CURRENT STATUS:
+- Price Now: $4284.6200
+- Distance to Entry: 2.0%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $4395.9987 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $4302.1445 (+1.5%) [38.2%] - Exit 50%
+- T2: $4289.5150 (+1.8%) [50%] - Exit 30%
+- T3: $4258.9044 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 3.0%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,705 - INFO - 
+🔴 SHORT Signal: XAI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0473
+- Gap Low: $0.0463
+- Entry (Midpoint): $0.0468
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0465
+- Swing Low: $0.0454
+- Swing Range: 2.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0464
+- Distance to Entry: 0.9%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0471 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0461 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.0460 (+1.8%) [50%] - Exit 30%
+- T3: $0.0456 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.2%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:45
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: GRT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0900
+- Gap Low: $0.0885
+- Entry (Midpoint): $0.0892
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0885
+- Swing Low: $0.0869
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0883
+- Distance to Entry: 1.1%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0898 (-0.6%)
+- Risk/Reward: 2.5:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0879 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.0877 (+1.7%) [50%] - Exit 30%
+- T3: $0.0872 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:45
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: ADA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8401
+- Gap Low: $0.8283
+- Entry (Midpoint): $0.8342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.8285
+- Swing Low: $0.8143
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8299
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8392 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8231 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.8214 (+1.5%) [50%] - Exit 30%
+- T3: $0.8173 (+2.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: ETC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $20.7600
+- Gap Low: $20.4700
+- Entry (Midpoint): $20.6150
+
+📈 MARKET STRUCTURE:
+- Swing High: $20.5200
+- Swing Low: $20.0500
+- Swing Range: 2.3%
+
+💹 CURRENT STATUS:
+- Price Now: $20.3500
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $20.7387 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $20.3405 (+1.3%) [38.2%] - Exit 50%
+- T2: $20.2850 (+1.6%) [50%] - Exit 30%
+- T3: $20.1506 (+2.3%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:45
+
+2025-09-07 21:46:15,706 - INFO - 
+🟢 LONG Signal: BAND/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7310
+- Gap Low: $0.7220
+- Entry (Midpoint): $0.7265
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7600
+- Swing Low: $0.7210
+- Swing Range: 5.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7400
+- Distance to Entry: -1.8%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7221 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7359 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.7405 (+1.9%) [50%] - Exit 30%
+- T3: $0.7517 (+3.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 30 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:45
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: JST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0344
+- Gap Low: $0.0340
+- Entry (Midpoint): $0.0342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0344
+- Swing Low: $0.0330
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0336
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0344 (-0.6%)
+- Risk/Reward: 1.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0338 (+1.1%) [38.2%] - Exit 50%
+- T2: $0.0337 (+1.5%) [50%] - Exit 30%
+- T3: $0.0333 (+2.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:46
+
+2025-09-07 21:46:15,706 - INFO - 
+🟢 LONG Signal: IOTX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0265
+- Gap Low: $0.0263
+- Entry (Midpoint): $0.0264
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0263
+- Swing Low: $0.0249
+- Swing Range: 5.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0267
+- Distance to Entry: -1.1%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0262 (-0.6%)
+- Risk/Reward: 1.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0266 (+1.0%) [127.2%] - Exit 50%
+- T2: $0.0271 (+2.8%) [161.8%] - Exit 30%
+- T3: $0.0276 (+4.8%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.7%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:46
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: JASMY/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0142
+- Gap Low: $0.0140
+- Entry (Midpoint): $0.0141
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0142
+- Swing Low: $0.0137
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0140
+- Distance to Entry: 1.0%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0142 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0140 (+0.9%) [38.2%] - Exit 50%
+- T2: $0.0139 (+1.3%) [50%] - Exit 30%
+- T3: $0.0138 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:46
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: BTC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $112706.7100
+- Gap Low: $111017.8000
+- Entry (Midpoint): $111862.2550
+
+📈 MARKET STRUCTURE:
+- Swing High: $111700.0000
+- Swing Low: $109977.0000
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $111105.5100
+- Distance to Entry: 0.7%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $112533.4285 (-0.6%)
+- Risk/Reward: 1.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $111041.8140 (+0.7%) [38.2%] - Exit 50%
+- T2: $110838.5000 (+0.9%) [50%] - Exit 30%
+- T3: $110345.7220 (+1.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: BEAMX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0072
+- Gap Low: $0.0071
+- Entry (Midpoint): $0.0071
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0072
+- Swing Low: $0.0070
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0070
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0072 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0071 (+0.6%) [38.2%] - Exit 50%
+- T2: $0.0071 (+1.0%) [50%] - Exit 30%
+- T3: $0.0070 (+1.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.3%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:46
+
+2025-09-07 21:46:15,706 - INFO - 
+🟢 LONG Signal: ALPINE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $2.1580
+- Gap Low: $2.1480
+- Entry (Midpoint): $2.1530
+
+📈 MARKET STRUCTURE:
+- Swing High: $2.1770
+- Swing Low: $2.1140
+- Swing Range: 3.0%
+
+💹 CURRENT STATUS:
+- Price Now: $2.1820
+- Distance to Entry: -1.3%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $2.1401 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $2.1635 (+0.5%) [78.6%] - Exit 50%
+- T2: $2.1770 (+1.1%) [100%] - Exit 30%
+- T3: $2.2159 (+2.9%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.5%
+- FVG Age: 6 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:45
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: PROVE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8853
+- Gap Low: $0.8770
+- Entry (Midpoint): $0.8811
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.9042
+- Swing Low: $0.8769
+- Swing Range: 3.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8771
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8864 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8769 (+0.5%) [100%] - Exit 50%
+- T2: $0.8695 (+1.3%) [127.2%] - Exit 30%
+- T3: $0.8496 (+3.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.9%
+- FVG Age: 1 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,706 - INFO - 
+🔴 SHORT Signal: PYTH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1659
+- Gap Low: $0.1639
+- Entry (Midpoint): $0.1649
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1712
+- Swing Low: $0.1657
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1623
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1659 (-0.6%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1642 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.1623 (+1.6%) [161.8%] - Exit 30%
+- T3: $0.1602 (+2.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 3 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:44
+
+2025-09-07 21:46:15,706 - INFO - Scan complete. Found 52 high-quality setups, displayed 20
+2025-09-07 21:46:15,706 - INFO - Performance Stats: {'total_scans': 1, 'setups_found': 52, 'alerts_sent': 32}
+2025-09-07 21:46:15,706 - INFO - Next scan in 300 seconds...
+2025-09-07 21:49:08,020 - INFO - Scanner stopped by user
+2025-09-07 21:58:09,532 - INFO - Connected to binance
+2025-09-07 21:58:09,538 - INFO - Starting continuous scanner (interval: 300s)
+2025-09-07 21:58:09,538 - INFO - Starting scan of top 500 symbols...
+2025-09-07 21:58:12,248 - INFO - Scanning 232 symbols
+2025-09-07 21:58:12,249 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 21:58:14,700 - ERROR - Error scanning TRX/USDT: 'swing_high'
+2025-09-07 21:58:17,139 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 21:58:22,049 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 21:58:23,138 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 21:58:24,540 - ERROR - Error scanning SEI/USDT: 'swing_high'
+2025-09-07 21:58:26,923 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 21:58:27,985 - ERROR - Error scanning ASR/USDT: 'swing_high'
+2025-09-07 21:58:32,222 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 21:58:36,020 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 21:58:38,461 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 21:58:40,544 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 21:58:42,304 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 21:58:45,450 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 21:58:49,655 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 21:58:53,487 - INFO - Connected to binance
+2025-09-07 21:58:53,487 - INFO - Starting continuous scanner (interval: 300s)
+2025-09-07 21:58:53,487 - INFO - Starting scan of top 500 symbols...
+2025-09-07 21:58:53,835 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 21:58:55,926 - INFO - Scanning 232 symbols
+2025-09-07 21:58:55,927 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 21:58:58,372 - ERROR - Error scanning TRX/USDT: 'swing_high'
+2025-09-07 21:58:58,389 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 21:59:00,635 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 21:59:00,978 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 21:59:03,102 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 21:59:05,194 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 21:59:05,571 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 21:59:06,608 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 21:59:07,666 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 21:59:07,667 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 21:59:08,009 - ERROR - Error scanning SEI/USDT: 'swing_high'
+2025-09-07 21:59:08,337 - ERROR - Error scanning JUV/USDT: 'swing_high'
+2025-09-07 21:59:10,497 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 21:59:11,506 - ERROR - Error scanning ASR/USDT: 'swing_high'
+2025-09-07 21:59:12,541 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 21:59:15,675 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 21:59:15,679 - ERROR - Error scanning VET/USDT: 'swing_high'
+2025-09-07 21:59:16,721 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 21:59:19,539 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 21:59:21,298 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 21:59:22,017 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 21:59:24,077 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 21:59:25,120 - ERROR - Error scanning ENS/USDT: 'swing_high'
+2025-09-07 21:59:25,824 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 21:59:26,230 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 21:59:29,038 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 21:59:30,431 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 21:59:31,112 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 21:59:33,170 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 21:59:34,553 - ERROR - Error scanning RSR/USDT: 'swing_high'
+2025-09-07 21:59:34,930 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 21:59:37,372 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 21:59:39,122 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 21:59:41,907 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 21:59:43,326 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 21:59:43,993 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 21:59:46,462 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 21:59:47,512 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 21:59:48,550 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 21:59:50,989 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 21:59:50,989 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 21:59:51,695 - ERROR - Error scanning JUV/USDT: 'swing_high'
+2025-09-07 21:59:52,039 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 21:59:54,471 - ERROR - Error scanning AXL/USDT: 'swing_high'
+2025-09-07 21:59:55,900 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 21:59:56,228 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 21:59:56,571 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 21:59:57,286 - INFO - Found 51 setups, showing top 20
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: SUI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $3.4276
+- Gap Low: $3.3932
+- Entry (Midpoint): $3.4104
+
+📈 MARKET STRUCTURE:
+- Swing High: $3.3618
+- Swing Low: $3.3135
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $3.3729
+- Distance to Entry: 1.1%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $3.4309 (-0.6%)
+- Risk/Reward: 3.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $3.3433 (+2.0%) [38.2%] - Exit 50%
+- T2: $3.3377 (+2.1%) [50%] - Exit 30%
+- T3: $3.3238 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.0%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: XAI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0473
+- Gap Low: $0.0463
+- Entry (Midpoint): $0.0468
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0465
+- Swing Low: $0.0454
+- Swing Range: 2.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0463
+- Distance to Entry: 1.1%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0471 (-0.6%)
+- Risk/Reward: 2.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0461 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.0460 (+1.8%) [50%] - Exit 30%
+- T3: $0.0456 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 2.2%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: GRT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0900
+- Gap Low: $0.0885
+- Entry (Midpoint): $0.0892
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0885
+- Swing Low: $0.0869
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0880
+- Distance to Entry: 1.4%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0898 (-0.6%)
+- Risk/Reward: 2.5:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0879 (+1.5%) [38.2%] - Exit 50%
+- T2: $0.0877 (+1.7%) [50%] - Exit 30%
+- T3: $0.0872 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: ADA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8401
+- Gap Low: $0.8283
+- Entry (Midpoint): $0.8342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.8285
+- Swing Low: $0.8143
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8280
+- Distance to Entry: 0.7%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8392 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8231 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.8214 (+1.5%) [50%] - Exit 30%
+- T3: $0.8173 (+2.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: ETC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $20.7600
+- Gap Low: $20.4700
+- Entry (Midpoint): $20.6150
+
+📈 MARKET STRUCTURE:
+- Swing High: $20.5200
+- Swing Low: $20.0500
+- Swing Range: 2.3%
+
+💹 CURRENT STATUS:
+- Price Now: $20.3000
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $20.7387 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $20.3405 (+1.3%) [38.2%] - Exit 50%
+- T2: $20.2850 (+1.6%) [50%] - Exit 30%
+- T3: $20.1506 (+2.3%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🟢 LONG Signal: BAND/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7310
+- Gap Low: $0.7220
+- Entry (Midpoint): $0.7265
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7600
+- Swing Low: $0.7210
+- Swing Range: 5.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7370
+- Distance to Entry: -1.4%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7221 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7359 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.7405 (+1.9%) [50%] - Exit 30%
+- T3: $0.7517 (+3.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 30 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: JST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0344
+- Gap Low: $0.0340
+- Entry (Midpoint): $0.0342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0344
+- Swing Low: $0.0330
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0336
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0344 (-0.6%)
+- Risk/Reward: 1.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0338 (+1.1%) [38.2%] - Exit 50%
+- T2: $0.0337 (+1.5%) [50%] - Exit 30%
+- T3: $0.0333 (+2.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🟢 LONG Signal: IOTX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0265
+- Gap Low: $0.0263
+- Entry (Midpoint): $0.0264
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0263
+- Swing Low: $0.0249
+- Swing Range: 5.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0266
+- Distance to Entry: -1.0%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0262 (-0.6%)
+- Risk/Reward: 1.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0266 (+1.0%) [127.2%] - Exit 50%
+- T2: $0.0271 (+2.8%) [161.8%] - Exit 30%
+- T3: $0.0276 (+4.8%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.7%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: JASMY/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0142
+- Gap Low: $0.0140
+- Entry (Midpoint): $0.0141
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0142
+- Swing Low: $0.0137
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0139
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0142 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0140 (+0.9%) [38.2%] - Exit 50%
+- T2: $0.0139 (+1.3%) [50%] - Exit 30%
+- T3: $0.0138 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: BTC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $112706.7100
+- Gap Low: $111017.8000
+- Entry (Midpoint): $111862.2550
+
+📈 MARKET STRUCTURE:
+- Swing High: $111700.0000
+- Swing Low: $109977.0000
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $110995.6600
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $112533.4285 (-0.6%)
+- Risk/Reward: 1.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $111041.8140 (+0.7%) [38.2%] - Exit 50%
+- T2: $110838.5000 (+0.9%) [50%] - Exit 30%
+- T3: $110345.7220 (+1.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🟢 LONG Signal: SPK/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0615
+- Gap Low: $0.0606
+- Entry (Midpoint): $0.0611
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0614
+- Swing Low: $0.0595
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0617
+- Distance to Entry: -1.0%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0607 (-0.6%)
+- Risk/Reward: 0.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0614 (+0.5%) [100%] - Exit 50%
+- T2: $0.0619 (+1.4%) [127.2%] - Exit 30%
+- T3: $0.0633 (+3.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🟢 LONG Signal: ALPINE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $2.1580
+- Gap Low: $2.1480
+- Entry (Midpoint): $2.1530
+
+📈 MARKET STRUCTURE:
+- Swing High: $2.1770
+- Swing Low: $2.1140
+- Swing Range: 3.0%
+
+💹 CURRENT STATUS:
+- Price Now: $2.1900
+- Distance to Entry: -1.7%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $2.1401 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $2.1635 (+0.5%) [78.6%] - Exit 50%
+- T2: $2.1770 (+1.1%) [100%] - Exit 30%
+- T3: $2.2159 (+2.9%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.5%
+- FVG Age: 6 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: PROVE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8853
+- Gap Low: $0.8770
+- Entry (Midpoint): $0.8811
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.9042
+- Swing Low: $0.8769
+- Swing Range: 3.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8767
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8864 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8769 (+0.5%) [100%] - Exit 50%
+- T2: $0.8695 (+1.3%) [127.2%] - Exit 30%
+- T3: $0.8496 (+3.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.9%
+- FVG Age: 1 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🔴 SHORT Signal: PYTH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1659
+- Gap Low: $0.1639
+- Entry (Midpoint): $0.1649
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1712
+- Swing Low: $0.1657
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1618
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1659 (-0.6%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1642 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.1623 (+1.6%) [161.8%] - Exit 30%
+- T3: $0.1602 (+2.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 3 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,286 - INFO - 
+🟢 LONG Signal: MATIC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3806
+- Gap Low: $0.3747
+- Entry (Midpoint): $0.3776
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3773
+- Swing Low: $0.3706
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.3794
+- Distance to Entry: -0.5%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3754 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.3791 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.3814 (+1.0%) [161.8%] - Exit 30%
+- T3: $0.3840 (+1.7%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 95/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 9 bars
+- Volume Surge: Yes ✅
+- Category: Layer 2/Scaling
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 21:59:57,286 - INFO - 
+🟢 LONG Signal: 1MBABYDOGE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0012
+- Gap Low: $0.0012
+- Entry (Midpoint): $0.0012
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0013
+- Swing Low: $0.0012
+- Swing Range: 15.6%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0012
+- Distance to Entry: -1.9%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0012 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0012 (+0.3%) [38.2%] - Exit 50%
+- T2: $0.0012 (+2.1%) [50%] - Exit 30%
+- T3: $0.0013 (+6.3%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 70/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.5%
+- FVG Age: 12 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 21:59:57,287 - INFO - Scan complete. Found 51 high-quality setups, displayed 20
+2025-09-07 21:59:57,287 - INFO - Performance Stats: {'total_scans': 1, 'setups_found': 51, 'alerts_sent': 32}
+2025-09-07 21:59:57,287 - INFO - Next scan in 300 seconds...
+2025-09-07 21:59:59,036 - ERROR - Error scanning VET/USDT: 'swing_high'
+2025-09-07 22:00:00,096 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 22:00:03,659 - ERROR - Error scanning WBTC/USDT: 'swing_high'
+2025-09-07 22:00:06,453 - ERROR - Error scanning MAGIC/USDT: 'swing_high'
+2025-09-07 22:00:06,796 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 22:00:12,220 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 22:00:17,925 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 22:00:18,798 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 22:00:22,741 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 22:00:23,491 - ERROR - Error scanning CETUS/USDT: 'swing_high'
+2025-09-07 22:00:25,935 - ERROR - Error scanning LISTA/USDT: 'swing_high'
+2025-09-07 22:00:27,696 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 22:00:31,768 - ERROR - Error scanning KSM/USDT: 'swing_high'
+2025-09-07 22:00:32,108 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 22:00:33,472 - ERROR - Error scanning SAGA/USDT: 'swing_high'
+2025-09-07 22:00:36,941 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 22:00:41,846 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 22:00:47,089 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 22:00:47,089 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 22:00:47,818 - INFO - Found 56 setups, showing top 20
+2025-09-07 22:00:47,818 - INFO - 
+🔴 SHORT Signal: SUI/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $3.4276
+- Gap Low: $3.3932
+- Entry (Midpoint): $3.4104
+
+📈 MARKET STRUCTURE:
+- Swing High: $3.3618
+- Swing Low: $3.3135
+- Swing Range: 1.5%
+
+💹 CURRENT STATUS:
+- Price Now: $3.3719
+- Distance to Entry: 1.1%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $3.4309 (-0.6%)
+- Risk/Reward: 3.3:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $3.3433 (+2.0%) [38.2%] - Exit 50%
+- T2: $3.3377 (+2.1%) [50%] - Exit 30%
+- T3: $3.3238 (+2.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.0%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,818 - INFO - 
+🔴 SHORT Signal: ZEN/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $7.3660
+- Gap Low: $7.3310
+- Entry (Midpoint): $7.3485
+
+📈 MARKET STRUCTURE:
+- Swing High: $7.3310
+- Swing Low: $7.0700
+- Swing Range: 3.7%
+
+💹 CURRENT STATUS:
+- Price Now: $7.2190
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $7.3926 (-0.6%)
+- Risk/Reward: 2.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $7.2313 (+1.6%) [38.2%] - Exit 50%
+- T2: $7.2005 (+2.0%) [50%] - Exit 30%
+- T3: $7.1259 (+3.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.5%
+- FVG Age: 13 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,818 - INFO - 
+🔴 SHORT Signal: ADA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8401
+- Gap Low: $0.8283
+- Entry (Midpoint): $0.8342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.8285
+- Swing Low: $0.8143
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8273
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8392 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8231 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.8214 (+1.5%) [50%] - Exit 30%
+- T3: $0.8173 (+2.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,818 - INFO - 
+🔴 SHORT Signal: ETC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $20.7600
+- Gap Low: $20.4700
+- Entry (Midpoint): $20.6150
+
+📈 MARKET STRUCTURE:
+- Swing High: $20.5200
+- Swing Low: $20.0500
+- Swing Range: 2.3%
+
+💹 CURRENT STATUS:
+- Price Now: $20.2900
+- Distance to Entry: 1.6%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $20.7387 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $20.3405 (+1.3%) [38.2%] - Exit 50%
+- T2: $20.2850 (+1.6%) [50%] - Exit 30%
+- T3: $20.1506 (+2.3%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,818 - INFO - 
+🟢 LONG Signal: BAND/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7310
+- Gap Low: $0.7220
+- Entry (Midpoint): $0.7265
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7600
+- Swing Low: $0.7210
+- Swing Range: 5.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7370
+- Distance to Entry: -1.4%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7221 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7359 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.7405 (+1.9%) [50%] - Exit 30%
+- T3: $0.7517 (+3.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 31 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,818 - INFO - 
+🔴 SHORT Signal: GRT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0900
+- Gap Low: $0.0885
+- Entry (Midpoint): $0.0892
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0886
+- Swing Low: $0.0875
+- Swing Range: 1.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0880
+- Distance to Entry: 1.4%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0898 (-0.6%)
+- Risk/Reward: 2.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0882 (+1.2%) [38.2%] - Exit 50%
+- T2: $0.0880 (+1.3%) [50%] - Exit 30%
+- T3: $0.0877 (+1.7%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,818 - INFO - 
+🔴 SHORT Signal: JST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0344
+- Gap Low: $0.0340
+- Entry (Midpoint): $0.0342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0344
+- Swing Low: $0.0330
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0336
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0344 (-0.6%)
+- Risk/Reward: 1.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0338 (+1.1%) [38.2%] - Exit 50%
+- T2: $0.0337 (+1.5%) [50%] - Exit 30%
+- T3: $0.0333 (+2.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,818 - INFO - 
+🟢 LONG Signal: IOTX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0265
+- Gap Low: $0.0263
+- Entry (Midpoint): $0.0264
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0263
+- Swing Low: $0.0249
+- Swing Range: 5.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0266
+- Distance to Entry: -1.1%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0262 (-0.6%)
+- Risk/Reward: 1.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0266 (+1.0%) [127.2%] - Exit 50%
+- T2: $0.0271 (+2.8%) [161.8%] - Exit 30%
+- T3: $0.0276 (+4.8%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.7%
+- FVG Age: 1 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,819 - INFO - 
+🔴 SHORT Signal: JASMY/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0142
+- Gap Low: $0.0140
+- Entry (Midpoint): $0.0141
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0142
+- Swing Low: $0.0137
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0139
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0142 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0140 (+0.9%) [38.2%] - Exit 50%
+- T2: $0.0139 (+1.3%) [50%] - Exit 30%
+- T3: $0.0138 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,819 - INFO - 
+🔴 SHORT Signal: BTC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $112706.7100
+- Gap Low: $111017.8000
+- Entry (Midpoint): $111862.2550
+
+📈 MARKET STRUCTURE:
+- Swing High: $111700.0000
+- Swing Low: $109977.0000
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $110962.8400
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $112533.4285 (-0.6%)
+- Risk/Reward: 1.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $111041.8140 (+0.7%) [38.2%] - Exit 50%
+- T2: $110838.5000 (+0.9%) [50%] - Exit 30%
+- T3: $110345.7220 (+1.4%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 50 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:58
+
+2025-09-07 22:00:47,819 - INFO - 
+🔴 SHORT Signal: ENS/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $22.7300
+- Gap Low: $22.2200
+- Entry (Midpoint): $22.4750
+
+📈 MARKET STRUCTURE:
+- Swing High: $22.4800
+- Swing Low: $22.1200
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $22.0600
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $22.6099 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $22.3425 (+0.6%) [38.2%] - Exit 50%
+- T2: $22.3000 (+0.8%) [50%] - Exit 30%
+- T3: $22.1970 (+1.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 2.3%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,819 - INFO - 
+🟢 LONG Signal: SPK/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0615
+- Gap Low: $0.0606
+- Entry (Midpoint): $0.0611
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0614
+- Swing Low: $0.0595
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0617
+- Distance to Entry: -1.0%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0607 (-0.6%)
+- Risk/Reward: 0.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0614 (+0.5%) [100%] - Exit 50%
+- T2: $0.0619 (+1.4%) [127.2%] - Exit 30%
+- T3: $0.0633 (+3.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,819 - INFO - 
+🟢 LONG Signal: ALPINE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $2.1580
+- Gap Low: $2.1480
+- Entry (Midpoint): $2.1530
+
+📈 MARKET STRUCTURE:
+- Swing High: $2.1770
+- Swing Low: $2.1140
+- Swing Range: 3.0%
+
+💹 CURRENT STATUS:
+- Price Now: $2.1890
+- Distance to Entry: -1.6%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $2.1401 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $2.1635 (+0.5%) [78.6%] - Exit 50%
+- T2: $2.1770 (+1.1%) [100%] - Exit 30%
+- T3: $2.2159 (+2.9%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.5%
+- FVG Age: 6 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,819 - INFO - 
+🔴 SHORT Signal: PROVE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8853
+- Gap Low: $0.8770
+- Entry (Midpoint): $0.8811
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.9042
+- Swing Low: $0.8769
+- Swing Range: 3.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8770
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8864 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8769 (+0.5%) [100%] - Exit 50%
+- T2: $0.8695 (+1.3%) [127.2%] - Exit 30%
+- T3: $0.8496 (+3.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.9%
+- FVG Age: 1 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,819 - INFO - 
+🔴 SHORT Signal: PYTH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1659
+- Gap Low: $0.1639
+- Entry (Midpoint): $0.1649
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1712
+- Swing Low: $0.1657
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1618
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1659 (-0.6%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1642 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.1623 (+1.6%) [161.8%] - Exit 30%
+- T3: $0.1602 (+2.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 3 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 21:59
+
+2025-09-07 22:00:47,819 - INFO - 
+🟢 LONG Signal: MATIC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3806
+- Gap Low: $0.3747
+- Entry (Midpoint): $0.3776
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3773
+- Swing Low: $0.3706
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.3794
+- Distance to Entry: -0.5%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3754 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.3791 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.3814 (+1.0%) [161.8%] - Exit 30%
+- T3: $0.3840 (+1.7%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 95/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 9 bars
+- Volume Surge: Yes ✅
+- Category: Layer 2/Scaling
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,819 - INFO - 
+🔴 SHORT Signal: AXL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3025
+- Gap Low: $0.2977
+- Entry (Midpoint): $0.3001
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3004
+- Swing Low: $0.2967
+- Swing Range: 1.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.2961
+- Distance to Entry: 1.4%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3019 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.2990 (+0.4%) [38.2%] - Exit 50%
+- T2: $0.2985 (+0.5%) [50%] - Exit 30%
+- T3: $0.2975 (+0.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 70/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 51 bars
+- Volume Surge: No ❌
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:00
+
+2025-09-07 22:00:47,819 - INFO - Scan complete. Found 56 high-quality setups, displayed 20
+2025-09-07 22:00:47,819 - INFO - Performance Stats: {'total_scans': 1, 'setups_found': 56, 'alerts_sent': 34}
+2025-09-07 22:00:47,819 - INFO - Next scan in 300 seconds...
+2025-09-07 22:03:51,294 - INFO - Scanner stopped by user
+2025-09-07 22:04:57,298 - INFO - Starting scan of top 500 symbols...
+2025-09-07 22:04:58,513 - INFO - Scanning 232 symbols
+2025-09-07 22:04:58,514 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 22:04:59,279 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 22:04:59,279 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 22:04:59,983 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 22:05:00,768 - ERROR - Error scanning SEI/USDT: 'swing_high'
+2025-09-07 22:05:00,768 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 22:05:01,819 - ERROR - Error scanning ASR/USDT: 'swing_high'
+2025-09-07 22:05:01,819 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 22:05:01,819 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 22:05:02,604 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 22:05:02,604 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 22:05:03,465 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 22:05:03,465 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 22:05:03,465 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 22:05:03,465 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 22:05:03,465 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 22:05:05,288 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 22:05:05,288 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 22:05:05,987 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 22:05:06,667 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 22:05:06,667 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 22:05:07,498 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 22:05:08,236 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 22:05:08,237 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 22:05:09,517 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 22:05:09,518 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 22:05:10,817 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 22:05:11,537 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 22:05:11,538 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 22:05:11,538 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 22:05:11,538 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 22:05:11,538 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 22:05:13,506 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 22:05:13,506 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 22:05:13,506 - INFO - 
+🔴 SHORT Signal: ENS/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $22.7300
+- Gap Low: $22.2200
+- Entry (Midpoint): $22.4750
+
+📈 MARKET STRUCTURE:
+- Swing High: $22.4800
+- Swing Low: $22.1200
+- Swing Range: 1.6%
+
+💹 CURRENT STATUS:
+- Price Now: $22.0800
+- Distance to Entry: 1.8%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $22.6099 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $22.3425 (+0.6%) [38.2%] - Exit 50%
+- T2: $22.3000 (+0.8%) [50%] - Exit 30%
+- T3: $22.1970 (+1.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 2.3%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:05
+
+2025-09-07 22:05:13,506 - INFO - 
+🔴 SHORT Signal: AXL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3025
+- Gap Low: $0.2977
+- Entry (Midpoint): $0.3001
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3004
+- Swing Low: $0.2967
+- Swing Range: 1.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.2962
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3019 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.2990 (+0.4%) [38.2%] - Exit 50%
+- T2: $0.2985 (+0.5%) [50%] - Exit 30%
+- T3: $0.2975 (+0.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 70/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 51 bars
+- Volume Surge: No ❌
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:05
+
+2025-09-07 22:05:13,506 - INFO - 
+🔴 SHORT Signal: RSR/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0076
+- Gap Low: $0.0074
+- Entry (Midpoint): $0.0075
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0076
+- Swing Low: $0.0075
+- Swing Range: 1.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0074
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0076 (-0.6%)
+- Risk/Reward: 0.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0075 (+0.1%) [78.6%] - Exit 50%
+- T2: $0.0075 (+0.4%) [100%] - Exit 30%
+- T3: $0.0074 (+1.3%) [161.8%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 2.4%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:05
+
+2025-09-07 22:05:13,506 - INFO - 
+🔴 SHORT Signal: VET/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0238
+- Gap Low: $0.0235
+- Entry (Midpoint): $0.0237
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0238
+- Swing Low: $0.0235
+- Swing Range: 1.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0234
+- Distance to Entry: 1.2%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0238 (-0.6%)
+- Risk/Reward: 0.1:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0237 (+0.1%) [38.2%] - Exit 50%
+- T2: $0.0236 (+0.2%) [50%] - Exit 30%
+- T3: $0.0236 (+0.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:05
+
+2025-09-07 22:05:13,506 - INFO - 
+🟢 LONG Signal: TRX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3263
+- Gap Low: $0.3224
+- Entry (Midpoint): $0.3244
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3293
+- Swing Low: $0.3196
+- Swing Range: 3.0%
+
+💹 CURRENT STATUS:
+- Price Now: $0.3301
+- Distance to Entry: -1.7%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3224 (-0.6%)
+- Risk/Reward: 0.1:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.3245 (+0.0%) [50%] - Exit 50%
+- T2: $0.3256 (+0.4%) [61.8%] - Exit 30%
+- T3: $0.3293 (+1.5%) [100%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 15 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:04
+
+2025-09-07 22:05:13,506 - INFO - 
+🟢 LONG Signal: JUV/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $1.1430
+- Gap Low: $1.1310
+- Entry (Midpoint): $1.1370
+
+📈 MARKET STRUCTURE:
+- Swing High: $1.1320
+- Swing Low: $1.1130
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $1.1400
+- Distance to Entry: -0.3%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $1.1302 (-0.6%)
+- Risk/Reward: 0.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $1.1372 (+0.0%) [127.2%] - Exit 50%
+- T2: $1.1437 (+0.6%) [161.8%] - Exit 30%
+- T3: $1.1510 (+1.2%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 88/100
+- Gap Size: 1.1%
+- FVG Age: 4 bars
+- Volume Surge: Yes ✅
+- Category: Gaming/NFTs
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:05
+
+2025-09-07 22:05:13,507 - INFO - Scan complete. Found 6 high-quality setups, displayed 6
+2025-09-07 22:05:13,507 - INFO - Performance Stats: {'total_scans': 2, 'setups_found': 6, 'alerts_sent': 44}
+2025-09-07 22:05:13,507 - INFO - Next scan in 300 seconds...
+2025-09-07 22:10:13,515 - INFO - Starting scan of top 500 symbols...
+2025-09-07 22:10:14,665 - INFO - Scanning 232 symbols
+2025-09-07 22:10:14,667 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 22:10:14,667 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 22:10:14,667 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 22:10:15,462 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 22:10:16,172 - ERROR - Error scanning SEI/USDT: 'swing_high'
+2025-09-07 22:10:16,172 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 22:10:17,524 - ERROR - Error scanning ASR/USDT: 'swing_high'
+2025-09-07 22:10:17,524 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 22:10:17,524 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 22:10:18,233 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 22:10:18,233 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 22:10:18,927 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 22:10:18,928 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 22:10:18,928 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 22:10:18,928 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 22:10:18,928 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 22:10:19,627 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 22:10:19,627 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 22:10:20,332 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 22:10:20,332 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 22:10:21,002 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 22:10:21,002 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 22:10:21,002 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 22:10:21,002 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 22:10:21,002 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 22:10:21,002 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 22:10:21,727 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 22:10:21,727 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 22:10:21,727 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 22:10:21,727 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 22:10:21,727 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 22:10:21,727 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 22:10:22,427 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 22:10:22,427 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 22:10:22,427 - INFO - Scan complete. Found 0 high-quality setups, displayed 0
+2025-09-07 22:10:22,427 - INFO - Performance Stats: {'total_scans': 3, 'setups_found': 0, 'alerts_sent': 44}
+2025-09-07 22:10:22,427 - INFO - Next scan in 300 seconds...
+2025-09-07 22:15:22,477 - INFO - Starting scan of top 500 symbols...
+2025-09-07 22:15:23,072 - INFO - Scanning 232 symbols
+2025-09-07 22:15:23,073 - INFO - Progress: 0/232 symbols scanned
+2025-09-07 22:15:24,464 - ERROR - Error scanning BTC/USDT: 'swing_high'
+2025-09-07 22:15:27,621 - INFO - Progress: 10/232 symbols scanned
+2025-09-07 22:15:30,051 - ERROR - Error scanning SUI/USDT: 'swing_high'
+2025-09-07 22:15:32,501 - INFO - Progress: 20/232 symbols scanned
+2025-09-07 22:15:33,640 - ERROR - Error scanning DOT/USDT: 'swing_high'
+2025-09-07 22:15:34,992 - ERROR - Error scanning SEI/USDT: 'swing_high'
+2025-09-07 22:15:36,686 - ERROR - Error scanning ARB/USDT: 'swing_high'
+2025-09-07 22:15:37,395 - INFO - Progress: 30/232 symbols scanned
+2025-09-07 22:15:38,434 - ERROR - Error scanning ASR/USDT: 'swing_high'
+2025-09-07 22:15:42,629 - INFO - Progress: 40/232 symbols scanned
+2025-09-07 22:15:47,174 - INFO - Progress: 50/232 symbols scanned
+2025-09-07 22:15:49,628 - ERROR - Error scanning LDO/USDT: 'swing_high'
+2025-09-07 22:15:51,355 - INFO - Progress: 60/232 symbols scanned
+2025-09-07 22:15:52,775 - ERROR - Error scanning FET/USDT: 'swing_high'
+2025-09-07 22:15:56,281 - INFO - Progress: 70/232 symbols scanned
+2025-09-07 22:16:00,125 - INFO - Progress: 80/232 symbols scanned
+2025-09-07 22:16:03,957 - INFO - Progress: 90/232 symbols scanned
+2025-09-07 22:16:09,367 - INFO - Progress: 100/232 symbols scanned
+2025-09-07 22:16:11,490 - ERROR - Error scanning MANA/USDT: 'swing_high'
+2025-09-07 22:16:13,948 - INFO - Progress: 110/232 symbols scanned
+2025-09-07 22:16:15,696 - ERROR - Error scanning RUNE/USDT: 'swing_high'
+2025-09-07 22:16:18,494 - INFO - Progress: 120/232 symbols scanned
+2025-09-07 22:16:19,169 - ERROR - Error scanning KAIA/USDT: 'swing_high'
+2025-09-07 22:16:23,009 - INFO - Progress: 130/232 symbols scanned
+2025-09-07 22:16:26,489 - ERROR - Error scanning WBTC/USDT: 'swing_high'
+2025-09-07 22:16:26,864 - INFO - Progress: 140/232 symbols scanned
+2025-09-07 22:16:31,048 - ERROR - Error scanning MAGIC/USDT: 'swing_high'
+2025-09-07 22:16:31,049 - INFO - Progress: 150/232 symbols scanned
+2025-09-07 22:16:35,580 - INFO - Progress: 160/232 symbols scanned
+2025-09-07 22:16:39,792 - INFO - Progress: 170/232 symbols scanned
+2025-09-07 22:16:40,485 - ERROR - Error scanning RNDR/USDT: 'swing_high'
+2025-09-07 22:16:43,644 - INFO - Progress: 180/232 symbols scanned
+2025-09-07 22:16:44,317 - ERROR - Error scanning CETUS/USDT: 'swing_high'
+2025-09-07 22:16:46,069 - ERROR - Error scanning LISTA/USDT: 'swing_high'
+2025-09-07 22:16:48,509 - INFO - Progress: 190/232 symbols scanned
+2025-09-07 22:16:52,180 - ERROR - Error scanning KSM/USDT: 'swing_high'
+2025-09-07 22:16:52,891 - INFO - Progress: 200/232 symbols scanned
+2025-09-07 22:16:54,981 - ERROR - Error scanning SAGA/USDT: 'swing_high'
+2025-09-07 22:16:58,139 - INFO - Progress: 210/232 symbols scanned
+2025-09-07 22:17:03,592 - INFO - Progress: 220/232 symbols scanned
+2025-09-07 22:17:07,042 - ERROR - Error scanning KAVA/USDT: 'swing_high'
+2025-09-07 22:17:07,388 - INFO - Progress: 230/232 symbols scanned
+2025-09-07 22:17:08,102 - INFO - Found 51 setups, showing top 20
+2025-09-07 22:17:08,102 - INFO - 
+🔴 SHORT Signal: DASH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $25.0700
+- Gap Low: $24.8800
+- Entry (Midpoint): $24.9750
+
+📈 MARKET STRUCTURE:
+- Swing High: $24.0800
+- Swing Low: $23.6800
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $24.7500
+- Distance to Entry: 0.9%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $25.1249 (-0.6%)
+- Risk/Reward: 7.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $23.9272 (+4.2%) [38.2%] - Exit 50%
+- T2: $23.8800 (+4.4%) [50%] - Exit 30%
+- T3: $23.7656 (+4.8%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 100/100
+- Fib Confluence: 0/100
+- Final Score: 100/100
+- Gap Size: 0.8%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,102 - INFO - 
+🔴 SHORT Signal: ZEN/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $7.3660
+- Gap Low: $7.3310
+- Entry (Midpoint): $7.3485
+
+📈 MARKET STRUCTURE:
+- Swing High: $7.3310
+- Swing Low: $7.0700
+- Swing Range: 3.7%
+
+💹 CURRENT STATUS:
+- Price Now: $7.2470
+- Distance to Entry: 1.4%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $7.3926 (-0.6%)
+- Risk/Reward: 2.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $7.2313 (+1.6%) [38.2%] - Exit 50%
+- T2: $7.2005 (+2.0%) [50%] - Exit 30%
+- T3: $7.1259 (+3.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.5%
+- FVG Age: 13 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: ADA/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8401
+- Gap Low: $0.8283
+- Entry (Midpoint): $0.8342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.8285
+- Swing Low: $0.8143
+- Swing Range: 1.7%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8274
+- Distance to Entry: 0.8%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8392 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8231 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.8214 (+1.5%) [50%] - Exit 30%
+- T3: $0.8173 (+2.0%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Major Cryptos
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:15
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: ETC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $20.7600
+- Gap Low: $20.4700
+- Entry (Midpoint): $20.6150
+
+📈 MARKET STRUCTURE:
+- Swing High: $20.5200
+- Swing Low: $20.0500
+- Swing Range: 2.3%
+
+💹 CURRENT STATUS:
+- Price Now: $20.3100
+- Distance to Entry: 1.5%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $20.7387 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $20.3405 (+1.3%) [38.2%] - Exit 50%
+- T2: $20.2850 (+1.6%) [50%] - Exit 30%
+- T3: $20.1506 (+2.3%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.4%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Altcoins
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🟢 LONG Signal: BAND/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.7310
+- Gap Low: $0.7220
+- Entry (Midpoint): $0.7265
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.7600
+- Swing Low: $0.7210
+- Swing Range: 5.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.7380
+- Distance to Entry: -1.6%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.7221 (-0.6%)
+- Risk/Reward: 2.2:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.7359 (+1.3%) [38.2%] - Exit 50%
+- T2: $0.7405 (+1.9%) [50%] - Exit 30%
+- T3: $0.7517 (+3.5%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 31 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: GRT/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0900
+- Gap Low: $0.0885
+- Entry (Midpoint): $0.0892
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0886
+- Swing Low: $0.0875
+- Swing Range: 1.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0881
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0898 (-0.6%)
+- Risk/Reward: 2.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0882 (+1.2%) [38.2%] - Exit 50%
+- T2: $0.0880 (+1.3%) [50%] - Exit 30%
+- T3: $0.0877 (+1.7%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 85/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.7%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Infrastructure
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: JST/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0344
+- Gap Low: $0.0340
+- Entry (Midpoint): $0.0342
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0344
+- Swing Low: $0.0330
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0336
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0344 (-0.6%)
+- Risk/Reward: 1.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0338 (+1.1%) [38.2%] - Exit 50%
+- T2: $0.0337 (+1.5%) [50%] - Exit 30%
+- T3: $0.0333 (+2.6%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.1%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:17
+
+2025-09-07 22:17:08,103 - INFO - 
+🟢 LONG Signal: IOTX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0265
+- Gap Low: $0.0263
+- Entry (Midpoint): $0.0264
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0263
+- Swing Low: $0.0249
+- Swing Range: 5.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0267
+- Distance to Entry: -1.1%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0262 (-0.6%)
+- Risk/Reward: 1.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0266 (+1.0%) [127.2%] - Exit 50%
+- T2: $0.0271 (+2.8%) [161.8%] - Exit 30%
+- T3: $0.0276 (+4.8%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.7%
+- FVG Age: 1 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: JASMY/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0142
+- Gap Low: $0.0140
+- Entry (Midpoint): $0.0141
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0142
+- Swing Low: $0.0137
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0139
+- Distance to Entry: 1.3%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0142 (-0.6%)
+- Risk/Reward: 1.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0140 (+0.9%) [38.2%] - Exit 50%
+- T2: $0.0139 (+1.3%) [50%] - Exit 30%
+- T3: $0.0138 (+2.2%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: BEAMX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0072
+- Gap Low: $0.0071
+- Entry (Midpoint): $0.0071
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0072
+- Swing Low: $0.0070
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0070
+- Distance to Entry: 1.9%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0072 (-0.6%)
+- Risk/Reward: 1.0:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0071 (+0.6%) [38.2%] - Exit 50%
+- T2: $0.0071 (+1.0%) [50%] - Exit 30%
+- T3: $0.0070 (+1.9%) [78.6%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 75/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.3%
+- FVG Age: 51 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: SKL/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0290
+- Gap Low: $0.0289
+- Entry (Midpoint): $0.0290
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0298
+- Swing Low: $0.0282
+- Swing Range: 5.5%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0288
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0291 (-0.6%)
+- Risk/Reward: 0.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0288 (+0.6%) [61.8%] - Exit 50%
+- T2: $0.0285 (+1.5%) [78.6%] - Exit 30%
+- T3: $0.0278 (+4.1%) [127.2%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.4%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🟢 LONG Signal: SPK/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0615
+- Gap Low: $0.0606
+- Entry (Midpoint): $0.0611
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0614
+- Swing Low: $0.0595
+- Swing Range: 3.2%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0620
+- Distance to Entry: -1.5%
+- Action: Wait for pullback to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0607 (-0.6%)
+- Risk/Reward: 0.9:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0614 (+0.5%) [100%] - Exit 50%
+- T2: $0.0619 (+1.4%) [127.2%] - Exit 30%
+- T3: $0.0633 (+3.6%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 1.5%
+- FVG Age: 1 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:15
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: PROVE/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.8853
+- Gap Low: $0.8770
+- Entry (Midpoint): $0.8811
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.9042
+- Swing Low: $0.8827
+- Swing Range: 2.4%
+
+💹 CURRENT STATUS:
+- Price Now: $0.8801
+- Distance to Entry: 0.1%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.8864 (-0.6%)
+- Risk/Reward: 0.8:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.8769 (+0.5%) [127.2%] - Exit 50%
+- T2: $0.8694 (+1.3%) [161.8%] - Exit 30%
+- T3: $0.8612 (+2.3%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.9%
+- FVG Age: 2 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:15
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: PYTH/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.1659
+- Gap Low: $0.1639
+- Entry (Midpoint): $0.1649
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.1712
+- Swing Low: $0.1657
+- Swing Range: 3.3%
+
+💹 CURRENT STATUS:
+- Price Now: $0.1626
+- Distance to Entry: 1.4%
+- Action: Wait for rally to entry
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.1659 (-0.6%)
+- Risk/Reward: 0.7:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.1642 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.1623 (+1.6%) [161.8%] - Exit 30%
+- T3: $0.1602 (+2.9%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 90/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.2%
+- FVG Age: 4 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:15
+
+2025-09-07 22:17:08,103 - INFO - 
+🟢 LONG Signal: MATIC/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.3806
+- Gap Low: $0.3747
+- Entry (Midpoint): $0.3776
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.3773
+- Swing Low: $0.3706
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.3794
+- Distance to Entry: -0.5%
+- Action: Enter LONG now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.3754 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.3791 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.3814 (+1.0%) [161.8%] - Exit 30%
+- T3: $0.3840 (+1.7%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 95/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 1.6%
+- FVG Age: 9 bars
+- Volume Surge: Yes ✅
+- Category: Layer 2/Scaling
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:17
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: IMX/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.5120
+- Gap Low: $0.5090
+- Entry (Midpoint): $0.5105
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.5200
+- Swing Low: $0.5110
+- Swing Range: 1.8%
+
+💹 CURRENT STATUS:
+- Price Now: $0.5080
+- Distance to Entry: 0.5%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.5136 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.5086 (+0.4%) [127.2%] - Exit 50%
+- T2: $0.5054 (+1.0%) [161.8%] - Exit 30%
+- T3: $0.5020 (+1.7%) [200%+] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 20/100
+- Final Score: 100/100
+- Gap Size: 0.6%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Layer 2/Scaling
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - 
+🔴 SHORT Signal: 1000SATS/USDT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 FVG ZONE:
+- Gap High: $0.0000
+- Gap Low: $0.0000
+- Entry (Midpoint): $0.0000
+
+📈 MARKET STRUCTURE:
+- Swing High: $0.0000
+- Swing Low: $0.0000
+- Swing Range: 4.1%
+
+💹 CURRENT STATUS:
+- Price Now: $0.0000
+- Distance to Entry: 0.2%
+- Action: Enter SHORT now (at FVG midpoint)
+
+🛑 RISK MANAGEMENT:
+- Stop Loss: $0.0000 (-0.6%)
+- Risk/Reward: 0.6:1
+
+🎯 SMART FIBONACCI TARGETS:
+- T1: $0.0000 (+0.4%) [50%] - Exit 50%
+- T2: $0.0000 (+0.8%) [61.8%] - Exit 30%
+- T3: $0.0000 (+2.4%) [100%] - Exit 20%
+
+📈 SETUP QUALITY:
+- FVG Score: 80/100
+- Fib Confluence: 30/100
+- Final Score: 100/100
+- Gap Size: 0.4%
+- FVG Age: 0 bars
+- Volume Surge: Yes ✅
+- Category: Others
+
+💡 Strategy: R21 FVG + Smart Fibonacci
+⏰ Time: 2025-09-07 22:16
+
+2025-09-07 22:17:08,103 - INFO - Scan complete. Found 51 high-quality setups, displayed 20
+2025-09-07 22:17:08,103 - INFO - Performance Stats: {'total_scans': 4, 'setups_found': 51, 'alerts_sent': 78}
+2025-09-07 22:17:08,103 - INFO - Next scan in 300 seconds...
